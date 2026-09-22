@@ -63,3 +63,10 @@ The older public TLibs lacks the required SQLite API, and MMOItems build 22 fail
 with this MythicLib stack. Use `runtime/plugins/` as a set. The build alias
 `ModelEngine-4.0.8.jar` deliberately maps to the tested R4.1.1 binary; it does not
 identify the runtime version. No third-party binaries have been relicensed.
+
+## Current TLibs build input
+
+Build dependency aliases now select the public [TLibs 1.1.0 release](https://github.com/TF-Minecraft/TLibs/releases/tag/v1.1.0)
+(Java 25), stored as `jars/46a9f9567d9e/TLibs-1.1.0.jar`. The captured runtime
+snapshot and earlier test reports below retain their original versions; they do
+not establish an in-game test of 1.1.0. See [TLibs setup](../TLibs/README.md).

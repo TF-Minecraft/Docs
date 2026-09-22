@@ -1,6 +1,6 @@
 # RPCharacters
 
-Build with Java 21 and Maven. This repository follows TFMCCore's build workflow:
+Build with Java 25 and Maven. This repository follows TFMCCore's build workflow:
 pushes to any branch, same-repository PRs targeting `main`, and manual runs build
 and test the plugin. Each build saves a JAR artifact for 90 days. Successful
 pushes to `main` also upload `RPCharacters.jar` to the `latest` release.
