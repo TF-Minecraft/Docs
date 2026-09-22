@@ -12,8 +12,8 @@ Run `mvn clean verify` with JDK 21 from the source checkout. The migration POM
 uses **release 21**, resolves **Spigot API 1.21.10-R0.1-SNAPSHOT** from Maven,
 and declares `api-version: 1.21.10` in the plugin manifest.
 
-Install the compatible TLibs **1.1.0** build in local Maven or use the
-repository's pinned setup action after that Java 21 artifact is published.
+Install the published Java 21 TLibs **1.1.1** release in local Maven using the
+[shared installer](../TLibs/README.md); CI uses the shared setup action.
 Prepare the authorized private jars in `libs/` with
 `.github/scripts/prepare-release.sh` and verify `.github/dependencies.sha256`.
 These supply Gson, MMOCore, MMOItems and MythicLib; TLibs and the server API

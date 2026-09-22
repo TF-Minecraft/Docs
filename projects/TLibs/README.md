@@ -34,16 +34,19 @@ on Paper 1.21.10 with the matching rebuilt consumers before deployment.
 See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, dependency selection and rollback.
 
 Consumers use `me.plugins:tlibs` with Maven `provided` scope. The
-[shared installer](https://github.com/TF-Minecraft/TLibs/blob/main/DEPENDENCIES.md)
+[shared installer](https://github.com/TF-Minecraft/TLibs/blob/v1.1.1/DEPENDENCIES.md)
 verifies plugin release hashes and installs exact coordinates without recursively
-building dependency providers. From a consumer source checkout with TLibs next to it:
+building dependency providers. Use the installer from the published TLibs tag
+`v1.1.1`. From a consumer source checkout with that TLibs checkout next to it:
 
 ```sh
-python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode latest
+python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned
 mvn clean verify
 ```
 
-The published **1.1.1** replacement supports Java 21. Latest mode selects it;
-pinned consumers must set `tlibs.version=1.1.1` to avoid the older Java 25
-artifact. Release provenance records the exact source and build inputs. Preserve
-older release versions for rollback. TLibs remains a separate server plugin.
+The published **1.1.1** replacement supports Java 21. Current migration POMs
+pin `tlibs.version=1.1.1`; pinned mode preserves their exact selected versions.
+Use `--mode latest` to select newer published releases and update the consumer
+properties explicitly. Older TLibs 1.1.0 binaries require Java 25. Release
+provenance records the exact source and build inputs. Preserve older release
+versions for rollback. TLibs remains a separate server plugin.

@@ -71,9 +71,11 @@ with this MythicLib stack. Use `runtime/plugins/` as a set. The build alias
 `ModelEngine-4.0.8.jar` deliberately maps to the tested R4.1.1 binary; it does not
 identify the runtime version. No third-party binaries have been relicensed.
 
-## Current TLibs build input
+## Historical TLibs build input
 
-Build dependency aliases now select the public [TLibs 1.1.0 release](https://github.com/TF-Minecraft/TLibs/releases/tag/v1.1.0)
-(Java 25), stored as `jars/46a9f9567d9e/TLibs-1.1.0.jar`. The captured runtime
-snapshot and earlier test reports below retain their original versions; they do
-not establish an in-game test of 1.1.0. See [TLibs setup](../TLibs/README.md).
+The earlier build dependency alias selected the public [TLibs 1.1.0 release](https://github.com/TF-Minecraft/TLibs/releases/tag/v1.1.0)
+(Java 25), stored as `jars/46a9f9567d9e/TLibs-1.1.0.jar`. Retain that binary for
+historical rebuilds and rollback. Current Java 21 builds select the public
+**TLibs 1.1.1** replacement through Maven; see [TLibs setup](../TLibs/README.md).
+The captured runtime snapshot and earlier test reports retain their original
+versions and do not establish in-game validation of either later release.

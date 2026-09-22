@@ -307,14 +307,14 @@ Upgrading? Messages are migrated automatically — out of `config.yml` and into 
 ## Building from Source
 
 ```bash
-git clone https://github.com/TF-Minecraft/TLibs.git tlibs
+git clone --branch v1.1.1 https://github.com/TF-Minecraft/TLibs.git tlibs
 git clone https://github.com/TF-Minecraft/geiger-counters.git
 cd geiger-counters
 python3 ../tlibs/tools/install-dependency.py --pom pom.xml
 mvn clean verify
 ```
 
-Use JDK 21, Maven and Python 3. The shared installer verifies the pinned release checksum; see [TLibs dependency setup](../TLibs/README.md). Install the matching `me.plugins:tlibs:1.1.0` artifact as described in the [shared baseline](../../PLATFORM.md), then run `mvn clean verify`. Paper API, WorldGuard API and bStats resolve from Maven; MMOItems is not a direct build dependency. The artifact is written to `target/`.
+Use JDK 21, Maven and Python 3. The shared installer verifies the pinned release checksum; see [TLibs dependency setup](../TLibs/README.md). Install the matching `me.plugins:tlibs:1.1.1` artifact as described in the [shared baseline](../../PLATFORM.md), then run `mvn clean verify`. Paper API, WorldGuard API and bStats resolve from Maven; MMOItems is not a direct build dependency. The artifact is written to `target/`.
 
 ## Source build metadata
 

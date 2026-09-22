@@ -311,14 +311,14 @@ Every player-facing string: command errors, success/failure notifications, per-t
 ## Building from Source
 
 ```bash
-git clone https://github.com/TF-Minecraft/TLibs.git tlibs
+git clone --branch v1.1.1 https://github.com/TF-Minecraft/TLibs.git tlibs
 git clone https://github.com/TF-Minecraft/Surgery.git surgery
 cd surgery
 python3 ../tlibs/tools/install-dependency.py --pom pom.xml
 mvn package
 ```
 
-Use JDK 21, Maven and Python 3. The shared installer verifies the pinned release checksum; see [TLibs dependency setup](../TLibs/README.md). Install the matching `me.plugins:tlibs:1.1.0` artifact as described in the [shared baseline](../../PLATFORM.md), then run `mvn clean verify`. Paper API resolves from Maven. The artifact is written to `target/`.
+Use JDK 21, Maven and Python 3. The shared installer verifies the pinned release checksum; see [TLibs dependency setup](../TLibs/README.md). Install the matching `me.plugins:tlibs:1.1.1` artifact as described in the [shared baseline](../../PLATFORM.md), then run `mvn clean verify`. Paper API resolves from Maven. The artifact is written to `target/`.
 
 ## Tech Stack
 

@@ -4,7 +4,7 @@ Roleplay characters, identity, progression and character state. Build and run wi
 
 ## Dependencies
 
-TLibs 1.1.0 and SimpleFactions 2.8.7 resolve as Maven plugin artifacts. The shared `setup-plugins` action installs the selected builds; for a local source build, install the matching dependencies into your Maven repository first. For the pinned TLibs release, clone TLibs alongside the checkout and run `python3 ../tlibs/tools/install-dependency.py --pom pom.xml`; the installer verifies its checksum. See [TLibs dependency setup](../TLibs/README.md). Runtime optional integrations can still be mandatory compile dependencies.
+TLibs 1.1.1 and SimpleFactions 2.8.7 resolve as Maven plugin artifacts. The shared `setup-plugins` action installs the selected builds; for a local source build, install the matching dependencies into your Maven repository first. For pinned shared releases, clone TLibs at tag `v1.1.1` alongside the checkout and run `python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned`; the installer verifies release checksums. See [TLibs dependency setup](../TLibs/README.md). Runtime optional integrations can still be mandatory compile dependencies.
 
 The remaining private reference jars are ItemsAdder 4.0.18, MMOCore 1.13.1, MMOItems, MythicLib, ProtocolLib and MythicMobs. Populate the exact paths listed in `pom.xml` under the ignored `libs/` directory. `.github/scripts/prepare-release.sh` downloads pinned files from private `TF-Minecraft/ServerAssets` and verifies `.github/dependencies.sha256`. It requires `GH_TOKEN` with read access; CI supplies the `DEPS_TOKEN` secret. Keep licensed jars private.
 
