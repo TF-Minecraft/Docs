@@ -116,8 +116,6 @@ classDiagram
     PlayerListener --> SurgeryMenuManager : uses
 ```
 
-*Full diagram: [UML-Diagram.mmd](https://github.com/TF-Minecraft/Surgery/blob/e25a2a96725300addd70a199483a677d01be7119/UML-Diagram.mmd)*
-
 ### Design decisions
 
 - **Configuration over code** — diagnoses, incision requirements, bone counts, fail chances, temperature thresholds, death timers, and every player-facing message are YAML edits, not releases.

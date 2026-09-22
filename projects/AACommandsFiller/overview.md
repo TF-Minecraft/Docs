@@ -101,8 +101,6 @@ classDiagram
     CommandManager --> TabCompleteHandler : uses
 ```
 
-*Full diagram: [UML-Diagram.mmd](https://github.com/TF-Minecraft/AACommandsFiller/blob/83da4ab95f054667544e18ed9ee8cbcbf4f3d277/UML-Diagram.mmd)*
-
 ### Design decisions
 
 - **Configuration over code** — the entire command tree, every placeholder, and every permission node are YAML edits, not releases.
