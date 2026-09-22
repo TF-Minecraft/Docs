@@ -44,6 +44,22 @@ All plugins target **Java 21 / Minecraft 1.21.10**; see the
 
 Plugins with file dependencies use `.github/scripts/prepare-release.sh` to download their private build inputs from a pinned commit in [ServerAssets](https://github.com/TF-Minecraft/ServerAssets). The committed `.github/dependencies.sha256` verifies the downloaded bytes. JARs go in `libs/`, outside Maven's cleaned `target/` directory, and are ignored by Git.
 
+After download, `prepare-release.sh` calls
+`.github/scripts/install-local-dependencies.sh`. This script verifies every pinned
+checksum before installing the JARs into the local Maven repository using
+`maven-install-plugin:3.1.4`. POMs declare these inputs with `provided` scope;
+versions end in `-tfmc-<first 12 SHA-256 characters>` so different private JARs
+cannot overwrite one another under the same Maven coordinates. Generated POMs
+have no transitive dependencies. The input bytes and runtime plugin requirements
+are unchanged.
+
+For already downloaded `libs/`, run
+`bash .github/scripts/install-local-dependencies.sh`. Pass Maven
+options such as `-Dmaven.repo.local=/path/to/cache` to either preparation script
+and to the subsequent build. Keep the checksum file, install commands, and POM
+versions together when updating an input. Rollback consists of reverting those
+files together; no runtime data migration is involved.
+
 `DEPS_TOKEN` is an organisation Actions secret with Contents read access to ServerAssets. Grant the consuming repositories access to this one secret. A separate token for each repository is unnecessary. The workflow passes it only to dependency preparation steps. Fork pull requests do not receive Actions secrets and cannot run builds that require these private inputs.
 
 Shared TFMC plugins use their Maven coordinates with `provided` scope.
