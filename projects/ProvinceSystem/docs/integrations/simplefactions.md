@@ -72,7 +72,7 @@ Common `mode` values on `POST /{map}/data/upload/{mode}`:
 - `county` / `duchy` / `kingdom` / `empire` - de jure title JSON (same IP gate; validated payload)
 - `chronicle` - economy snapshot (faction wealth/prestige, guilds), posted every 300s; does **not** overwrite a single file like the modes above - partitioned and indexed as the **ledger**, see [map/ledger.md](../map/ledger.md)
 
-War and chronicle extensions follow the export schema in [`docs/assets/map-export-schema.json`](../assets/map-export-schema.json). SF-side export details: [`simplefactions/docs/map-export.md`](https://github.com/TF-Minecraft/simplefactions/blob/ad9b048ec42c1842b277f4657f490b25691f854d/docs/map-export.md).
+War and chronicle extensions follow the export schema in [`docs/assets/map-export-schema.json`](../assets/map-export-schema.json). SF-side export details: [`simplefactions/docs/map-export.md`](https://github.com/TF-Minecraft/SimpleFactions/blob/ad9b048ec42c1842b277f4657f490b25691f854d/docs/map-export.md).
 
 ## Upload cadence
 

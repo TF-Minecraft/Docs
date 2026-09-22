@@ -22,7 +22,7 @@ Branch: **`dev`**.
 | **Wealth charts** | Nation and global wealth time series over the season |
 | **Occupation overlay** | Distinct contested fill on political modes (occupier colour remap already ships; not blocked on SF export) |
 
-War gameplay and export schema live in SimpleFactions: see [`../../simplefactions/docs/wars.md`](https://github.com/TF-Minecraft/simplefactions/blob/ad9b048ec42c1842b277f4657f490b25691f854d/docs/wars.md).
+War gameplay and export schema live in SimpleFactions: see [`../../simplefactions/docs/wars.md`](https://github.com/TF-Minecraft/SimpleFactions/blob/ad9b048ec42c1842b277f4657f490b25691f854d/docs/wars.md).
 
 ## Map platform detail
 
