@@ -6,7 +6,7 @@ Food composition, cooking stations, crop quality and animal husbandry.
 
 TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
 
-Published Java 21 replacement: [0.1.6-ALPHA](https://github.com/TF-Minecraft/Cooking/releases/tag/v0.1.6-ALPHA), verified locally. See the [replacement release status](../../PLATFORM.md#java-21-dependency-replacements) for provenance, verification and deployment status.
+See the [shared API versions](../../PLATFORM.md#shared-api-versions) for the matching provider dependency set.
 
 ## Build and dependencies
 
