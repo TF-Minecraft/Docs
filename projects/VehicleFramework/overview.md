@@ -12,9 +12,9 @@ This framework implements several systems that do not exist in the standard Spig
 To achieve this, I leveraged the external plugin **ModelEngine**, but used parts of its API in unconventional ways. For example, the control system is built using the plugin’s manual bone animation interface, which is normally meant for running animations — not for real-time input-driven rotation. Because ModelEngine uses **JOML** for its math, I integrated JOML into my calculations to ensure compatibility and seamless model manipulation.
 
 ## Features
-- Highly customizable vehicles based on YAML configuration files (Controlled from [ActiveVehicle.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/vehicles/ActiveVehicle.java))
-- Advanced movement and rotation logic with Joml and ModelEngine ([BoneRotator.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/bones/BoneRotator.java))
-- SQLite instance store (`data/vehicles.db`) with chunk-based spawn ([VehiclePersistence.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/database/VehiclePersistence.java))
+- Highly customizable vehicles based on YAML configuration files (Controlled from [ActiveVehicle.java](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/vehicles/ActiveVehicle.java))
+- Advanced movement and rotation logic with Joml and ModelEngine ([BoneRotator.java](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/bones/BoneRotator.java))
+- SQLite instance store (`data/vehicles.db`) with chunk-based spawn ([VehiclePersistence.java](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/database/VehiclePersistence.java))
 
 
 ## Technical Overview
@@ -26,11 +26,11 @@ TFMC's runtime baseline is **Minecraft 1.21.10**; see the
 - Java 21 compiler/runtime target, with Spigot API 1.21.10 from Maven.
 - Built using Maven
 ### Architecture:
-- Main class intializes managers and plugin setup ([VehicleFramework.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/VehicleFramework.java))
-- Configuration files loaded and stored as templates on boot ([Loaders](https://github.com/TF-Minecraft/VehicleFramework/tree/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/loaders))
-- VehicleManager handles spawning, despawning, persistence and general input and packets ([VehicleManager.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/managers/VehicleManager.java))
-- ActiveVehicle is a very deep class with several Handler classes that handle various areas of operation ([Handlers](https://github.com/TF-Minecraft/VehicleFramework/tree/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/vehicles/handlers))
-- Weapons can exist on vehicles (in the WeaponHandler), they are connected by seat ([Weapons](https://github.com/TF-Minecraft/VehicleFramework/tree/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/weapons) [WeaponHandler.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/vehicles/handlers/WeaponHandler.java))
+- Main class intializes managers and plugin setup ([VehicleFramework.java](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/VehicleFramework.java))
+- Configuration files loaded and stored as templates on boot ([Loaders](https://github.com/TF-Minecraft/VehicleFramework/tree/main/src/main/java/net/tfminecraft/vehicleframework/loaders))
+- VehicleManager handles spawning, despawning, persistence and general input and packets ([VehicleManager.java](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/managers/VehicleManager.java))
+- ActiveVehicle is a very deep class with several Handler classes that handle various areas of operation ([Handlers](https://github.com/TF-Minecraft/VehicleFramework/tree/main/src/main/java/net/tfminecraft/vehicleframework/vehicles/handlers))
+- Weapons can exist on vehicles (in the WeaponHandler), they are connected by seat ([Weapons](https://github.com/TF-Minecraft/VehicleFramework/tree/main/src/main/java/net/tfminecraft/vehicleframework/weapons) [WeaponHandler.java](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/vehicles/handlers/WeaponHandler.java))
 
 
 ## Key Challenges Solved
@@ -363,13 +363,13 @@ Vertical snap is clamped by `snap-speed` plus speed-scaled lead on **climb**. **
 
 Terrain-follow down-rays **ignore liquids and waterlogged blocks** (water is not valid ground). When a configured `floating` state exists, **deep water** at the feet swaps to `FLOATING`; shallow 1-block wadable water over solid ground stays `GROUND`. Dummy FLOATING (no YAML `floating:` state) is never used. Dummy FLYING is also ignored (cars stay GROUND if air is under a raised hitbox).
 
-Parent probe locators to non-spinning wheel groups (`front_wheels` / `back_wheels`, or the car's `front_axle_turn` / `back_axle_turn`), not spinning rims. Rays are always world-down. Order is front-left, front-right, back-left, back-right looking along the move direction. With all four hits, pitch and roll are visual only (`ConvertedAngle.fromDirection` on the world front-back and left-right axes, clamped to ±25°); they do not move the hitbox. `body_controller` yaw is left to turning. Missing probe bones are logged once and skipped. If none resolve, snap uses the `body` bone as in Batch 1.
+Parent probe locators to non-spinning wheel groups (`front_wheels` / `back_wheels`, or the car's `front_axle_turn` / `back_axle_turn`), not spinning rims. Rays are always world-down. Order is front-left, front-right, back-left, back-right looking along the move direction. With all four hits, pitch and roll are visual only (`ConvertedAngle.fromDirection` on the world front-back and left-right axes, clamped to ±25°); they do not move the hitbox. `body_controller` yaw is left to turning. Missing probe bones are logged once and skipped. If none resolve, snap uses the `body` bone.
 
 ### Trains (custom spline tracks)
 
-Land cars/carts use terrain-follow. Trains do not. Design, phases, and implementation batches: [`docs/trains.md`](docs/trains.md).
+Land cars/carts use terrain-follow. Trains do not. Track behavior and configuration: [`docs/trains.md`](docs/trains.md).
 
-Phase 1: persist a **spline** (samples + segment health) separate from track **displays**; persist consist parent/child UUIDs; generate track between two anchors; 1x3 meshes on chunk load; loco/cars lerp along arc length `s`. Phase 2: recorder, tickets, coal-car inventory. Vanilla `Rail` motion is legacy until T5.
+Spline tracks persist samples and segment health separately from displays. Consists persist parent/child links and follow arc length. Recorder tapes, passenger tickets and coal-car inventories use the same vehicle system.
 
 ### Global config (`config.yml`)
 

@@ -96,7 +96,7 @@ Configured in `config.yml` under `effects`:
 | Complete | `complete` |
 | Cancel / return | `cancel` |
 
-Batch 4 adds particles and confirm wave (Research `playConfirmRefreshWave` style).
+Confirmation uses particles and a wave animation.
 
 ## Deposit policy
 

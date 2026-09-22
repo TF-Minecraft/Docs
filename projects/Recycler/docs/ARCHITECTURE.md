@@ -1,6 +1,6 @@
 # Recycler - Architecture
 
-Scaffold aligned with Research, BirdMessenger, and AdvancedCrafting patterns. Gameplay ships in batches (see `IMPLEMENTATION_BATCHES.md`).
+Recycler resolves item provenance through its provider chain and persists deposited items in escrow before recycling.
 
 ## Package map
 
@@ -29,6 +29,7 @@ net.tfminecraft.recycler/
     RecycleResult.java
     RecycleProviderChain.java
     AdvancedCraftingProvider.java
+    MagicGearProvider.java
     GunsAndGadgetsProvider.java
     ConfigProvider.java
 
@@ -58,7 +59,8 @@ Specialized providers run before the config fallback:
 | Priority | Provider | When active |
 |----------|----------|-------------|
 | 10 | `AdvancedCraftingProvider` | AdvancedCrafting plugin present |
-| 20 | `GunsAndGadgetsProvider` | GunsAndGadgets present + GG provenance done |
+| 15 | `MagicGearProvider` | Magic present with stamped gear provenance |
+| 20 | `GunsAndGadgetsProvider` | GunsAndGadgets present with stamped provenance |
 | max | `ConfigProvider` | Always (yaml recipes) |
 
 Resolution flow:
@@ -75,15 +77,15 @@ The GUI is **not** the source of truth for the input item.
 1. On accept: remove from player inventory, store in `EscrowManager`, write `data/escrow/<uuid>.json` immediately.
 2. On cancel/close/quit: return from escrow, delete file.
 3. On confirm: clear escrow first, then consume and spawn outputs.
-4. On disable: return all online players; offline entries move to `data/pending_returns/` (batch 2).
-5. On join: deliver any pending return file (batch 2).
+4. On disable: return all online players; offline entries move to `data/pending_returns/`.
+5. On join: deliver any pending return file.
 
 BirdMessenger and Research only keep items in memory or GUI slots - Recycler must be stricter.
 
 ## Dependencies
 
 - **Required:** TLibs, ItemsAdder (station block + icons)
-- **Soft:** AdvancedCrafting, GunsAndGadgets, MMOItems
+- **Soft:** AdvancedCrafting, Magic, GunsAndGadgets, MMOItems
 
 AC/GG providers require stamped provenance from those plugins. Admin escrow tooling: `/recycler escrow list|return`.
 

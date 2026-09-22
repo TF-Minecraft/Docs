@@ -2,7 +2,7 @@
 
 Punish players who cross the configured square world border on the X/Z plane. Admins set real border coordinates per world on deploy; the jar ships a config template only.
 
-See [IMPLEMENTATION_BATCHES.md](IMPLEMENTATION_BATCHES.md) for build history. See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist.
+See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist.
 
 ## Zones
 

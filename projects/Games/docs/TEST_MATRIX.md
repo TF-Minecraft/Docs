@@ -1,12 +1,12 @@
 # Games - Manual test matrix
 
-Fill in as batches land. Player-facing strings must not use an em dash (U+2014).
+Run the checklist for the source and dependency versions being released. Player-facing strings must not use an em dash (U+2014).
 
 Run these checks on Minecraft **1.21.10** with the intended plugin dependencies and JVM from the [shared platform baseline](../../../PLATFORM.md). Record the source revision, server build, JVM and results; the checklist alone is not evidence of a passing release.
 
 ---
 
-## Batch 1 - Scaffold
+## Build and startup
 
 - [ ] `mvn package` succeeds
 - [ ] Plugin enables with TLibs, ItemsAdder, ProtocolLib
@@ -18,7 +18,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 
 ---
 
-## Batch 2 - ItemsAdder
+## ItemsAdder
 
 - [ ] Pack `tfmc_games` loads
 - [ ] `deck`, `card_back`, `card_base`, and 52 faces obtainable (suits: cerrith, mitlan, oseni, seithr)
@@ -29,7 +29,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 
 ---
 
-## Batch 3 - Deck engine
+## Deck engine
 
 - [ ] `/games deck test` uses `poker.card-set` (`french_52`)
 - [ ] Reports 52 cards, 0 jokers, remaining 0 after draw-all
@@ -40,7 +40,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 
 ---
 
-## Batch 4 - Display
+## Display
 
 - [ ] `/games display test` (player, ProtocolLib up)
 - [ ] Nearby players see a packet ItemDisplay
@@ -52,7 +52,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 
 ---
 
-## Batch 5 - Place table
+## Place table
 
 - [ ] `/games place poker`, hold deck, right-click a block
 - [ ] Label reads Poker; cards lie flat (not standing)
@@ -62,7 +62,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 
 ---
 
-## Batch 6 - Hand
+## Hand
 
 - [ ] Right-click draws one card into a sorted fan
 - [ ] Fan sits at table height between player and stack
@@ -72,7 +72,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 
 ---
 
-## Batch 7 - Select and return
+## Select and return
 
 - [ ] Right-click a fanned card toggles it (swing on hit only)
 - [ ] Selected cards sit at `selected-distance`
@@ -81,7 +81,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 
 ---
 
-## Batch 8 - Wager
+## Wager
 
 - [ ] Denars escrow and refund
 - [ ] Item proposal requires agreement
@@ -92,13 +92,13 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 
 ---
 
-## Batch 9 - Poker
+## Poker
 
 - [ ] (Add variant rules, betting, showdown checks when implemented)
 
 ---
 
-## Phase 2 - Blackjack
+## Blackjack
 
 See [BLACKJACK.md](BLACKJACK.md).
 

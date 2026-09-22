@@ -2,9 +2,8 @@
 
 Tabletop plugin. Engines are dumb: they cannot tell poker from blackjack. Games only call engines.
 
-Phase 1 (session + auto-deal + per-game layout) is done. **Three games:** blackjack ([BLACKJACK.md](BLACKJACK.md)), Tenceur Hold'em ([HOLDEM.md](HOLDEM.md), id `poker`), Five-Draw ([FIVEDRAW.md](FIVEDRAW.md), id `draw`). Hold'em and Five-Draw numbered batches are coded; both await in-game testing. Plugin stop and crash boot reset tables to idle (location and house settings persist; no mid-hand resume).
+Games provides blackjack, [Tenceur Hold'em](HOLDEM.md) (`poker`) and [Five-Draw](FIVEDRAW.md) (`draw`). Tables persist locations and house settings; stopping or restarting the plugin resets sessions to idle.
 
-Batch 1 shipped config shells, `/games reload`, and documentation. Nothing is placed in the world yet.
 
 ## Config folder layout
 
@@ -14,21 +13,21 @@ All paths under `plugins/Games/` on the server.
 |------|---------|
 | `config.yml` | `debug`, stack visual max, card scale, interpolation ticks, table Y offset |
 | `messages.yml` | Player-facing chat strings |
-| `cards.yml` | Card catalog and named sets (`french_54`, `french_52`). Schema only until Batch 2/3 |
-| `games.yml` | Per-game rules, layout, blackjack min/max / auto-dealer defaults (Phase 2). Live auto/mint/shuffle live on the table ([GUILD_TABLES.md](GUILD_TABLES.md)) |
+| `cards.yml` | Card catalog and named sets (`french_54`, `french_52`). |
+| `games.yml` | Per-game rules, layout, blackjack min/max / auto-dealer defaults. Live auto/mint/shuffle live on the table ([GUILD_TABLES.md](GUILD_TABLES.md)) |
 | `help.yml` | The rule books `/games help` opens, one section per book, pages written by hand |
-| `Data/tables/` | Gson for placed tables (Batch 5) |
+| `Data/tables/` | Gson for placed tables |
 
-ItemsAdder pack lives in the repo at `games/ItemsAdder/tfmc_games/` (Batch 2). Namespace: `tfmc_games`.
+ItemsAdder pack lives in the repo at `games/ItemsAdder/tfmc_games/`. Namespace: `tfmc_games`.
 
-## Target source tree
+## Source layout
 
-Packages are added when a batch needs them. Do not pre-create empty classes.
+Game rules use the shared deck, display and wagering engines.
 
 ```
 games/
   docs/
-  ItemsAdder/tfmc_games/          # batch 2
+  ItemsAdder/tfmc_games/
   src/main/java/net/tfminecraft/games/
     card/                         # CardId, composition
     deck/                         # shoe shuffle draw
@@ -36,8 +35,8 @@ games/
     layout/                       # stack, fan, pot offsets
     table/                        # placed deck, seats, persist
     select/                       # closest token on look ray
-    wager/                        # denars + item agree (late)
-    game/                         # Game interface, poker stub then rules
+    wager/                        # denar and item transactions
+    game/                         # Game interface and game-specific rules
     command/ loader/ cache/ database/ utils/
     Games.java
 ```
@@ -55,7 +54,7 @@ games/
 | Wager | piles tagged by owner (null = communal) and street; refund/payout filters; manual shoe flush | Blinds, 21, house vs pot |
 | Poker (Hold'em, id `poker`) | blinds display, streets, showdown, side pots | Packets, IA ids, ray math |
 | Five-Draw (id `draw`) | five-card draw, discard round, showdown | Packets, IA ids, ray math |
-| Blackjack | claim, bet window, 21, double/split, house pay (Phase 2) | Packets, shuffle |
+| Blackjack | claim, bet window, 21, double/split, house pay | Packets, shuffle |
 
 A class is an engine if it cannot tell whether the game is poker or blackjack.
 
@@ -69,7 +68,7 @@ Same spawn / metadata / destroy idea as RPCharacters speech bubbles and clues (`
 - Fake entities are not clickable. Spawn a real **Interaction** on the deck for right-click draw.
 - Table title is a real **TextDisplay** (everyone should see "Poker"). Do not reuse packet speech bubbles for that.
 
-Validate ItemDisplay metadata indices against the deployed **Minecraft 1.21.10** server and ProtocolLib build when changing Batch 4 display code. The POM compiles against Spigot API 1.21.10; a successful compile does not verify packet metadata. Scale uses `org.joml.Vector3f` with ProtocolLib `Registry.get(Vector3f.class)`.
+Validate ItemDisplay metadata indices against the deployed **Minecraft 1.21.10** server and ProtocolLib build when changing display code. The POM compiles against Spigot API 1.21.10; a successful compile does not verify packet metadata. Scale uses `org.joml.Vector3f` with ProtocolLib `Registry.get(Vector3f.class)`.
 
 Display API (dumb): `spawn(token)`, `despawn`, `setItem`, `setItemFor(player, item)`, `setTransform(token, transform, durationTicks)`, plus join / chunk refresh.
 
@@ -81,7 +80,7 @@ Named offsets in config (tweaked later). Default intent: deck on an edge or corn
 |--------|------|
 | `deck` | Shoe stack (at most `stack-visible-max` backs) |
 | `discard` | Face-down pile beside the shoe (`table.discard-offset`). Auto-recycles into the shoe when the shoe is empty or the table has no hands. No click shuffle. |
-| `pot` | Wager pile (Batch 8) |
+| `pot` | Wager pile |
 | `hand` | Derived from player position vs deck, Y locked to table |
 
 Visible stack layers: `visible = ceil(remaining / full * stack-visible-max)`, never 52 displays.
@@ -94,13 +93,13 @@ Ace file and IA id is `_1` or `1`, not 14. Ace-high ranking is a poker flag, not
 
 ## Commands
 
-| Command | Permission | Batch |
+| Command | Permission | Behavior |
 |---------|------------|-------|
 | `/games help [game]` | `games.help` (default true) | Opens a rule book from `help.yml`. No game id opens the index |
-| `/games reload` | `games.admin.reload` | 1 |
-| `/games place` | `games.admin` | 5 (admin, no deck) |
-| `/games bet ...` | `games.bet` | Phase 2 blackjack |
+| `/games reload` | `games.admin.reload` | Reload configuration |
+| `/games place` | `games.admin` | Place a table without a deck item |
+| `/games bet ...` | `games.bet` | Blackjack betting |
 
 ## Dependencies
 
-`TLibs`, `ItemsAdder`, `ProtocolLib`. DenarEconomy softdepend (wager). RPCharacters softdepend (Phase 2 voice). SimpleFactions softdepend (guild auto cap + bank; [GUILD_TABLES.md](GUILD_TABLES.md)). SF does not depend on Games.
+`TLibs`, `ItemsAdder`, `ProtocolLib`. DenarEconomy softdepend (wager). RPCharacters softdepend (character voice). SimpleFactions softdepend (guild auto cap + bank; [GUILD_TABLES.md](GUILD_TABLES.md)). SF does not depend on Games.

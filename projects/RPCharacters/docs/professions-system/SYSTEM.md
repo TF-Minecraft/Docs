@@ -1,18 +1,8 @@
-# Phase 0 — Professions System Design Lock
+# Professions
 
-**Status:** Design spec  
-**Target:** RPCharacters (`net.tfminecraft.rpcharacters.professions`)  
-**Context:** Greenfield deploy — retire standalone `Professions.jar`, no auto-migration from `plugins/Professions/PlayerData/`.
+RPCharacters provides account-wide lifetime profession points and per-character upgrade loadouts. LuckPerms profession nodes follow the active character.
 
----
-
-## 1. Goal
-
-Rebuild the Professions plugin natively inside RPCharacters (ORP-style). Account-wide lifetime profession points; per-character upgrade loadouts; LuckPerms `professions.*` on active character only.
-
----
-
-## 2. Data model
+## Data model
 
 | Data | Owner | Storage |
 |------|-------|---------|
@@ -29,7 +19,7 @@ Rebuild the Professions plugin natively inside RPCharacters (ORP-style). Account
 
 ---
 
-## 3. JSON fields
+## JSON fields
 
 **Account** (`data/playerdata/<uuid>.json`):
 
@@ -48,7 +38,7 @@ Rebuild the Professions plugin natively inside RPCharacters (ORP-style). Account
 
 ---
 
-## 4. Config layout
+## Config layout
 
 | File | Contents |
 |------|----------|
@@ -59,7 +49,7 @@ Rebuild the Professions plugin natively inside RPCharacters (ORP-style). Account
 
 ---
 
-## 5. Commands
+## Commands
 
 | Command | Access | Purpose |
 |---------|--------|---------|
@@ -76,24 +66,17 @@ Rebuild the Professions plugin natively inside RPCharacters (ORP-style). Account
 
 ---
 
-## 6. Permissions
+## Permissions
 
-- `professions.admin` — admin subcommands (unchanged from old plugin)
-
----
-
-## 7. Upgrade types
-
-Preserved from old plugin: `permission`, `breeding`, `station_enchant`, `add_stats`.
+- `professions.admin` — admin subcommands
 
 ---
 
-## 8. Player messaging
+## Upgrade types
 
-Update `stages.yml`: levels and profession XP are shared across characters; **perks are per character**; **lifetime points are account-wide**.
+Supported upgrade types: `permission`, `breeding`, `station_enchant`, `add_stats`.
 
 ---
 
-## 9. Deploy
 
-Greenfield — remove `Professions.jar`. Archive old `plugins/Professions/PlayerData/` for reference only. See `phase8-deploy-runbook.md`.
+See [verification](RUNBOOK.md) for release checks.

@@ -1,10 +1,10 @@
-# Blackjack (Phase 2) - locked rules
+# Blackjack
 
-Engines stay dumb. [BlackjackGame](https://github.com/TF-Minecraft/Games/blob/f296e4b9b5944b03693f0f0086dbc9bf91825f3c/src/main/java/net/tfminecraft/games/game/BlackjackGame.java) owns rules, turns, and which engine calls to make. Do not put 21 or house payout in `Deck`, `Display`, or `Wager`.
+Engines stay dumb. [BlackjackGame](https://github.com/TF-Minecraft/Games/blob/main/src/main/java/net/tfminecraft/games/game/BlackjackGame.java) owns rules, turns, and which engine calls to make. Do not put 21 or house payout in `Deck`, `Display`, or `Wager`.
 
 Money is not one of those rules: every bet, cover, refund and payout below goes through the wager engine as a transaction. See [WAGER_ENGINE.md](WAGER_ENGINE.md).
 
-Hold'em is Phase 3. Chip **mountain / ring pack** (visual heaps) is later, not this phase.
+See [Hold'em](HOLDEM.md) for the separate poker rules.
 
 Player-facing strings: no em dash (U+2014).
 
@@ -21,7 +21,7 @@ There is **no shared pot**. Each player bets in a box. The house pays wins and t
 - **Resplit up to four hands per box.** `max-hands-per-box: 4` (three resplits). A split pair of aces cannot be split again unless `resplit-aces: true`. Each new hand needs its own equal bet from the player, same as the first split.
 - **The house pre-funds each round.** Before the first card, an auto table moves the round's worst case into the tray: every box's stake times `max-hands-per-box` times 2, since every hand can be doubled and a win pays 1:1. If the guild bank cannot supply it the round does not start, every box is refunded, and boxes get `bet.house_short`. That is why a big-max table needs a deep bank: 6 boxes at 1000 is 48000. The gate reads the **real bets** at close, not the table max, so a table of 100-denar bets only needs 4800. Splits and doubles during the round therefore never ask the bank for anything. Whatever is not won goes back to the bank at round end, so the tray sits at zero between rounds. Tray stacks spread around the tray centre (not one pile). A total holo sits over the tray.
 - **Six boxes.** `max-boxes: 6`. A seventh player cannot place until a box is empty. Adding onto an existing box is still allowed.
-- **Insurance / even money / surrender / dealer peek** are **out of Phase 2**.
+- **Insurance / even money / surrender / dealer peek** are **not supported**.
 
 Payouts: losing bets **flush to the house tray and stay** (player dealer: still inventory of the dealer; auto: piles land on the tray). Push and win stakes return to inventory as the **stored items**, never the gold display model. Win extra is the same item type. Never `/games payout` the whole felt like a poker pot.
 
@@ -29,7 +29,7 @@ Payouts: losing bets **flush to the house tray and stay** (player dealer: still 
 
 ## Layout (table-local, shoe at origin)
 
-Same axes as [games.yml](https://github.com/TF-Minecraft/Games/blob/f296e4b9b5944b03693f0f0086dbc9bf91825f3c/src/main/resources/games.yml): **forward** = table yaw, **right** = perpendicular.
+Same axes as [games.yml](https://github.com/TF-Minecraft/Games/blob/main/src/main/resources/games.yml): **forward** = table yaw, **right** = perpendicular.
 
 | Name | Role |
 |------|------|
@@ -74,7 +74,7 @@ Commands (permission `games.bet`, default true, **not** admin-only). Nearest bla
 
 `games.yml` `blackjack.auto-dealer` is the **staff-GUI default**, not "every placed table mints." Full house rules: [GUILD_TABLES.md](GUILD_TABLES.md).
 
-Until that phase ships, current tables still:
+Automatic table behavior:
 
 - No claim. House is the table when layout auto is on.
 - Min/max from config (`blackjack.min-bet`, `blackjack.max-bet`).
@@ -84,7 +84,7 @@ Until that phase ships, current tables still:
 - **At close** the tray is topped up to the round's worst case (see the rules above), rounded up to a whole coin. From there the round is self-funded: a split or double takes its cover from the reserve already sitting in the tray, so it can never be refused for a bank shortfall and can never leave a hand betting more than it staked. Wins take from the tray first. Losses flush the player's felt onto the tray (visible).
 - **At round end** the tray goes back to the guild bank in full, settled or abandoned, because nothing is staked between rounds. A staff mint table burns it instead.
 
-After guild house: **staff mint** keeps that spawn path. **Guild auto** withdraws the same shortfall from the owning guild bank (refuse the chip-in if the bank cannot cover). Human dealers stock the tray.
+**Staff mint** uses the minting path. **Guild auto** withdraws the same shortfall from the owning guild bank (refuse the chip-in if the bank cannot cover). Human dealers stock the tray.
 
 ---
 
@@ -131,6 +131,6 @@ No em dash in any of these strings.
 
 ---
 
-## Out of Phase 2
+## Unsupported options
 
-Hold'em, insurance, mountain chip pack, enforced seats, player-dealer accept/refuse of doubles.
+Insurance, mountain chip packs, enforced seats and player-dealer refusal of doubles.

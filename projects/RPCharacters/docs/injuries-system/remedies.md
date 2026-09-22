@@ -1,9 +1,6 @@
-# Batch 06 — Remedies
+# Remedies
 
-**Depends on:** [01](01-config-and-loaders.md), [02](02-trait-state-persistence.md)  
-**Blocks:** 11, 12
-
-## Goal
+## Purpose
 
 Remedies instantly cure **healing** injuries only.
 
@@ -35,11 +32,11 @@ No permanent ids in list.
 
 ## Acceptance
 
-- [x] Remedy removes healing `broken_arm`
-- [x] Remedy does nothing on `one_handed` or `blind`
-- [x] Clears `trait-state` for removed trait
+- [ ] Remedy removes healing `broken_arm`
+- [ ] Remedy does nothing on `one_handed` or `blind`
+- [ ] Clears `trait-state` for removed trait
 
-## Implemented
+## Implementation
 
 - `RemedyListener.findCurableTrait` filters by `InjuryProgressionLoader.isHealingTrait` and `current.hasDuration()`
 - `RemedyLoader` validates remedy trait ids at load (after traits); skips non-healing entries with warnings

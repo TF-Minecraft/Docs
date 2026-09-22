@@ -1,8 +1,6 @@
-# Batch 12 — Verify and deploy
+# Verify and deploy
 
-**Depends on:** All batches 01–11
-
-## Goal
+## Purpose
 
 Test matrix, deploy steps, operator checklist.
 
@@ -53,21 +51,15 @@ Test matrix, deploy steps, operator checklist.
 
 ## Deploy runbook
 
-1. Build RPCharacters jar with all batches
+1. Build RPCharacters from `main` with the committed dependency versions
 2. Deploy `fuel-templates.yml`, `injury-progression.yml`, `prosthetics.yml` to server config folder
 3. Replace `traits/injury-traits.yml`, add `traits/prosthetic-traits.yml`
 4. Update `injuries.yml`, `items.yml` remedies, `stages.yml`
 5. `/rpcharacter reload` or restart
-6. Deploy ProvinceSystem frontend/backend if batch 10 changed
+6. Deploy matching ProvinceSystem changes when the web catalog contract changes
 7. Update live server zip backup after smoke test
 
 ## Rollback
 
 - Keep previous jar + config backup
 - `trait-state` is additive; old jar ignores unknown JSON keys
-
-## Status checklist
-
-- [ ] Batches 01–11 complete
-- [ ] Test matrix passed
-- [ ] STAGING operator sign off

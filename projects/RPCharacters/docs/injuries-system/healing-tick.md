@@ -1,15 +1,12 @@
-# Batch 05 — Healing tick
+# Healing tick
 
-**Depends on:** [02](02-trait-state-persistence.md), [03](03-trait-runtime-effects.md)  
-**Blocks:** 12
-
-## Goal
+## Purpose
 
 Decrement healing duration while player is online with the injury on the active character.
 
-## `InjuryHealingService` (or extend `PlayerManager`)
+## `InjuryHealingService`
 
-- Register repeating task (e.g. every 20 ticks or 1 minute wall clock)
+- Runs at the interval configured in `injuries.yml`
 - For each online player with active character:
   - For each owned trait with `duration` in YAML:
     - Subtract elapsed ms from `duration-remaining-ms`
@@ -22,7 +19,7 @@ Decrement healing duration while player is online with the injury on the active 
 - **Only** while player online
 - Inactive characters or offline: duration frozen
 
-## Config (optional `injuries.yml` or `config.yml`)
+## Configuration (`injuries.yml`)
 
 ```yaml
 healing-tick-interval: 1m
@@ -32,11 +29,11 @@ Default 1 minute if omitted.
 
 ## Acceptance
 
-- [x] Active character heals over time; inactive does not
-- [x] Fully healed injury removed with lost message
-- [x] Attribute penalties decrease as duration decreases
+- [ ] Active character heals over time; inactive does not
+- [ ] Fully healed injury removed with lost message
+- [ ] Attribute penalties decrease as duration decreases
 
-## Implemented
+## Implementation
 
 - `healing-tick-interval: 1m` in `injuries.yml`, read by `InjuryPoolLoader`
 - `InjuryHealingService` repeating task: decrements `duration-remaining-ms`, removes healed traits with lost message, refreshes integrator on active characters

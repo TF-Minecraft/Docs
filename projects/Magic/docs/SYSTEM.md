@@ -1,6 +1,6 @@
 # Magic - System Overview
 
-Elemental resonance, casting modes (Surge / Flow), and the Resonance GUI. Batch 1 ships config shells only; the GUI renders from Batch 3 onward.
+Magic provides elemental resonance, Surge and Flow casting modes, artifacts, meditation and [mage gear](MAGE_GEAR.md).
 
 ## Config folder layout
 
@@ -16,24 +16,18 @@ All paths under `plugins/Magic/` on the server.
 
 ## Resonance GUI layout (54 slots)
 
-Row 0 is the top row. Row 5 is the bottom.
+The head and cast-mode slots come from `gui.yml`; element positions come from
+individual element definitions through `ElementRegistry`.
 
-```
-Row 0:  [ ][ ][ ][ ][HEAD][ ][ ][ ][ ]     slot 4
-Row 1:  [ ][ ][ ][SURGE][ ][FLOW][ ][ ][ ]  slots 12, 14
-Row 2-3: filler / future meters
-Row 4:  [E1][E2][E3][E4][E5][E6][E7][E8]  slots 36-44 (second-to-last row)
-Row 5:  filler
-```
+| Zone | Bundled slot(s) |
+| --- | --- |
+| Character head | 4 |
+| Surge / Flow | 12 / 14 |
+| Spirit / Arcanum / Illusion | 20 / 22 / 24 |
+| Cerrith / Seithr / Oseni / Mitlan | 28 / 30 / 32 / 34 |
+| Necromancy / Shadowmancy / Bloodmagic | 38 / 40 / 42 |
 
-Eight elements center in row 4 when `element_center: true` in gui.yml.
-
-| Zone | Default slot(s) | Config key |
-|------|-----------------|------------|
-| Character head | 4 | `slots.character_head` |
-| Cast mode (Surge) | 12 | `slots.cast_mode_left` |
-| Cast mode (Flow) | 14 | `slots.cast_mode_right` |
-| Element icons | 36-44 | `slots.element_row` + auto layout |
+Unreserved slots use the configured border or inner filler.
 
 ## Color tokens (gui.yml)
 
@@ -50,7 +44,7 @@ Eight elements center in row 4 when `element_center: true` in gui.yml.
 | `resonance_low` | `#575150` | Low resonance |
 | `resonance_high` | `#82d461` | High resonance |
 
-Applied via TLibs `StringFormatter.formatHex` in Batch 2 (`GuiText`).
+Applied via TLibs `StringFormatter.formatHex` through `GuiText`.
 
 ## Cast modes
 
@@ -94,7 +88,7 @@ Sit with GSit on the circle center (must be in a vehicle). Eight InteractibleFur
 
 No chat or action bar. A white starter orb appears in front of you; left-click hitscan (VehicleFramework-style) begins the orbit field. White orbs are Flow, red are Surge. Mix follows Equilibrium (`whiteChance = 0.5 * (1 + eq/max)`). Hitting red starts a 10s all-Surge lock; another red hit refreshes it.
 
-Each hit costs 1 Focus (TFMCCore, character-keyed). Flow nudges Equilibrium up; Surge nudges it down. Resonance toward cap `sum(element power on sockets) / 8`. Stub artifact: blaze powder = Oseni power 20. Missing item on a pedestal is 0 power; missing furniture means no session.
+Each hit costs 1 Focus (TFMCCore, character-keyed). Flow nudges Equilibrium up; Surge nudges it down. Resonance toward cap `sum(element power on sockets) / 8`. Charged artifacts supply usable aura, adjusted by their care state. Empty artifacts do not start a session; missing furniture means no session.
 
 ## Persistence (MagicProfile)
 
@@ -118,7 +112,7 @@ Admin `/magic open` without a character stays ephemeral (nothing saved). Drift s
 
 ## Commands
 
-| Command | Permission | Batch |
+| Command | Permission | Behavior |
 |---------|------------|-------|
 | `/resonance` | `magic.use` | Opens resonance profile GUI |
 | `/magic reload` | `magic.admin` | Reload configs |

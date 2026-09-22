@@ -1,12 +1,11 @@
-# Dev characters and realm wipes - lock
+# Development characters and realm wipes
 
 **Repos:** `rpcharacters` (owner), `ProvinceSystem` (website DB + plugin-key routes)
 
-**Batch plan:** [01-batches.md](01-batches.md)
 
 Player-facing strings: no em dash. Use `-` or `:`.
 
-Pre-season: donors and helpers create on the website. Staff make throwaway characters **in-game**. While `dev-characters` is true, this server must **not** pull those website characters into the plugin. Catalog (stages / races / traits) still syncs. Staff tests must be deletable without touching donor submissions. Staff also need a nuclear wipe of **this realm's website character data**.
+Pre-season: donors and helpers create on the website. Staff make throwaway characters **in-game**. While `dev-characters` is true, this server must **not** pull those website characters into the plugin. Catalog (stages / races / traits) still syncs. Staff tests must be deletable without touching donor submissions. The website wipe command deletes character data for the configured realm.
 
 ```mermaid
 flowchart TD
@@ -23,7 +22,7 @@ flowchart TD
 
 ---
 
-## Architecture lock
+## Behavior
 
 | Piece | Choice |
 |-------|--------|
@@ -52,9 +51,9 @@ Website character rows are keyed by `realm_id`. Lobby + this game server both us
 2. You do **not** run `wipe website` on this box while it is still `main` unless you intend to delete **all** `main` site characters, including donor/helper pending creates.
 3. Only one future live world with the flag **off** should ingest `main`. Two ingesting servers would race on pending ack.
 
-`wipe tagged` is local plugin files. Safe anytime. `wipe website` follows **this server's** TFMCWeb `realm_id`. If that is `main`, it wipes the public `main` bucket.
+`wipe tagged` is local plugin files. Requires the explicit confirmation described below. `wipe website` follows **this server's** TFMCWeb `realm_id`. If that is `main`, it wipes the public `main` bucket.
 
-Cleaner later: retag this playtest box as realm `dev`, keep lobby + real world as `main`. Then `wipe website` on the playtest box only deletes `dev`. Donor `main` pending is untouched. Until you do that, treat `wipe website` as nuclear for the season site.
+Cleaner later: retag this playtest box as realm `dev`, keep lobby + real world as `main`. Then `wipe website` on the playtest box only deletes `dev`. Donor `main` pending is untouched. Until you do that, treat `wipe website` as deletion of that realm's website character data.
 
 ---
 

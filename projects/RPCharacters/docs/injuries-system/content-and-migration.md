@@ -1,9 +1,6 @@
-# Batch 11 — Content and migration
+# Content and migration
 
-**Depends on:** [04](04-permadeath-flow.md), [06](06-remedies.md), [07](07-prosthetics-install.md)  
-**Blocks:** 12
-
-## Goal
+## Purpose
 
 Author balanced YAML content and update player facing copy.
 
@@ -53,6 +50,6 @@ Creator stages use `one_handed`, `one_legged`, and `blind` (filter: permanent-on
 
 ## Acceptance
 
-- [x] All six prosthetics + injury set load
-- [x] Balance review: arcane powered (-1) better than `one_handed` (-3 str)
-- [x] Tutorial text and permadeath lore accurate
+- [ ] All six prosthetics + injury set load
+- [ ] Balance review: arcane powered (-1) better than `one_handed` (-3 str)
+- [ ] Tutorial text and permadeath lore accurate

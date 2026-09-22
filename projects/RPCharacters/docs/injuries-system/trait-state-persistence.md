@@ -1,13 +1,10 @@
-# Batch 02 — Trait state persistence
+# Trait state persistence
 
-**Depends on:** [01-config-and-loaders](01-config-and-loaders.md)  
-**Blocks:** 03, 05, 07, 08
-
-## Goal
+## Purpose
 
 Persist per trait instance state on characters and migrate missing fields on load.
 
-## Trait ids (locked)
+## Trait ids
 
 | Id | Type |
 |----|------|
@@ -69,10 +66,6 @@ Map<String, TraitInstanceState> traitState; // keyed by trait id (lowercase)
 
 ## Acceptance
 
-- [x] Old characters without `trait-state` load cleanly
-- [x] Round trip save/load preserves duration and fuel
-- [x] Legacy ids (`one_handed`, `one_legged`) resolve without JSON rewrite
-
-## Status
-
-**Done** (batch 02 implemented).
+- [ ] Old characters without `trait-state` load cleanly
+- [ ] Round trip save/load preserves duration and fuel
+- [ ] Legacy ids (`one_handed`, `one_legged`) resolve without JSON rewrite
