@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/games/blob/f296e4b9b5944b03693f0f0086dbc9bf91825f3c/docs/FIVEDRAW.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Five-Draw
 
 Lock for five-card draw. Implementation order: [IMPLEMENTATION_BATCHES.md](IMPLEMENTATION_BATCHES.md) phase **Five-Draw**. Numbered batches 1-5 are coded; awaiting in-game testing. Shuffle options GUI stays Later.

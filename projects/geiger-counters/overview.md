@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/geiger-counters/blob/fd1420862ebaa7da7905d88ce1cd731e9c23f0f8/README.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # GeigerCounter
 
 **A Minecraft server plugin that turns exploration into a treasure hunt — track a hidden radioactive source by particle signal and claim tiered loot.**

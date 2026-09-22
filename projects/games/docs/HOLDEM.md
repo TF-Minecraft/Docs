@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/games/blob/f296e4b9b5944b03693f0f0086dbc9bf91825f3c/docs/HOLDEM.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Hold'em
 
 Lock for Texas Hold'em (player-facing **Tenceur Hold'em**). Saved `gameId` stays **`poker`**. Implementation order: [IMPLEMENTATION_BATCHES.md](IMPLEMENTATION_BATCHES.md) phase **Hold'em**. Numbered batches are coded; awaiting in-game testing. Five-card draw is Phase 4 ([FIVEDRAW.md](FIVEDRAW.md)), id `draw`.

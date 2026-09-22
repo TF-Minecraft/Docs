@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/magic/blob/ccf64877a536535b34cae8d80bfd1d51aa109342/docs/TEST_MATRIX.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Magic - Manual test matrix (Batches 1-8, 14)
 
 Run after each release or before merging core GUI work. Check off each item when verified in-game.

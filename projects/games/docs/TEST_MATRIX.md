@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/games/blob/f296e4b9b5944b03693f0f0086dbc9bf91825f3c/docs/TEST_MATRIX.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Games - Manual test matrix
 
 Fill in as batches land. Player-facing strings must not use an em dash (U+2014).

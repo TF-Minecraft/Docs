@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/ops/dev-config.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Dev config (ProvinceSystem)
 
 Dev-only shortcuts, bypasses, and fixture data for ProvinceSystem. **Unset all dev flags on production** - see [identity/auth-security.md](../identity/auth-security.md) and [STAGING.md](../../STAGING.md).

@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/server-assets/blob/a8a0efde5c58ef77d5ca085e422aa2c3e9565c5e/README.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 > This page is public; linked jars, models and configurations remain in the private server-assets repository and require access. The full ItemsAdder contents archive was removed from server-assets on 2026-09-22; historical lab notes below describe the original snapshot. The existing manifest/materializer may still expect that archive.
 
 # TFMC server assets (private)

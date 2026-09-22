@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/map/generation.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Map generation pipeline
 
 End-to-end **interactive world map**: faction data on the Paper server becomes PNG layers and JSON on the website.

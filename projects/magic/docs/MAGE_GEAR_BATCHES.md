@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/magic/blob/ccf64877a536535b34cae8d80bfd1d51aa109342/docs/MAGE_GEAR_BATCHES.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Mage Gear - Phase plan
 
 Mage weapon crafting: charges, station, orb minigame, cast gating, lifecycle.

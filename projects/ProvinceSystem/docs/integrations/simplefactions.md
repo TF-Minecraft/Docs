@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/integrations/simplefactions.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # SimpleFactions integration
 
 Map bridge between SimpleFactions on Paper and ProvinceSystem. SimpleFactions owns nations/provinces in-game; ProvinceSystem owns mapgen, PNG layers, and the web viewer.

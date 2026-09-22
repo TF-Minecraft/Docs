@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/thievery/blob/66a561d61e2cbc0a8941d1af6024c182a475a6cc/docs/TEST_MATRIX.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Thievery display locks - Test matrix
 
 Manual checks after the matching implementation batch. Player-facing strings must not contain U+2014.

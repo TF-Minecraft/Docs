@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/drinkbuilder/blob/e3d0394feba5f0067194eab2ccaca74d73cfbf16/src/main/resources/assets/README.txt). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 Place vanilla-style potion textures here (copied to plugin data/assets on first enable):
 
   potion_overlay.png  — liquid layer (tinted by drink color / CustomPotionColor)

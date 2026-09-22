@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
-"""Check repository-local Markdown destinations; optionally verify import hashes."""
-import argparse, hashlib, json, re
+"""Check repository-local Markdown destinations."""
+import re
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
-p = argparse.ArgumentParser()
-p.add_argument('--migration-snapshot', action='store_true', help='Verify initial imported bytes; omit after subsequent documentation edits.')
-args = p.parse_args()
 errors = []
 links = 0
 for page in ROOT.rglob('*.md'):
@@ -23,12 +20,6 @@ for page in ROOT.rglob('*.md'):
         links += 1
         if not target.is_relative_to(ROOT) or not target.exists():
             errors.append(f'{page.relative_to(ROOT)}: missing {url}')
-if args.migration_snapshot:
-    manifest = json.loads((ROOT / 'migration/manifest.json').read_text())
-    for item in manifest['files']:
-        target = ROOT / item['target_path']
-        if not target.exists() or hashlib.sha256(target.read_bytes()).hexdigest() != item['target_sha256']:
-            errors.append(f'Import hash mismatch: {item["target_path"]}')
 if errors:
     raise SystemExit('\n'.join(errors))
-print(f'Checked {links} local links' + (' and all migration hashes.' if args.migration_snapshot else '.'))
+print(f'Checked {links} local links.')

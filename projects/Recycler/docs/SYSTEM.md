@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/Recycler/blob/db7bbf72a57caa4f4d2523b0a1e6e63a2e550376/docs/SYSTEM.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Recycler - System design
 
 Player-facing recycling station at ItemsAdder furniture `iaf(tfmc:recycling_station)`.

@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/AACommandsFiller/blob/83da4ab95f054667544e18ed9ee8cbcbf4f3d277/README.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # AACommandsFiller
 
 **A Minecraft server plugin that generates tab-completions for hierarchical command trees defined entirely in config.yml — with permission-based filtering so players only see what they're allowed to use.**

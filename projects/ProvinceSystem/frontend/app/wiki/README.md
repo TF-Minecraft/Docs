@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/app/wiki/README.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Gameplay guide authoring
 
 Everything under `/wiki` is a public player manual. Write for someone joining the server for the first time. Explain the goal, the first action, the normal loop, costs, cooldowns, and consequences in plain language. Keep useful reference tables and link the next related activity.

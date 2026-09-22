@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/wiki-research/a2-gems-dowsing-archaeo.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Research dossier A2 — GemInfusion, Dowsing, Archaeo
 
 Factual dossier for the gameplay wiki. Structured facts only, no guide prose.

@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/CoreProtect/blob/5525a825ba6e454885128692d65730eb69bd8250/docs/database-migration.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Database Migration
 
 CoreProtect 23.0+ can migrate data between SQLite and MySQL while retaining the source history. CoreProtect 25.0+ adds DuckDB and ClickHouse as migration sources and destinations. Changing `database-type` by itself does not migrate any data.

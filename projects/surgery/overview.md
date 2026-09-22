@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/surgery/blob/e25a2a96725300addd70a199483a677d01be7119/README.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Surgery
 
 **A Minecraft server plugin that turns healing into a mini-game — open a surgery GUI on another player, diagnose one of 29 ailments, and operate with 14 tools while managing vitals, bleeding, and death timers.**

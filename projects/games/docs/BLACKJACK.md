@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/games/blob/f296e4b9b5944b03693f0f0086dbc9bf91825f3c/docs/BLACKJACK.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Blackjack (Phase 2) - locked rules
 
 Engines stay dumb. [BlackjackGame](https://github.com/TF-Minecraft/games/blob/f296e4b9b5944b03693f0f0086dbc9bf91825f3c/src/main/java/net/tfminecraft/games/game/BlackjackGame.java) owns rules, turns, and which engine calls to make. Do not put 21 or house payout in `Deck`, `Display`, or `Wager`.

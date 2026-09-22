@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/STAGING.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Staging stack (AMP host / SSH)
 
 Temporary ProvinceSystem next to production for Discord bot and plugin integration testing. Uses ports **18001** (API) and **13001** (UI). Production `docker-compose.yml` (8000/3000) is unchanged.

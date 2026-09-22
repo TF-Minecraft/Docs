@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/README.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # ProvinceSystem
 
 ProvinceSystem powers **[tfminecraft.net](https://www.tfminecraft.net/)** - the TFMC web hub: interactive political maps, donator cosmetics (skins and drinks), character creation, and identity services.

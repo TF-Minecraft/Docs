@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/flows/journeys.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # End-to-end journeys
 
 Master journeys across the full TFMC platform. Detail docs: [integrations/simplefactions.md](../integrations/simplefactions.md) map, [cosmetics/skins.md](../cosmetics/skins.md) / [integrations/armourshop.md](../integrations/armourshop.md) / [integrations/discord-bot.md](../integrations/discord-bot.md) skins and bot.

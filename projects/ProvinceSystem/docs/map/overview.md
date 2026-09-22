@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/map/overview.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Map platform overview
 
 Turn the live political map from flat colour blobs into a **fantasy cartography product**: parchment terrain, muted realm overlays, nation labels, rich nation popups, settlements and forts, war layers, daily chronicle snapshots, and wealth analytics - while staying fast on desktop and mobile.

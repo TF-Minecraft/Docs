@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/simplefactions/blob/ad9b048ec42c1842b277f4657f490b25691f854d/README.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # SimpleFactions
 The name stems from its original concept of a simple nation system, but it has since grown far beyond that.
 

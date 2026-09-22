@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/tfmccore/blob/dfafe267d9a96bb7d51502e9f286e650cd96c915/src/main/java/net/tfminecraft/tfmccore/stats/ARCHITECTURE.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # TFMCCore stats hub
 
 Centralized player and server stat tracking for TFMC plugins. TFMCCore owns storage, commands, and category registration. Source plugins expose domain facts via Bukkit events and never depend on TFMCCore.
