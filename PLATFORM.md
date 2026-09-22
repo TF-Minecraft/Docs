@@ -26,6 +26,9 @@ restored-vehicle failure remains unresolved by this build migration.
 
 ## Build conventions
 
+Follow the shared [XML and Maven POM conventions](POM-CONVENTIONS.md) when
+maintaining build files.
+
 Run commands from the **source repository**, not this Docs checkout:
 
 ```sh
