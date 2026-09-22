@@ -2,7 +2,7 @@
 
 **tfminecraft.net** is the TFMC web hub: interactive political maps, donator cosmetics (skins and drinks), character creation, and identity services backed by a FastAPI backend and Next.js frontend.
 
-This section is the product and technical reference for **ProvinceSystem**. Technical documentation for TF-Minecraft repositories is maintained together in [TF-Minecraft/docs](../../../README.md).
+This section is the product and technical reference for **ProvinceSystem**. Technical documentation for TF-Minecraft repositories is maintained together in [TF-Minecraft/Docs](../../../README.md).
 
 ## Reading order
 

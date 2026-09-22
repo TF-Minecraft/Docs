@@ -1,6 +1,6 @@
 # Maintaining the documentation
 
-Put technical manuals in `projects/<repository>/`. Keep source repository READMEs short and link to the matching project index here.
+Put technical manuals in `projects/<repository>/`, using the canonical PascalCase repository name (for example, `ActivityTF`, `VehicleFramework`, or `ServerAssets`). Keep source repository READMEs short and link to the matching project index here.
 
 When changing behavior, update the relevant guide in a docs PR and link it from the implementation PR. Use relative links for other guides and GitHub source links for code. Commands and filesystem paths refer to the source checkout unless a guide says otherwise.
 
