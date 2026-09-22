@@ -1,3 +1,8 @@
+# Historical build failure: GunsAndGadgets 1.0.3
+
+This archived log records an earlier failed build with mismatched Java class versions. It is not a current build report or Minecraft 1.21.10 compatibility result. Follow the [shared platform and build baseline](../../PLATFORM.md) and the current source POM for setup. Original output is preserved below.
+
+```text
 [INFO] Scanning for projects...
 [INFO] 
 [INFO] -------------------< net.tfminecraft:gunsandgadgets >-------------------
@@ -141,3 +146,5 @@
 [ERROR] 
 [ERROR] For more information about the errors and possible solutions, please read the following articles:
 [ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+
+```

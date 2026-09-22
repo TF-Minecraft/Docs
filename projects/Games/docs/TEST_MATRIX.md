@@ -2,6 +2,8 @@
 
 Fill in as batches land. Player-facing strings must not use an em dash (U+2014).
 
+Run these checks on Minecraft **1.21.10** with the intended plugin dependencies and JVM from the [shared platform baseline](../../../PLATFORM.md). Record the source revision, server build, JVM and results; the checklist alone is not evidence of a passing release.
+
 ---
 
 ## Batch 1 - Scaffold
@@ -9,8 +11,8 @@ Fill in as batches land. Player-facing strings must not use an em dash (U+2014).
 - [ ] `mvn package` succeeds
 - [ ] Plugin enables with TLibs, ItemsAdder, ProtocolLib
 - [ ] Default yaml copied to `plugins/Games/` (`config.yml`, `messages.yml`, `cards.yml`, `games.yml`)
-- [ ] `/game` with no args shows usage
-- [ ] `/game reload` as op succeeds
+- [ ] `/games` with no args shows usage
+- [ ] `/games reload` as op succeeds
 - [ ] No permission: denial from `messages.yml`
 - [ ] `debug: true` logs cache values on load/reload
 
@@ -29,18 +31,18 @@ Fill in as batches land. Player-facing strings must not use an em dash (U+2014).
 
 ## Batch 3 - Deck engine
 
-- [ ] `/game deck test` uses `poker.card-set` (`french_52`)
+- [ ] `/games deck test` uses `poker.card-set` (`french_52`)
 - [ ] Reports 52 cards, 0 jokers, remaining 0 after draw-all
 - [ ] Empty draw does not yield a card
 - [ ] After return, remaining is 1
-- [ ] `/game deck test french_54` matches until jokers exist
+- [ ] `/games deck test french_54` matches until jokers exist
 - [ ] Unknown set name is rejected
 
 ---
 
 ## Batch 4 - Display
 
-- [ ] `/game display test` (player, ProtocolLib up)
+- [ ] `/games display test` (player, ProtocolLib up)
 - [ ] Nearby players see a packet ItemDisplay
 - [ ] Per-viewer item: command sender sees a face, others see the back
 - [ ] Slide uses transform interpolation (not teleport)
@@ -52,7 +54,7 @@ Fill in as batches land. Player-facing strings must not use an em dash (U+2014).
 
 ## Batch 5 - Place table
 
-- [ ] `/game place poker`, hold deck, right-click a block
+- [ ] `/games place poker`, hold deck, right-click a block
 - [ ] Label reads Poker; cards lie flat (not standing)
 - [ ] At most `stack-visible-max` backs
 - [ ] Restart / chunk load restores the table

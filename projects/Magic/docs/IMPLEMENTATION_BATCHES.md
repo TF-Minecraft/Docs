@@ -1,5 +1,7 @@
 # Magic - Implementation batches
 
+Historical batch record: early `/resonance reload` examples below describe the scaffold command. The current admin reload command is `/magic reload`; `/resonance` opens the player profile. Use the current [test matrix](TEST_MATRIX.md) for validation.
+
 Work in order. Each batch should compile and be testable before the next.
 
 ---

@@ -3,11 +3,11 @@ The name stems from its original concept of a simple nation system, but it has s
 
 This plugin adds factions (nations) to the game that can interact with each other through a complex diplomacy and economy system.
 
-You will not be able to run this as a standalone program, as it depends on other plugins and the Spigot server environment.
+You will not be able to run this as a standalone program, as it depends on other plugins and the TFMC Minecraft 1.21.10 server environment.
 
 ## Why This Project Is Interesting
 This plugin implements strategy-game-style diplomacy between nations and a fully original map/border system using a REST connection to a Python program I wrote myself:  
-[ProvinceSystem](https://github.com/Drefvelin/ProvinceSystem)
+[ProvinceSystem](https://github.com/TF-Minecraft/ProvinceSystem)
 
 Highlights include:
 
@@ -24,12 +24,13 @@ This project also demonstrates cross-language integration through **ProvinceSyst
 - Faction relationships  
   ([RelationManager.java](https://github.com/TF-Minecraft/SimpleFactions/blob/ad9b048ec42c1842b277f4657f490b25691f854d/src/main/java/me/Plugins/SimpleFactions/Managers/RelationManager.java))
 - Titles (Kingdom, Duchy, etc.) connected with the REST server and the TitleManager  
-  ([ProvinceSystem](https://github.com/Drefvelin/ProvinceSystem),  
+  ([ProvinceSystem](https://github.com/TF-Minecraft/ProvinceSystem),
   [TitleManager.java](https://github.com/TF-Minecraft/SimpleFactions/blob/ad9b048ec42c1842b277f4657f490b25691f854d/src/main/java/me/Plugins/SimpleFactions/Managers/TitleManager.java))
 
 ## Technical Overview
-- Java 17, Spigot API 1.20  
-- Built using Maven
+- Runtime target: TFMC Minecraft **1.21.10**; follow the [shared platform baseline](../../PLATFORM.md).
+- Build with JDK 21 and Maven. The migration POM targets Java 21 bytecode (`maven.compiler.release=21`) and resolves `org.spigotmc:spigot-api:1.21.10-R0.1-SNAPSHOT` with `provided` scope.
+- Supply the authorized private JARs in `libs/` using the repository’s dependency preparation script and checksum file. Install matching Java 21 TLibs, RPCharacters, DenarEconomy, VehicleFramework and VFBuilders builds in local Maven before `mvn clean verify`. The shared baseline explains release status and dependency cycles.
 
 ### Architecture
 - The main class initializes managers and overall plugin setup  

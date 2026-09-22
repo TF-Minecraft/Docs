@@ -4,6 +4,8 @@
 
 Technical documentation is maintained here. Run commands from the source checkout unless a guide says otherwise.
 
+TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
+
 - [Evilrp changes summary.md](Evilrp%20changes%20summary.md)
 - [docs/IMPLEMENTATION_BATCHES.md](docs/IMPLEMENTATION_BATCHES.md)
 - [docs/SYSTEM.md](docs/SYSTEM.md)

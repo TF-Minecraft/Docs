@@ -3,7 +3,7 @@
 **A Minecraft server plugin that turns healing into a mini-game — open a surgery GUI on another player, diagnose one of 29 ailments, and operate with 14 tools while managing vitals, bleeding, and death timers.**
 
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
-![Paper](https://img.shields.io/badge/Paper-1.21+-blue)
+![Paper](https://img.shields.io/badge/Paper-1.21.10-blue)
 ![Maven](https://img.shields.io/badge/Build-Maven-red?logo=apachemaven&logoColor=white)
 ![Version](https://img.shields.io/badge/Version-1.2.0-green)
 
@@ -45,7 +45,7 @@ One manager per concern, wired together by `SurgeryMenuManager`:
 
 ```
 src/main/java/tfmc/justin/
-├── surgery.java                        # Entry point: wiring, lifecycle
+├── SurgeryPlugin.java                  # Entry point: wiring, lifecycle
 ├── commands/
 │   └── SurgeryCommand.java             # /surgery <player> validation + menu open
 ├── listeners/
@@ -60,15 +60,14 @@ src/main/java/tfmc/justin/
 │   ├── SurgeryCompletionHandler.java   # Success/failure resolution + console commands
 │   ├── DiagnosisChecker.java           # Diagnosis classification (bones? flu?)
 │   ├── SurgeryItemsConfig.java         # surgeryItemsConfig.yml tool item paths
-│   ├── SurgeryConstants.java           # Shared slot/label constants
-│   └── PluginManager.java              # Plugin-wide initialization
+│   └── SurgeryConstants.java           # Shared slot/label constants
 └── utils/
     └── Utils.java                      # Shared helpers
 ```
 
 ```mermaid
 classDiagram
-    class surgery {
+    class SurgeryPlugin {
         +onEnable() void
         +onDisable() void
     }
@@ -101,9 +100,9 @@ classDiagram
         +failSurgery(player: Player, message: String) void
     }
 
-    surgery --> SurgeryMenuManager : creates
-    surgery --> SurgeryCommand : registers
-    surgery --> PlayerListener : registers
+    SurgeryPlugin --> SurgeryMenuManager : creates
+    SurgeryPlugin --> SurgeryCommand : registers
+    SurgeryPlugin --> PlayerListener : registers
     SurgeryMenuManager --> SurgeryMenuBuilder : creates
     SurgeryMenuManager --> SurgeryStateManager : creates
     SurgeryMenuManager --> SurgeryItemHandler : creates
@@ -127,9 +126,9 @@ classDiagram
 
 ## Installation
 
-1. Drop `surgery-1.0.0.jar` into your server's `plugins/` folder
+1. Drop `surgery-1.2.0.jar` into your server's `plugins/` folder
 2. Install **TLibs** (required). **MMOItems** / **ItemsAdder** are optional item sources
-3. Restart the server (or load with PlugManX)
+3. Restart the server
 4. Configure `plugins/surgery/config.yml`, `messages.yml`, and `surgeryItemsConfig.yml` as needed
 5. Make sure players can obtain the surgical tool items
 
@@ -137,8 +136,8 @@ classDiagram
 
 | Dependency | Required |
 |---|---|
-| [Paper](https://papermc.io/) 1.21+ | Yes |
-| Java 25 | Yes |
+| [Paper](https://papermc.io/) 1.21.10 | TFMC runtime target |
+| Java | Follow the [shared runtime and build baseline](../../PLATFORM.md); this plugin targets Java 21 bytecode |
 | [TLibs](https://www.spigotmc.org/resources/tlibs.127713/) | Yes |
 | [MMOItems](https://www.spigotmc.org/resources/mmoitems-premium.39267/) | Optional |
 | [ItemsAdder](https://itemsadder.com/) | Optional |
@@ -312,18 +311,19 @@ Every player-facing string: command errors, success/failure notifications, per-t
 ## Building from Source
 
 ```bash
-git clone https://github.com/TF-Minecraft/TLibs.git tlibs
+git clone --branch v1.1.1 https://github.com/TF-Minecraft/TLibs.git tlibs
 git clone https://github.com/TF-Minecraft/Surgery.git surgery
 cd surgery
 python3 ../tlibs/tools/install-dependency.py --pom pom.xml
 mvn package
 ```
 
-Requires JDK 25, Maven and Python 3. TLibs is a pinned Maven `provided` dependency; the shared installer verifies and installs the source-built 1.1.0 release. No TLibs JAR is stored in this repository. Output is under `target/`. See [TLibs dependency setup](../TLibs/README.md).
+Use JDK 21, Maven and Python 3. The shared installer verifies the pinned release checksum; see [TLibs dependency setup](../TLibs/README.md). Install the matching `me.plugins:tlibs:1.1.1` artifact as described in the [shared baseline](../../PLATFORM.md), then run `mvn clean verify`. Paper API resolves from Maven. The artifact is written to `target/`.
 
 ## Tech Stack
 
-- **Java 25** · **Paper API 1.21.3** · **Maven**
+- **Java 21 bytecode target** · **Paper API 1.21.10 build dependency** · **Maven**
+- TFMC runtime target: **Minecraft 1.21.10**. Build and loader metadata also target 1.21.10; validate releases against the [shared baseline](../../PLATFORM.md).
 - Bukkit inventory GUI, event system, and YAML configuration API
 - TLibs ItemAPI for cross-plugin item resolution
 

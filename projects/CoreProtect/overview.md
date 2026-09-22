@@ -8,6 +8,8 @@
 
 # CoreProtect
 
+TFMC targets Minecraft **1.21.10**; see the [shared platform baseline](../../PLATFORM.md) for the TFMC build inventory. The upstream feature, download and API references below cover multiple Minecraft versions and do not establish compatibility of a particular TFMC build.
+
 CoreProtect is a fast, efficient data logging and anti-griefing tool. Inspect, lookup, rollback, and restore any amount of damage without impacting your server performance.
 
 CoreProtect is the [#1 anti-griefing plugin](https://bstats.org/plugin/bukkit/CoreProtect), and has been actively developed since early 2012.
@@ -203,4 +205,4 @@ CoreProtect is an open source project, and gladly accepts community contribution
 
 If you'd like to contribute, please read our contributing guidelines here: [CONTRIBUTING.md](https://github.com/TF-Minecraft/CoreProtect/blob/5525a825ba6e454885128692d65730eb69bd8250/CONTRIBUTING.md)
 
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](https://github.com/TF-Minecraft/CoreProtect/blob/master/CONTRIBUTING.md#code-of-conduct)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](https://github.com/TF-Minecraft/CoreProtect/blob/5525a825ba6e454885128692d65730eb69bd8250/CONTRIBUTING.md#code-of-conduct)

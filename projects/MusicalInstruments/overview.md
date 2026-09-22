@@ -3,7 +3,7 @@
 **A Minecraft server plugin that turns items into playable musical instruments — play live music with your hotbar.**
 
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
-![Paper](https://img.shields.io/badge/Paper-1.21+-blue)
+![Paper](https://img.shields.io/badge/Paper-1.21.10-blue)
 ![Maven](https://img.shields.io/badge/Build-Maven-red?logo=apachemaven&logoColor=white)
 ![Version](https://img.shields.io/badge/Version-2.5-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
@@ -43,6 +43,8 @@ src/main/java/tfmc/justin/
 ├── InstrumentPlugin.java              # Entry point: wiring, lifecycle, config loading
 ├── commands/
 │   └── InstrumentCommand.java         # /instruments command + tab completion
+├── items/
+│   └── ItemResolver.java              # Vanilla and optional plugin item resolution
 ├── listeners/
 │   └── InstrumentListener.java        # Hotbar-change → sound playback pipeline
 └── managers/
@@ -53,7 +55,7 @@ src/main/java/tfmc/justin/
 classDiagram
     class InstrumentPlugin {
         -instance: InstrumentPlugin
-        -api: ItemAPI
+        -itemResolver: ItemResolver
         -manager: InstrumentManager
         +onEnable() void
         +onDisable() void
@@ -102,15 +104,15 @@ classDiagram
 
 1. Drop `musicalinstruments-2.5.jar` into your server's `plugins/` folder
 2. No library plugin is required. **MMOItems** / **ItemsAdder** / **Nexo** are optional — install them only if your config references `m.`, `ia.` or `nx.` item paths
-3. Restart the server (or load with PlugManX)
+3. Restart the server
 4. Define your instruments in `plugins/MusicalInstruments/config.yml`
 
 ### Requirements
 
 | Dependency | Required |
 |---|---|
-| [Paper](https://papermc.io/) 1.21+ | Yes |
-| Java 21 | Yes |
+| [Paper](https://papermc.io/) 1.21.10 | TFMC runtime target |
+| Java | Follow the [shared runtime and build baseline](../../PLATFORM.md); this plugin targets Java 21 bytecode |
 | [MMOItems](https://www.spigotmc.org/resources/mmoitems-premium.39267/) | Optional — only for `m.` item paths |
 | [ItemsAdder](https://itemsadder.com/) | Optional — only for `ia.` item paths |
 | [Nexo](https://polymart.org/resource/nexo.6901) | Optional — only for `nx.` item paths |
@@ -171,12 +173,12 @@ accordion:
 ## Building from Source
 
 ```bash
-git clone https://github.com/JustinasLa/musical-instruments.git
+git clone https://github.com/TF-Minecraft/musical-instruments.git musical-instruments
 cd musical-instruments
 mvn package
 ```
 
-Requires JDK 21 and Maven. All dependencies resolve from public repositories — no local jars needed. The built jar is copied to the project root by the `package` phase.
+Use Maven and JDK 21, following the [shared baseline](../../PLATFORM.md). The compiler release is 21 and all dependencies resolve from public repositories. Run `mvn clean verify`; the artifact is written to `target/`.
 
 ## Metrics
 
@@ -186,7 +188,8 @@ To opt out, set `enabled: false` in `plugins/bStats/config.yml`. That disables b
 
 ## Tech Stack
 
-- **Java 21** · **Paper API 1.21.3** · **Maven**
+- **Java 21 bytecode target** · **Paper API 1.21.10 build dependency** · **Maven**
+- TFMC runtime target: **Minecraft 1.21.10**. Build and loader metadata also target 1.21.10; validate releases against the [shared baseline](../../PLATFORM.md).
 - Bukkit event system, scheduler, and YAML configuration API
 - Reflective MMOItems / ItemsAdder / Nexo lookups for cross-plugin item resolution (no hard dependency)
 - bStats for anonymous usage metrics

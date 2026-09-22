@@ -8,10 +8,13 @@ for setup, architecture, configuration, integrations, testing, and operations.
 Each source repository's README introduces what that project does; its technical
 guides live here.
 
+TFMC runs **Minecraft 1.21.10 on Java 21**. The [shared platform and build baseline](PLATFORM.md) defines common runtime, toolchain and validation conventions, with the current build declarations for each plugin.
+
 ## Start here
 
 | Looking for… | Go to… |
 | --- | --- |
+| Java and Minecraft targets | [Shared platform baseline](PLATFORM.md) |
 | A project's guides | [Browse the projects below](#projects) |
 | Build and release conventions | [Builds and releases](PIPELINES.md) |
 | The server test environment | [Minecraft test lab](projects/ServerAssets/docs/LAB.md) |
@@ -83,7 +86,10 @@ Choose a project to open its technical documentation and source repository link.
 
 ### Archived projects
 
-Retained for historical reference.
+AdvancedGunpowder, AdvancedResearch, Goldsmithing, Nutrition and PointShop were
+briefly reopened for their Java 21 / Minecraft 1.21.10 migrations. Those changes
+are merged, their main-branch builds passed, and all five repositories are
+archived again. BreedingBuddies remains archived for historical reference.
 
 | Project | What it does |
 | --- | --- |

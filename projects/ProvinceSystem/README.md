@@ -4,6 +4,8 @@
 
 Technical documentation is maintained here. Run commands from the source checkout unless a guide says otherwise.
 
+TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
+
 - [README.md](overview.md)
 - [STAGING.md](STAGING.md)
 - [UPDATE.md](UPDATE.md)

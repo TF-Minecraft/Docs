@@ -10,7 +10,11 @@ The private [TF-Minecraft/ServerAssets](https://github.com/TF-Minecraft/ServerAs
 repository holds the supplied jars, model blueprints, configuration snapshots and
 resource packs. Its manifest separates the tested runtime from older/reference
 jars and records SHA-256 checksums. Keep those binaries in that private repository.
-This directory contains the launcher code and findings only.
+This Docs directory contains the findings. Launcher sources are in
+[VehicleFramework/tools/minecraft-lab](https://github.com/TF-Minecraft/VehicleFramework/tree/chore/cachyos-lab-learnings/tools/minecraft-lab);
+commands below refer to the installed lab, not a Docs checkout.
+See the [asset preparation limitation](../overview.md#verify-and-prepare) before
+attempting to recreate it.
 
 Installed on CachyOS under:
 
@@ -244,9 +248,10 @@ instances. See LEARNINGS.md for the protocol and asset integration pitfalls.
 - `downloads/build-dependencies.json`: public compile-time dependency provenance.
 - `bot/package-lock.json`: exact Node dependency resolution.
 
-The files alongside this README are the maintained launcher sources. Installed
-copies live in `bin/` and `bot/` within the lab. The server properties here are
-initial defaults; editing this template does not overwrite the live world's settings.
+The launcher source files are maintained in VehicleFramework's
+`tools/minecraft-lab/` directory. Installed copies live in `bin/` and `bot/` within
+the lab. Source server properties are initial defaults; editing that template
+does not overwrite the live world's settings.
 Node dependencies can be restored with `npm ci` inside the installed `bot/`
 folder. Its package metadata permits only canvas's required native install script
 on npm versions supporting `allowScripts`. The initial 1.21.8 smoke world and

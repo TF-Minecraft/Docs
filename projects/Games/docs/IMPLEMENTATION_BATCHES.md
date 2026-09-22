@@ -1,5 +1,7 @@
 # Games - Implementation batches
 
+Historical batch record: early `/game` examples below use the former command spelling. The current plugin registers `/games`; use `/games` for those examples and the current [test matrix](TEST_MATRIX.md) for validation.
+
 Work in order. Each batch should compile and be testable before the next.
 
 **Games (conceptually done):** blackjack is playable. Tenceur Hold'em (`poker`) and Five-Draw (`draw`) have all numbered batches checked; both still need in-game testing. Shuffle GUI for Five-Draw, Hold'em blind posting, burns, jacks-or-better, and ante stay later unless a lock says otherwise. Tables persist location and house settings; shutdown/crash boot resets each table to idle (no mid-hand resume).

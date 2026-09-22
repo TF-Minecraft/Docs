@@ -3,7 +3,7 @@
 **A Minecraft server plugin that generates tab-completions for hierarchical command trees defined entirely in config.yml — with permission-based filtering so players only see what they're allowed to use.**
 
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
-![Paper](https://img.shields.io/badge/Paper-1.21+-blue)
+![Paper](https://img.shields.io/badge/Paper-1.21.10-blue)
 ![Maven](https://img.shields.io/badge/Build-Maven-red?logo=apachemaven&logoColor=white)
 ![Version](https://img.shields.io/badge/Version-2.1-green)
 
@@ -112,7 +112,7 @@ classDiagram
 ## Installation
 
 1. Drop `AACommandsFiller-2.1.jar` into your server's `plugins/` folder
-2. Start or restart the server (or load with PlugManX — the command tree is pushed to online players on load and cleaned up on unload)
+2. Start or restart the server
 3. Configure `plugins/AACommandsFiller/config.yml` as needed
 4. Run `/aacommandsfiller reload` to apply config changes (requires `aacommandsfiller.admin`, default op)
 
@@ -120,8 +120,8 @@ classDiagram
 
 | Dependency | Required |
 |---|---|
-| [Paper](https://papermc.io/) 1.21+ | Yes |
-| Java 21 | Yes |
+| [Paper](https://papermc.io/) 1.21.10 (TFMC baseline) | Yes |
+| Java | See the [shared baseline](../../PLATFORM.md); compiler release is 21 |
 
 ## Configuration
 
@@ -210,16 +210,16 @@ permissions:
 ## Building from Source
 
 ```bash
-git clone https://github.com/JustinasLa/AACommandsFiller.git
+git clone https://github.com/TF-Minecraft/AACommandsFiller.git
 cd AACommandsFiller
-mvn package
+mvn clean verify
 ```
 
-Requires JDK 21 and Maven. No external plugin dependencies — only the Paper API. The built jar is copied to the project root by the `package` phase.
+Use JDK 21 and Maven with the [shared baseline](../../PLATFORM.md). Paper API resolves from Maven; there are no external plugin dependencies. The artifact is written to `target/`.
 
-## Tech Stack
+## Source build metadata
 
-- **Java 21** · **Paper API 1.21.3** · **Maven**
+- **Java 21** · **Paper API 1.21.10 (compile dependency)** · **Maven**
 - Bukkit `CommandMap` reflection, command/tab-complete API, and YAML configuration API
 
 ## Author
