@@ -152,7 +152,7 @@ Pack writes are tested against a **copy** of ItemsAdder contents (e.g. from `Ite
 
 - Cogs live in `tfmc_bot/` as **[Red-DiscordBot](https://github.com/cog-creators/red-discordbot)** cogs; production Red runs on **AMP (CubeCoders)**.
 - For skins/drinks review: set `API_BASE_URL` to your **local/staging** API, `STAFF_KEY`, and `BOT_FEED_CHANNEL_ID` for **`#bot-feed`**.
-- Create pending submissions via local `/skins` or curl; cog posts review embeds. See [integrations/discord-bot.md](../integrations/discord-bot.md) and [tfmc_bot/docs/local-dev.md](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/../tfmc_bot/docs/local-dev.md).
+- Create pending submissions via local `/skins` or curl; cog posts review embeds. See [integrations/discord-bot.md](../integrations/discord-bot.md) and `tfmc_bot/docs/local-dev.md`.
 
 ### SimpleFactions later
 

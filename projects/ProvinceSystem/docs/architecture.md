@@ -73,8 +73,7 @@ flowchart LR
 | Path | Role |
 |------|------|
 | [`frontend/app/page.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/app/page.tsx) | TFMC hub landing |
-| [`frontend/app/map/main/page.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/app/map/main/page.tsx) | Calavorn map (`mapId="main"`) |
-| [`frontend/app/map/r3b1rth/page.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/app/map/r3b1rth/page.tsx) | Dev map (URL-only, not in nav) |
+| [`frontend/app/map/[map]/page.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/map/%5Bmap%5D/page.tsx) | Dynamic map route, including `main` and `r3b1rth` |
 | [`frontend/app/skins/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/app/skins) | Skins redeem, upload, status |
 | [`frontend/app/drinks/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/app/drinks) | Drink brew form |
 | [`frontend/app/character/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/app/character) | Character creator + kits + wardrobe |

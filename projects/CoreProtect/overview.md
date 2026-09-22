@@ -203,4 +203,4 @@ CoreProtect is an open source project, and gladly accepts community contribution
 
 If you'd like to contribute, please read our contributing guidelines here: [CONTRIBUTING.md](https://github.com/TF-Minecraft/CoreProtect/blob/5525a825ba6e454885128692d65730eb69bd8250/CONTRIBUTING.md)
 
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](CONTRIBUTING.md#code-of-conduct)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](https://github.com/TF-Minecraft/CoreProtect/blob/master/CONTRIBUTING.md#code-of-conduct)

@@ -14,12 +14,14 @@ The canonical technical documentation for every TF-Minecraft repository: setup, 
 ## Projects
 
 - [AACommandsFiller](projects/AACommandsFiller/README.md)
-- [ActivityTF](projects/ActivityTF/README.md) — private source
+- [ActivityTF](projects/ActivityTF/README.md)
 - [AdvancedGunpowder](projects/AdvancedGunpowder/README.md)
 - [AdvancedResearch](projects/AdvancedResearch/README.md)
+- [Archaeo](projects/Archaeo/README.md)
 - [ArmourShop](projects/ArmourShop/README.md)
 - [BarterShops](projects/BarterShops/README.md)
 - [BirdMessenger](projects/BirdMessenger/README.md)
+- [BreedingBuddies](projects/BreedingBuddies/README.md) — archived
 - [Cooking](projects/Cooking/README.md)
 - [CoreProtect](projects/CoreProtect/README.md)
 - [DenarEconomy](projects/DenarEconomy/README.md)

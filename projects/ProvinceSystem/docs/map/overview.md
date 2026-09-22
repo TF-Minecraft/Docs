@@ -84,7 +84,7 @@ Pick layer must stay separate from display (see [`mapgen.py`](https://github.com
 | Interaction | **Click** → nation detail modal; **Ctrl+click** (Cmd on Mac) → drill into subjects; mobile: tap + explicit drill |
 | Staff maps | Gated by profile Bearer session + `permission_flags["tfmc.map.staff"]` from TFMCWeb/LP sync; `public` vs staff per map in PS `maps.yml` + SF `mapRef` |
 | SF export | Draft schema: [`map-export-schema.json`](../assets/map-export-schema.json) |
-| Wars | **Do not infer** frontlines from territory diffs alone; require SF war export ([`../../simplefactions/docs/wars.md`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/simplefactions/docs/wars.md)) |
+| Wars | **Do not infer** frontlines from territory diffs alone; require SF war export ([`../../simplefactions/docs/wars.md`](https://github.com/TF-Minecraft/SimpleFactions/blob/main/docs/wars.md)) |
 | Chronicle | Daily composited snapshot + structured event log (prefer SF-emitted events over pure JSON diff) |
 | Wealth history | Append-only time series from nation upload `balance` + global aggregate |
 

@@ -1,6 +1,6 @@
 # Wars on the web map
 
-Website-side war visualization only. War **gameplay**, FSM, and export schema live in SimpleFactions: [`../../simplefactions/docs/wars.md`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/simplefactions/docs/wars.md).
+Website-side war visualization only. War **gameplay**, FSM, and export schema live in SimpleFactions: [`../../simplefactions/docs/wars.md`](https://github.com/TF-Minecraft/SimpleFactions/blob/main/docs/wars.md).
 
 ## Shipped (website)
 

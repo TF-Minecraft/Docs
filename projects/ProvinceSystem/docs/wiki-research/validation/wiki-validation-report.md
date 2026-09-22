@@ -60,7 +60,7 @@ The preview is intentionally left in normal Next development mode so subsequent 
 
 - Launcher PID: 17764
 - Listener PID: 22396
-- Logs: [stdout](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/wiki-research/validation/wiki-dev-resume.stdout.log), [stderr](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/wiki-research/validation/wiki-dev-resume.stderr.log)
+- Logs: `wiki-dev-resume.stdout.log` (local capture, not archived here), `wiki-dev-resume.stderr.log` (local capture, not archived here)
 
 ## Follow-up live copy verification
 

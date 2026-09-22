@@ -3,8 +3,8 @@
 # ServerAssets (private)
 
 Versioned inputs for the TFMC Minecraft 1.21.10 test lab, captured 2026-09-22.
-The source, launchers and integration findings are on
-[vehicleframework: chore/cachyos-lab-learnings](https://github.com/TF-Minecraft/VehicleFramework/tree/chore/cachyos-lab-learnings/tools/minecraft-lab).
+The lab setup and integration findings are documented in the
+[test lab guide](docs/LAB.md) and [learnings](docs/LEARNINGS.md).
 
 ## Contents
 
