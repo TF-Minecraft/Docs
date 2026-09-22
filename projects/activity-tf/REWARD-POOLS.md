@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/activity-tf/blob/a07d89d88ce839610ca7d00b64530d0fd325fc6b/REWARD-POOLS.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Named reward pools
 
 Install the rebuilt Activity jar and restart the server. After that, configuration

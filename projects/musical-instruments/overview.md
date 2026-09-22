@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/musical-instruments/blob/c129469fea3284ac631d37cc9ced1bf5b21c4b7e/README.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # MusicalInstruments
 
 **A Minecraft server plugin that turns items into playable musical instruments — play live music with your hotbar.**

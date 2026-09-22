@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/cosmetics/naming.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Naming conventions
 
 Players enter an **Item name** (ArmourShop label). The technical submission id is derived by the **API** from the player's linked **Minecraft IGN** plus the item name - never from upload filenames and never a random UUID.

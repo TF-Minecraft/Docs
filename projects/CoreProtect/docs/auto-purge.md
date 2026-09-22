@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/CoreProtect/blob/5525a825ba6e454885128692d65730eb69bd8250/docs/auto-purge.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Automatic Purging
 
 Automatic purging removes old CoreProtect data on a daily schedule, helping keep database growth under control without requiring manual `/co purge` runs.

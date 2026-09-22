@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/rpcharacters/blob/9e2d9f0d7ca9e7080f0748a654eab535c2c9c663/docs/playtime-tracking.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Playtime tracking
 
 Real time a character has spent **online**, accumulated per character. Added so SimpleFactions can pay faction prestige for member engagement rather than for headcount alone.

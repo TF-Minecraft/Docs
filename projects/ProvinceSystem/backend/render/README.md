@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/render/README.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Staff review-sheet 3D renderer
 
 Headless Chromium (Playwright) + Three.js. Python [`review_sheet.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/skins/review_sheet.py) calls `cli.mjs` via [`preview_3d.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/skins/preview_3d.py).

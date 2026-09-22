@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/map/wars-on-map.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Wars on the web map
 
 Website-side war visualization only. War **gameplay**, FSM, and export schema live in SimpleFactions: [`../../simplefactions/docs/wars.md`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/simplefactions/docs/wars.md).

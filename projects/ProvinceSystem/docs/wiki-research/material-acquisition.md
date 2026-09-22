@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/wiki-research/material-acquisition.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Tin, Ignitium, Niter and Arcane Crystal acquisition
 
 Checked 2026-09-12 against `C:/Users/MSI/Desktop/plugins`, the cloned server configuration. This is evidence for the wiki, not a claim to have tested drops on a running Minecraft server. No server configuration was edited.

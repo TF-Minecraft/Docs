@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/magic/blob/ccf64877a536535b34cae8d80bfd1d51aa109342/docs/SYSTEM.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Magic - System Overview
 
 Elemental resonance, casting modes (Surge / Flow), and the Resonance GUI. Batch 1 ships config shells only; the GUI renders from Batch 3 onward.

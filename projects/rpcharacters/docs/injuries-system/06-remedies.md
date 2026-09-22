@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/rpcharacters/blob/9e2d9f0d7ca9e7080f0748a654eab535c2c9c663/docs/injuries-system/06-remedies.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Batch 06 — Remedies
 
 **Depends on:** [01](01-config-and-loaders.md), [02](02-trait-state-persistence.md)  

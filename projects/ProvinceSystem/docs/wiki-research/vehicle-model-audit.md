@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/wiki-research/vehicle-model-audit.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Vehicle preview audit
 
 Internal implementation evidence, 2026-09-11. This document is not player guide content.

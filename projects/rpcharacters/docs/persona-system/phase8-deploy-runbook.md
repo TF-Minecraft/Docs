@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/rpcharacters/blob/9e2d9f0d7ca9e7080f0748a654eab535c2c9c663/docs/persona-system/phase8-deploy-runbook.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Phase 8 — Deploy runbook
 
 Operational checklist for retiring OpenRP persona modules, ConditionalEvents rolls, and the Thievery mask layer. RPCharacters Phases 1–7 are the single source of truth.

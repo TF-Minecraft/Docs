@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/map/title-editor.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Map title editor
 
 Staff-gated web editor for `county` / `duchy` / `kingdom` / `empire` JSON in `defines/{map}/`: click-combine territories, name titles, pick RGB colours, save, regen.

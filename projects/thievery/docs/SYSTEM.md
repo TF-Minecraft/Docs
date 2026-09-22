@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/thievery/blob/66a561d61e2cbc0a8941d1af6024c182a475a6cc/docs/SYSTEM.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Thievery - Display locks (locked design)
 
 Steal from lockable **displays**: InteractibleFurniture types, armor stands, and item frames. Chests and doors stay as they are.

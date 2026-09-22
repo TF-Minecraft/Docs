@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/vehicleframework/blob/bfdb59ba651723200b364b132c0b6969244389ef/docs/trains.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Trains: spline tracks (locked design)
 
 Ground kinematic follow is **done**. Trains are a separate system. Do not mix terrain-follow into rail motion.

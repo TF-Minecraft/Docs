@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/games/blob/f296e4b9b5944b03693f0f0086dbc9bf91825f3c/docs/WAGER_ENGINE.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Wager engine
 
 Every denar that moves on a table moves through `net.tfminecraft.games.wager`. Games describe what they want and commit once; they never touch a player's inventory, the ledger, or a guild bank themselves.

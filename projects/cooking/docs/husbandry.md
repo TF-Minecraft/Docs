@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/cooking/blob/d1e365f5f7b70dc8797f7fcac2ca87361928a19e/docs/husbandry.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Cooking — Animal husbandry (locked design)
 
 This file is the live system spec. It is not a build log or implementation checklist.

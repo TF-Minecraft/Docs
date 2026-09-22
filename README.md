@@ -7,7 +7,7 @@ The canonical technical documentation for every TF-Minecraft repository: setup, 
 - [Minecraft 1.21.10 test lab](projects/server-assets/docs/LAB.md)
 - [VehicleFramework and integration learnings](projects/vehicleframework/README.md)
 - [Website and backend](projects/ProvinceSystem/docs/README.md)
-- [Documentation maintenance and rollback](MAINTAINING.md)
+- [Maintaining the documentation](MAINTAINING.md)
 
 ## Projects
 

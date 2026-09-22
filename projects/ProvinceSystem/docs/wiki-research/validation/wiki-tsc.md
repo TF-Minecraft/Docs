@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/wiki-research/validation/wiki-tsc.txt). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 app/lib/map/editor/countyAssignment.test.ts(49,48): error TS2345: Argument of type '{ COUNTY_1: { name: string; provinces: number[]; }; COUNTY_2: { name: string; provinces: number[]; }; }' is not assignable to parameter of type 'TitleDraft'.
   Property 'COUNTY_1' is incompatible with index signature.
     Property 'rgb' is missing in type '{ name: string; provinces: number[]; }' but required in type 'EditorTitleEntry'.

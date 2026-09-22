@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/wiki-research/herb-material-acquisition.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Alchemist Collector herb acquisition
 
 Checked 2026-09-12 against the read-only cloned server configuration under

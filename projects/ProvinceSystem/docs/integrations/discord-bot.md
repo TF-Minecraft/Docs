@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/docs/integrations/discord-bot.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Discord bot (tfmc_bot)
 
 **Canonical documentation for tfmc_bot lives in [`tfmc_bot/docs/`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/tfmc_bot/docs)**. This page is a pointer for ProvinceSystem readers.

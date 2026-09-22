@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/tfmccore/blob/dfafe267d9a96bb7d51502e9f286e650cd96c915/src/main/java/net/tfminecraft/tfmccore/stats/STATS.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # Stats registry
 
 Living reference for all TFMCCore stat categories. Update this file when adding or changing tracked stats.

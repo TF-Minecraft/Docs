@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/gunsandgadgets/blob/17a1894226083b927bc23f29d9649546e35d9eab/mvn-package-out.txt). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 [INFO] Scanning for projects...
 [INFO] 
 [INFO] -------------------< net.tfminecraft:gunsandgadgets >-------------------

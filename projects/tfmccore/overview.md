@@ -1,5 +1,3 @@
-> Canonical documentation: [TF-Minecraft/docs](https://github.com/TF-Minecraft/docs). [Source snapshot](https://github.com/TF-Minecraft/tfmccore/blob/dfafe267d9a96bb7d51502e9f286e650cd96c915/README.md). Commands and plain-text code/config paths refer to the source repository unless stated otherwise.
-
 # TFMC Core
 
 Build with Java 21 and Maven. Private dependency JARs live in `libs/` and are
