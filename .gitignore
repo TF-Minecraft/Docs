@@ -1,3 +1,27 @@
-
+# Build output
 /dist/
+
+# Python caches and environments
 __pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# IDE files
+.idea/
+.vscode/
+
+# Logs and temporary files
+*.log
+*.bak
+*.swp
+*.tmp
+*~
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local investigation notes and test artifacts
+/.scratch/

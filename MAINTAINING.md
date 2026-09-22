@@ -6,7 +6,7 @@ When changing behavior, update the relevant guide in a docs PR and link it from 
 
 Use [PLATFORM.md](PLATFORM.md) as the shared **Java 21 / Minecraft 1.21.10** baseline. Every project index links to it. Keep runtime versions separate from Maven API dependencies, Java compiler targets and plugin loader metadata; document source mismatches rather than changing their labels to suggest a completed migration. When source build settings change, update the matrix and record the migration/release status.
 
-Keep setup instructions and configuration references current. Label plans and test reports with their status and scope so readers can distinguish proposed behavior from verified behavior.
+Keep setup instructions and configuration references current. Keep one-off review notes, playtest reports, raw command output and captures in PR descriptions, an ignored source-checkout `.scratch/` directory, or the external test lab. Do not commit these session artifacts to source repositories or copy them here. Promote lasting findings into the relevant architecture, troubleshooting or testing guide, with their scope and limitations. Label maintained plans and verification guides with their status so readers can distinguish proposed behavior from verified behavior.
 
 Each project index must link to its canonical source repository and back to the root project list. Each source README must link to `https://github.com/TF-Minecraft/Docs/blob/main/projects/<repository>/README.md`; the project directory name is case-sensitive. When renaming a repository, update both ends of this link and the project list. Local-only files and separate unpublished checkouts should be described as filesystem paths, not given GitHub links to nonexistent files.
 
