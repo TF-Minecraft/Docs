@@ -13,3 +13,10 @@ versions aligned without changing Java gameplay source.
 - [Architecture, data and integrations](architecture.md)
 - [Verification and operations](verification.md)
 - [Organisation pipeline guide](../../PIPELINES.md)
+
+## Source references
+
+- [Source README and build commands](https://github.com/TF-Minecraft/AdvancedCrafting/blob/main/README.md)
+- [Maven dependencies and packaging](https://github.com/TF-Minecraft/AdvancedCrafting/blob/main/pom.xml)
+- [Descriptor and default configuration](https://github.com/TF-Minecraft/AdvancedCrafting/tree/main/src/main/resources)
+- [Source import provenance](https://github.com/TF-Minecraft/AdvancedCrafting/blob/main/SOURCE.md)
