@@ -22,3 +22,7 @@ Technical documentation is maintained here. Run commands from the source checkou
 - [docs/languages.md](docs/languages.md)
 - [docs/permissions.md](docs/permissions.md)
 - [docs/tools-integrations.md](docs/tools-integrations.md)
+
+## Builds and releases
+
+See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.

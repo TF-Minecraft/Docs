@@ -13,3 +13,7 @@ Technical documentation is maintained here. Run commands from the source checkou
 - [docs/SYSTEM.md](docs/SYSTEM.md)
 - [docs/TEST_MATRIX.md](docs/TEST_MATRIX.md)
 - [docs/WAGER_ENGINE.md](docs/WAGER_ENGINE.md)
+
+## Builds and releases
+
+See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.

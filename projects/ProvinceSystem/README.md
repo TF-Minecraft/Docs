@@ -62,3 +62,7 @@ Technical documentation is maintained here. Run commands from the source checkou
 - [docs/wiki-research/validation/wiki-tests.txt](docs/wiki-research/validation/wiki-tests.md)
 - [docs/wiki-research/validation/wiki-tsc-final.txt](docs/wiki-research/validation/wiki-tsc-final.md)
 - [docs/wiki-research/validation/wiki-tsc.txt](docs/wiki-research/validation/wiki-tsc.md)
+
+## Builds and releases
+
+See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.
