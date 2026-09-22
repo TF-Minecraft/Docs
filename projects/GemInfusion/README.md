@@ -9,7 +9,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 ## Build and dependencies
 
 Run `mvn clean verify` with JDK 21 from the source checkout. The POM
-uses **release 21**, resolves **Spigot API 1.21.10-R0.1-SNAPSHOT** from Maven,
+uses **release 21**, resolves **Paper API 1.21.10-R0.1-SNAPSHOT** from Maven,
 and declares `api-version: 1.21.10` in the plugin manifest.
 
 Install the TLibs version declared in `pom.xml` using the

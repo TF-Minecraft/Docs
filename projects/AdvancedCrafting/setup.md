@@ -6,7 +6,7 @@
 
 Use Java 21 and Minecraft 1.21.10 under the [shared platform baseline](../../PLATFORM.md).
 The plugin descriptor requires TLibs, MMOCore, MMOItems and MythicLib. The
-build resolves Spigot API 1.21.10 from Maven and declares `api-version: 1.21.10`. Configured ItemsAdder furniture requires ItemsAdder and the matching
+build resolves Paper API 1.21.10 from Maven and declares `api-version: 1.21.10`. Configured ItemsAdder furniture requires ItemsAdder and the matching
 server assets. These third-party plugins are installed separately.
 
 For a new server, while stopped, create `plugins/AdvancedCrafting/` and copy the

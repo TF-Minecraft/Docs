@@ -10,7 +10,7 @@ See the [shared API versions](../../PLATFORM.md#shared-api-versions) for the mat
 
 ## Build and dependencies
 
-Run Maven from the source checkout. The current [POM](https://github.com/TF-Minecraft/cooking/blob/main/pom.xml) declares Java **release 21** and **spigot-api 1.21.10-R0.1-SNAPSHOT**; [plugin.yml](https://github.com/TF-Minecraft/cooking/blob/main/src/main/resources/plugin.yml) declares `api-version: 1.21.10`. The build and loader metadata target the shared runtime. Gameplay validation remains separate from build verification.
+Run Maven from the source checkout. The current [POM](https://github.com/TF-Minecraft/cooking/blob/main/pom.xml) declares Java **release 21** and **paper-api 1.21.10-R0.1-SNAPSHOT**; [plugin.yml](https://github.com/TF-Minecraft/cooking/blob/main/src/main/resources/plugin.yml) declares `api-version: 1.21.10`. The build and loader metadata target the shared runtime. Gameplay validation remains separate from build verification.
 
 Use JDK 21, install the matching TLibs Maven artifact (`me.plugins:tlibs`, version from `tlibs.version`), install the other TFMC Maven dependencies listed in the POM, and populate `libs/` using the pinned private dependency preparation script. Run `mvn clean verify`; the artifact stays in `target/`. Optional runtime integrations can still be required at compile time.
 
