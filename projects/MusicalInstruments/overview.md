@@ -92,8 +92,6 @@ classDiagram
     InstrumentListener --> InstrumentManager : uses
 ```
 
-*Full diagram: [UML-Diagram.mmd](https://github.com/TF-Minecraft/MusicalInstruments/blob/c129469fea3284ac631d37cc9ced1bf5b21c4b7e/UML-Diagram.mmd)*
-
 ### Design decisions
 
 - **Configuration over code** — instruments are pure data. Adding a new instrument (item, note layout, chords, volume) is a YAML edit, not a release.

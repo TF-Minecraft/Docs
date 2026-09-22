@@ -137,8 +137,6 @@ classDiagram
     TierReward --> ItemReward : contains
 ```
 
-*Full diagram: [UML-Diagram.mmd](https://github.com/TF-Minecraft/geiger-counters/blob/fd1420862ebaa7da7905d88ce1cd731e9c23f0f8/UML-Diagram.mmd)*
-
 ### Design decisions
 
 - **Configuration over code** — the entire hunt is data: search area, thresholds, gradient colors, messages, and every reward pool are YAML edits, not releases.
