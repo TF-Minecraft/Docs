@@ -18,9 +18,11 @@ Tags with prerelease suffixes create prereleases. Snapshot versions are rejected
 
 ## Build dependencies
 
-Each plugin's `.github/scripts/prepare-release.sh` downloads its private build inputs from a pinned commit in [ServerAssets](https://github.com/TF-Minecraft/ServerAssets). The committed `.github/dependencies.sha256` verifies the downloaded bytes. JARs go in `libs/`, outside Maven's cleaned `target/` directory, and are ignored by Git.
+Plugins with file dependencies use `.github/scripts/prepare-release.sh` to download their private build inputs from a pinned commit in [ServerAssets](https://github.com/TF-Minecraft/ServerAssets). The committed `.github/dependencies.sha256` verifies the downloaded bytes. JARs go in `libs/`, outside Maven's cleaned `target/` directory, and are ignored by Git.
 
-`DEPS_TOKEN` is an organisation Actions secret with Contents read access to ServerAssets. Grant the consuming repositories access to this one secret. A separate token for each repository is unnecessary. The workflow passes it as `GH_TOKEN` only to the dependency preparation step. Fork pull requests do not receive Actions secrets and cannot run builds that require these private inputs.
+`DEPS_TOKEN` is an organisation Actions secret with Contents read access to ServerAssets. Grant the consuming repositories access to this one secret. A separate token for each repository is unnecessary. The workflow passes it only to dependency preparation steps. Fork pull requests do not receive Actions secrets and cannot run builds that require these private inputs.
+
+TLibs consumers declare a checksum-pinned Maven `provided` dependency. Both build workflows run the [shared TLibs installer](https://github.com/TF-Minecraft/TLibs/blob/61bd61b17fba45e5178612578805d7108596e8a0/DEPENDENCIES.md), which verifies the selected binary and installs it in Maven's local cache. Local builds run `python3 ../tlibs/tools/install-dependency.py --pom pom.xml` before Maven verification.
 
 ServerAssets' `manifest.json` is authoritative for filenames, hashes, embedded plugin versions, and sources. Keep licensed dependency JARs in that private repository and out of public release assets.
 
