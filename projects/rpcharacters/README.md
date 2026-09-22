@@ -35,3 +35,7 @@ Technical documentation is maintained here. Run commands from the source checkou
 - [docs/playtime-tracking.md](docs/playtime-tracking.md)
 - [docs/professions-system/phase0-design.md](docs/professions-system/phase0-design.md)
 - [docs/professions-system/phase8-deploy-runbook.md](docs/professions-system/phase8-deploy-runbook.md)
+
+## Related integration guides
+
+- [Web character creator](../ProvinceSystem/docs/characters/creator.md)

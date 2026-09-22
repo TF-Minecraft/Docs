@@ -19,3 +19,9 @@ All 37 current source repositories are indexed, including repositories with no e
 Before removing originals, verify imported files against the manifest and publish this repository's migration PR. Source migration PRs then remove technical manuals and add a short canonical pointer. Keep documentation assets with their manuals. CoreProtect's MkDocs configuration moves with its documentation; run MkDocs from `projects/CoreProtect` if using that upstream renderer.
 
 Rollback is per repository: revert its migration merge commit to restore the original manuals. The immutable source commits recorded in the manifest also retain every original byte. Do not delete the central repository during a partial rollout or rollback, because other repositories may already link to it. Do not rewrite source history.
+
+## Completed rollout
+
+All 37 source migration PRs were merged and their merge trees verified against the planned changes. See [the rollout record](migration/rollout.json) for PR links and merge commits. The verification checked that imported originals were removed, unrelated file contents and modes were unchanged, all current repositories were indexed, and source privacy was preserved.
+
+Run `python3 tools/check_docs.py` after documentation edits to check repository-local link destinations. Use `--migration-snapshot` only when verifying the initial imported file hashes; those hashes intentionally describe the migration snapshot.

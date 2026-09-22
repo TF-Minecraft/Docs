@@ -1,0 +1,271 @@
+{
+  "date": "2026-09-22",
+  "checks": [
+    "All imported source files preserved by central manifest",
+    "All source trees match planned documentation-only changes",
+    "All migrated originals removed from source default-branch merge trees",
+    "Every current organisation repository indexed",
+    "Public docs and private assets visibility verified"
+  ],
+  "repositories": [
+    {
+      "repository": "server-assets",
+      "pr": "https://github.com/TF-Minecraft/server-assets/pull/1",
+      "merge_commit": "9f15accfc4e72dcf16b71b90c287928df9deea66",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "vehicleframework",
+      "pr": "https://github.com/TF-Minecraft/vehicleframework/pull/1",
+      "merge_commit": "79f9d6781703217a0559bd6477869b6c794bc91a",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "surgery",
+      "pr": "https://github.com/TF-Minecraft/surgery/pull/1",
+      "merge_commit": "7739552de053cfc05cce68ea5d3f3d6166ca522f",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "musical-instruments",
+      "pr": "https://github.com/TF-Minecraft/musical-instruments/pull/1",
+      "merge_commit": "aab7b0c2492e1066de468cfc5fb6cf29fa5dfe36",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "geiger-counters",
+      "pr": "https://github.com/TF-Minecraft/geiger-counters/pull/1",
+      "merge_commit": "694de6f6684632fced9e03f31b5ac11e48c46148",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "worldborder",
+      "pr": "https://github.com/TF-Minecraft/worldborder/pull/1",
+      "merge_commit": "8ee1395c0e5b4ee67620b9f8735d403b39083f54",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "woodworking",
+      "pr": "https://github.com/TF-Minecraft/woodworking/pull/1",
+      "merge_commit": "8273ee8e364643c580011a0fae46fefed218abad",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "vfbuilders",
+      "pr": "https://github.com/TF-Minecraft/vfbuilders/pull/1",
+      "merge_commit": "0ab1f0b82f2fee780c5a7297c654f25267c4e72b",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "tlibs",
+      "pr": "https://github.com/TF-Minecraft/tlibs/pull/1",
+      "merge_commit": "82597112b99edecfdc1f5f1b88ead6def3aa7a65",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "thievery",
+      "pr": "https://github.com/TF-Minecraft/thievery/pull/1",
+      "merge_commit": "6b4b03812696069c15ce2d96019b605e69345ab0",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "tfmcweb",
+      "pr": "https://github.com/TF-Minecraft/tfmcweb/pull/1",
+      "merge_commit": "eafec8e4a6358b35eff18f4096816cceb0ef1c0f",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "tfmccore",
+      "pr": "https://github.com/TF-Minecraft/tfmccore/pull/1",
+      "merge_commit": "04aa2c65ee78645050f4e0fe129469d01ab462a3",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "simplefactions",
+      "pr": "https://github.com/TF-Minecraft/simplefactions/pull/1",
+      "merge_commit": "5ede274d5abbd2771afbb87116c315eeaa848a63",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "rpcharacters",
+      "pr": "https://github.com/TF-Minecraft/rpcharacters/pull/1",
+      "merge_commit": "48bc1e2df1b20ebf2cb5bf642e74834242daa696",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "Recycler",
+      "pr": "https://github.com/TF-Minecraft/Recycler/pull/1",
+      "merge_commit": "2ae7f9ca9d4a6edfa090e8657ff44193a1d225a9",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "ProvinceSystem",
+      "pr": "https://github.com/TF-Minecraft/ProvinceSystem/pull/1",
+      "merge_commit": "3fb1b2b5e672a2f71573cab7d4da6dc784be35e4",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "pointshop",
+      "pr": "https://github.com/TF-Minecraft/pointshop/pull/1",
+      "merge_commit": "10f3df3196068d633b40ab53f8cac3918e5ee667",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "PermCleaner",
+      "pr": "https://github.com/TF-Minecraft/PermCleaner/pull/1",
+      "merge_commit": "9849f54234cbec25cb5f5c489ecb4a2934ed9364",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "nutrition",
+      "pr": "https://github.com/TF-Minecraft/nutrition/pull/1",
+      "merge_commit": "5bbcb0c8d4b6430f3410c9808629a9f768153e03",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "Marketblock",
+      "pr": "https://github.com/TF-Minecraft/Marketblock/pull/1",
+      "merge_commit": "f47f9a816de585cdba23b8733fa5dd9621078a21",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "magic",
+      "pr": "https://github.com/TF-Minecraft/magic/pull/1",
+      "merge_commit": "7e2416d7fc9695541ab7a03c84504576c772b6ab",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "interactiblefurniture",
+      "pr": "https://github.com/TF-Minecraft/interactiblefurniture/pull/1",
+      "merge_commit": "b388a0cc55530de3a5495b54d45d6d4457166558",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "gunsandgadgets",
+      "pr": "https://github.com/TF-Minecraft/gunsandgadgets/pull/1",
+      "merge_commit": "42b8c9241e360873702aefa37dd22dd87966f6e6",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "goldsmithing",
+      "pr": "https://github.com/TF-Minecraft/goldsmithing/pull/1",
+      "merge_commit": "26b67c49b64e00c3f4edac2eae8ccd614112a5d0",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "geminfusion",
+      "pr": "https://github.com/TF-Minecraft/geminfusion/pull/1",
+      "merge_commit": "19ba35af88422dd5a6314fa129736e8767cc99ee",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "games",
+      "pr": "https://github.com/TF-Minecraft/games/pull/1",
+      "merge_commit": "fbb4d0fa0da205bf28dbcd2583947cbd933d36c3",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "drinkbuilder",
+      "pr": "https://github.com/TF-Minecraft/drinkbuilder/pull/1",
+      "merge_commit": "6e7139a55c0fa4563465e68835c7f929362b8a1e",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "denareconomy",
+      "pr": "https://github.com/TF-Minecraft/denareconomy/pull/1",
+      "merge_commit": "84b880a72e6c45eb46c9f96763361e99941f5d19",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "CoreProtect",
+      "pr": "https://github.com/TF-Minecraft/CoreProtect/pull/1",
+      "merge_commit": "27ce7cc95905c43dab8e768af473189e7c3147f7",
+      "default_branch": "master",
+      "verified": true
+    },
+    {
+      "repository": "cooking",
+      "pr": "https://github.com/TF-Minecraft/cooking/pull/1",
+      "merge_commit": "e61ea9c1a9a1f5a8846cb64bc40970fe4504e7a5",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "birdmessenger",
+      "pr": "https://github.com/TF-Minecraft/birdmessenger/pull/1",
+      "merge_commit": "b6abd23c71d0bf7eb0c167235d55629dbc2d4899",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "bartershops",
+      "pr": "https://github.com/TF-Minecraft/bartershops/pull/1",
+      "merge_commit": "90b6b71a0b603858a9dc0a3067d917497b2a8e3e",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "armourshop",
+      "pr": "https://github.com/TF-Minecraft/armourshop/pull/1",
+      "merge_commit": "a32f5c0a95ffa2e78da389f0e49d81f4c71f84c8",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "advancedresearch",
+      "pr": "https://github.com/TF-Minecraft/advancedresearch/pull/1",
+      "merge_commit": "49e2b5cec9ff7955f1814978de3f843c453f943e",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "advancedgunpowder",
+      "pr": "https://github.com/TF-Minecraft/advancedgunpowder/pull/1",
+      "merge_commit": "777c341e8f825285fe607d8dddb43b37e43aad20",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "activity-tf",
+      "pr": "https://github.com/TF-Minecraft/activity-tf/pull/51",
+      "merge_commit": "b121dacee2cd5d235df098bf5fbe400fcec14335",
+      "default_branch": "main",
+      "verified": true
+    },
+    {
+      "repository": "AACommandsFiller",
+      "pr": "https://github.com/TF-Minecraft/AACommandsFiller/pull/1",
+      "merge_commit": "357c914b675e8f0a3dfa70541e9a65e3b2c409c5",
+      "default_branch": "main",
+      "verified": true
+    }
+  ]
+}
