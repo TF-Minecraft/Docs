@@ -1,0 +1,8 @@
+# drinkbuilder
+
+[Source repository](https://github.com/TF-Minecraft/drinkbuilder) · [All projects](../../README.md)
+
+Technical documentation is maintained here. Run commands from the source checkout unless a guide says otherwise.
+
+- [README.md](overview.md)
+- [src/main/resources/assets/README.txt](src/main/resources/assets/README.md)
