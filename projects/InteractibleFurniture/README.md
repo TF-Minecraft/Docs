@@ -14,7 +14,7 @@ Use JDK 21 and `mvn clean verify` from `main`. Install the TLibs version
 declared in `pom.xml` with the [shared installer](../TLibs/README.md) in pinned
 mode. Prepare the private inputs in `libs/` with
 `.github/scripts/prepare-release.sh` and verify `.github/dependencies.sha256`.
-The POM uses the Spigot 1.21.10 API and writes the JAR under `target/` using
+The POM uses the Paper 1.21.10 API and writes the JAR under `target/` using
 its declared version. Validate server behavior against the intended dependencies.
 
 The plugin manifest requires TLibs and MythicMobs. ProtocolLib is also a build

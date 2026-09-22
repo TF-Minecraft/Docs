@@ -11,7 +11,7 @@ VFBuilders adds configurable vehicle-building stations and blueprints to
 
 ## Setup and build
 
-Use JDK 21 and Maven from `main`. The POM resolves Spigot API
+Use JDK 21 and Maven from `main`. The POM resolves Paper API
 **1.21.10-R0.1-SNAPSHOT** with `provided` scope and targets Java 21. Install
 the declared TLibs and VehicleFramework versions with the
 [shared installer](../TLibs/README.md) in pinned mode.

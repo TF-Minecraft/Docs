@@ -1,7 +1,8 @@
 # Shared platform and build baseline
 
-TFMC plugins target **Java 21 / Minecraft 1.21.10**, using the Paper or Spigot
-1.21.10 API with `provided` scope. Plugin descriptors declare API 1.21.10.
+TFMC plugins target **Java 21 / Minecraft 1.21.10**, using
+`io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT` with `provided` scope.
+Plugin descriptors declare API 1.21.10.
 
 ## Runtime and toolchain
 
@@ -51,8 +52,8 @@ mvn clean verify
 ```
 
 The compiler's `release=21` setting controls bytecode and available Java APIs.
-Paper and Spigot dependencies resolve from their Maven repositories and are not
-bundled into plugin jars. Prepare private third-party dependencies with the
+Paper API resolves from the [PaperMC Maven repository](https://repo.papermc.io/repository/maven-public/)
+and is not bundled into plugin jars. Prepare private third-party dependencies with the
 repository's `.github/scripts/prepare-release.sh`; it verifies
 `.github/dependencies.sha256` where present.
 
@@ -68,40 +69,41 @@ consumer set. Source builds must pass clean verification before publication.
 | --- | --- | --- | --- |
 | [AACommandsFiller](projects/AACommandsFiller/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [ActivityTF](projects/ActivityTF/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [AdvancedCrafting](projects/AdvancedCrafting/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [AdvancedGunpowder](projects/AdvancedGunpowder/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [AdvancedResearch](projects/AdvancedResearch/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [ArmourShop](projects/ArmourShop/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [BarterShops](projects/BarterShops/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [BirdMessenger](projects/BirdMessenger/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [Cooking](projects/Cooking/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [AdvancedCrafting](projects/AdvancedCrafting/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [AdvancedGunpowder](projects/AdvancedGunpowder/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [AdvancedResearch](projects/AdvancedResearch/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [Archaeo](projects/Archaeo/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [ArmourShop](projects/ArmourShop/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [BarterShops](projects/BarterShops/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [BirdMessenger](projects/BirdMessenger/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [Cooking](projects/Cooking/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [CoreProtect](projects/CoreProtect/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [DenarEconomy](projects/DenarEconomy/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [DrinkBuilder](projects/DrinkBuilder/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [Games](projects/Games/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [DenarEconomy](projects/DenarEconomy/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [DrinkBuilder](projects/DrinkBuilder/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [Games](projects/Games/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [GeigerCounters](projects/GeigerCounters/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [GemInfusion](projects/GemInfusion/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [Goldsmithing](projects/Goldsmithing/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [GunsAndGadgets](projects/GunsAndGadgets/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [InteractibleFurniture](projects/InteractibleFurniture/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [Magic](projects/Magic/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [MarketBlock](projects/MarketBlock/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [GemInfusion](projects/GemInfusion/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [Goldsmithing](projects/Goldsmithing/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [GunsAndGadgets](projects/GunsAndGadgets/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [InteractibleFurniture](projects/InteractibleFurniture/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [Magic](projects/Magic/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [MarketBlock](projects/MarketBlock/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [MusicalInstruments](projects/MusicalInstruments/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [Nutrition](projects/Nutrition/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [PermCleaner](projects/PermCleaner/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [PointShop](projects/PointShop/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [Recycler](projects/Recycler/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [Nutrition](projects/Nutrition/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [PermCleaner](projects/PermCleaner/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [PointShop](projects/PointShop/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [Recycler](projects/Recycler/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [RPCharacters](projects/RPCharacters/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [SimpleFactions](projects/SimpleFactions/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [SimpleFactions](projects/SimpleFactions/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Surgery](projects/Surgery/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [TFMCCore](projects/TFMCCore/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [TFMCWeb](projects/TFMCWeb/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [Thievery](projects/Thievery/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [TLibs](projects/TLibs/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [VehicleFramework](projects/VehicleFramework/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [VFBuilders](projects/VFBuilders/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [Woodworking](projects/Woodworking/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [WorldBorder](projects/WorldBorder/README.md) | 21 | `spigot-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [TFMCWeb](projects/TFMCWeb/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [Thievery](projects/Thievery/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [TLibs](projects/TLibs/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [VehicleFramework](projects/VehicleFramework/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [VFBuilders](projects/VFBuilders/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [Woodworking](projects/Woodworking/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [WorldBorder](projects/WorldBorder/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 
 ProvinceSystem is a web/backend project. ServerAssets contains configurations,
 models, resource packs, and private build inputs. Neither produces a plugin jar.

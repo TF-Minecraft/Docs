@@ -1,10 +1,10 @@
 # VehicleFramework
 A highly configurable system to allow semi-realistic vehicles with weapons in Minecraft
 
-You will not be able to run this as a standalone program, due to it being dependent on other plugins and the spigot server environment.
+You will not be able to run this as a standalone program, due to it being dependent on other plugins and the Paper server environment.
 
 ## Why This Project Is Interesting
-This framework implements several systems that do not exist in the standard Spigot API, including:
+This framework implements several systems that do not exist in the standard Paper API, including:
 
 - **Full 3D rotation (pitch/yaw/roll)** - Minecraft normally exposes only yaw and limited pitch control. I implemented full rotational freedom for vehicles and weapon systems.
 - **Player-controlled turrets** - Instead of simply spawning a projectile in the direction the player is looking (the default behavior), the turret physically rotates, aims, and fires based on its own orientation. The projectile direction is derived from the turret’s current rotation, not the player’s.
@@ -23,7 +23,7 @@ TFMC's runtime baseline is **Minecraft 1.21.10**; see the
 [shared platform guide](../../PLATFORM.md) for build conventions and the
 [current source declarations](../../PLATFORM.md#plugin-build-targets).
 
-- Java 21 compiler/runtime target, with Spigot API 1.21.10 from Maven.
+- Java 21 compiler/runtime target, with Paper API 1.21.10 from Maven.
 - Built using Maven
 ### Architecture:
 - Main class intializes managers and plugin setup ([VehicleFramework.java](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/VehicleFramework.java))

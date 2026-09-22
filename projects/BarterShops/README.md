@@ -8,7 +8,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 ## Build and dependencies
 
-Run Maven with **JDK 21** from the source checkout. The POM sets `maven.compiler.release=21` and resolves `org.spigotmc:spigot-api:1.21.10-R0.1-SNAPSHOT` with `provided` scope from Spigot snapshots. The plugin descriptor declares `api-version: 1.21.10`.
+Run Maven with **JDK 21** from the source checkout. The POM sets `maven.compiler.release=21` and resolves `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT` with `provided` scope from the PaperMC Maven repository. The plugin descriptor declares `api-version: 1.21.10`.
 
 Install these matching Java 21 TFMC artifacts into local Maven before building: `net.tfminecraft:denareconomy:0.2.0`, `net.tfminecraft:simplefactions:3.0.0`. Their source repositories use `mvn clean install`; CI uses the pinned dependency setup actions.
 
