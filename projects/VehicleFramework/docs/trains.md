@@ -50,7 +50,7 @@ Trailing cars rewind behind the parent using signed arc length. On loops, `stemL
 
 ### Spacing
 
-Reuse `behaviour.train` front/back connector bones ([`Connector`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Vehicles/Handlers/Train/Connector.java)). Spacing is bone distance along the spline.
+Reuse `behaviour.train` front/back connector bones ([`Connector`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/vehicles/handlers/train/Connector.java)). Spacing is bone distance along the spline.
 
 ## Visuals (phase 1)
 
@@ -181,8 +181,8 @@ Do **not** require spawning the whole consist when one chunk loads. Accept tempo
 
 ## Code pointers
 
-- Train YAML: `behaviour.train` in [`BehaviourHandler`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Vehicles/Handlers/BehaviourHandler.java)
-- Movement entry: [`VehicleMovementController`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Vehicles/Controller/VehicleMovementController.java) `v.isTrain()` -> `splineTick`
-- Vehicle persist: [`VehiclePersistence`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Database/VehiclePersistence.java) (`saveLive`)
-- Chunk spawn: [`SpawnManager`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Managers/SpawnManager.java)
-- Junctions: [`TrackJunction`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Tracks/TrackJunction.java), [`TrackRegistry`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Tracks/TrackRegistry.java), [`TrackJunctionTravel`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Tracks/TrackJunctionTravel.java)
+- Train YAML: `behaviour.train` in [`BehaviourHandler`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/vehicles/handlers/BehaviourHandler.java)
+- Movement entry: [`VehicleMovementController`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/vehicles/controller/VehicleMovementController.java) `v.isTrain()` -> `splineTick`
+- Vehicle persist: [`VehiclePersistence`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/database/VehiclePersistence.java) (`saveLive`)
+- Chunk spawn: [`SpawnManager`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/managers/SpawnManager.java)
+- Junctions: [`TrackJunction`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/tracks/TrackJunction.java), [`TrackRegistry`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/tracks/TrackRegistry.java), [`TrackJunctionTravel`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/tracks/TrackJunctionTravel.java)

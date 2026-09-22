@@ -9,7 +9,7 @@ Nothing in this file is guide prose. Every non-obvious claim cites a file path.
 Status of source code: **no source repository was found for Magic or Research.**
 `github.com/drefvelin/magic` and `github.com/drefvelin/research` both return
 "Repository not found". `C:\Users\MSI\Desktop\plugin-src\advancedresearch` is a
-*different, unrelated* plugin (`me.Plugins.AdvancedResearch`), **not** the deployed
+*different, unrelated* plugin (`net.tfminecraft.advancedresearch`), **not** the deployed
 `Research` plugin (`net.tfminecraft.research.Research`). All Magic and Research facts
 below are therefore derived from live config + data files and the jar `plugin.yml`.
 

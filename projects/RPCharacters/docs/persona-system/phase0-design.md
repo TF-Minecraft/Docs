@@ -1,7 +1,7 @@
 # Phase 0 — RP Persona System Design Lock
 
 **Status:** Design spec (documentation only — no runtime changes in Phase 0)  
-**Target plugin:** RPCharacters (`net.tfminecraft.RPCharacters`)  
+**Target plugin:** RPCharacters (`net.tfminecraft.rpcharacters`)  
 **Context:** New season greenfield — no data migration, no legacy placeholders, no backwards compatibility.
 
 ---
@@ -142,7 +142,7 @@ LOOC/OOC/admin channels use `{player}` (account name), not `{display}` — masks
 
 ## 5. DisplayIdentityService
 
-Package: `net.tfminecraft.RPCharacters.identity`
+Package: `net.tfminecraft.rpcharacters.identity`
 
 ```java
 // Pseudocode — implementation spec for Phase 1+
@@ -595,7 +595,7 @@ Must pass on staging before production deploy.
 ## 15. Package structure
 
 ```
-net.tfminecraft.RPCharacters
+net.tfminecraft.rpcharacters
 ├── identity/          DisplayIdentityService, NameColour, MaskService
 ├── placeholder/       RpCharactersExpansion
 ├── chat/              ChatManager, Channel, CharacterChatEvent

@@ -11,7 +11,7 @@
 | AdvancedCrafting | none found | drefvelin/advancedcrafting and JustinasLa/AdvancedCrafting do not exist. Jar-only. |
 | Gathering | none found | Jar-only. |
 | Recycler | none found | Jar-only. |
-| MarketBlock | none found | Jar-only. **Not** the same plugin as `bartershops` — BarterShops is a separate installed jar (`net.tfminecraft.BarterShops.ShopMain`) with no data folder. |
+| MarketBlock | none found | Jar-only. **Not** the same plugin as `bartershops` — BarterShops is a separate installed jar (`net.tfminecraft.bartershops.ShopMain`) with no data folder. |
 | DenarEconomy | `drefvelin/denareconomy` (cloned) | Source is from 2025-05-11 and is **behind** the live 0.1.8 jar (no `/pouch`, no `baltop`, no `toitem`). Facts below come from the jar. |
 | ArmourShop | `drefvelin/armourshop` (cloned) | Source commit `b1462f1`, 2026-07-13. Matches the live jar for GUI/skin logic; the jar has extra admin subcommands the source lacks. |
 | ExcellentCrates | third-party (NightExpress) | Jar + configs only. |

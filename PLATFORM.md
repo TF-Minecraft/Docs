@@ -26,6 +26,28 @@ restored-vehicle failure remains unresolved by this build migration.
 
 ## Build conventions
 
+### Java package layout
+
+Plugin-owned Java sources use `src/main/java/net/tfminecraft/<plugin>/`,
+with lowercase package segments throughout. Derive `<plugin>` from the repository
+name by lowercasing it and removing hyphens: for example, `VFBuilders` becomes
+`vfbuilders`, `activity-tf` becomes `activitytf`, and `geiger-counters` becomes
+`geigercounters`. CoreProtect uses `net.tfminecraft.coreprotect` in this fork.
+Use `enums` and `interfaces` as package names; their singular forms are Java
+keywords. Java class names retain normal Java capitalization.
+
+Mirror packages under `src/test/java`, except deliberate external API fixtures.
+Keep package declarations, imports, reflection strings, `plugin.yml` entry points,
+and shaded-library destinations aligned with the source folders. Maven artifact
+coordinates, plugin names, and data-directory names are separate identifiers
+from Java packages.
+
+Build consumers against matching provider jars and release the dependent plugin
+set together. CoreProtect integrations use this fork's
+`net.tfminecraft.coreprotect` API.
+
+### Build inputs
+
 Follow the shared [XML and Maven POM conventions](POM-CONVENTIONS.md) when
 maintaining build files.
 

@@ -39,6 +39,6 @@ Recipe/profession permissions use the configured `permission-prefix` and namespa
 
 All `/ac` actions above require the admin permission. `/alloy name` follows its
 own alloy manager checks. Consult
-[CommandManager](https://github.com/TF-Minecraft/AdvancedCrafting/blob/main/src/main/java/net/tfminecraft/AdvancedCrafting/Managers/CommandManager.java)
+[CommandManager](https://github.com/TF-Minecraft/AdvancedCrafting/blob/main/src/main/java/net/tfminecraft/advancedcrafting/managers/CommandManager.java)
 for parsing and player/console restrictions. Use a restart when changing plugin
 JARs; configuration reload does not replace loaded classes.

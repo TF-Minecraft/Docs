@@ -1,7 +1,7 @@
 # Phase 0 — Professions System Design Lock
 
 **Status:** Design spec  
-**Target:** RPCharacters (`net.tfminecraft.RPCharacters.professions`)  
+**Target:** RPCharacters (`net.tfminecraft.rpcharacters.professions`)  
 **Context:** Greenfield deploy — retire standalone `Professions.jar`, no auto-migration from `plugins/Professions/PlayerData/`.
 
 ---

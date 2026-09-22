@@ -69,7 +69,7 @@ Players with `geiger.limit.bypass` are never limited.
 Small, deliberate footprint — each class has one job:
 
 ```
-src/main/java/tfmc/justin/
+src/main/java/net/tfminecraft/geigercounters/
 ├── geiger_counter.java                # Entry point: wiring, lifecycle
 ├── config/
 │   ├── ConfigMigrator.java            # Adds new keys to existing configs, splits out messages.yml

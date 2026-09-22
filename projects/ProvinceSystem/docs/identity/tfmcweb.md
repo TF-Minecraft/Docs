@@ -14,7 +14,7 @@ Companion: [integrations/discord-bot.md](../integrations/discord-bot.md) · [cos
 
 | Decision | Choice |
 |----------|--------|
-| Plugin name | **TFMCWeb** (`net.tfminecraft.TFMCWeb`) |
+| Plugin name | **TFMCWeb** (`net.tfminecraft.tfmcweb`) |
 | Owns | HTTP client, plugin key, Discord **link**, scoped **tokens**, link **cache**, Discord **gate** (via RPCharacters freeze), ban/warn **mirrors**, admin `/web` |
 | Does **not** own | Pack writing (ArmourShop/DrinkBuilder), map regen (SimpleFactions), character data (RPCharacters), Essentials ban execution |
 | Discord required | Every player must link Discord **and** be in the TFMC guild to play Survival |

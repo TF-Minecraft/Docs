@@ -36,7 +36,7 @@ VehicleFramework build before deployment.
 
 The [plugin manifest](https://github.com/TF-Minecraft/VFBuilders/blob/main/src/main/resources/plugin.yml)
 requires TLibs and VehicleFramework. The
-[entrypoint](https://github.com/TF-Minecraft/VFBuilders/blob/main/src/main/java/net/tfminecraft/VFBuilders/VFBuilders.java)
+[entrypoint](https://github.com/TF-Minecraft/VFBuilders/blob/main/src/main/java/net/tfminecraft/vfbuilders/VFBuilders.java)
 loads `config.yml`, `stations.yml`, `categories.yml` and files under
 `plugins/VFBuilders/blueprints/`, then starts the station manager. It creates a
 `data/` directory under the plugin's data folder.

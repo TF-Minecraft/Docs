@@ -44,7 +44,7 @@ All per-patient state lives in `SurgeryStateManager` maps keyed by player UUID a
 One manager per concern, wired together by `SurgeryMenuManager`:
 
 ```
-src/main/java/tfmc/justin/
+src/main/java/net/tfminecraft/surgery/
 ├── SurgeryPlugin.java                  # Entry point: wiring, lifecycle
 ├── commands/
 │   └── SurgeryCommand.java             # /surgery <player> validation + menu open

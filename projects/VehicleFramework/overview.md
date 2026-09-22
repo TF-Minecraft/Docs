@@ -12,9 +12,9 @@ This framework implements several systems that do not exist in the standard Spig
 To achieve this, I leveraged the external plugin **ModelEngine**, but used parts of its API in unconventional ways. For example, the control system is built using the plugin’s manual bone animation interface, which is normally meant for running animations — not for real-time input-driven rotation. Because ModelEngine uses **JOML** for its math, I integrated JOML into my calculations to ensure compatibility and seamless model manipulation.
 
 ## Features
-- Highly customizable vehicles based on YAML configuration files (Controlled from [ActiveVehicle.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Vehicles/ActiveVehicle.java))
-- Advanced movement and rotation logic with Joml and ModelEngine ([BoneRotator.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Bones/BoneRotator.java))
-- SQLite instance store (`data/vehicles.db`) with chunk-based spawn ([VehiclePersistence.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Database/VehiclePersistence.java))
+- Highly customizable vehicles based on YAML configuration files (Controlled from [ActiveVehicle.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/vehicles/ActiveVehicle.java))
+- Advanced movement and rotation logic with Joml and ModelEngine ([BoneRotator.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/bones/BoneRotator.java))
+- SQLite instance store (`data/vehicles.db`) with chunk-based spawn ([VehiclePersistence.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/database/VehiclePersistence.java))
 
 
 ## Technical Overview
@@ -26,11 +26,11 @@ TFMC's runtime baseline is **Minecraft 1.21.10**; see the
 - Java 21 compiler/runtime target, with Spigot API 1.21.10 from Maven. The earlier Paper 1.21.10 build 130 lab used Java 25; see its dated report for the scope of that runtime evidence.
 - Built using Maven
 ### Architecture:
-- Main class intializes managers and plugin setup ([VehicleFramework.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/VehicleFramework.java))
-- Configuration files loaded and stored as templates on boot ([Loaders](https://github.com/TF-Minecraft/VehicleFramework/tree/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Loaders))
-- VehicleManager handles spawning, despawning, persistence and general input and packets ([VehicleManager.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Managers/VehicleManager.java))
-- ActiveVehicle is a very deep class with several Handler classes that handle various areas of operation ([Handlers](https://github.com/TF-Minecraft/VehicleFramework/tree/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Vehicles/Handlers))
-- Weapons can exist on vehicles (in the WeaponHandler), they are connected by seat ([Weapons](https://github.com/TF-Minecraft/VehicleFramework/tree/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Weapons) [WeaponHandler.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/VehicleFramework/Vehicles/Handlers/WeaponHandler.java))
+- Main class intializes managers and plugin setup ([VehicleFramework.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/VehicleFramework.java))
+- Configuration files loaded and stored as templates on boot ([Loaders](https://github.com/TF-Minecraft/VehicleFramework/tree/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/loaders))
+- VehicleManager handles spawning, despawning, persistence and general input and packets ([VehicleManager.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/managers/VehicleManager.java))
+- ActiveVehicle is a very deep class with several Handler classes that handle various areas of operation ([Handlers](https://github.com/TF-Minecraft/VehicleFramework/tree/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/vehicles/handlers))
+- Weapons can exist on vehicles (in the WeaponHandler), they are connected by seat ([Weapons](https://github.com/TF-Minecraft/VehicleFramework/tree/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/weapons) [WeaponHandler.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/vehicles/handlers/WeaponHandler.java))
 
 
 ## Key Challenges Solved

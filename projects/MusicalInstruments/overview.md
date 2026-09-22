@@ -39,7 +39,7 @@ A lightweight repeating task tracks each performing player and cleans itself up 
 Small, deliberate footprint — each class has one job:
 
 ```
-src/main/java/tfmc/justin/
+src/main/java/net/tfminecraft/musicalinstruments/
 ├── InstrumentPlugin.java              # Entry point: wiring, lifecycle, config loading
 ├── commands/
 │   └── InstrumentCommand.java         # /instruments command + tab completion
