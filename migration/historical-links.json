@@ -1,0 +1,128 @@
+[
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/architecture.md",
+    "link": "../frontend/app/map/main/page.tsx",
+    "resolved_source_path": "frontend/app/map/main/page.tsx"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/architecture.md",
+    "link": "../frontend/app/map/r3b1rth/page.tsx",
+    "resolved_source_path": "frontend/app/map/r3b1rth/page.tsx"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/integrations/discord-bot.md",
+    "link": "../../tfmc_bot/docs/",
+    "resolved_source_path": "tfmc_bot/docs"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/integrations/discord-bot.md",
+    "link": "../../../tfmc_bot/docs/local-dev.md",
+    "resolved_source_path": "../tfmc_bot/docs/local-dev.md"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/integrations/discord-bot.md",
+    "link": "../../tfmc_bot/docs/hosting.md",
+    "resolved_source_path": "tfmc_bot/docs/hosting.md"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/integrations/discord-bot.md",
+    "link": "../../tfmc_bot/docs/local-dev.md",
+    "resolved_source_path": "tfmc_bot/docs/local-dev.md"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/integrations/simplefactions.md",
+    "link": "../../simplefactions/docs/wars.md",
+    "resolved_source_path": "simplefactions/docs/wars.md"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/integrations/simplefactions.md",
+    "link": "../../simplefactions/docs/fertility.md",
+    "resolved_source_path": "simplefactions/docs/fertility.md"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/integrations/simplefactions.md",
+    "link": "../../simplefactions/docs/fertility-verify.md",
+    "resolved_source_path": "simplefactions/docs/fertility-verify.md"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/integrations/simplefactions.md",
+    "link": "../../../simplefactions/docs/map-export.md",
+    "resolved_source_path": "docs/map-export.md"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/map/overview.md",
+    "link": "../../simplefactions/docs/wars.md",
+    "resolved_source_path": "simplefactions/docs/wars.md"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/map/wars-on-map.md",
+    "link": "../../simplefactions/docs/wars.md",
+    "resolved_source_path": "simplefactions/docs/wars.md"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/ops/dev-config.md",
+    "link": "../../../simplefactions/docs/dev-config.md",
+    "resolved_source_path": "docs/dev-config.md"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/ops/dev-config.md",
+    "link": "../../../tfmc_bot/docs/local-dev.md",
+    "resolved_source_path": "../tfmc_bot/docs/local-dev.md"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/ops/local-dev.md",
+    "link": "../../../tfmc_bot/docs/local-dev.md",
+    "resolved_source_path": "../tfmc_bot/docs/local-dev.md"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/ops/sheet-render.md",
+    "link": "../../backend/.env",
+    "resolved_source_path": "backend/.env"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/ops/sheet-render.md",
+    "link": "../../tfmc_bot/docs/hosting.md",
+    "resolved_source_path": "tfmc_bot/docs/hosting.md"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/ops/sheet-render.md",
+    "link": "../../tfmc_bot/docs/skins-review.md",
+    "resolved_source_path": "tfmc_bot/docs/skins-review.md"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/roadmap.md",
+    "link": "../../simplefactions/docs/wars.md",
+    "resolved_source_path": "docs/wars.md"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/wiki-research/validation/wiki-validation-report.md",
+    "link": "./wiki-dev-resume.stdout.log",
+    "resolved_source_path": "docs/wiki-research/validation/wiki-dev-resume.stdout.log"
+  },
+  {
+    "repo": "ProvinceSystem",
+    "page": "docs/wiki-research/validation/wiki-validation-report.md",
+    "link": "./wiki-dev-resume.stderr.log",
+    "resolved_source_path": "docs/wiki-research/validation/wiki-dev-resume.stderr.log"
+  }
+]
