@@ -13,7 +13,7 @@ python3 ../tlibs/tools/install-dependency.py --pom pom.xml
 mvn clean verify
 ```
 
-See the [installer and pinned-version guide](https://github.com/TF-Minecraft/TLibs/blob/804728d2c0d62d64e3194bcdeffc3708acfbc514/DEPENDENCIES.md)
+See the [installer and pinned-version guide](https://github.com/TF-Minecraft/TLibs/blob/61bd61b17fba45e5178612578805d7108596e8a0/DEPENDENCIES.md)
 for source access, offline installation, Java requirements, CI and rollback.
 The legacy public, legacy private and current TFMC builds have distinct checksum-based
 versions; they are not interchangeable. No hosted Maven registry is configured yet.

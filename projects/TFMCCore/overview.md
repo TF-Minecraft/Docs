@@ -65,7 +65,8 @@ Push to `main`, or merge your branch into it, for automatic release uploads.
 
 Install the pinned TLibs Maven dependency with
 `python3 ../tlibs/tools/install-dependency.py --pom pom.xml`. The existing
-`JustinasLa/tfmc-deps` access is required, or supply the exact JAR with `--jar`.
+Contents read access to private ServerAssets or the original `JustinasLa/tfmc-deps`
+release is required, or supply the exact JAR with `--jar`.
 TLibs is verified by the shared installer and no longer belongs in `libs/`
 or its checksum list. With the other dependencies prepared, run:
 
