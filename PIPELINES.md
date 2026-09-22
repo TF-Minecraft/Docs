@@ -1,18 +1,20 @@
 # Builds and releases
 
-Plugin pull requests into `main` run Maven verification with Java unit tests enabled. CoreProtect also builds pull requests into its default branch, `master`. A failed test fails the build. Test reports are uploaded when present, including after test failures; repositories without test sources report no tests.
+Active plugin pull requests into `main` run Maven verification with Java unit tests enabled and publish development artifacts. Pushes to `main` run the same verification without publishing development artifacts. CoreProtect uses its default branch, `master`, as well. A failed test fails the build. Test reports are uploaded when present, including after test failures; repositories without test sources report no tests.
 
-Development builds use `DEV-YYYYMMDD-HHmm`, with the date and time in UTC. The runtime JAR filename and embedded plugin version match, for example `armourshop-DEV-20260922-1500.jar` and `DEV-20260922-1500`. The numeric version in the committed POM remains the release version. GitHub artifact names include the run ID and attempt to distinguish builds within the same minute.
+Development builds use `DEV-YYYYMMDD-HHmm`, with the date and time in UTC. The runtime JAR filename and embedded plugin version match, for example `armourshop-DEV-20260922-1500.jar` and `DEV-20260922-1500`. Active plugins keep `main-SNAPSHOT` in the committed POM as a local-build marker; it is not a release number. CI sets the build version in its temporary checkout. GitHub artifact names include the run ID and attempt to distinguish builds within the same minute.
 
 ## Plugin releases
 
-1. Set the numeric release version in `pom.xml`. Keep the plugin descriptor's version as `${project.version}` so Maven supplies it.
-2. Push a matching tag, such as `v1.2`, `v1.2.3`, or `v1.2.3-rc.1`.
-3. The release workflow checks the tag against the POM, prepares dependencies, and runs `mvn clean verify` with tests enabled and the `deploy-live` profile disabled.
+1. Select the commit to release. No version-bump commit is needed. Keep the plugin descriptor's version as `${project.version}` so Maven supplies it.
+2. Push a release tag, such as `v1.2`, `v1.2.3`, or `v1.2.3-rc.1`. The tag is the only source of the release version.
+3. The release workflow validates the tag, prepares dependencies, sets Maven's project version from the tag without its leading `v`, and runs `mvn clean verify` with tests enabled and the `deploy-live` profile disabled. It does not commit the version change back to the branch.
 4. It validates and uploads the exact runtime JAR, `SHA256SUMS`, and `build.json` to a draft GitHub release.
 5. Download and inspect the artifacts, review the generated notes, and publish the draft.
 
 Tags with prerelease suffixes create prereleases. Snapshot versions are rejected. An existing release causes the run to fail; use a new version for corrections. The workflow does not deploy to a Minecraft server.
+
+Dependency and build-tool versions remain pinned in the POM; those select build inputs and are independent of the plugin's own release version. Archived plugins retain their historical POMs and workflows; this process applies to active plugins.
 
 ### Release presentation
 
