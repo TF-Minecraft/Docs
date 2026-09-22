@@ -58,10 +58,10 @@ asset automatically.
 
 The migration worktrees reviewed on **2026-09-22** use the following settings.
 The source migration targets these settings. Publishing matching dependency
-release assets and deploying the rebuilt jars are separate steps; `latest` assets
-can still refer to older builds. Archived source repositories retain their last
-remote version until a maintainer reopens them. This table is not an assertion
-that every deployed plugin has already been replaced.
+release assets and deploying the rebuilt jars are separate steps. The verified
+replacement versions are listed below; source PR review remains separate from
+release publication. This table does not assert that deployed plugins have been
+replaced.
 
 | Project | Java release | API | API version |
 | --- | --- | --- | --- |
@@ -105,6 +105,35 @@ that every deployed plugin has already been replaced.
 ProvinceSystem is a web/backend project and ServerAssets is a private asset
 snapshot. Neither produces a Minecraft plugin jar in this build set.
 AdvancedCrafting is included because several plugins require it.
+
+## Java 21 dependency replacements
+
+As of **2026-09-22**, the following replacement artifacts passed local JDK 21
+verification and are **published**. The previous release versions remain
+unchanged for rollback.
+
+| Project | Replacement | Unit tests |
+| --- | --- | --- |
+| [TLibs](projects/TLibs/README.md) | [1.1.1](https://github.com/TF-Minecraft/TLibs/releases/tag/v1.1.1) | 10 passed |
+| [Cooking](projects/Cooking/README.md) | [0.1.6-ALPHA](https://github.com/TF-Minecraft/Cooking/releases/tag/v0.1.6-ALPHA) | 167 passed |
+| [GunsAndGadgets](projects/GunsAndGadgets/README.md) | [1.0.7](https://github.com/TF-Minecraft/GunsAndGadgets/releases/tag/v1.0.7) | No tests in repository |
+| [VehicleFramework](projects/VehicleFramework/README.md) | [1.1.13](https://github.com/TF-Minecraft/VehicleFramework/releases/tag/v1.1.13) | 369 passed |
+| [AdvancedCrafting](projects/AdvancedCrafting/README.md) | [1.2.3](https://github.com/TF-Minecraft/AdvancedCrafting/releases/tag/v1.2.3) | No tests in repository |
+| [InteractibleFurniture](projects/InteractibleFurniture/README.md) | [0.1.4-BETA](https://github.com/TF-Minecraft/InteractibleFurniture/releases/tag/v0.1.4-BETA) | No tests in repository |
+| [VFBuilders](projects/VFBuilders/README.md) | [1.0.1](https://github.com/TF-Minecraft/VFBuilders/releases/tag/v1.0.1) | No tests in repository |
+| [MarketBlock](projects/MarketBlock/README.md) | [0.0.3](https://github.com/TF-Minecraft/MarketBlock/releases/tag/v0.0.3) | No tests in repository |
+
+Each JAR declares API 1.21.10 and contains Java 21-compatible classes. Its
+`SHA256SUMS` and `build.json` record the artifact hash, exact source commit and
+shared dependency inputs. These are local source builds, so `run` is `null`;
+bootstrap API inputs used to resolve dependency cycles are recorded separately
+from the released artifacts. Licensed third-party dependency JARs remain private.
+Cooking and InteractibleFurniture retain their ALPHA/BETA prerelease channels.
+
+Use the [shared installer](PIPELINES.md#build-dependencies) in latest mode to
+select published replacements, or pin the exact versions and hashes from a
+successful build for reproduction. Publication does not merge source PRs or
+deploy the plugins to a server. Runtime acceptance remains a separate check.
 
 ## Dependencies and validation
 

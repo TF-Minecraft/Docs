@@ -24,20 +24,21 @@ folder before upgrading. Publication and CI never deploy to a running server.
 ## Build from source
 
 Requires Java 21, Maven, Python 3 and authorised Contents read access to private
-ServerAssets. Use coordinated Java 21 TFMC dependencies. Once those artifacts
-are published, clone TLibs next to the source checkout as `../tlibs`:
+ServerAssets. Use the published Java 21 TFMC replacements. Clone TLibs next to
+the source checkout as `../tlibs`:
 
 ```sh
-python3 ../tlibs/tools/install-plugins.py --pom pom.xml
+python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode latest
 GH_TOKEN="$(gh auth token)" bash .github/scripts/prepare-release.sh
 mvn clean verify
 ```
 
-Before the migrated dependency release is published, install the matching TLibs
-source build with `mvn clean install` instead of downloading an older Java 25
-release. The [shared baseline](../../PLATFORM.md) records migration status.
+Latest mode selects TLibs 1.1.1. For a pinned rebuild, set `tlibs.version=1.1.1`
+and retain the recorded input hashes. The [shared baseline](../../PLATFORM.md)
+records replacement versions and source-review status.
 
-The default output is `target/advancedcrafting-1.2.2.jar`. TLibs uses Maven
+The replacement release source at `v1.2.3` produces
+`target/advancedcrafting-1.2.3.jar`. TLibs uses Maven
 `provided` scope; third-party API inputs are checksum-pinned in the private
 preparation script. No licensed JARs are committed or bundled with the release.
 The original developer's absolute Windows paths and package-time copies are removed.

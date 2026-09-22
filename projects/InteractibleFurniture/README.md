@@ -6,13 +6,15 @@ Configurable furniture interactions and persistence, with integrations used by M
 
 TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
 
+Published Java 21 replacement: [0.1.4-BETA](https://github.com/TF-Minecraft/InteractibleFurniture/releases/tag/v0.1.4-BETA), verified locally. See the [replacement release status](../../PLATFORM.md#java-21-dependency-replacements) for provenance, verification and source-review boundaries.
+
 ## Build and dependencies
 
 Use JDK 21 and `mvn clean verify` from the source checkout. Install the compatible
-TLibs 1.1.0 build in local Maven; prepare the authorized private inputs in `libs/`
+TLibs 1.1.1 build in local Maven; prepare the authorized private inputs in `libs/`
 with `.github/scripts/prepare-release.sh` and verify `.github/dependencies.sha256`.
-The migration uses the Maven Spigot 1.21.10 API and produces
-`target/interactiblefurniture-0.1.3-BETA.jar`. Its clean Java 21 build passes;
+The replacement release source at `v0.1.4-BETA` uses the Maven Spigot 1.21.10
+API and produces `target/interactiblefurniture-0.1.4-BETA.jar`. Its clean Java 21 build passes;
 server behavior still needs validation against the intended dependencies.
 
 The plugin manifest requires TLibs and MythicMobs. ProtocolLib is also a build

@@ -4,6 +4,8 @@
 
 TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
 
+Published Java 21 replacement: [1.0.1](https://github.com/TF-Minecraft/VFBuilders/releases/tag/v1.0.1), verified locally. See the [replacement release status](../../PLATFORM.md#java-21-dependency-replacements) for provenance, verification and source-review boundaries.
+
 VFBuilders adds configurable vehicle-building stations and blueprints to
 [VehicleFramework](../VehicleFramework/README.md).
 
@@ -11,9 +13,8 @@ VFBuilders adds configurable vehicle-building stations and blueprints to
 
 Use JDK 21 and Maven from the source checkout. The migration POM resolves
 Spigot API **1.21.10-R0.1-SNAPSHOT** with `provided` scope and targets Java 21.
-Install the compatible TLibs **1.1.0** and VehicleFramework **1.1.12** builds in
-local Maven, or use the repository's pinned setup action after those Java 21
-artifacts are published. See the [shared baseline](../../PLATFORM.md) for the
+Install the compatible TLibs **1.1.1** and VehicleFramework **1.1.13** builds in
+local Maven, or use the repository's shared setup action in latest mode. See the [shared baseline](../../PLATFORM.md) for the
 local migration and release status.
 
 Prepare the authorized private dependencies with
@@ -25,7 +26,8 @@ The remaining local inputs in `libs/` are `ItemsAdder_3.5.0-r2.jar`,
 mvn clean verify
 ```
 
-The resulting plugin is `target/vfbuilders-1.0.0.jar`. These compile-time
+The replacement release source at `v1.0.1` produces
+`target/vfbuilders-1.0.1.jar`. These compile-time
 inputs do not identify the tested runtime stack: the earlier vehicle lab uses
 ItemsAdder 4.0.18. Validate VFBuilders against the intended Java 21 server and
 VehicleFramework build before deployment.

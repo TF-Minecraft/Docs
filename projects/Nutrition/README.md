@@ -8,11 +8,14 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 ## Build and dependencies
 
-**Archived repository:** GitHub currently makes this repository read-only. The Java 21 / Minecraft 1.21.10 migration below was built and validated on the local `build/java21-mc1.21.10` branch; it has not been pushed or merged into the archived source repository.
+**Temporarily reopened:** The verified Java 21 / Minecraft 1.21.10 migration is pushed in [PR #6](https://github.com/TF-Minecraft/Nutrition/pull/6) and awaits the required independent review. Restore the repository’s archived state after the migration is merged; it has not been deployed.
 
 Run Maven with **JDK 21** from the source checkout. The POM sets `maven.compiler.release=21` and resolves `org.spigotmc:spigot-api:1.21.10-R0.1-SNAPSHOT` with `provided` scope from Spigot snapshots. The plugin descriptor declares `api-version: 1.21.10`.
 
-Install these matching Java 21 TFMC artifacts into local Maven before building: `me.plugins:tlibs:1.1.0`. Their source repositories use `mvn clean install`; CI uses the pinned dependency setup actions.
+Use the Java 21 replacement `me.plugins:tlibs:1.1.1`. The shared installer in
+`--mode latest` selects the published replacement and updates the consumer
+version property; an explicitly pinned build must set `tlibs.version=1.1.1`. See the
+[replacement release status](../../PLATFORM.md#java-21-dependency-replacements).
 
 Populate `libs/` with the exact files and hashes listed in `.github/dependencies.sha256`. `.github/scripts/prepare-release.sh` downloads those pinned private assets when supplied with the approved dependency token.
 

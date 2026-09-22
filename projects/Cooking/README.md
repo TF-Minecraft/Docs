@@ -6,6 +6,8 @@ Food composition, cooking stations, crop quality and animal husbandry.
 
 TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
 
+Published Java 21 replacement: [0.1.6-ALPHA](https://github.com/TF-Minecraft/Cooking/releases/tag/v0.1.6-ALPHA), verified locally. See the [replacement release status](../../PLATFORM.md#java-21-dependency-replacements) for provenance, verification and source-review boundaries.
+
 ## Build and dependencies
 
 Run Maven from the source checkout. The current [POM](https://github.com/TF-Minecraft/cooking/blob/main/pom.xml) declares Java **release 21** and **spigot-api 1.21.10-R0.1-SNAPSHOT**; [plugin.yml](https://github.com/TF-Minecraft/cooking/blob/main/src/main/resources/plugin.yml) declares `api-version: 1.21.10`. The build and loader metadata target the shared runtime. Gameplay validation remains separate from build verification.

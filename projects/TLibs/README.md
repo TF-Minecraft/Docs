@@ -6,6 +6,8 @@ TLibs provides shared item and block APIs, MMOItems rebuild and socket handling,
 
 TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
 
+Published Java 21 replacement: [1.1.1](https://github.com/TF-Minecraft/TLibs/releases/tag/v1.1.1), verified locally. See the [replacement release status](../../PLATFORM.md#java-21-dependency-replacements) for provenance, verification and source-review boundaries.
+
 ## Runtime and integration
 
 The entrypoint is `me.Plugins.TLibs.TLibs`. `TLibs.getItemAPI()` and `TLibs.getBlockAPI()` expose the shared APIs; `getApiInstance(APIType)` is deprecated. Item path handlers let integrations register and remove their own item prefixes.
@@ -22,7 +24,8 @@ Maven dependencies; build/install the matching versions or use the pinned releas
 setup actions from CI. They also depend on TLibs, so follow the shared baseline's
 bootstrap guidance when rebuilding the full stack.
 
-Run `mvn clean verify` with JDK 21. The output is `target/TLibs-1.1.0.jar`.
+For the replacement release source at `v1.1.1`, run `mvn clean verify` with
+JDK 21. The output is `target/TLibs-1.1.1.jar`.
 Validate item resolution, rebuild/socket persistence and dependent-plugin startup
 on Paper 1.21.10 with the matching rebuilt consumers before deployment.
 
@@ -36,11 +39,11 @@ verifies plugin release hashes and installs exact coordinates without recursivel
 building dependency providers. From a consumer source checkout with TLibs next to it:
 
 ```sh
-python3 ../tlibs/tools/install-plugins.py --pom pom.xml
+python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode latest
 mvn clean verify
 ```
 
-The published stable release may still require Java 25 until the rebuilt Java 21
-release is promoted. Check release provenance and bytecode before using it with
-JDK 21; use the matching local Java 21 source builds meanwhile. Preserve older
-release versions for rollback. TLibs remains a separate server plugin.
+The published **1.1.1** replacement supports Java 21. Latest mode selects it;
+pinned consumers must set `tlibs.version=1.1.1` to avoid the older Java 25
+artifact. Release provenance records the exact source and build inputs. Preserve
+older release versions for rollback. TLibs remains a separate server plugin.

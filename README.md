@@ -84,18 +84,27 @@ Choose a project to open its technical documentation and source repository link.
 | [TFMCWeb](projects/TFMCWeb/README.md) | Website integration, Discord account linking, and player identity services. |
 | [TLibs](projects/TLibs/README.md) | Shared Java utilities and integration APIs. |
 
+### Temporarily reopened projects
+
+These repositories were reopened to submit their verified Java 21 / Minecraft
+1.21.10 migrations. The linked project pages identify the PRs awaiting independent
+review. Restore their archived state after the migrations are merged.
+
+| Project | What it does |
+| --- | --- |
+| [AdvancedGunpowder](projects/AdvancedGunpowder/README.md) | Musket and gunpowder weapon mechanics. |
+| [AdvancedResearch](projects/AdvancedResearch/README.md) | Research stations, notes, and progression. |
+| [Goldsmithing](projects/Goldsmithing/README.md) | Goldsmithing tables and jewellery crafting. |
+| [Nutrition](projects/Nutrition/README.md) | Food groups, diet variety, and player nutrition. |
+| [PointShop](projects/PointShop/README.md) | Points-based shops and configurable player rewards. |
+
 ### Archived projects
 
 Retained for historical reference.
 
 | Project | What it does |
 | --- | --- |
-| [AdvancedGunpowder](projects/AdvancedGunpowder/README.md) | Musket and gunpowder weapon mechanics. |
-| [AdvancedResearch](projects/AdvancedResearch/README.md) | Research stations, notes, and progression. |
 | [BreedingBuddies](projects/BreedingBuddies/README.md) | Animal breeding, care, ownership, and mount stats. |
-| [Goldsmithing](projects/Goldsmithing/README.md) | Goldsmithing tables and jewellery crafting. |
-| [Nutrition](projects/Nutrition/README.md) | Food groups, diet variety, and player nutrition. |
-| [PointShop](projects/PointShop/README.md) | Points-based shops and configurable player rewards. |
 
 ## Documentation
 

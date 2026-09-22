@@ -14,13 +14,14 @@ Development builds use `DEV-YYYYMMDD-HHmm`, with the date and time in UTC. The r
 
 Tags with prerelease suffixes create prereleases. Snapshot versions are rejected. An existing release causes the run to fail; use a new version for corrections. The workflow does not deploy to a Minecraft server.
 
-`build.json` records the source commit, repository, tag, workflow run, JAR name, and checksum. Only the publishing job has repository write permission; the build job has read access.
+`build.json` records the source commit, repository, tag, workflow run, JAR name, and checksum. Only the publishing job has repository write permission; the build job has read access. For the coordinated Java 21 replacement builds, artifacts were verified locally from exact source-release commits; `run: null` and local build provenance distinguish them from workflow-produced releases. Their dependency hashes record the bootstrap inputs used for cyclic APIs. Draft download/hash inspection still precedes publication; existing release assets are not replaced.
 
 TFMC's source migration targets **Java 21 / Minecraft 1.21.10**; see the
 [shared platform baseline](PLATFORM.md). Publishing matching Java 21 shared
-dependency releases is separate from merging source changes. Until those assets
-are promoted, a latest-release installer can still select Java 25 binaries and
-cause a JDK 21 consumer build to fail.
+dependency releases is separate from merging source changes. The
+[replacement release status](PLATFORM.md#java-21-dependency-replacements) lists
+the eight verified Java 21 artifacts and their publication state. Publishing
+these replacements does not merge source PRs or deploy a Minecraft server.
 
 ## Build dependencies
 
@@ -32,7 +33,7 @@ Shared TFMC plugins use their native Maven coordinates with `provided` scope. De
 
 Stable plugins use GitHub's latest published release. Cooking and InteractibleFurniture explicitly permit their existing ALPHA/BETA release channels. Drafts and DEV artifacts are excluded. A missing release, asset, credential or checksum mismatch fails the build. Publishing a release promotes that API to future builds; it does not deploy anything to a Minecraft server.
 
-All current shared plugin APIs now resolve from public source-built releases, including AdvancedCrafting 1.2.2 and MusicalInstruments 2.5. MusicalInstruments supplies the `InstrumentPlayEvent` API used by ActivityTF. Its former private JAR remains available for exact legacy rebuilds through the retained installer revision; current pinned and latest mode use the public release. Public release lookup uses the default GitHub token. Third-party licensed inputs continue to use the private preparation script and `DEPS_TOKEN`.
+Shared plugin APIs resolve from public source-built releases. AdvancedCrafting 1.2.3 is the verified Java 21 replacement for 1.2.2; MusicalInstruments remains at 2.5. MusicalInstruments supplies the `InstrumentPlayEvent` API used by ActivityTF. Its former private JAR remains available for exact legacy rebuilds through the retained installer revision; current pinned and latest mode use the public release. Public release lookup uses the default GitHub token. Third-party licensed inputs continue to use the private preparation script and `DEPS_TOKEN`.
 
 Every migrated build records exact coordinates, checksums and sources in `.build/plugin-dependencies.json`, uploaded alongside its development JAR. Tagged releases include that list in `build.json`. Local builds use `python3 ../tlibs/tools/install-plugins.py --pom pom.xml`; add `--mode latest` to update local version properties, or use the default `--mode pinned` and versions from a successful build's metadata for reproducible API selection. The private inputs also require `TFMC_PRIVATE_TOKEN` or `--assets /path/to/server-assets`.
 
