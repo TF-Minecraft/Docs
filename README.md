@@ -15,6 +15,7 @@ The canonical technical documentation for every TF-Minecraft repository: setup, 
 
 - [AACommandsFiller](projects/AACommandsFiller/README.md)
 - [ActivityTF](projects/ActivityTF/README.md)
+- [AdvancedCrafting](projects/AdvancedCrafting/README.md)
 - [AdvancedGunpowder](projects/AdvancedGunpowder/README.md)
 - [AdvancedResearch](projects/AdvancedResearch/README.md)
 - [Archaeo](projects/Archaeo/README.md)
