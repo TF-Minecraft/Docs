@@ -1,10 +1,10 @@
 # Thievery display locks - Test matrix
 
-Manual checks after the matching implementation batch. Player-facing strings must not contain U+2014.
+Run these checks before releasing display-lock changes. Player-facing strings must not contain U+2014.
 
 Run these checks on Minecraft **1.21.10** with the intended plugin dependencies and JVM from the [shared platform baseline](../../../PLATFORM.md). Record the source revision, server build, JVM and results; the checklist alone is not evidence of a passing release.
 
-## Regression (after Batch 1, repeat after Batch 4)
+## Regression
 
 | # | Check |
 |---|--------|
@@ -13,7 +13,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 | R3 | Walking away cancels door pick |
 | R4 | Chest GUI lockpick unchanged |
 
-## Lock toggle and access (Batch 3)
+## Lock toggle and access
 
 | # | Check |
 |---|--------|
@@ -30,7 +30,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 | L10 | Chunk unload/reload: furniture lock still there (variables). Armor stand / frame lock still there (uuid file) |
 | L11 | Pick up and replace furniture: lock still on that piece |
 
-## Robbery (Batch 4)
+## Robbery
 
 | # | Check |
 |---|--------|
@@ -47,7 +47,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 | S11 | Missing thief trait: refuse like chests |
 | S12 | Weak pick vs `display-lock-strength` * min ratio: refuse |
 
-## Polish (Batch 5)
+## Polish
 
 | # | Check |
 |---|--------|

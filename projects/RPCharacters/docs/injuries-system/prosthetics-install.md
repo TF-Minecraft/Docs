@@ -1,9 +1,6 @@
-# Batch 07 — Prosthetics install and swap
+# Prosthetics install and swap
 
-**Depends on:** [01](01-config-and-loaders.md), [02](02-trait-state-persistence.md), [03](03-trait-runtime-effects.md)  
-**Blocks:** 08, 12
-
-## Goal
+## Purpose
 
 Right click with a prosthetic item to install it for a mapped permanent injury, or swap an existing prosthetic in that group (no refund).
 
@@ -48,12 +45,12 @@ Right click with a prosthetic item to install it for a mapped permanent injury, 
 
 ## Acceptance
 
-- [x] Right click `m.utils.wood_claw_arm` with `one_handed` installs `wooden_claw_arm`
-- [x] Right click a different mapped item with an existing prosthetic opens replace confirm
-- [x] Permanent injury removed; injury count decreases
-- [x] Creator picked prosthetic without injury: install path skipped; item can still replace the owned prosthetic after confirm
+- [ ] Right click `m.utils.wood_claw_arm` with `one_handed` installs `wooden_claw_arm`
+- [ ] Right click a different mapped item with an existing prosthetic opens replace confirm
+- [ ] Permanent injury removed; injury count decreases
+- [ ] Creator picked prosthetic without injury: install path skipped; item can still replace the owned prosthetic after confirm
 
-## Implemented
+## Implementation
 
 - `ProstheticLoader.resolveForItem(ItemStack)` returns a single trait+item match
 - `TraitChangeService.replaceInjuryWithProsthetic` and `replaceProsthetic` (no fuel % migrate)

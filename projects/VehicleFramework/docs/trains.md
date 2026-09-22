@@ -1,23 +1,17 @@
-# Trains: spline tracks (locked design)
+# Trains: spline tracks
 
-Ground kinematic follow is **done**. Trains are a separate system. Do not mix terrain-follow into rail motion.
+Trains follow spline tracks. Ground vehicles use the separate terrain-follow system.
 
-This document is the source of truth for spline tracks. Vanilla `Rail` blocks are not used for trains.
+The spline data defines the track path. Vanilla `Rail` blocks are not used for trains.
 
-## Goals (product)
+## Behavior
 
-- Scenic routes with **gentle turns** (about 25 degrees by default), not only Minecraft 90-degree rail shapes.
-- **Passenger consists** later: pay to sit, travel station to station.
+- Scenic routes with **gentle turns** (35 degrees maximum by default), not only Minecraft 90-degree rail shapes.
+- Passenger consists use locomotive ticket and whitelist settings.
 - Tracks can be **damaged** (bomb, break). Motion and unloaded logic read **data**, not whether a display entity exists.
 
-## Two phases
-
-| Phase | In scope | Out of scope |
-|-------|----------|----------------|
-| **1** | Spline object, persist tracks, persist consist links, generate between anchors, 1x3 (then optional longer straights) visuals, travel by lerp on the spline, existing chunk load/unload | Recorder item, tickets/stations/fares, whitelist coal inventory, loco pulling coal from the car behind, force-loaded corridors, unloaded `s += dt` autopilot |
-| **2** | Circuit recorder, whitelist containers, coal car to loco, tickets, optional chunk tickets / unloaded advance | - |
-
-Phase 1 **does** save the consist and the spline. Phase 1 **does not** invent a new vehicle streamer. Vehicles keep `SpawnManager` plus SQLite payloads. Track **displays** spawn/despawn on **chunk** load/unload.
+Vehicles use `SpawnManager` and SQLite payloads; spline paths persist separately.
+Track displays spawn and despawn with their chunks.
 
 ## Core rule: spline is the object
 
@@ -25,12 +19,12 @@ Phase 1 **does** save the consist and the spline. Phase 1 **does not** invent a 
 Spline (JSON, always loaded or loaded per world)
   samples     motion + bake source
   segments    health / broken (bombs write here)
-  visuals     ItemDisplay / ModelEngine, optional, chunk-local
+  visuals     ItemDisplay entities, chunk-local
 Consist       ordered cars + splineId + arc length s
 ```
 
 - **Anything that touches the rail** (explosion, break, admin repair) updates **segment flags** on the spline. Displays are rebuilt from that, or hidden if the chunk is unloaded.
-- A missing or unloaded display **must not** change the path. Unloaded trains can later advance `s` on this same data; phase 1 still only moves loaded vehicles.
+- A missing or unloaded display **must not** change the path. Motion advances loaded vehicles using this data.
 - Cars **do not** physics-ride the mesh. Each car is a point at arc length `s - spacing` with rotation from the sample tangent. At a turnout, cars stay on the stem until they reach the frog (they are not copied onto the loco’s spline).
 
 ### Motion (1D)
@@ -50,23 +44,23 @@ Trailing cars rewind behind the parent using signed arc length. On loops, `stemL
 
 ### Spacing
 
-Reuse `behaviour.train` front/back connector bones ([`Connector`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/vehicles/handlers/train/Connector.java)). Spacing is bone distance along the spline.
+Reuse `behaviour.train` front/back connector bones ([`Connector`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/vehicles/handlers/train/Connector.java)). Spacing is bone distance along the spline.
 
-## Visuals (phase 1)
+## Visuals
 
 - **Source of truth:** samples. **Meshes:** anchored to the spline at bake intervals.
-- **v1 meshes:** 1x3 JSON / ModelEngine piece (one plank, rails on either side), about **one per block** on curves and slopes.
-- **Later in phase 1 (optional batch):** merge long collinear, same-grade runs into 2x3 / 3x3 (cap at whatever the model allows; 3x3 is the expected max). 1x3 remains for turns and grade changes.
-- Spawn displays when the **chunk loads**; remove when it unloads. No custom proximity streamer in phase 1.
+- **Meshes:** ItemDisplays use the `item-small`, `item-medium` and `item-large` ItemsAdder paths in `trains.yml`. Small pieces are 1x3 (one plank, rails on either side), about **one per block** on curves and slopes.
+- Collinear unbroken runs merge into medium and large pieces up to 3x3; motion samples remain dense.
+- Spawn displays when the **chunk loads**; remove when it unloads.
 - Bake is **cached** on the spline (`visuals()`). Chunk spawn iterates that list; it does not rebake per chunk. `replace` invalidates the cache.
 - `/vf reload` reloads spline JSON and vehicle configs, then **respawns railroad switches** in loaded chunks from live `trains.yml`. Rail ItemDisplays keep the last **applied** style (`item-small` / `medium` / `large`, `display-y-offset`) until `/vf track resync`.
 - `/vf track resync` copies live rail style to applied, invalidates bake caches, and respawns **rails only** in currently loaded chunks (`resync-chunks-per-tick`, default 2). Unloaded track is not spawned; it uses the new applied style the next time that chunk loads. Console can run this command.
 - Lay, join, dig, and break still rebake loaded pieces using the **applied** rail style. Preview new rail models with reload then resync.
 - Target: a player at max render distance might see a few hundred 1x3 displays. If that hitchs, merge straights before changing spawn rules.
 
-## Authoring (phase 1)
+## Authoring
 
-Track items, lay rules, and train debug logging live in [`trains.yml`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/resources/trains.yml) (`plugins/VehicleFramework/trains.yml`). `debug-logging: true` writes `logs/track.log` and `logs/recorder.log`. Vehicle save, spawn, unload, and mount lines go to `logs/persistence.log` when `persistence-logging: true` in `config.yml`. Persistence pose lines are entity location only. Recorder `POSE` / `SAMPLE` / `JUNCTION` include `eyaw` (stand), `dyaw` (bone `driveYaw`), and on `POSE` also `myaw`/`mpitch` (move `fromDirection`) and `pyaw`/`ppitch` (sample). `POSE` is rate-limited (~250 ms) so it logs without the tape item.
+Track items, lay rules, and train debug logging live in [`trains.yml`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/resources/trains.yml) (`plugins/VehicleFramework/trains.yml`). `debug-logging: true` writes `logs/track.log` and `logs/recorder.log`. Vehicle save, spawn, unload, and mount lines go to `logs/persistence.log` when `persistence-logging: true` in `config.yml`. Persistence pose lines are entity location only. Recorder `POSE` / `SAMPLE` / `JUNCTION` include `eyaw` (stand), `dyaw` (bone `driveYaw`), and on `POSE` also `myaw`/`mpitch` (move `fromDirection`) and `pyaw`/`ppitch` (sample). `POSE` is rate-limited (~250 ms) so it logs without the tape item.
 
 One spline per track (no stored sections). A **stroke** is one lay with the configured layer item (`item-layer`, default `m.utils.train_track_layer`):
 
@@ -100,15 +94,13 @@ developer tool; building and running the Minecraft plugin does not require Pytho
 or Pygame. Keep captured logs and investigation notes in `.scratch/` or the test
 lab; Python caches and virtual environments are ignored.
 
-No free-walk recorder tape in phase 1.
-
 ## Persistence
 
 ### Spline
 
 `plugins/VehicleFramework/data/tracks/<world>/<splineUuid>.json`
 
-Suggested fields: `id`, `world`, `loop`, `samples[]` (`x,y,z,yaw,pitch,s`), `segments[]` (`fromIndex`, `broken`, `health`). `loop` is **true** for a circuit: `closeLoop`, or when first and last samples are within `tracks.join-distance` after extend / load. Optional `visuals[]` in JSON is regenerable; runtime bake lives on the spline object.
+Stored path fields: `id`, `world`, `loop`, `samples[]` (`x,y,z,yaw,pitch,s`), `segments[]` (`fromIndex`, `broken`, `health`). `loop` is **true** for a circuit: `closeLoop`, or when first and last samples are within `tracks.join-distance` after extend / load. Optional `visuals[]` in JSON is regenerable; runtime bake lives on the spline object.
 
 Index which chunks a spline touches so `ChunkLoadEvent` can spawn only local displays.
 
@@ -126,63 +118,29 @@ On save, write at least:
 - `child` UUID (and `parent` on trailing cars)
 - On the loco, optional `junction` and `diverge` when the consist is mid-turnout
 
-On load: spawn cars as today. When both ends of a link exist in memory, `setChild` / `setParent` again. If the child chunk loads first, the car waits; it does not need a special global spawn.
+On load, cars use the normal vehicle spawning path. When both ends of a link exist in memory, `setChild` / `setParent` again. If the child chunk loads first, the car waits; it does not need a special global spawn.
 
 Do **not** require spawning the whole consist when one chunk loads. Accept temporary split until the other chunks load.
 
-## Phase 1 batches (implement in order)
+## Cargo, recorder and tickets
 
-### Batch T1 - Spline math and JSON
+- container `allow-items` (TLibs paths).
+- loco YAML `fuel-cars` (vehicle ids). Each engine slow-tick, the loco drains one matching fuel item from containers on the car directly behind if that car's id is on the list. Empty list = no auto-drain. Cargo GUIs share one inventory so every viewer sees the take.
+- recorder item (`tracks.item-recorder`) stores throttle vs spline `s`, travel sign, and **hold ticks** at a stop (engine off still counts). Circuits only: recording runs until one full lap of the **origin** loop (or you cancel). Time on a siding is recorded but does not finish the lap. Samples may include `splineId` and `junction`. Playback ramps throttle one step per tick (autopilot). Captain seat is manual (A/D still choose the frog); leaving resumes the tape from current `s`. Without a captain, a tape that recorded that junction diverges; legacy tapes stay through. Loaded consist. Not a second path.
+- Same-spline collision: if a locomotive dummy hitbox overlaps another train piece that is not on the same consist, those **two** vehicles explode. The rest of each consist stays and uncouples. Through vs branch at the frog does **not** explode (no frog AABB). Railroad switches use the configured `item-switch` ItemDisplay at each frog.
+- generic vehicle tickets (planes too). Owner toggles in the ownership GUI. Passenger seats need a matching ticket; captain, gunner, mechanic, owner, and whitelist skip. Consist uses the loco ticket id. On coupled trains, whitelist and ticket settings use the locomotive (`ticketSource`); a loco ticket opens passenger seats on any connected car. Tickets are not consumed.
 
-- Types: sample, segment, spline, `sampleAt(s)`, `advance(s, ds)`, nearest-`s` to a location.
-- Load/save JSON. Unit tests: cardinal heading, stop at broken segment, wrap only if `loop`.
-- No Bukkit entities yet.
+## Validation
 
-### Batch T2 - Generate between anchors
-
-- Staff/player item or command: two points in the same world, generate samples, persist spline.
-- Debug particles or a command to dump sample count / length.
-- No train motion yet.
-
-### Batch T3 - Chunk displays (1x3)
-
-- On chunk load, spawn 1x3 pieces for samples in that chunk; despawn on unload.
-- Breaking or exploding a piece sets **segment broken** (or health) on the spline and updates/hides the display. The sample list stays unless an admin deletes the spline.
-- T3 visuals are `ItemDisplay` entities using `item-small` in `trains.yml` (`ia.tfmc:track_small`), not ModelEngine.
-
-### Batch T4 - Consist save/load
-
-- Serialize parent/child UUIDs (and spline binding when present).
-- Reattach when the other vehicle becomes an `ActiveVehicle`.
-- No change to `SpawnManager` policy.
-- Vehicle `payload_json` in SQLite holds the consist (`parent`, `child`, `splineId`, `s`). Spline JSON stays the path. Cars still spawn per chunk like any other vehicle.
-
-### Batch T5 - Travel on spline
-
-- If the loco is bound to a spline (snapped when close enough), advance `s` by signed engine speed and teleport XYZ. Bone heading from the move vector.
-- Place child cars by connector spacing along the consist path (stem, then branch if the loco took the turnout). Cars stay on the stem until they reach the frog.
-- Facing frog: captain **A** arms left, **D** a right, within `junction-arm-distance`. Matching `side` diverges; otherwise **through**. Backing on the branch to `s = 0` rejoins the stem.
-- Broken segment: halt on path.
-- Bound locos follow the spline. Unbound trains stay still (not on a track).
-
-### Batch T6 (optional, still phase 1) - Longer straight pieces
-
-- After bake, merge collinear samples into 2x3 / 3x3. Motion samples stay dense. Displays get sparser on straights.
-- Displays merge collinear unbroken runs up to 3x3 (`item-medium` / `item-large`). Samples stay dense for motion.
-
-## Phase 2 (do not start in T1-T5)
-
-- P1: container `allow-items` (TLibs paths).
-- P2: loco YAML `fuel-cars` (vehicle ids). Each engine slow-tick, the loco drains one matching fuel item from containers on the car directly behind if that car's id is on the list. Empty list = no auto-drain. Cargo GUIs share one inventory so every viewer sees the take.
-- P3: recorder item (`tracks.item-recorder`) stores throttle vs spline `s`, travel sign, and **hold ticks** at a stop (engine off still counts). Circuits only: recording runs until one full lap of the **origin** loop (or you cancel). Time on a siding is recorded but does not finish the lap. Samples may include `splineId` and `junction`. Playback ramps throttle one step per tick (autopilot). Captain seat is manual (A/D still choose the frog); leaving resumes the tape from current `s`. Without a captain, a tape that recorded that junction diverges; legacy tapes stay through. Loaded consist. Not a second path.
-- Same-spline collision: if a locomotive dummy hitbox overlaps another train piece that is not on the same consist, those **two** vehicles explode. The rest of each consist stays and uncouples. Through vs branch at the frog does **not** explode (no frog AABB). Junction display meshes are not shipped.
-- P4: generic vehicle tickets (planes too). Owner toggles in the ownership GUI. Passenger seats need a matching ticket; captain, gunner, mechanic, owner, and whitelist skip. Consist uses the loco ticket id. On coupled trains, whitelist and ticket settings use the locomotive (`ticketSource`); a loco ticket opens passenger seats on any connected car. Tickets are not consumed.
-- Force-load window or unloaded `s` advance (spline data already supports it).
+Check lay/join/dig/split, loop seams, broken segments, forward and reverse
+consists, both turnout directions, chunk unload/reload, persistence, rail resync,
+recorder stops, coal transfer and passenger ticket access against the current
+source and configuration. Record the tested commit and results with the run.
 
 ## Code pointers
 
-- Train YAML: `behaviour.train` in [`BehaviourHandler`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/vehicles/handlers/BehaviourHandler.java)
-- Movement entry: [`VehicleMovementController`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/vehicles/controller/VehicleMovementController.java) `v.isTrain()` -> `splineTick`
-- Vehicle persist: [`VehiclePersistence`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/database/VehiclePersistence.java) (`saveLive`)
-- Chunk spawn: [`SpawnManager`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/managers/SpawnManager.java)
-- Junctions: [`TrackJunction`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/tracks/TrackJunction.java), [`TrackRegistry`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/tracks/TrackRegistry.java), [`TrackJunctionTravel`](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/tracks/TrackJunctionTravel.java)
+- Train YAML: `behaviour.train` in [`BehaviourHandler`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/vehicles/handlers/BehaviourHandler.java)
+- Movement entry: [`VehicleMovementController`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/vehicles/controller/VehicleMovementController.java) `v.isTrain()` -> `splineTick`
+- Vehicle persist: [`VehiclePersistence`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/database/VehiclePersistence.java) (`saveLive`)
+- Chunk spawn: [`SpawnManager`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/managers/SpawnManager.java)
+- Junctions: [`TrackJunction`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/tracks/TrackJunction.java), [`TrackRegistry`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/tracks/TrackRegistry.java), [`TrackJunctionTravel`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/tracks/TrackJunctionTravel.java)

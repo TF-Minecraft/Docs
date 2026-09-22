@@ -1,10 +1,10 @@
-# Thievery - Display locks (locked design)
+# Thievery - Display locks
 
 Steal from lockable **displays**: InteractibleFurniture types, armor stands, and item frames. Chests and doors stay as they are.
 
-See [IMPLEMENTATION_BATCHES.md](IMPLEMENTATION_BATCHES.md) for the build order. See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist.
+See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist.
 
-## Locked split (do not blur)
+## Responsibilities
 
 | Target | Lock model | Robbery | Fail |
 |--------|------------|---------|------|

@@ -11,7 +11,6 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 - [docs/FIVEDRAW.md](docs/FIVEDRAW.md)
 - [docs/GUILD_TABLES.md](docs/GUILD_TABLES.md)
 - [docs/HOLDEM.md](docs/HOLDEM.md)
-- [docs/IMPLEMENTATION_BATCHES.md](docs/IMPLEMENTATION_BATCHES.md)
 - [docs/SYSTEM.md](docs/SYSTEM.md)
 - [docs/TEST_MATRIX.md](docs/TEST_MATRIX.md)
 - [docs/WAGER_ENGINE.md](docs/WAGER_ENGINE.md)

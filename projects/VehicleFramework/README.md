@@ -15,19 +15,18 @@ Technical documentation is maintained here. Run commands from the source checkou
 
 - [Setup and client/server tooling](../ServerAssets/docs/LAB.md)
 - [Integration learnings and dependency compatibility](../ServerAssets/docs/LEARNINGS.md)
-- [Runtime evidence and unresolved restoration issue](../ServerAssets/docs/TEST-RESULTS.md)
 - [Jar inventory](../ServerAssets/JARS.md) (binaries remain private)
 
-Use `m.utils.arcane_fuel` for fuel. Matching MMOItems UTILS definitions, item types, ItemsAdder rails, ModelEngine blueprints and client resource packs are required alongside the jars. See the linked lab guide for the tested versions.
+Use `m.utils.arcane_fuel` for fuel. Matching MMOItems UTILS definitions, item types, ItemsAdder rails, ModelEngine blueprints and client resource packs are required alongside the jars. Use the asset manifest and record the exact versions for each test run.
 
 ## Build
 
 Use JDK 21 and Maven from the source checkout. Prepare the pinned private jars
 with `.github/scripts/prepare-release.sh`, verify `.github/dependencies.sha256`,
 and install the matching TLibs and CoreProtect Maven dependencies using their
-source builds or CI release setup actions. Then run `mvn clean verify`; the
-output from the replacement release source at `v1.1.13` is
-`target/vehicleframework-1.1.13.jar`.
+source builds or the shared installer in pinned mode. Then run
+`mvn clean verify` from `main`; Maven writes the JAR under `target/` using
+the version declared in `pom.xml`.
 
 The ModelEngine build alias `ModelEngine-4.0.8.jar` points to the supplied R4.1.1
 runtime in the dependency script. Its newer-server adapters may contain newer

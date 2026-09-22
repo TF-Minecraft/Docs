@@ -1,9 +1,6 @@
-# Batch 01 — Config and loaders
+# Config and loaders
 
-**Depends on:** [phase0-design.md](phase0-design.md)  
-**Blocks:** All other batches
-
-## Goal
+## Purpose
 
 Define YAML schemas and load them at plugin startup.
 
@@ -52,7 +49,7 @@ Pool lists **healing** trait ids only (`broken_arm`, `broken_leg`, `half_blind`)
 
 ### Update `traits/injury-traits.yml`
 
-Replace legacy ids with healing + permanent pairs. Healing traits include `duration`.
+Healing and permanent traits form progression pairs. Healing traits include `duration`; saved permanent IDs remain valid.
 
 ## Trait YAML extensions (`TraitLoader` / `TraitData`)
 
@@ -79,10 +76,6 @@ Replace legacy ids with healing + permanent pairs. Healing traits include `durat
 
 ## Acceptance
 
-- [x] `/rpcharacter reload` loads all files without warnings
-- [x] Invalid progression target logs warning and skips entry
-- [x] Prosthetic trait keys map to install item paths
-
-## Status
-
-**Done** (batch 01 implemented).
+- [ ] `/rpcharacter reload` loads all files without warnings
+- [ ] Invalid progression target logs warning and skips entry
+- [ ] Prosthetic trait keys map to install item paths

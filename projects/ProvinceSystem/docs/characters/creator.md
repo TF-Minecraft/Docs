@@ -24,7 +24,7 @@ Donators (and later all players) create and manage RP characters on the website 
 | **3d-f** | Kit UX polish | Submit/deny UX, asset sync, customise visibility, claim AS gate |
 | **4** | Character skin wardrobe | Mojang-signed player skins (base + rank extras + masked); web manage / in-game swap |
 
-## Locked decisions (Phase 1)
+## Character creation
 
 ### Auth
 
@@ -71,7 +71,7 @@ RPCharacters on enable/reload **PUT**s a full-replace snapshot to ProvinceSystem
 | Slots | Enforce synced limits (default 3; Gilded 4; Ascended/Legacy 5; hard cap 10) |
 | Dual path | In-game `/rpcharacter create` remains; both paths share validation |
 
-## Phase 2 - kits (summary)
+## kits (summary)
 
 Configurable kits in `plugins/RPCharacters/kits.yml`:
 
@@ -84,7 +84,7 @@ Configurable kits in `plugins/RPCharacters/kits.yml`:
 
 Starter kit `starter` replaces legacy ConditionalEvents `/tfmc starter`.
 
-## Phase 3 - kit item customise (summary)
+## kit item customise (summary)
 
 Customise **editable** kit lines on the website (character detail → Kits → Edit). Texture via player skins pipeline → `ps_items`; lore via RPCharacters. Block claim while skin pending approval or slug missing on ArmourShop.
 
@@ -94,7 +94,7 @@ Applied skins appear in the kit editor pick list and can be attached to any char
 
 Editable templates: `2d-template` (required), optional `3d-template`. Book journals use kind `book` (unsigned + signed PNGs).
 
-## Phase 4 - wardrobe (summary)
+## wardrobe (summary)
 
 | Concern | Choice |
 |---------|--------|

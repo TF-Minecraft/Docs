@@ -10,12 +10,12 @@ See the [shared API versions](../../PLATFORM.md#shared-api-versions) for the mat
 
 ## Build and dependencies
 
-Use JDK 21 and `mvn clean verify` from the source checkout. Install the compatible
-TLibs 1.1.1 build in local Maven; prepare the authorized private inputs in `libs/`
-with `.github/scripts/prepare-release.sh` and verify `.github/dependencies.sha256`.
-The replacement release source at `v0.1.4-BETA` uses the Maven Spigot 1.21.10
-API and produces `target/interactiblefurniture-0.1.4-BETA.jar`. Its clean Java 21 build passes;
-server behavior still needs validation against the intended dependencies.
+Use JDK 21 and `mvn clean verify` from `main`. Install the TLibs version
+declared in `pom.xml` with the [shared installer](../TLibs/README.md) in pinned
+mode. Prepare the private inputs in `libs/` with
+`.github/scripts/prepare-release.sh` and verify `.github/dependencies.sha256`.
+The POM uses the Spigot 1.21.10 API and writes the JAR under `target/` using
+its declared version. Validate server behavior against the intended dependencies.
 
 The plugin manifest requires TLibs and MythicMobs. ProtocolLib is also a build
 input; resolve the exact runtime integration versions with the shared baseline.

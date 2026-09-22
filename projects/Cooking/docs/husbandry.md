@@ -1,12 +1,10 @@
-# Cooking — Animal husbandry (locked design)
-
-This file is the live system spec. It is not a build log or implementation checklist.
+# Cooking — Animal husbandry
 
 Livestock lives inside **Cooking**, not a second plugin. BreedingBuddies is a reference for genetics, ownership, and mounts only. Do not port friendship, stable chunks, bundles, IRL day-change, or async simulation.
 
-This document is the source of truth. If code and this file disagree, change the code.
+Keep this guide aligned with the implementation and configuration on `main`.
 
-## Locked split (do not blur)
+## Responsibilities
 
 | Stat | What it is | What it is not |
 |------|------------|----------------|

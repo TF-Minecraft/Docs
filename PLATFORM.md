@@ -13,6 +13,9 @@ TFMC plugins target **Java 21 / Minecraft 1.21.10**, using the Paper or Spigot
 | Plugin build tool | Maven |
 | Web/backend | Follow [ProvinceSystem](projects/ProvinceSystem/docs/README.md) |
 
+Build from `main` using the committed POM and dependency pins. CoreProtect uses
+`master`. Tagged releases record a specific version of that source.
+
 ## Build conventions
 
 ### Java package layout

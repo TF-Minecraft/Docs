@@ -1,4 +1,4 @@
-# Magic - Manual test matrix (Batches 1-8, 14)
+# Magic - Manual test matrix
 
 Run after each release or before merging core GUI work. Check off each item when verified in-game.
 
@@ -10,14 +10,14 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 - [ ] Plugin enables on server start without errors
 - [ ] JAR deploys to server plugins folder
 
-## Reload (Batch 1-2)
+## Reload
 
 - [ ] `/magic reload` with `magic.admin` shows success message
 - [ ] Console logs element count after reload
 - [ ] Console logs `shrines=10` (or shrine element count) after artifact generator load
 - [ ] Invalid config shows reload failed message (optional negative test)
 
-## Commands and permissions (Batch 4, 7)
+## Commands and permissions
 
 - [ ] `/resonance` opens GUI for player with `magic.use`
 - [ ] `/resonance` without `magic.use` shows `open.no_permission`
@@ -25,12 +25,12 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 - [ ] `/magic open` without `magic.admin` shows `admin.no_permission`
 - [ ] Console sender for `/magic open` shows `open.players_only`
 
-## Open guards (Batch 4)
+## Open guards
 
 - [ ] Player without active character gets `open.no_character` (when RPCharacters loaded)
 - [ ] `/magic open` bypasses character check (admin layout test)
 
-## GUI layout (Batch 3, 7)
+## GUI layout
 
 - [ ] 54-slot inventory with arcane purple title
 - [ ] Black border frame on perimeter filler slots
@@ -39,13 +39,13 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 - [ ] Surge in slot 12, Flow in slot 14
 - [ ] Ten element icons: spirit 20, arcanum 22, illusion 24; row 3 Cerrith/Seithr/Oseni/Mitlan (28, 30, 32, 34); row 4 Necromancy/Shadowmancy/Bloodmagic (38, 40, 42)
 
-## RPCharacters head (Batch 5)
+## RPCharacters head
 
 - [ ] Active character shows wardrobe skin on head
 - [ ] Display tab name shown as head title
 - [ ] Fallback head when no character (admin `/magic open`)
 
-## Cast mode toggle (Batch 6)
+## Cast mode toggle
 
 - [ ] Default cast mode from `config.yml` selected on first open (glint + Selected lore)
 - [ ] Click Flow: right glints, left does not; head lore shows `Casting: Flow`
@@ -53,7 +53,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 - [ ] Close and reopen GUI: session mode retained
 - [ ] Relog with active character: cast mode restored from profile
 
-## Persistence (Batch 8)
+## Persistence
 
 - [ ] Join with active character: `plugins/Magic/data/characters/<characterId>.json` is created if missing
 - [ ] Change cast mode, wait for equilibrium/resonance drift, relog: values restored
@@ -89,7 +89,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 - [ ] Quit / disable clears applied modifiers
 - [ ] Spark: idle decay no longer nests a full `SpellModifierApplyService.syncOnline` under `MagicTickService.tick`
 
-## Artifact generator (Batches 1-6)
+## Artifact generator
 
 ### Server setup
 
@@ -117,7 +117,7 @@ Secondaries are the union of every group that contains the primary. Names: Title
 - [ ] Illusion secondaries are cerrith and/or shadowmancy
 - [ ] `magic.(primary=cerrith;rarity=rare)` still has no affinity extras (path lock)
 
-### Shrines (Batch 2-4)
+### Shrines
 
 Scoring is loaded from `artifacts/shrines.yml`. Charge runs when an artifact is placed on a `pedestal` IF slot.
 
@@ -156,7 +156,7 @@ Empty generated items have cap PDC but `hasStoredAura` is false until shrine cha
 - [ ] Multi-element artifact: hits credit the dominant fill; other fills still feed power-by-element
 - [ ] Eight pedestals + sit: session starts when at least one charged artifact is present; orbs spawn from those pedestals
 
-## Meditation (Batch 14)
+## Meditation
 
 - [ ] Eight pedestals on the ring + GSit at center: white starter orb, no text
 - [ ] Missing a pedestal: no session
@@ -167,14 +167,14 @@ Empty generated items have cap PDC but `hasStoredAura` is false until shrine cha
 - [ ] Each hit spends 1 Focus; 0 Focus does nothing
 - [ ] Research experiment spends the same Focus bar (character-keyed)
 
-## Click lock (Batch 4)
+## Click lock
 
 - [ ] Cannot take items from GUI
 - [ ] Shift-click blocked
 - [ ] Drag into/out of GUI cancelled
 - [ ] Element icons have no click effect
 
-## Artifact TLibs path (path batches 1-4)
+## Artifact TLibs path
 
 ### Server setup
 

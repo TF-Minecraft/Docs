@@ -61,7 +61,7 @@ stats/categories/<categoryId>/
 | `StatQuery` | `getLabel(statKey)` for `/tfmc stats` display |
 | `StatCategory` | `getId()`, `register(plugin)` registers listener on TFMCCore |
 
-Do not put new category code in `stats/vehicles/` or other legacy stub paths. Use `stats/categories/` only.
+Put category code in `stats/categories/`.
 
 ## Integration pattern
 

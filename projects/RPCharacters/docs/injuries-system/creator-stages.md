@@ -1,9 +1,6 @@
-# Batch 09 — Creator stages
+# Creator stages
 
-**Depends on:** [01](01-config-and-loaders.md), [08](08-prosthetic-fuel.md)  
-**Blocks:** 10, 12
-
-## Goal
+## Purpose
 
 Two optional character creator stages for backstory permanent injuries and one prosthetic.
 
@@ -77,14 +74,14 @@ Insert after personality or before finish, parallel to evil branch skippability.
 
 ## Web messages
 
-Add `web-messages` blocks for both info stages (ProvinceSystem batch 10).
+Both info stages use `web-messages` for the ProvinceSystem creator.
 
 ## Acceptance
 
-- [x] Can skip both stages entirely
-- [x] Can pick multiple permanent injuries, 0 points
-- [x] Can pick at most one prosthetic, costs 1 point
-- [x] Prosthetic selectable without permanent injury
-- [x] Injury/prosthetic selection locked 24h after creation
-- [x] Matching backstory injury removed when prosthetic is present
-- [x] All option icons distinct and clear
+- [ ] Can skip both stages entirely
+- [ ] Can pick multiple permanent injuries, 0 points
+- [ ] Can pick at most one prosthetic, costs 1 point
+- [ ] Prosthetic selectable without permanent injury
+- [ ] Injury/prosthetic selection locked 24h after creation
+- [ ] Matching backstory injury removed when prosthetic is present
+- [ ] All option icons distinct and clear

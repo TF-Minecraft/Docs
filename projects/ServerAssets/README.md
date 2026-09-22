@@ -10,7 +10,6 @@ Technical documentation is maintained here. Run commands from the source checkou
 - [README.md](overview.md)
 - [docs/LAB.md](docs/LAB.md)
 - [docs/LEARNINGS.md](docs/LEARNINGS.md)
-- [docs/TEST-RESULTS.md](docs/TEST-RESULTS.md)
 
 ## Builds and releases
 

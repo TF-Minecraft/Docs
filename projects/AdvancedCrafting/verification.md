@@ -4,21 +4,19 @@
 
 ## Automated evidence
 
-The supplied archive contains no unit tests. `mvn clean verify` checks source
+The source contains no unit tests. `mvn clean verify` checks source
 compilation and packaging; a successful build must not be described as gameplay
-coverage. Migrated CI uses Java 21 and publishes test reports if tests are added later.
-The first public import preserves the supplied Java sources byte-for-byte.
+coverage. CI uses Java 21 and publishes test reports if tests are added later.
 
 Release checks verify that the tag matches Maven, the JAR has a plugin descriptor,
 and the release checksum matches its bytes. The descriptor receives the same
-version as the JAR through Maven resource filtering. ActivityTF, TFMCCore,
-Thievery and Recycler compile and run their available tests against the API as
-part of the cross-repository migration.
+version as the JAR through Maven resource filtering. Compile ActivityTF, TFMCCore, Thievery and Recycler and run their available
+tests against the matching API version.
 
 ## Server smoke checklist
 
-These checks require a configured Minecraft server and have not been performed
-as part of the repository import:
+Run these checks on a configured Minecraft server for the source and dependency
+versions being released:
 
 1. Start with all declared dependencies and the configured recipes/schemes; inspect startup logs.
 2. Open each configured crafting, alloy and ingredient-conversion station.

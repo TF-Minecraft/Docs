@@ -1,6 +1,6 @@
 # Guild tables and house bank
 
-Lock for the guild-house work. Implementation order: [IMPLEMENTATION_BATCHES.md](IMPLEMENTATION_BATCHES.md) phase **Guild house**. Do not start Hold'em.
+Guild-house tables connect blackjack operation to guild permissions, auto-dealer limits and the faction bank.
 
 Bank money reaches the felt only through `BankAccount`, as a leg of a wager transaction. See [WAGER_ENGINE.md](WAGER_ENGINE.md).
 
@@ -80,7 +80,7 @@ Leave-distance still does not clear dealer. Logout / pickup still does (existing
 
 ## Options GUI
 
-After game-select **blackjack** (not free play / poker in this phase): second inventory.
+After game-select **blackjack** (not free play / poker): second inventory.
 
 - Auto on/off
 - Staff mint on/off (hidden without perm)
@@ -103,4 +103,4 @@ Default `SHOE`. Engine stays dumb; blackjack asks the table for policy.
 
 One Games class (same idea as `RpNames`): plugin present + enabled, then `FactionManager` / `Guild` / `Bank`. Catch `LinkageError`. Do not scatter SF types through `BlackjackGame`.
 
-SF changes this phase: `GuildModifier` entry + `upgrades.yml` row. No Games dependency in SF `pom` / `plugin.yml`.
+SimpleFactions integration: `GuildModifier` entry + `upgrades.yml` row. No Games dependency in SF `pom` / `plugin.yml`.

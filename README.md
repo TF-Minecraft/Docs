@@ -86,10 +86,9 @@ Choose a project to open its technical documentation and source repository link.
 
 ### Archived projects
 
-AdvancedGunpowder, AdvancedResearch, Goldsmithing, Nutrition and PointShop were
-briefly reopened for their Java 21 / Minecraft 1.21.10 migrations. Those changes
-are merged, their main-branch builds passed, and all five repositories are
-archived again. BreedingBuddies remains archived for historical reference.
+AdvancedGunpowder, AdvancedResearch, Goldsmithing, Nutrition, PointShop and
+BreedingBuddies are archived. The first five target the shared Java 21 /
+Minecraft 1.21.10 baseline on `main`.
 
 | Project | What it does |
 | --- | --- |

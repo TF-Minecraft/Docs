@@ -1,12 +1,12 @@
 # Hold'em
 
-Lock for Texas Hold'em (player-facing **Tenceur Hold'em**). Saved `gameId` stays **`poker`**. Implementation order: [IMPLEMENTATION_BATCHES.md](IMPLEMENTATION_BATCHES.md) phase **Hold'em**. Numbered batches are coded; awaiting in-game testing. Five-card draw is Phase 4 ([FIVEDRAW.md](FIVEDRAW.md)), id `draw`.
+Texas Hold'em is displayed as **Tenceur Hold'em** and saved with `gameId: poker`. See [Five-Draw](FIVEDRAW.md) for the separate `draw` game.
 
-Games **owns rules**. Engines stay dumb: no Hold'em ranking on `Card`, no second display stack, no blackjack box/tray copy. Fill [PokerGame.java](https://github.com/TF-Minecraft/Games/blob/f296e4b9b5944b03693f0f0086dbc9bf91825f3c/src/main/java/net/tfminecraft/games/game/PokerGame.java). Call `dealToPlayer`, `dealToTable`, `muck*`, `flushPiles`, session APIs.
+Games **owns rules**. Engines stay dumb: no Hold'em ranking on `Card`, no second display stack, no blackjack box/tray copy. Rules live in [PokerGame.java](https://github.com/TF-Minecraft/Games/blob/main/src/main/java/net/tfminecraft/games/game/PokerGame.java). Call `dealToPlayer`, `dealToTable`, `muck*`, `flushPiles`, session APIs.
 
 Hold'em is a **player pot**, not a house game. Guild auto-dealer, staff mint, and tray float stay blackjack.
 
-## Rules (locked)
+## Rules
 
 - No-limit Hold'em. Stacks are chips on the felt.
 - 2+ players to start a hand (seated in `actives`). Idle shoe click by a seated player deals.
@@ -16,38 +16,38 @@ Hold'em is a **player pot**, not a house game. Guild auto-dealer, staff mint, an
 - Optional burn cards: later.
 - Side pots: a short call is in for that amount; extra chips from others make a side pot at showdown.
 
-## Batch 1
+## Seats and button
 
-Seats, button, blinds on the hologram. Sandbox shoe draw while idle. `minActives()` stays 0. No deal, no blind posting, no session auto-start.
+Seats, the dealer button and configured blinds appear on the hologram. The shoe supports sandbox draws while idle; a seated player starts a hand with at least two seats occupied.
 
-## Batch 2
+## Dealing
 
 Seated player clicks the shoe with 2+ seats: `beginSession`, two hole cards each (left of button first, one around then another). Live: no sandbox draw or selected return. F still works. `/games session stop` mucks holes and does not rotate the button. Walking off to one player ends the session.
 
-## Test (batch 2)
+## Test
 
 One seated: shoe still draws. Two seated, seated click: holes deal, shoe locked. Unseated click still draws. Session stop mucks. One of two leaves: session ends.
 
-## Batch 3
+## Betting
 
 Preflop chat: **check**, **call**, **fold**, **raise** (same path as blackjack hit/stand). Raise is chips already on this street above the call, then the word. No `/wager` commit for Hold'em. Last player standing wins without ranking: session ends, button moves. Still no blind posting.
 
-## Batch 4
+## Community cards
 
 When a street matches, deal the next board automatically (flop 3, then turn 1, then river 1), all face-up on `board`. New street number so only this-street chips count. Same chat betting; folded stays folded. No burns.
 
-## Batch 5
+## Showdown
 
 When river betting matches, remaining holes are shown, best 5-card Hold'em hand wins (ace-high, wheel straight). Even split among tied winners of a pot; leftover denars go left of the button among those winners. Then session end and button move. Fold-win still skips ranking.
 
-## Batch 6
+## Short calls and side pots
 
 **Call** with fewer chips than the bet is allowed: they are in for that amount and skip the rest of the street. **Raise** still needs more than the bet. At showdown, pots are layers by total invested (all streets). Folded chips stay in the pots they paid into. No extra chat word. Still no blinds posted.
 
-## Batch 7
+## Table options
 
 Place and sneak-edit: small/big blinds and Shoe vs Round shuffle. Defaults from `games.yml`. Still not posted. `ROUND` reshuffles at hand start (already). Later: optional burns.
 
-## Test (batch 7)
+## Test
 
 Place poker 5/10 Round: hologram blinds + Round. Edit 0/0: no blinds line. Old JSON without fields: yaml blinds. Non-owner sneak still flushes. Blackjack options unchanged.

@@ -1,14 +1,12 @@
-# Cooking — Crop quality and growth (locked design)
-
-This file is the live system spec. It is not a build log or implementation checklist.
+# Cooking — Crop quality and growth
 
 Crop stars and **growth cancel** live inside **Cooking**. CustomCrops is the plant/harvest engine for custom crops. SimpleFactions owns **province fertility** (0–100 lookup only). Seeds stay dumb IA/vanilla items: no `food_quality`, no planted_crops SQL, no plant→harvest lineage.
 
-This document is the source of truth. If code and this file disagree, change the code.
+Keep this guide aligned with the implementation and configuration on `main`.
 
-[`crops.yml`](https://github.com/TF-Minecraft/Cooking/blob/d1e365f5f7b70dc8797f7fcac2ca87361928a19e/src/main/resources/crops.yml) is loaded (`CropsLoader`). Harvest math is `CropHarvestQuality`. Growth math is `CropGrowthChance`. Vanilla hoe harvest, vanilla `BlockGrowEvent`, and CustomCrops harvest rewrite are live. Fertility uses SimpleFactions province 0–100 (`CropFertility`); missing plugin, disabled map, or unmapped land is **0** for harvest. Growth **does not cancel** when the map is off or `growth-gate.enabled` is false. CustomCrops loot tables drop ItemsAdder `tfmc_cooking` produce (and IA seeds). Cooking converts produce via [`conversions.yml`](https://github.com/TF-Minecraft/Cooking/blob/d1e365f5f7b70dc8797f7fcac2ca87361928a19e/src/main/resources/conversions.yml) at harvest quality H. Configured seed drops are left unchanged. Dowsing farm tables drop plain IA seeds (`ia.playbox_custom_crops:…_seeds`).
+[`crops.yml`](https://github.com/TF-Minecraft/Cooking/blob/main/src/main/resources/crops.yml) is loaded (`CropsLoader`). Harvest math is `CropHarvestQuality`. Growth math is `CropGrowthChance`. Vanilla hoe harvest, vanilla `BlockGrowEvent`, and CustomCrops harvest rewrite are live. Fertility uses SimpleFactions province 0–100 (`CropFertility`); missing plugin, disabled map, or unmapped land is **0** for harvest. Growth **does not cancel** when the map is off or `growth-gate.enabled` is false. CustomCrops loot tables drop ItemsAdder `tfmc_cooking` produce (and IA seeds). Cooking converts produce via [`conversions.yml`](https://github.com/TF-Minecraft/Cooking/blob/main/src/main/resources/conversions.yml) at harvest quality H. Configured seed drops are left unchanged. Dowsing farm tables drop plain IA seeds (`ia.playbox_custom_crops:…_seeds`).
 
-## Locked split (do not blur)
+## Responsibilities
 
 | Piece | What it is | What it is not |
 |------|------------|----------------|

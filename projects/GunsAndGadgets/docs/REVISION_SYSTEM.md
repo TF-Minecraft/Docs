@@ -1,15 +1,6 @@
 # GunsAndGadgets - Revision and craft provenance
 
-## Status
-
-| Batch | Status |
-|-------|--------|
-| GG-0 + GG-1 (foundation) | **Done** - provenance IO, RevisionTracker, disabled parts, broken guns |
-| GG-1a Stamp on craft (Batch 2) | **Done** - `gg_craft_parts` stamped on real craft only |
-| GG-1c GunStatRefresher (Batch 3) | **Done** - lazy refresh, `/gg refresh`, runtime preservation |
-| GG-1d Recycler provider | **Done** - `recycler` `GunsAndGadgetsProvider` sums stamped part costs |
-
-## Implemented (Batch 3 - GunStatRefresher)
+## Stat refresh
 
 When a stamped part revision is behind the live `parts.yml` revision:
 
@@ -48,7 +39,7 @@ stat_refresh_debug: false
 
 When `true`, logs outdated part ids and `gun_id` to the server console on refresh.
 
-## Implemented (Batch 2 - stamp on craft)
+## Craft stamping
 
 When `InventoryManager.createOutputItem(..., gui=false)` completes a real craft:
 
@@ -58,7 +49,7 @@ When `InventoryManager.createOutputItem(..., gui=false)` completes a real craft:
 
 Revisions come from `GunPart.getRevision()` assigned by `RevisionTracker` on load.
 
-## Implemented (Batch 0 + 1)
+## Provenance and revisions
 
 ### RevisionTracker
 
@@ -112,7 +103,7 @@ old_barrel:
 
 ### Deleted parts (broken guns)
 
-If a gun has `gg_craft_parts` (Batch 2+) and a stamped id no longer exists in `parts.yml`:
+If a gun has `gg_craft_parts` and a stamped id no longer exists in `parts.yml`:
 
 - PDC `gg_broken = true`
 - Display name: `§c§lBROKEN`
@@ -123,7 +114,7 @@ If a gun has `gg_craft_parts` (Batch 2+) and a stamped id no longer exists in `p
 
 Wired on gun use and hotbar switch (next tick).
 
-## PDC on craft (Batch 2)
+## PDC on craft
 
 | Key | Type | Content |
 |-----|------|---------|
@@ -180,5 +171,5 @@ Wired on gun use and hotbar switch (next tick).
 
 ## Related docs
 
-- `recycler/docs/IMPLEMENTATION_BATCHES.md` - Batch 5 blocked on GG provenance
+- [Recycler provider architecture](../../Recycler/docs/ARCHITECTURE.md)
 - `recycler/docs/SYSTEM.md` - GG provider section

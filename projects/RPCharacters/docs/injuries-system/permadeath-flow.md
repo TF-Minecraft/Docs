@@ -1,11 +1,8 @@
-# Batch 04 — Permadeath flow
+# Permadeath flow
 
-**Depends on:** [01](01-config-and-loaders.md), [02](02-trait-state-persistence.md), [03](03-trait-runtime-effects.md)  
-**Blocks:** 11
+## Purpose
 
-## Goal
-
-Rework `PermadeathService.handleDeath` to match locked death order.
+`PermadeathService.handleDeath` applies the following order.
 
 ## Flow (`PermadeathService`)
 
@@ -27,10 +24,10 @@ handleDeath(player, location):
   gained message + injury title
 ```
 
-## `computeRisk` changes
+## Risk calculation
 
 - Count traits where `traitData.key == "injury"`
-- **Remove** pool exhaustion → 100% shortcut (or replace with doc in batch 11 if still wanted for "all permanent injuries owned")
+- Pool exhaustion does not force a 100% risk
 - Prosthetics never counted
 
 ## `InjuryPoolLoader`
@@ -60,12 +57,12 @@ Convert **all** on one death. Still no pool roll.
 
 ## Acceptance
 
-- [x] Death with healing injury converts, does not add second injury
-- [x] Death with no healing injuries adds pool injury
-- [x] Permakill roll happens before convert/roll
-- [x] Injury count unchanged across convert
+- [ ] Death with healing injury converts, does not add second injury
+- [ ] Death with no healing injuries adds pool injury
+- [ ] Permakill roll happens before convert/roll
+- [ ] Injury count unchanged across convert
 
-## Implemented
+## Implementation
 
 - `PermadeathService.handleDeath` rolls permakill first, converts all healing injuries via `InjuryProgressionLoader`, then pool pick
 - `convertTrait`, `listHealingInjuryTraits`, `ownsTraitId` helpers

@@ -1,30 +1,6 @@
-# Phase 8 — Deploy runbook
+# Persona validation and operations
 
-Operational checklist for retiring OpenRP persona modules, ConditionalEvents rolls, and the Thievery mask layer. RPCharacters Phases 1–7 are the single source of truth.
-
-**Code complete in repo:** Thievery mask package removed; mask detection and masked chat/profile live in RPCharacters only.
-
----
-
-## Pre-deploy builds
-
-1. `mvn package` (or `mvn compile`) in `rpcharacters` — jar includes persona, chat, masks, profile, rolls, calendar.
-2. `mvn package` (or `mvn compile`) in `thievery` — jar must **not** register `MaskChatListener` or `MaskProfileBlockListener`.
-3. On existing servers: remove `masks` and `masked-channels` from `plugins/Thievery/config.yml` if the file was copied from an older default (new jar default no longer includes them).
-
----
-
-## Staging — plugin jars
-
-- [ ] Deploy latest **RPCharacters** jar
-- [ ] Deploy **Thievery** jar (mask-free build from Phase 8)
-- [ ] **OpenRP:** remove jar entirely, or disable all replaced modules in `enabled:` — `chat`, `descriptions`, `rolls` (see reference `orp/config.yml`). OpenRP time was not ported; remove if unused.
-- [ ] **ConditionalEvents:** disable or remove events from `a_rolls.yml` (reference: `orp/a_rolls.yml`) - `/roll` and attribute modifier rolls are native in RPCharacters
-- [ ] Confirm no other plugin registers a conflicting `/roll` command
-
-**Order:** Disable OpenRP chat **before** relying on RPCharacters chat on staging. Do not run OpenRP chat + RPCharacters chat together.
-
----
+Run these checks against the source and dependency set being released. Back up configuration and player data before replacing jars. Avoid duplicate chat and roll handlers.
 
 ## Staging — RPCharacters configs
 
@@ -45,7 +21,7 @@ Reload or restart after config changes.
 
 ## Staging — LuckPerms
 
-Assign `rpchar.*` per phase0-design §11:
+Check permissions against the current commands and configuration:
 
 - [ ] `rpchar.persona.set` — `/rpcharacter alias`, gender, description
 - [ ] `rpchar.group.noble` / `rpchar.group.gilded` / `rpchar.group.ascended` — name-colour stops and shorter switch cooldown (see `permission-groups.yml`)
@@ -55,7 +31,6 @@ Assign `rpchar.*` per phase0-design §11:
 - [ ] Admin: `rpchar.persona.override`, `rpchar.chat.admin`, etc. as needed
 - [ ] Staff: `rpchar.tempalias` (session IC chat override), `rpchar.character.hidden` (hide char from TAB via slug)
 
-Retire unused `orpdesc.*` groups if migrating permission templates.
 
 ---
 
@@ -63,7 +38,6 @@ Retire unused `orpdesc.*` groups if migrating permission templates.
 
 - [ ] Tab list name: **`%rpcharacters_display_safe%`** only (never `%rpcharacters_display%` on TAB)
 - [ ] `%rpcharacters_display_no_mask%` is the **real active** character (profiles, character menus) — not TAB when hidden chars are used
-- [ ] Remove `%orpdesc_*%` from TAB, scoreboards, and any remaining formats
 - [ ] Chat/profile placeholders: `%rpcharacters_name%`, `%rpcharacters_display%`, `%rpcharacters_display_safe%`, `%rpcharacters_age%`, `%rpcharacters_race%`, `%rpcharacters_gender%`, `%rpcharacters_description%`
 
 ---
@@ -129,43 +103,3 @@ Retire unused `orpdesc.*` groups if migrating permission templates.
 - [ ] Plain chat counts as `rp`; LOOC excluded; masked speakers skipped for conversation tracking
 
 ---
-
-## Production cutover
-
-Use a **brief maintenance window** — Thievery mask layer and OpenRP chat must not run alongside RPCharacters during cutover.
-
-1. [ ] Announce maintenance
-2. [ ] Stop server
-3. [ ] Deploy **RPCharacters** jar (Phases 1–7)
-4. [ ] Deploy **Thievery** jar (mask-free)
-5. [ ] Remove/disable **OpenRP** (or all replaced modules)
-6. [ ] Disable **ConditionalEvents** roll events (`a_rolls.yml`)
-7. [ ] Verify LuckPerms `rpchar.*` and TAB `%rpcharacters_display_safe%` on production configs
-8. [ ] Start server
-9. [ ] Repeat staging smoke test (section above)
-10. [ ] Monitor first session for double-chat or wrong TAB names
-
----
-
-## Risks
-
-| Risk | Mitigation |
-|------|------------|
-| Dual chat plugins | Disable OpenRP chat before enabling RPC chat |
-| Thievery mask + RPC mask both active | Deploy Thievery Phase 8 build in same window as RPC go-live |
-| Wrong TAB placeholder | Use `%rpcharacters_display_safe%` only |
-| Lost `/chtsw` | Optional Phase 9; not required for go-live |
-
----
-
-## Optional Phase 9 (not in this deploy)
-
-- Channel toggle/switcher (`/chtsw`) — reference `orp/chat/toggle-and-switcher.yml`
-- Action-channel `*` emphasis in `/me`
-
----
-
-## Reference only (do not deploy)
-
-- `rpcharacters/orp/` — exported old server configs for comparison
-- `rpcharacters/orp/a_rolls.yml` — ConditionalEvents roll events to disable

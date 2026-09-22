@@ -52,18 +52,10 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 - [docs/wiki-research/hoe-harvest-audit.md](docs/wiki-research/hoe-harvest-audit.md)
 - [docs/wiki-research/material-acquisition.md](docs/wiki-research/material-acquisition.md)
 - [docs/wiki-research/recipe-icon-alignment.md](docs/wiki-research/recipe-icon-alignment.md)
-- [docs/wiki-research/validation/wiki-validation-report.md](docs/wiki-research/validation/wiki-validation-report.md)
 - [docs/wiki-research/vehicle-model-audit.md](docs/wiki-research/vehicle-model-audit.md)
 - [frontend/README.md](frontend/README.md)
 - [frontend/app/wiki/README.md](frontend/app/wiki/README.md)
 - [docker_run.txt](docker_run.md)
-- [docs/wiki-research/validation/wiki-build-final.txt](docs/wiki-research/validation/wiki-build-final.md)
-- [docs/wiki-research/validation/wiki-build.txt](docs/wiki-research/validation/wiki-build.md)
-- [docs/wiki-research/validation/wiki-npm-audit.txt](docs/wiki-research/validation/wiki-npm-audit.md)
-- [docs/wiki-research/validation/wiki-render-scan-final.txt](docs/wiki-research/validation/wiki-render-scan-final.md)
-- [docs/wiki-research/validation/wiki-tests.txt](docs/wiki-research/validation/wiki-tests.md)
-- [docs/wiki-research/validation/wiki-tsc-final.txt](docs/wiki-research/validation/wiki-tsc-final.md)
-- [docs/wiki-research/validation/wiki-tsc.txt](docs/wiki-research/validation/wiki-tsc.md)
 
 ## Builds and releases
 

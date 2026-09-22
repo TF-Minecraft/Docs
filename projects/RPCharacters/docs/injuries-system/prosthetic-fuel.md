@@ -1,9 +1,6 @@
-# Batch 08 — Prosthetic fuel
+# Prosthetic fuel
 
-**Depends on:** [01](01-config-and-loaders.md), [02](02-trait-state-persistence.md), [03](03-trait-runtime-effects.md), [07](07-prosthetics-install.md)  
-**Blocks:** 09, 12
-
-## Goal
+## Purpose
 
 Fuel burn, refuel, and powered/depowered transitions for arcane prosthetics.
 
@@ -43,12 +40,12 @@ Fuel burn, refuel, and powered/depowered transitions for arcane prosthetics.
 
 ## Acceptance
 
-- [x] 50 fuel, burn 1/hour, online active only
-- [x] At 0 fuel, depowered modifiers apply
-- [x] Refuel with `m.miscellanea.arcane_fuel` adds 50 up to cap
-- [x] Offline does not burn fuel
+- [ ] 50 fuel, burn 1/hour, online active only
+- [ ] At 0 fuel, depowered modifiers apply
+- [ ] Refuel with `m.miscellanea.arcane_fuel` adds 50 up to cap
+- [ ] Offline does not burn fuel
 
-## Implemented
+## Implementation
 
 - `FuelTemplateLoader.resolveForItem(ItemStack)` for held-item matching
 - `ProstheticFuelService` proportional burn tick (1m cadence, online active only), integrator refresh on powered/depowered cross
