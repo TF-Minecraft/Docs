@@ -312,12 +312,14 @@ Every player-facing string: command errors, success/failure notifications, per-t
 ## Building from Source
 
 ```bash
-git clone https://github.com/JustinasLa/surgery.git
+git clone https://github.com/TF-Minecraft/TLibs.git tlibs
+git clone https://github.com/TF-Minecraft/Surgery.git surgery
 cd surgery
+python3 ../tlibs/tools/install-dependency.py --pom pom.xml
 mvn package
 ```
 
-Requires JDK 21 and Maven. The TLibs jar is bundled in `libs/` as a system dependency. The built jar is copied to the project root by the `package` phase.
+Requires JDK 21, Maven and Python 3. TLibs is a pinned Maven `provided` dependency; the shared installer verifies and installs the exact legacy binary. No TLibs JAR is stored in this repository. Output is under `target/`. See [TLibs dependency setup](../TLibs/README.md).
 
 ## Tech Stack
 

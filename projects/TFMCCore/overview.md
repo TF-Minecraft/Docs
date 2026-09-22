@@ -1,6 +1,7 @@
 # TFMC Core
 
-Build with Java 21 and Maven. Private dependency JARs live in `libs/` and are
+Build with Java 21 and Maven. [TLibs is installed into Maven](../TLibs/README.md).
+Other private dependency JARs live in `libs/` and are
 ignored by Git. Commit `libs/SHA256SUMS` to verify the exact builds in CI.
 
 ## CI setup
@@ -16,12 +17,14 @@ one build. Local commits trigger CI once pushed to GitHub. New pushes do not
 cancel earlier builds. Dependabot pushes are also skipped because they cannot
 access the dependency secret.
 
-Upload these five files from `libs/` as **release assets on tag `v1`** in
+The shared TLibs installer reads `TLibs-1.0.jar` from the existing release and
+verifies its pinned checksum. For the other plugin dependencies, upload these
+four files from `libs/` as **release assets on tag `v1`** in
 [tfmc-deps](https://github.com/JustinasLa/tfmc-deps/releases/tag/v1), not into a
 repository folder named `releases`:
 
 ```powershell
-gh release upload v1 --repo JustinasLa/tfmc-deps libs/TLibs-1.0.jar libs/vehicleframework-1.1.11.jar libs/rpcharacters-1.1.6.jar libs/advancedcrafting-1.1.7.jar libs/simplefactions-2.8.7.jar
+gh release upload v1 --repo JustinasLa/tfmc-deps libs/vehicleframework-1.1.11.jar libs/rpcharacters-1.1.6.jar libs/advancedcrafting-1.1.7.jar libs/simplefactions-2.8.7.jar
 ```
 
 The other two required assets, `MMOCore-1.13.1.jar` and
@@ -60,7 +63,12 @@ Push to `main`, or merge your branch into it, for automatic release uploads.
 
 ## Local build
 
-With all seven JARs in `libs/`, run:
+Install the pinned TLibs Maven dependency with
+`python3 ../tlibs/tools/install-dependency.py --pom pom.xml`. The existing
+Contents read access to private ServerAssets or the original `JustinasLa/tfmc-deps`
+release is required, or supply the exact JAR with `--jar`.
+TLibs is verified by the shared installer and no longer belongs in `libs/`
+or its checksum list. With the other dependencies prepared, run:
 
 ```powershell
 mvn -B --no-transfer-progress '-P!deploy-live' clean package
