@@ -75,7 +75,29 @@ ServerAssets' `manifest.json` is authoritative for filenames, hashes, embedded p
 
 ## Workflow configuration
 
-Plugin repositories contain `build.yml`, `release.yml`, and the reusable `maven-release.yml` under `.github/workflows/`. The release caller selects the JDK and exact runtime artifact path; `{version}` expands to the numeric tag without `v`. It passes `DEPS_TOKEN` explicitly where needed. Select the shaded runtime JAR for plugins that use shading.
+Plugin repositories contain `build.yml`, `release.yml`, and the reusable `maven-release.yml` under `.github/workflows/`. The release caller selects the JDK and passes `DEPS_TOKEN` explicitly where needed.
+
+Both development and release jobs obtain the runtime JAR path from Maven's
+`project.build.finalName`: `target/<finalName>.jar`. The usual Maven name is
+`<artifactId>-<version>`; an explicit POM override such as `TLibs-${project.version}`
+retains an established filename. Keep that decision in the POM, rather than
+repeating a filename in the release caller. Shaded plugins replace the main
+runtime JAR; `original-*`, sources and test JARs are not release artifacts.
+
+The identical `.github/scripts/plugin-artifact.py` helper in each plugin
+repository checks the resolved JAR path, archive integrity, and embedded
+`plugin.yml` or `paper-plugin.yml` version before either build type uploads it.
+Releases use the same helper to stage the runtime JAR, `SHA256SUMS` and
+`build.json`, including resolved plugin dependency metadata where applicable.
+Both build types run Maven verification with tests enabled and the
+`deploy-live` profile disabled.
+
+Plugin `.gitignore` files share rules for build output, downloaded JARs, Maven
+backup files, dependency-resolution metadata, IDE files and local caches.
+Maven wrapper JARs and launchers, source/tests, dependency checksums and README
+files remain trackable. Repository-specific runtime data exclusions follow the
+common rules. BreedingBuddies shares the ignore rules but remains a source-only
+archived project without a supported plugin release workflow.
 
 Workflows use Ubuntu 24.04 and actions with Node.js 24 runtimes. The Java version is chosen for the repository and its compiled dependencies. This does not change the runtime compatibility promised by the plugin's source configuration.
 
