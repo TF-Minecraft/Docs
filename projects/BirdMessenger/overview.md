@@ -16,8 +16,8 @@ letters:
 ```
 
 Build with Maven and a JDK compatible with your dependency JARs (JDK 25 for the
-supplied TLibs). Spigot API comes from Maven. Set `tfmc.tlibs` to the directory
-containing TLibs.jar, `tfmc.rpcharacters` and `tfmc.itemsadder` to their JAR paths,
+pinned TLibs). Spigot API comes from Maven. Install TLibs into Maven using the
+[shared installer](../TLibs/README.md). Set `tfmc.rpcharacters` and `tfmc.itemsadder` to their JAR paths,
 and `tfmc.builds` to an output directory. Run `mvn package` with these `-D` properties.
 
 Before deployment, verify on a test server with ItemsAdder:

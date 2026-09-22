@@ -306,7 +306,7 @@ cd Geiger-Counters
 mvn package
 ```
 
-Requires JDK 21 and Maven. The TLibs and MMOItems jars are referenced as local system dependencies — adjust the paths in `pom.xml` to your local copies. The built jar is copied to the project root by the `package` phase.
+Requires JDK 21, Maven and Python 3. Clone TLibs alongside this checkout and run `python3 ../tlibs/tools/install-dependency.py --pom pom.xml` before Maven. TLibs is a pinned Maven `provided` dependency, installed with checksum verification; no bundled TLibs JAR is needed. Output is under `target/`. See [TLibs dependency setup](../TLibs/README.md).
 
 ## Tech Stack
 
