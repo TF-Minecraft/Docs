@@ -22,7 +22,11 @@ Plugins with file dependencies use `.github/scripts/prepare-release.sh` to downl
 
 `DEPS_TOKEN` is an organisation Actions secret with Contents read access to ServerAssets. Grant the consuming repositories access to this one secret. A separate token for each repository is unnecessary. The workflow passes it only to dependency preparation steps. Fork pull requests do not receive Actions secrets and cannot run builds that require these private inputs.
 
-TLibs consumers declare a checksum-pinned Maven `provided` dependency. Both build workflows run the [shared TLibs installer](https://github.com/TF-Minecraft/TLibs/blob/905a196217471252b96be5ecf8eeb16c9e85e41d/DEPENDENCIES.md), which verifies the selected binary and installs it in Maven's local cache. Local builds run `python3 ../tlibs/tools/install-dependency.py --pom pom.xml` before Maven verification.
+TLibs consumers declare a Maven `provided` dependency. Both development and tagged-release workflows run the [shared TLibs installer](https://github.com/TF-Minecraft/TLibs/blob/5da8e77d0e0696bbff7d7064a2644072da9c6428/DEPENDENCIES.md) with `version: latest`. Each job resolves GitHub's latest published stable release once, verifies the versioned JAR's SHA-256, installs its real Maven version, and sets the checked-out POM's `tlibs.version` for that job. The installer logs and outputs the exact version and checksum. The action implementation remains pinned to a full commit SHA.
+
+New TLibs releases become build inputs only after their draft is published as a stable release and marked latest. Prereleases and DEV artifacts are excluded. This does not deploy TLibs to a running server. A missing release, checksum, or failed download fails the build; no older-version fallback occurs in latest mode.
+
+Local builds retain their explicit POM default: run `python3 ../tlibs/tools/install-dependency.py --pom pom.xml` before Maven verification. To opt into latest locally, add `--latest` (which edits the POM). For CI rollback or a reproducible rebuild, select `version: pinned` and set `tlibs.version` to a catalogued version.
 
 ServerAssets' `manifest.json` is authoritative for filenames, hashes, embedded plugin versions, and sources. Keep licensed dependency JARs in that private repository and out of public release assets.
 
