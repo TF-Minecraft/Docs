@@ -14,6 +14,23 @@ Development builds use `DEV-YYYYMMDD-HHmm`, with the date and time in UTC. The r
 
 Tags with prerelease suffixes create prereleases. Snapshot versions are rejected. An existing release causes the run to fail; use a new version for corrections. The workflow does not deploy to a Minecraft server.
 
+### Release presentation
+
+Use the exact tag as the release title, such as `v2.0.1` or `v0.2.1-ALPHA`.
+Every release uses the same two top-level sections:
+
+- **Changes**: concise user-facing changes. The first release starts with
+  `Initial release.`; later drafts include generated changes for review.
+- **Downloads**: links to the attached runtime JAR or archives, followed by
+  `SHA256SUMS` and `build.json`.
+
+Keep project versions independent and retain ALPHA/BETA prerelease flags.
+Do not add project names, build timestamps, or feature subtitles to release
+titles. Put compatibility requirements and relevant limitations in the Changes
+section. Source-only releases must say explicitly that they contain no plugin
+binary. Apply this format to manually published releases as well as automated
+drafts.
+
 `build.json` records the source commit, repository, tag, workflow run, JAR name,
 checksum, and dependency inputs. Locally built releases record their build
 method and use `run: null`. Verify draft assets before publication. Release
