@@ -156,7 +156,7 @@ classDiagram
 | Dependency | Required |
 |---|---|
 | [Paper](https://papermc.io/) 1.21+ | Yes |
-| Java 21 | Yes |
+| Java 25 | Yes |
 | [TLibs](https://www.spigotmc.org/resources/tlibs.127713/) | Yes |
 | [MMOItems](https://www.spigotmc.org/resources/mmoitems-premium.39267/) | Optional |
 | [ItemsAdder](https://itemsadder.com/) | Optional |
@@ -306,11 +306,11 @@ cd Geiger-Counters
 mvn package
 ```
 
-Requires JDK 21, Maven and Python 3. Clone TLibs alongside this checkout and run `python3 ../tlibs/tools/install-dependency.py --pom pom.xml` before Maven. TLibs is a pinned Maven `provided` dependency, installed with checksum verification; no bundled TLibs JAR is needed. Output is under `target/`. See [TLibs dependency setup](../TLibs/README.md).
+Requires JDK 25, Maven and Python 3. Clone TLibs alongside this checkout and run `python3 ../tlibs/tools/install-dependency.py --pom pom.xml` before Maven. TLibs is a pinned Maven `provided` dependency, installed with checksum verification; no bundled TLibs JAR is needed. Output is under `target/`. See [TLibs dependency setup](../TLibs/README.md).
 
 ## Tech Stack
 
-- **Java 21** · **Paper API 1.21.3** · **Maven**
+- **Java 25** · **Paper API 1.21.3** · **Maven**
 - Bukkit event system, scheduler, and YAML configuration API
 - TLibs ItemAPI for cross-plugin item resolution
 
