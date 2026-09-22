@@ -28,8 +28,7 @@ in their persistent data containers.
 
 On disable the plugin flushes revisions, clears saved station files, and rewrites
 stations from the in-memory manager. Use a clean stop for backups and restores;
-do not delete or replace live data while the plugin runs. This repository import
-and dependency migration do not change persistence formats or player data.
+do not delete or replace live data while the plugin runs.
 
 ## Public API
 

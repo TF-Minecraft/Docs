@@ -1,6 +1,6 @@
 # Magic - Implementation batches
 
-Historical batch record: early `/resonance reload` examples below describe the scaffold command. The current admin reload command is `/magic reload`; `/resonance` opens the player profile. Use the current [test matrix](TEST_MATRIX.md) for validation.
+Use `/magic reload` for admin reload and `/resonance` for the player profile. See the [test matrix](TEST_MATRIX.md) for validation.
 
 Work in order. Each batch should compile and be testable before the next.
 
@@ -10,10 +10,10 @@ Work in order. Each batch should compile and be testable before the next.
 
 - [x] Maven project, plugin.yml, config/gui/messages/elements yaml
 - [x] Bootstrap class, stub loaders, Cache, Messages
-- [x] `/resonance reload` (no-args silent until Batch 4)
+- [x] `/magic reload`
 - [x] Documentation (`SYSTEM.md`, this file)
 
-**Test:** `mvn package`, plugin enables, `/resonance reload` succeeds.
+**Test:** `mvn package`, plugin enables, `/magic reload` succeeds.
 
 ---
 
@@ -24,7 +24,7 @@ Work in order. Each batch should compile and be testable before the next.
 - [x] `GridLayout` with slot helpers
 - [x] `GuiText` (TLibs formatHex)
 
-**Test:** `/resonance reload` logs element count; slot constants match gui.yml.
+**Test:** `/magic reload` logs element count; slot constants match gui.yml.
 
 ---
 

@@ -8,19 +8,19 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 ## Build and dependencies
 
-Run `mvn clean verify` with JDK 21 from the source checkout. The migration POM
+Run `mvn clean verify` with JDK 21 from the source checkout. The POM
 uses **release 21**, resolves **Spigot API 1.21.10-R0.1-SNAPSHOT** from Maven,
 and declares `api-version: 1.21.10` in the plugin manifest.
 
-Install the published Java 21 TLibs **1.1.1** release in local Maven using the
-[shared installer](../TLibs/README.md); CI uses the shared setup action.
+Install the TLibs version declared in `pom.xml` using the
+[shared installer](../TLibs/README.md) in pinned mode; CI uses the shared setup action.
 Prepare the authorized private jars in `libs/` with
 `.github/scripts/prepare-release.sh` and verify `.github/dependencies.sha256`.
 These supply Gson, MMOCore, MMOItems and MythicLib; TLibs and the server API
 are Maven dependencies. Output is `target/geminfusion-2.2.jar`.
 
-The migration build passes on JDK 21. Gameplay validation remains separate;
-see the [shared baseline](../../PLATFORM.md) for migration and release status.
+Gameplay validation remains separate from compilation; follow the
+[shared baseline](../../PLATFORM.md) for build and validation requirements.
 
 ## Runtime and configuration
 

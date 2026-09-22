@@ -9,7 +9,6 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 See the [shared API versions](../../PLATFORM.md#shared-api-versions) for the matching provider dependency set.
 
 - [docs/REVISION_SYSTEM.md](docs/REVISION_SYSTEM.md)
-- [Historical build failure log (1.0.3)](mvn-package-out.md)
 
 ## Builds and releases
 

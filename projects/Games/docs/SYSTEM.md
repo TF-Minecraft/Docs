@@ -69,7 +69,7 @@ Same spawn / metadata / destroy idea as RPCharacters speech bubbles and clues (`
 - Fake entities are not clickable. Spawn a real **Interaction** on the deck for right-click draw.
 - Table title is a real **TextDisplay** (everyone should see "Poker"). Do not reuse packet speech bubbles for that.
 
-Validate ItemDisplay metadata indices against the deployed **Minecraft 1.21.10** server and ProtocolLib build when changing Batch 4 display code. The migration POM compiles against Spigot API 1.21.10; a successful compile does not verify packet metadata. Scale uses `org.joml.Vector3f` with ProtocolLib `Registry.get(Vector3f.class)`.
+Validate ItemDisplay metadata indices against the deployed **Minecraft 1.21.10** server and ProtocolLib build when changing Batch 4 display code. The POM compiles against Spigot API 1.21.10; a successful compile does not verify packet metadata. Scale uses `org.joml.Vector3f` with ProtocolLib `Registry.get(Vector3f.class)`.
 
 Display API (dumb): `spawn(token)`, `despawn`, `setItem`, `setItemFor(player, item)`, `setTransform(token, transform, durationTicks)`, plus join / chunk refresh.
 

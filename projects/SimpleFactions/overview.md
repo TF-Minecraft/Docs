@@ -29,7 +29,7 @@ This project also demonstrates cross-language integration through **ProvinceSyst
 
 ## Technical Overview
 - Runtime target: TFMC Minecraft **1.21.10**; follow the [shared platform baseline](../../PLATFORM.md).
-- Build with JDK 21 and Maven. The migration POM targets Java 21 bytecode (`maven.compiler.release=21`) and resolves `org.spigotmc:spigot-api:1.21.10-R0.1-SNAPSHOT` with `provided` scope.
+- Build with JDK 21 and Maven. The POM targets Java 21 bytecode (`maven.compiler.release=21`) and resolves `org.spigotmc:spigot-api:1.21.10-R0.1-SNAPSHOT` with `provided` scope.
 - Supply the authorized private JARs in `libs/` using the repository’s dependency preparation script and checksum file. Install matching Java 21 TLibs, RPCharacters, DenarEconomy, VehicleFramework and VFBuilders builds in local Maven before `mvn clean verify`. The shared baseline explains release status and dependency cycles.
 
 ### Architecture

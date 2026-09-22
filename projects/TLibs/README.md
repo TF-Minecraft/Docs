@@ -24,29 +24,26 @@ Maven dependencies; build/install the matching versions or use the pinned releas
 setup actions from CI. They also depend on TLibs, so follow the shared baseline's
 bootstrap guidance when rebuilding the full stack.
 
-For the replacement release source at `v1.1.1`, run `mvn clean verify` with
-JDK 21. The output is `target/TLibs-1.1.1.jar`.
-Validate item resolution, rebuild/socket persistence and dependent-plugin startup
-on Paper 1.21.10 with the matching rebuilt consumers before deployment.
+Run `mvn clean verify` from `main` with JDK 21. Maven writes the JAR under
+`target/` using the version declared in `pom.xml`. Validate item resolution,
+rebuild/socket persistence and dependent-plugin startup on Paper 1.21.10
+with the matching consumers before deployment.
 
 ## Builds and releases
 
 See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, dependency selection and rollback.
 
 Consumers use `me.plugins:tlibs` with Maven `provided` scope. The
-[shared installer](https://github.com/TF-Minecraft/TLibs/blob/v1.1.1/DEPENDENCIES.md)
+[shared installer](https://github.com/TF-Minecraft/TLibs/blob/main/DEPENDENCIES.md)
 verifies plugin release hashes and installs exact coordinates without recursively
-building dependency providers. Use the installer from the published TLibs tag
-`v1.1.1`. From a consumer source checkout with that TLibs checkout next to it:
+building dependency providers. Check out TLibs `main` alongside the consumer:
 
 ```sh
 python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned
 mvn clean verify
 ```
 
-The published **1.1.1** replacement supports Java 21. Current migration POMs
-pin `tlibs.version=1.1.1`; pinned mode preserves their exact selected versions.
-Use `--mode latest` to select newer published releases and update the consumer
-properties explicitly. Older TLibs 1.1.0 binaries require Java 25. Release
-provenance records the exact source and build inputs. Preserve older release
-versions for rollback. TLibs remains a separate server plugin.
+Pinned mode installs the versions declared in the consumer POM. Use
+`--mode latest` when intentionally upgrading those dependencies, then review
+and commit the POM changes. Release provenance records the exact source and
+build inputs. TLibs remains a separate server plugin.

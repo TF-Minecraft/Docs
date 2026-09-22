@@ -23,7 +23,7 @@ TFMC's runtime baseline is **Minecraft 1.21.10**; see the
 [shared platform guide](../../PLATFORM.md) for build conventions and the
 [current source declarations](../../PLATFORM.md#plugin-build-targets).
 
-- Java 21 compiler/runtime target, with Spigot API 1.21.10 from Maven. The earlier Paper 1.21.10 build 130 lab used Java 25; see its dated report for the scope of that runtime evidence.
+- Java 21 compiler/runtime target, with Spigot API 1.21.10 from Maven.
 - Built using Maven
 ### Architecture:
 - Main class intializes managers and plugin setup ([VehicleFramework.java](https://github.com/TF-Minecraft/VehicleFramework/blob/bfdb59ba651723200b364b132c0b6969244389ef/src/main/java/net/tfminecraft/vehicleframework/VehicleFramework.java))

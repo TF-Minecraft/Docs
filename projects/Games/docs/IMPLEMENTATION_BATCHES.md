@@ -1,6 +1,6 @@
 # Games - Implementation batches
 
-Historical batch record: early `/game` examples below use the former command spelling. The current plugin registers `/games`; use `/games` for those examples and the current [test matrix](TEST_MATRIX.md) for validation.
+Use `/games` for the commands below and the [test matrix](TEST_MATRIX.md) for validation.
 
 Work in order. Each batch should compile and be testable before the next.
 
@@ -15,10 +15,10 @@ See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist (filled as batches
 
 - [x] Maven project, plugin.yml, config/messages/cards/games yaml
 - [x] Bootstrap class, ConfigLoader, GamesLoader, Cache, Messages
-- [x] `/game reload`
+- [x] `/games reload`
 - [x] Documentation (`SYSTEM.md`, this file, `TEST_MATRIX.md`)
 
-**Test:** `mvn package`, plugin enables, `/game reload` succeeds.
+**Test:** `mvn package`, plugin enables, `/games reload` succeeds.
 
 ---
 
@@ -40,7 +40,7 @@ See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist (filled as batches
 - [x] Never yield a card outside the set
 - [x] Poker stub composition is `french_52` (`games.yml` `poker.card-set`)
 
-**Test:** `/game deck test` (or `/game deck test french_52`): shuffled 52, draw until empty, 0 jokers, return remaining 1.
+**Test:** `/games deck test` (or `/games deck test french_52`): shuffled 52, draw until empty, 0 jokers, return remaining 1.
 
 ---
 
@@ -54,13 +54,13 @@ See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist (filled as batches
 - [x] Real Interaction helper for clickables
 - [x] Real TextDisplay helper for the public table label
 
-**Test:** `/game display test`. You see a face, others see `card_back`. Card slides via transform, then despawns. Right-click the Interaction to confirm the anchor.
+**Test:** `/games display test`. You see a face, others see `card_back`. Card slides via transform, then despawns. Right-click the Interaction to confirm the anchor.
 
 ---
 
 ## Batch 5 - Place table
 
-- [x] `/game place poker` then place the deck item
+- [x] `/games place poker` then place the deck item
 - [x] Bind `gameId=poker`, persist Gson under `Data/tables/`
 - [x] Visible stack: at most `stack-visible-max` backs, layers scale with remaining
 - [x] TextDisplay label "Poker"
