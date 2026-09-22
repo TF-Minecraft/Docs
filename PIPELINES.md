@@ -16,7 +16,7 @@ Tags with prerelease suffixes create prereleases. Snapshot versions are rejected
 
 ### Release presentation
 
-Use the exact tag as the release title, such as `v2.0.1` or `v0.2.1-ALPHA`.
+Use the exact tag as the release title, such as `v2.0.1` or `v0.2.1`.
 Every release uses the same two top-level sections:
 
 - **Changes**: concise user-facing changes. The first release starts with
@@ -24,7 +24,8 @@ Every release uses the same two top-level sections:
 - **Downloads**: links to the attached runtime JAR or archives, followed by
   `SHA256SUMS` and `build.json`.
 
-Keep project versions independent and retain ALPHA/BETA prerelease flags.
+Keep project versions independent. Active plugins run in production and use stable
+numeric release versions. Nutrition retains its historical BETA release while archived.
 Do not add project names, build timestamps, or feature subtitles to release
 titles. Put compatibility requirements and relevant limitations in the Changes
 section. Source-only releases must say explicitly that they contain no plugin
@@ -53,8 +54,8 @@ in the POM, verifies the JAR checksum, and installs a minimal Maven POM. The act
 is pinned to a reviewed commit SHA. Provider build dependencies are not installed
 recursively or shaded into consumers.
 
-Shared APIs use public source-built releases. Cooking and InteractibleFurniture
-permit their ALPHA/BETA channels; other managed plugins use stable releases.
+Shared APIs use public source-built releases. Active providers, including Cooking
+and InteractibleFurniture, use stable releases.
 Drafts and development artifacts are excluded. Missing releases, artifacts,
 credentials, or matching checksums fail the build. Public release lookup uses
 `github.token`; licensed third-party inputs use `DEPS_TOKEN`.
@@ -79,13 +80,17 @@ Plugin repositories contain `build.yml`, `release.yml`, and the reusable `maven-
 
 Both development and release jobs obtain the runtime JAR path from Maven's
 `project.build.finalName`: `target/<finalName>.jar`. The usual Maven name is
-`<artifactId>-<version>`; an explicit POM override such as `TLibs-${project.version}`
-retains an established filename. Keep that decision in the POM, rather than
-repeating a filename in the release caller. Shaded plugins replace the main
+`<artifactId>-<version>`. Runtime filenames must use a lowercase alphanumeric
+plugin name followed by the version: `<name>-<version>.jar`. Do not add underscores,
+word separators or a `-plugin` suffix. Examples are `tlibs-2.0.0.jar`,
+`archaeo-1.0.1.jar` and `geigercounters-2.0.0.jar`. A POM `finalName` override
+normalizes legacy Maven artifact IDs without changing dependency coordinates.
+Keep that filename decision in the POM. Bukkit identifiers and data-folder names
+remain stable; the filename convention does not rename them. Shaded plugins replace the main
 runtime JAR; `original-*`, sources and test JARs are not release artifacts.
 
 The identical `.github/scripts/plugin-artifact.py` helper in each plugin
-repository checks the resolved JAR path, archive integrity, and embedded
+repository checks the lowercase alphanumeric filename, resolved JAR path, archive integrity, and embedded
 `plugin.yml` or `paper-plugin.yml` version before either build type uploads it.
 Releases use the same helper to stage the runtime JAR, `SHA256SUMS` and
 `build.json`, including resolved plugin dependency metadata where applicable.

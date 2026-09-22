@@ -145,7 +145,7 @@ classDiagram
 
 ## Installation
 
-1. Drop `geiger_counter-1.1.3.jar` into your server's `plugins/` folder
+1. Drop `geigercounters-2.0.0.jar` into your server's `plugins/` folder
 2. Install **TLibs** (required). **MMOItems** / **ItemsAdder** are optional item sources
 3. Restart the server
 4. Configure `plugins/geiger_counter/config.yml` and `messages.yml` — the source spawns at a random location within the configured area
