@@ -16,12 +16,12 @@ Tags with prerelease suffixes create prereleases. Snapshot versions are rejected
 
 `build.json` records the source commit, repository, tag, workflow run, JAR name, and checksum. Only the publishing job has repository write permission; the build job has read access. For the coordinated Java 21 replacement builds, artifacts were verified locally from exact source-release commits; `run: null` and local build provenance distinguish them from workflow-produced releases. Their dependency hashes record the bootstrap inputs used for cyclic APIs. Draft download/hash inspection still precedes publication; existing release assets are not replaced.
 
-TFMC's source migration targets **Java 21 / Minecraft 1.21.10**; see the
-[shared platform baseline](PLATFORM.md). Publishing matching Java 21 shared
-dependency releases is separate from merging source changes. The
-[replacement release status](PLATFORM.md#java-21-dependency-replacements) lists
-the eight verified Java 21 artifacts and their publication state. Publishing
-these replacements does not merge source PRs or deploy a Minecraft server.
+TFMC's source migration to **Java 21 / Minecraft 1.21.10** and matching
+dependency-pin updates are merged; see the [shared platform baseline](PLATFORM.md).
+The [replacement release status](PLATFORM.md#java-21-dependency-replacements)
+lists the eight published Java 21 artifacts and their verification results.
+Source merges and release publication do not deploy a Minecraft server or
+establish gameplay compatibility.
 
 ## Build dependencies
 

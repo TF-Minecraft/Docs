@@ -56,12 +56,11 @@ asset automatically.
 
 ## Unified source build declarations
 
-The migration worktrees reviewed on **2026-09-22** use the following settings.
-The source migration targets these settings. Publishing matching dependency
-release assets and deploying the rebuilt jars are separate steps. The verified
-replacement versions are listed below; source PR review remains separate from
-release publication. This table does not assert that deployed plugins have been
-replaced.
+The source migrations and Java 21 dependency-pin updates were merged on
+**2026-09-22**. The 36 plugin projects below now declare these settings on their
+default branches. The eight verified replacement releases are listed below.
+Source merges and release publication do not deploy the rebuilt jars; this table
+does not certify the live plugin set or Java 21 gameplay compatibility.
 
 | Project | Java release | API | API version |
 | --- | --- | --- | --- |
@@ -132,8 +131,8 @@ Cooking and InteractibleFurniture retain their ALPHA/BETA prerelease channels.
 
 Use the [shared installer](PIPELINES.md#build-dependencies) in latest mode to
 select published replacements, or pin the exact versions and hashes from a
-successful build for reproduction. Publication does not merge source PRs or
-deploy the plugins to a server. Runtime acceptance remains a separate check.
+successful build for reproduction. The source migrations are merged; deployment
+and runtime acceptance remain separate checks.
 
 ## Dependencies and validation
 

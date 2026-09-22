@@ -35,7 +35,7 @@ mvn clean verify
 
 Latest mode selects TLibs 1.1.1. For a pinned rebuild, set `tlibs.version=1.1.1`
 and retain the recorded input hashes. The [shared baseline](../../PLATFORM.md)
-records replacement versions and source-review status.
+records replacement versions and source and deployment status.
 
 The replacement release source at `v1.2.3` produces
 `target/advancedcrafting-1.2.3.jar`. TLibs uses Maven
