@@ -138,7 +138,7 @@ classDiagram
 | Dependency | Required |
 |---|---|
 | [Paper](https://papermc.io/) 1.21+ | Yes |
-| Java 21 | Yes |
+| Java 25 | Yes |
 | [TLibs](https://www.spigotmc.org/resources/tlibs.127713/) | Yes |
 | [MMOItems](https://www.spigotmc.org/resources/mmoitems-premium.39267/) | Optional |
 | [ItemsAdder](https://itemsadder.com/) | Optional |
@@ -319,11 +319,11 @@ python3 ../tlibs/tools/install-dependency.py --pom pom.xml
 mvn package
 ```
 
-Requires JDK 21, Maven and Python 3. TLibs is a pinned Maven `provided` dependency; the shared installer verifies and installs the exact legacy binary. No TLibs JAR is stored in this repository. Output is under `target/`. See [TLibs dependency setup](../TLibs/README.md).
+Requires JDK 25, Maven and Python 3. TLibs is a pinned Maven `provided` dependency; the shared installer verifies and installs the source-built 1.1.0 release. No TLibs JAR is stored in this repository. Output is under `target/`. See [TLibs dependency setup](../TLibs/README.md).
 
 ## Tech Stack
 
-- **Java 21** · **Paper API 1.21.3** · **Maven**
+- **Java 25** · **Paper API 1.21.3** · **Maven**
 - Bukkit inventory GUI, event system, and YAML configuration API
 - TLibs ItemAPI for cross-plugin item resolution
 

@@ -1,6 +1,6 @@
 # TFMC Core
 
-Build with Java 21 and Maven. [TLibs is installed into Maven](../TLibs/README.md).
+Build with Java 25 and Maven. [TLibs is installed into Maven](../TLibs/README.md).
 Other private dependency JARs live in `libs/` and are
 ignored by Git. Commit `libs/SHA256SUMS` to verify the exact builds in CI.
 
