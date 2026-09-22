@@ -109,7 +109,7 @@ classDiagram
 
 ## Installation
 
-1. Drop `AACommandsFiller-2.1.jar` into your server's `plugins/` folder
+1. Drop `aacommandsfiller-2.1.jar` into your server's `plugins/` folder
 2. Start or restart the server
 3. Configure `plugins/AACommandsFiller/config.yml` as needed
 4. Run `/aacommandsfiller reload` to apply config changes (requires `aacommandsfiller.admin`, default op)

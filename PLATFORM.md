@@ -115,13 +115,13 @@ from Java package names.
 | Project | Version |
 | --- | --- |
 | [AdvancedCrafting](https://github.com/TF-Minecraft/AdvancedCrafting) | `2.0.0` |
-| [cooking](https://github.com/TF-Minecraft/Cooking) | `0.2.0-ALPHA` |
+| [cooking](https://github.com/TF-Minecraft/Cooking) | `0.2.1` |
 | [CoreProtect](https://github.com/TF-Minecraft/CoreProtect) | `25.0.0` |
 | [denareconomy](https://github.com/TF-Minecraft/DenarEconomy) | `0.2.0` |
 | [games](https://github.com/TF-Minecraft/Games) | `0.2.0` |
 | [geiger-counters](https://github.com/TF-Minecraft/GeigerCounters) | `2.0.0` |
 | [gunsandgadgets](https://github.com/TF-Minecraft/GunsAndGadgets) | `2.0.0` |
-| [interactiblefurniture](https://github.com/TF-Minecraft/InteractibleFurniture) | `0.2.0-BETA` |
+| [interactiblefurniture](https://github.com/TF-Minecraft/InteractibleFurniture) | `0.2.0` |
 | [magic](https://github.com/TF-Minecraft/Magic) | `0.2.0` |
 | [Marketblock](https://github.com/TF-Minecraft/MarketBlock) | `0.1.0` |
 | [musical-instruments](https://github.com/TF-Minecraft/MusicalInstruments) | `3.0.0` |
