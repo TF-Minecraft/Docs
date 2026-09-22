@@ -42,4 +42,4 @@ Dev-only shortcuts, bypasses, and fixture data for ProvinceSystem. **Unset all d
 | `input/dev/` | Secondary test map; not in public nav |
 | `defines/main/` title JSON | May be edited via map title editor; operator merges ZIP on host |
 
-Sibling repo dev shortcuts: [`simplefactions/docs/dev-config.md`](https://github.com/TF-Minecraft/SimpleFactions/blob/ad9b048ec42c1842b277f4657f490b25691f854d/docs/dev-config.md), [`tfmc_bot/docs/local-dev.md`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/../tfmc_bot/docs/local-dev.md). ArmourShop and TFMCWeb: see those repos.
+Sibling repo dev shortcuts: [`simplefactions/docs/dev-config.md`](https://github.com/TF-Minecraft/SimpleFactions/blob/main/docs/dev-config.md), `tfmc_bot/docs/local-dev.md`. ArmourShop and TFMCWeb: see those repos.

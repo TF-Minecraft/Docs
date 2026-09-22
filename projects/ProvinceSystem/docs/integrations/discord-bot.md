@@ -1,6 +1,6 @@
 # Discord bot (tfmc_bot)
 
-**Canonical documentation for tfmc_bot lives in [`tfmc_bot/docs/`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/tfmc_bot/docs)**. This page is a pointer for ProvinceSystem readers.
+**Canonical documentation for tfmc_bot lives in the separate `tfmc_bot/docs/` checkout**. It is not hosted in ProvinceSystem or this documentation repository. The bot paths below refer to that checkout; this page describes the ProvinceSystem integration.
 
 ## Role
 
@@ -37,6 +37,6 @@ Player-facing mint and link **start** run in-game via TFMCWeb, not the bot.
 
 ## Local development
 
-Run bot against local API with test `STAFF_KEY`. Create pending submissions via `/skins` or curl. See [ops/local-dev.md](../ops/local-dev.md) and [tfmc_bot/docs/local-dev.md](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/../tfmc_bot/docs/local-dev.md).
+Run bot against local API with test `STAFF_KEY`. Create pending submissions via `/skins` or curl. See [ops/local-dev.md](../ops/local-dev.md) and `tfmc_bot/docs/local-dev.md`.
 
-For cog structure, deploy on AMP, and moderation details, see [tfmc_bot/docs/hosting.md](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/tfmc_bot/docs/hosting.md) and [tfmc_bot/docs/local-dev.md](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/tfmc_bot/docs/local-dev.md).
+For cog structure, deploy on AMP, and moderation details, see `tfmc_bot/docs/hosting.md` and `tfmc_bot/docs/local-dev.md`.

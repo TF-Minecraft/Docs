@@ -15,9 +15,9 @@ Staff skin review sheets include headless 3D preview tiles for `item_3d`, `shiel
    ./scripts/staging-up.sh
    ```
 
-2. **Environment:** confirm `SHEET_RENDER_DISABLE` is **not** set in [`backend/.env`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/.env) on prod/staging. Optional: `SHEET_RENDER_NODE` if Node is not on the default `PATH`.
+2. **Environment:** confirm `SHEET_RENDER_DISABLE` is **not** set in `backend/.env` (local, gitignored) on prod/staging. Optional: `SHEET_RENDER_NODE` if Node is not on the default `PATH`.
 
-3. **Discord bot:** reload **SkinsReview** on AMP after bot updates (`-reload skinsreview`). See [tfmc_bot hosting](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/tfmc_bot/docs/hosting.md).
+3. **Discord bot:** reload **SkinsReview** on AMP after bot updates (`-reload skinsreview`). See `tfmc_bot/docs/hosting.md`.
 
 ## Local (non-Docker API)
 
@@ -62,4 +62,4 @@ For each affected pending id:
 
 - [cosmetics/skins.md](../cosmetics/skins.md) — review preview overview
 - [backend/render/README.md](../../backend/render/README.md) — renderer internals
-- [tfmc_bot skins-review](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/tfmc_bot/docs/skins-review.md) — `#bot-feed` flow
+- `tfmc_bot/docs/skins-review.md` — `#bot-feed` flow
