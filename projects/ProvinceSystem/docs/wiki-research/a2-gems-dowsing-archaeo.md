@@ -793,12 +793,14 @@ Source: `C:\Users\MSI\Desktop\plugin-src\archeology-plugin` (107 Java files, pac
 Data folder: `C:\Users\MSI\Desktop\plugins\Archaeo\`
 `softdepend: [ItemsAdder, MMOItems]` — **both optional**. The jar runs on pure vanilla items.
 
-This plugin ships its own documentation and it is the best source available:
-- `docs/gameplay.md` (145 lines, English, current) — the player loop
-- `docs/concepto.md` (1619 lines, Spanish) — the living design doc; sections are marked
+The plugin guides now live in the central Docs repository. Historical source
+paths quoted below refer to these relocated pages:
+- [Gameplay guide](../../../Archaeo/docs/gameplay.md) (formerly `docs/gameplay.md`) — the player loop
+- [Original design reference](../../../Archaeo/docs/concepto.md) (formerly `docs/concepto.md`, Spanish); sections are marked
   *borrador* (draft) / *propuesta* (proposed) / *acordado* (agreed). **Treat anything marked
   borrador or propuesta as not-shipped design talk, not as wiki material.**
-- `pack/README.md` and `pack/GAMEPLAY.md` — the optional custom-pack drop-in
+- [Pack installation](../../../Archaeo/docs/pack-installation.md) (formerly `pack/README.md`)
+  and [custom-pack player guide](../../../Archaeo/docs/pack-gameplay.md) (formerly `pack/GAMEPLAY.md`)
 - `AGENTS.md` — repo conventions only, no gameplay content
 
 ## Which pack is authoritative?
