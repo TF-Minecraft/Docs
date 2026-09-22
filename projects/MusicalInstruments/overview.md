@@ -5,7 +5,7 @@
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
 ![Paper](https://img.shields.io/badge/Paper-1.21+-blue)
 ![Maven](https://img.shields.io/badge/Build-Maven-red?logo=apachemaven&logoColor=white)
-![Version](https://img.shields.io/badge/Version-2.4-green)
+![Version](https://img.shields.io/badge/Version-2.5-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 Built for the [TFMC](https://www.patreon.com/c/TFMCRP) roleplay server, where it runs in production for live in-game concerts and performances.
@@ -100,7 +100,7 @@ classDiagram
 
 ## Installation
 
-1. Drop `musicalinstruments-2.4.jar` into your server's `plugins/` folder
+1. Drop `musicalinstruments-2.5.jar` into your server's `plugins/` folder
 2. No library plugin is required. **MMOItems** / **ItemsAdder** / **Nexo** are optional — install them only if your config references `m.`, `ia.` or `nx.` item paths
 3. Restart the server (or load with PlugManX)
 4. Define your instruments in `plugins/MusicalInstruments/config.yml`

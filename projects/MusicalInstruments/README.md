@@ -9,3 +9,16 @@ Technical documentation is maintained here. Run commands from the source checkou
 ## Builds and releases
 
 See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.
+
+## Playback events in 2.5
+
+Version [2.5](https://github.com/TF-Minecraft/MusicalInstruments/releases/tag/v2.5)
+emits `tfmc.justin.events.InstrumentPlayEvent` after playing a configured note.
+Listeners can read `getPlayer()`, `getInstrument()` and `getSoundKey()`. The event
+is informational and is not cancellable. It is emitted before the note particle
+and hotbar reset, only when an instrument and sound mapping have been found.
+
+ActivityTF consumes this API through the public release. Maven consumers declare
+`tfmc.justin:musicalinstruments` with `provided` scope and use the shared installer.
+The plugin remains a separate server JAR. Java 21 is required; the release filename
+and embedded plugin version both use 2.5. Existing configuration remains compatible.
