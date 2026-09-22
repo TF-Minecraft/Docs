@@ -55,7 +55,9 @@ The compiler's `release=21` setting controls bytecode and available Java APIs.
 Paper API resolves from the [PaperMC Maven repository](https://repo.papermc.io/repository/maven-public/)
 and is not bundled into plugin jars. Prepare private third-party dependencies with the
 repository's `.github/scripts/prepare-release.sh`; it verifies
-`.github/dependencies.sha256` where present.
+`.github/dependencies.sha256` where present, then installs those exact JARs
+under hash-qualified Maven versions with `provided` scope. See
+[local dependency preparation](PIPELINES.md#build-dependencies).
 
 Shared plugin dependencies use the exact versions declared in each consumer POM.
 The [shared installer](PIPELINES.md#build-dependencies) verifies the public

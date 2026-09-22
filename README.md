@@ -101,6 +101,9 @@ Minecraft 1.21.10 baseline on `main`.
 
 ## Documentation
 
+See the [latest-build warning audit](BUILD-WARNINGS.md) and
+[fixes, validation, and pull requests](BUILD-WARNING-FIXES.md).
+
 Technical documentation is maintained in [TF-Minecraft/Docs](https://github.com/TF-Minecraft/Docs).
 
 This repository is public. Private source repositories and licensed binaries
