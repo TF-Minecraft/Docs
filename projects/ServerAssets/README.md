@@ -9,3 +9,7 @@ Technical documentation is maintained here. Run commands from the source checkou
 - [docs/LAB.md](docs/LAB.md)
 - [docs/LEARNINGS.md](docs/LEARNINGS.md)
 - [docs/TEST-RESULTS.md](docs/TEST-RESULTS.md)
+
+## Builds and releases
+
+See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.

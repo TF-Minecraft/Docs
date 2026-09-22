@@ -5,3 +5,7 @@
 Technical documentation is maintained here. Run commands from the source checkout unless a guide says otherwise.
 
 - [REWARD-POOLS.md](REWARD-POOLS.md)
+
+## Builds and releases
+
+See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.

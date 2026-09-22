@@ -10,3 +10,7 @@ Technical documentation is maintained here. Run commands from the source checkou
 ## Related integration guides
 
 - [Drinks workflow and integration](../ProvinceSystem/docs/cosmetics/drinks.md)
+
+## Builds and releases
+
+See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.

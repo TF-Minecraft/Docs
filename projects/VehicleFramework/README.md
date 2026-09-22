@@ -15,3 +15,7 @@ Technical documentation is maintained here. Run commands from the source checkou
 - [Jar inventory](../ServerAssets/JARS.md) (binaries remain private)
 
 Use `m.utils.arcane_fuel` for fuel. Matching MMOItems UTILS definitions, item types, ItemsAdder rails, ModelEngine blueprints and client resource packs are required alongside the jars. See the linked lab guide for the tested versions.
+
+## Builds and releases
+
+See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.

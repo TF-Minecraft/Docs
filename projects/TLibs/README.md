@@ -4,7 +4,7 @@
 
 TLibs consumers use `me.plugins:tlibs` with Maven `provided` scope. A shared
 installer verifies the pinned binary and installs it in Maven's local cache;
-consumer repositories no longer bundle TLibs or use a `tfmc.tlibs` filesystem path.
+consumer builds resolve the pinned version through Maven.
 
 From a consumer checkout with TLibs cloned alongside as `../tlibs`:
 
@@ -21,3 +21,7 @@ Both builds and server runtime require **Java 25**. Download the versioned
 The installer uses the public release without a private dependency token. Older
 checksum-based versions remain available for rollback. No hosted Maven registry is configured yet.
 TLibs remains a separate runtime plugin on the server.
+
+## Builds and releases
+
+See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.
