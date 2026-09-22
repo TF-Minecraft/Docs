@@ -6,7 +6,7 @@
 
 The supplied archive contains no unit tests. `mvn clean verify` checks source
 compilation and packaging; a successful build must not be described as gameplay
-coverage. CI uses Java 25 and publishes test reports if tests are added later.
+coverage. Migrated CI uses Java 21 and publishes test reports if tests are added later.
 The first public import preserves the supplied Java sources byte-for-byte.
 
 Release checks verify that the tag matches Maven, the JAR has a plugin descriptor,

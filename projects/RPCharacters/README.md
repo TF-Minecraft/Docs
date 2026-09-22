@@ -4,6 +4,8 @@
 
 Technical documentation is maintained here. Run commands from the source checkout unless a guide says otherwise.
 
+TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
+
 - [README.md](overview.md)
 - [docs/graves-system/00-index.md](docs/graves-system/00-index.md)
 - [docs/graves-system/01-config-and-tracker.md](docs/graves-system/01-config-and-tracker.md)

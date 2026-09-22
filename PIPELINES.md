@@ -16,6 +16,12 @@ Tags with prerelease suffixes create prereleases. Snapshot versions are rejected
 
 `build.json` records the source commit, repository, tag, workflow run, JAR name, and checksum. Only the publishing job has repository write permission; the build job has read access.
 
+TFMC's source migration targets **Java 21 / Minecraft 1.21.10**; see the
+[shared platform baseline](PLATFORM.md). Publishing matching Java 21 shared
+dependency releases is separate from merging source changes. Until those assets
+are promoted, a latest-release installer can still select Java 25 binaries and
+cause a JDK 21 consumer build to fail.
+
 ## Build dependencies
 
 Plugins with file dependencies use `.github/scripts/prepare-release.sh` to download their private build inputs from a pinned commit in [ServerAssets](https://github.com/TF-Minecraft/ServerAssets). The committed `.github/dependencies.sha256` verifies the downloaded bytes. JARs go in `libs/`, outside Maven's cleaned `target/` directory, and are ignored by Git.

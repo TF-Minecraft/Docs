@@ -1,93 +1,25 @@
-# TFMC Core
+# TFMCCore
 
-Build with Java 25 and Maven. [TLibs is installed into Maven](../TLibs/README.md).
-Other private dependency JARs live in `libs/` and are
-ignored by Git. Commit `libs/SHA256SUMS` to verify the exact builds in CI.
+Shared gameplay systems and statistics integrations. Build and run with **Java 21** and **Minecraft 1.21.10**, following the [shared platform baseline](../../PLATFORM.md). The POM uses compiler release 21 and Paper API `1.21.10-R0.1-SNAPSHOT`; the plugin loader declaration is `api-version: 1.21.10`.
 
-## CI setup
+## Dependencies
 
-The workflow follows `JustinasLa/activity-tf`: pushes to any branch and
-same-repository pull requests targeting `main`, plus manual runs, build and test the plugin and save
-the JAR as a workflow artifact for 90 days. Successful pushes to `main` also
-upload it to this repository's `latest` release. Manual runs only produce an
-artifact. Fork and Dependabot PRs are skipped because secrets are unavailable.
+TLibs 1.1.0, VehicleFramework 1.1.12, RPCharacters 1.1.7, AdvancedCrafting 1.2.2 and SimpleFactions 2.8.7 resolve as Maven plugin artifacts. The shared `setup-plugins` action installs the selected builds; for a local source build, install the matching dependencies into your Maven repository first. For the pinned TLibs release, clone TLibs alongside the checkout and run `python3 ../tlibs/tools/install-dependency.py --pom pom.xml`; the installer verifies its checksum. See [TLibs dependency setup](../TLibs/README.md). Runtime optional integrations can still be mandatory compile dependencies.
 
-Each push builds its newest commit; pushing several commits together produces
-one build. Local commits trigger CI once pushed to GitHub. New pushes do not
-cancel earlier builds. Dependabot pushes are also skipped because they cannot
-access the dependency secret.
-
-The shared TLibs installer reads `TLibs-1.0.jar` from the existing release and
-verifies its pinned checksum. For the other plugin dependencies, upload these
-four files from `libs/` as **release assets on tag `v1`** in
-[tfmc-deps](https://github.com/JustinasLa/tfmc-deps/releases/tag/v1), not into a
-repository folder named `releases`:
-
-```powershell
-gh release upload v1 --repo JustinasLa/tfmc-deps libs/vehicleframework-1.1.11.jar libs/rpcharacters-1.1.6.jar libs/advancedcrafting-1.1.7.jar libs/simplefactions-2.8.7.jar
-```
-
-The other two required assets, `MMOCore-1.13.1.jar` and
-`MythicLib-dist-1.7.1.jar`, were already present with matching SHA-256 digests
-when checked on September 12, 2026. Paper API and Gson come from Maven;
-they do not need release assets.
-
-Create a fine-grained personal access token with the tfmc-deps owner as resource
-owner, select tfmc-deps, and grant **Contents: Read-only**. The account creating
-the token must have access to that repository. A TFMC Core repository
-administrator must save it as the Actions repository secret `DEPS_TOKEN`
-(Settings > Secrets and variables > Actions), or use the interactive command:
-
-```powershell
-gh secret set DEPS_TOKEN --repo Drefvelin/tfmccore
-```
-
-The default `GITHUB_TOKEN` cannot read another private repository. Publishing
-uses TFMC Core's own `GITHUB_TOKEN` with `contents: write`; no additional token
-is needed for that job.
-
-Review and commit from PowerShell:
-
-```powershell
-git diff
-git add .github/workflows/build.yml .gitignore pom.xml libs/SHA256SUMS README.md
-git add src/main/java/net/tfminecraft/tfmccore/golem/GolemListener.java src/main/java/net/tfminecraft/tfmccore/stats/categories/skills/SkillsStatMain.java
-git diff --cached
-git commit -m "Set up TFMC Core CI builds with private dependencies"
-git push origin HEAD
-```
-
-The source files above contain existing API compatibility fixes for the selected
-dependencies. The separate existing `StoneListener.java` edit is excluded.
-Push to `main`, or merge your branch into it, for automatic release uploads.
+The remaining private reference jars are MMOCore 1.13.1 and MythicLib. Populate the exact paths listed in `pom.xml` under the ignored `libs/` directory. `.github/scripts/prepare-release.sh` downloads pinned files from private `TF-Minecraft/ServerAssets` and verifies `.github/dependencies.sha256`. It requires `GH_TOKEN` with read access; CI supplies the `DEPS_TOKEN` secret. Keep licensed jars private.
 
 ## Local build
 
-Install the pinned TLibs Maven dependency with
-`python3 ../tlibs/tools/install-dependency.py --pom pom.xml`. The existing
-Contents read access to private ServerAssets or the original `JustinasLa/tfmc-deps`
-release is required, or supply the exact JAR with `--jar`.
-TLibs is verified by the shared installer and no longer belongs in `libs/`
-or its checksum list. With the other dependencies prepared, run:
+Run from the source checkout with JDK 21:
 
-```powershell
-mvn -B --no-transfer-progress '-P!deploy-live' clean package
+```sh
+mvn -B --no-transfer-progress clean verify
 ```
 
-Output: `target/TFMCCore.jar`. This command disables the local
-`deploy-live` profile, which otherwise copies the JAR into a server folder
-when that folder exists.
+Output: `target/tfmccore-1.0.0.jar`. Use `mvn clean install` when another local plugin needs this build. Maven packaging does not deploy to a live server.
 
-When changing a dependency, update the POM and workflow filenames if needed,
-upload the intended server-compatible JAR, and regenerate the manifest:
+## CI and releases
 
-```powershell
-Get-ChildItem libs/*.jar | Sort-Object Name | ForEach-Object {
-    '{0} *libs/{1}' -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant(), $_.Name
-} | Set-Content libs/SHA256SUMS -Encoding ascii
-```
+The current build workflow runs for pushes and pull requests to `main`. It installs shared plugin dependencies, prepares the pinned private jars, assigns a dated `DEV-...` version, and runs tests and packaging. Artifacts contain the jar and `.build/plugin-dependencies.json`; unit-test reports are uploaded separately when present. Jar filenames therefore follow the selected Maven version.
 
-Review and commit the manifest. Prefer distinct filenames for different builds:
-replacing shared release assets can break other repositories' checksum checks.
-After a TFMC Core version change, remove obsolete JARs from its `latest` release
-manually; the workflow only replaces assets with matching filenames.
+The separate release workflow delegates to the shared Maven release workflow. Keep the dependency properties, private download script and `.github/dependencies.sha256` aligned when changing dependencies; `libs/SHA256SUMS` describes the older dependency workflow and is not the current CI verification manifest.

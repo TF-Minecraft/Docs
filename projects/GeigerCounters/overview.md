@@ -3,9 +3,9 @@
 **A Minecraft server plugin that turns exploration into a treasure hunt — track a hidden radioactive source by particle signal and claim tiered loot.**
 
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
-![Paper](https://img.shields.io/badge/Paper-1.21+-blue)
+![Paper](https://img.shields.io/badge/Paper-1.21.10-blue)
 ![Maven](https://img.shields.io/badge/Build-Maven-red?logo=apachemaven&logoColor=white)
-![Version](https://img.shields.io/badge/Version-1.1.2-green)
+![Version](https://img.shields.io/badge/Version-1.1.3-green)
 
 Built for the [TFMC](https://www.patreon.com/c/TFMCRP) roleplay server, where it runs in production as a server-wide scavenger-hunt event mechanic.
 
@@ -56,6 +56,7 @@ Players with `geiger.limit.bypass` are never limited.
 | `/geiger move [x z]` | Move the source to a random spot, or to specific coordinates (coords tab-complete to your position and the area corners) |
 | `/geiger limits <player>` | Show the player's remaining drops and time until the next one |
 | `/geiger resetlimits <player>` | Clear the player's drop history |
+| `/geiger droplist [name]` | Show available lists, or switch and save the active list |
 | `/geiger reload` | Reload `config.yml` |
 
 | Permission | Default | Grants |
@@ -136,7 +137,7 @@ classDiagram
     TierReward --> ItemReward : contains
 ```
 
-*Full diagram: [UML-Diagram.mmd](https://github.com/TF-Minecraft/GeigerCounters/blob/fd1420862ebaa7da7905d88ce1cd731e9c23f0f8/UML-Diagram.mmd)*
+*Full diagram: [UML-Diagram.mmd](https://github.com/TF-Minecraft/geiger-counters/blob/fd1420862ebaa7da7905d88ce1cd731e9c23f0f8/UML-Diagram.mmd)*
 
 ### Design decisions
 
@@ -146,17 +147,17 @@ classDiagram
 
 ## Installation
 
-1. Drop `geiger_counter-1.1.2.jar` into your server's `plugins/` folder
+1. Drop `geiger_counter-1.1.3.jar` into your server's `plugins/` folder
 2. Install **TLibs** (required). **MMOItems** / **ItemsAdder** are optional item sources
-3. Restart the server (or load with PlugManX)
+3. Restart the server
 4. Configure `plugins/geiger_counter/config.yml` and `messages.yml` — the source spawns at a random location within the configured area
 
 ### Requirements
 
 | Dependency | Required |
 |---|---|
-| [Paper](https://papermc.io/) 1.21+ | Yes |
-| Java 25 | Yes |
+| [Paper](https://papermc.io/) 1.21.10 (TFMC baseline) | Yes |
+| Java | See the [shared baseline](../../PLATFORM.md); compiler release is 21 |
 | [TLibs](https://www.spigotmc.org/resources/tlibs.127713/) | Yes |
 | [MMOItems](https://www.spigotmc.org/resources/mmoitems-premium.39267/) | Optional |
 | [ItemsAdder](https://itemsadder.com/) | Optional |
@@ -248,14 +249,19 @@ drops:
     legendary: 2.5  # 2.5%
     mythical: 0.5   # 0.5%
 
-  tiers:
-    common:
-      - "m.FOODS.SAUSAGE:32"
-      - "v.raw_iron_block:32"
-      - "ia.tfmc:mythril_ingot"
-    # ... (see config.yml for full reward lists)
+  active-list: default
+  lists:
+    default:
+      tiers:
+        common:
+          - "m.FOODS.SAUSAGE:32"
+          - "v.raw_iron_block:32"
+          - "ia.tfmc:mythril_ingot"
+        # ... (see config.yml for full reward lists)
 
 ```
+
+Named reward pools live under `drops.lists.<name>.tiers`. `/geiger droplist <name>` saves `drops.active-list` and reloads the configuration.
 
 All chat text lives in a separate **`messages.yml`**, split into what players see and what only `/geiger` operators see:
 
@@ -301,16 +307,18 @@ Upgrading? Messages are migrated automatically — out of `config.yml` and into 
 ## Building from Source
 
 ```bash
-git clone https://github.com/JustinasLa/Geiger-Counters.git
-cd Geiger-Counters
-mvn package
+git clone https://github.com/TF-Minecraft/TLibs.git tlibs
+git clone https://github.com/TF-Minecraft/geiger-counters.git
+cd geiger-counters
+python3 ../tlibs/tools/install-dependency.py --pom pom.xml
+mvn clean verify
 ```
 
-Requires JDK 25, Maven and Python 3. Clone TLibs alongside this checkout and run `python3 ../tlibs/tools/install-dependency.py --pom pom.xml` before Maven. TLibs is a pinned Maven `provided` dependency, installed with checksum verification; no bundled TLibs JAR is needed. Output is under `target/`. See [TLibs dependency setup](../TLibs/README.md).
+Use JDK 21, Maven and Python 3. The shared installer verifies the pinned release checksum; see [TLibs dependency setup](../TLibs/README.md). Install the matching `me.plugins:tlibs:1.1.0` artifact as described in the [shared baseline](../../PLATFORM.md), then run `mvn clean verify`. Paper API, WorldGuard API and bStats resolve from Maven; MMOItems is not a direct build dependency. The artifact is written to `target/`.
 
-## Tech Stack
+## Source build metadata
 
-- **Java 25** · **Paper API 1.21.3** · **Maven**
+- **Java 21** · **Paper API 1.21.10 (compile dependency)** · **Maven**
 - Bukkit event system, scheduler, and YAML configuration API
 - TLibs ItemAPI for cross-plugin item resolution
 

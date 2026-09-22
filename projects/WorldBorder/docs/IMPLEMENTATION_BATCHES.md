@@ -6,7 +6,7 @@ Work was completed in order. See [SYSTEM.md](SYSTEM.md) for locked design. See [
 
 ## Batch 1 - Project scaffold
 
-- [x] `pom.xml` (Java 17, spigot-api 1.21.8, antrun copy to TFMC/WorldBorder)
+- [x] `pom.xml` (Java 17 bytecode target, declared spigot-api 1.21.8 build dependency, antrun copy to TFMC/WorldBorder). These are scaffold build settings; TFMC runtime validation targets Minecraft **1.21.10** under the [shared baseline](../../../PLATFORM.md).
 - [x] `WorldBorder.java` bootstrap (singleton, folders, config copy)
 - [x] `plugin.yml`, bundled `config.yml` template
 

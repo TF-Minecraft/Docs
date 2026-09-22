@@ -2,6 +2,8 @@
 
 Manual checks after the matching implementation batch. Player-facing strings must not contain U+2014.
 
+Run these checks on Minecraft **1.21.10** with the intended plugin dependencies and JVM from the [shared platform baseline](../../../PLATFORM.md). Record the source revision, server build, JVM and results; the checklist alone is not evidence of a passing release.
+
 ## Regression (after Batch 1, repeat after Batch 4)
 
 | # | Check |

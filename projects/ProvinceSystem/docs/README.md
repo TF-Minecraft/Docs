@@ -2,6 +2,8 @@
 
 **tfminecraft.net** is the TFMC web hub: interactive political maps, donator cosmetics (skins and drinks), character creation, and identity services backed by a FastAPI backend and Next.js frontend.
 
+The game integration target is Minecraft **1.21.10**; see the [shared platform baseline](../../../PLATFORM.md). ProvinceSystem itself uses the web runtimes described in [architecture.md](architecture.md).
+
 This section is the product and technical reference for **ProvinceSystem**. Technical documentation for TF-Minecraft repositories is maintained together in [TF-Minecraft/Docs](../../../README.md).
 
 ## Reading order
@@ -25,13 +27,13 @@ Schema assets: [assets/map-export-schema.json](assets/map-export-schema.json) (S
 
 | Component | Path | Role | Docs |
 |-----------|------|------|------|
-| **ProvinceSystem** | `ProvinceSystem/` (`dev` branch) | Website + FastAPI: maps, skins, drinks, characters, identity | This folder |
-| **TFMCWeb** | `Workspace/tfmcweb/` | MC ↔ web gate: Discord link, scoped tokens, Survival Discord freeze, warn/ban mirror | [identity/tfmcweb.md](identity/tfmcweb.md) |
-| **SimpleFactions** | `Workspace/simplefactions/` | Map bridge: nation JSON upload, queue, regen, province lookup | [integrations/simplefactions.md](integrations/simplefactions.md) |
-| **ArmourShop** | `Workspace/armourshop/` | Skins pack writer + apply | [integrations/armourshop.md](integrations/armourshop.md) |
-| **DrinkBuilder** | `Workspace/drinkbuilder/` | Donator BreweryX drinks + `tfmc_drinks` IA | [cosmetics/drinks.md](cosmetics/drinks.md) |
-| **RPCharacters** | `Workspace/rpcharacters/` | Characters + freeze loop; Discord gate via freeze reason | [characters/creator.md](characters/creator.md) |
-| **ItemsAdder** | `Workspace/plugins/ItemsAdder/` | Resource packs: `tfmc_submissions`, `tfmc_armorshop`, `tfmc_drinks` | [integrations/armourshop.md](integrations/armourshop.md) |
+| **ProvinceSystem** | `ProvinceSystem/` (select the branch for your task) | Website + FastAPI: maps, skins, drinks, characters, identity | This folder |
+| **TFMCWeb** | `tfmcweb/` | MC ↔ web gate: Discord link, scoped tokens, Survival Discord freeze, warn/ban mirror | [identity/tfmcweb.md](identity/tfmcweb.md) |
+| **SimpleFactions** | `simplefactions/` | Map bridge: nation JSON upload, queue, regen, province lookup | [integrations/simplefactions.md](integrations/simplefactions.md) |
+| **ArmourShop** | `armourshop/` | Skins pack writer + apply | [integrations/armourshop.md](integrations/armourshop.md) |
+| **DrinkBuilder** | `drinkbuilder/` | Donator BreweryX drinks + `tfmc_drinks` IA | [cosmetics/drinks.md](cosmetics/drinks.md) |
+| **RPCharacters** | `rpcharacters/` | Characters + freeze loop; Discord gate via freeze reason | [characters/creator.md](characters/creator.md) |
+| **ItemsAdder** | Server `plugins/ItemsAdder/` | Resource packs: `tfmc_submissions`, `tfmc_armorshop`, `tfmc_drinks` | [integrations/armourshop.md](integrations/armourshop.md) |
 | **tfmc_bot** | `tfmc_bot/` | Red-DiscordBot: skins/drinks review, link, ban/warn DMs | [integrations/discord-bot.md](integrations/discord-bot.md) |
 
 ## Locked platform decisions

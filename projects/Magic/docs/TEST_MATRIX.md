@@ -2,9 +2,11 @@
 
 Run after each release or before merging core GUI work. Check off each item when verified in-game.
 
+Run these checks on Minecraft **1.21.10** with the intended plugin dependencies and JVM from the [shared platform baseline](../../../PLATFORM.md). Record the source revision, server build, JVM and results; the checklist alone is not evidence of a passing release.
+
 ## Build
 
-- [ ] `mvn -f magic/pom.xml package` succeeds
+- [ ] `mvn package` from the Magic source checkout succeeds
 - [ ] Plugin enables on server start without errors
 - [ ] JAR deploys to server plugins folder
 

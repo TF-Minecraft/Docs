@@ -15,10 +15,12 @@ letters:
   - ia.iasurvival:letter_open_letter
 ```
 
-Build with Maven and a JDK compatible with your dependency JARs (JDK 25 for the
-pinned TLibs). Spigot API comes from Maven. Install TLibs into Maven using the
-[shared installer](../TLibs/README.md). Set `tfmc.rpcharacters` and `tfmc.itemsadder` to their JAR paths,
-and `tfmc.builds` to an output directory. Run `mvn package` with these `-D` properties.
+Build with Maven and **JDK 21**, using the Minecraft **1.21.10** API. Install
+the matching TLibs and RPCharacters Maven dependencies (see the
+[shared installer guide](../TLibs/README.md)), populate `libs/ItemsAdder.jar`
+with the checksum-pinned dependency, then run `mvn clean verify`. See
+[build and dependencies](README.md#build-and-dependencies) for the current coordinates
+and dependency preparation workflow.
 
 Before deployment, verify on a test server with ItemsAdder:
 

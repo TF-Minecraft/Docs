@@ -16,7 +16,7 @@ The lab setup and integration findings are documented in the
   ModelEngine/ItemsAdder settings.
 - `models/`: all 68 supplied ModelEngine blueprints with embedded textures.
 - `resourcepacks/`: unchanged cached TFMC pack and the locally generated ModelEngine pack.
-- `archives/`: the complete supplied ItemsAdder contents, reconstructed from both RAR volumes.
+- The complete ItemsAdder contents archive was removed on 2026-09-22; only the retained rail subset is part of the current checkout.
 - `manifest.json`: SHA-256, byte lengths, original filenames/sources, roles and build aliases.
 - `JARS.md`: human-readable inventory, with the tested runtime separated from other versions.
 - `docs/`: test results, findings and local lab setup notes.
@@ -28,6 +28,13 @@ production databases, player data and machine credentials are not part of this s
 Older jars are retained for reference, not included in the runtime plugin folder.
 
 ## Verify and prepare
+
+The current checkout is incomplete relative to its manifest: the entry for
+`archives/itemsadder-contents-20260922.zip` remains, but the file was removed.
+`tools/verify.py` will fail on that missing file, and `tools/materialize.py` calls
+verification before copying anything. The commands below describe the intended
+workflow once an authorized, internally consistent asset snapshot is available;
+they are not a working clean-install procedure for this checkout.
 
 ```sh
 git clone https://github.com/TF-Minecraft/ServerAssets.git server-assets
@@ -41,15 +48,15 @@ localhost-only server properties,
 configuration, blueprints and resource packs, and recreates the build dependency
 filenames from the manifest. It refuses a nonempty destination and does not
 start Minecraft, accept an EULA, or replace a running installation. Install the
-launchers and isolated Java/Maven/client tooling described in `docs/LAB.md`.
+launchers and isolated Java/Maven/client tooling described in [the lab guide](docs/LAB.md).
 The existing CachyOS lab is already installed under
 `/home/ryan/.local/share/blightfront-test-runner/vehicleframework/`.
 
 Select `tfmc-cached.zip` below `vehicleframework-models.zip` in the client.
 Keep the cached pack intact: Java can read it, but its unusual ZIP local entry
 names cause some Python extraction tools to reject entries. Checksum verification
-is safe. The full ItemsAdder archive is retained; only the rail subset is
-integration-tested and materialized by default.
+is safe. The complete ItemsAdder archive is absent from the current checkout; only the
+rail subset was integration-tested and materialized in the recorded lab.
 
 ## Validated scope
 
@@ -57,7 +64,7 @@ The source build at `bfdb59ba651723200b364b132c0b6969244389ef` passed 369 tests.
 Fresh cars, rail placement, fresh train coupling/movement, and artillery reload,
 firing and a controlled 28-damage hit passed runtime checks. Some older/restored
 vehicles lost usable model/seat state or train following. That restoration issue
-remains unresolved; see `docs/TEST-RESULTS.md` for evidence and limitations.
+remains unresolved; see [the test report](docs/TEST-RESULTS.md) for evidence and limitations.
 
 The older public TLibs lacks the required SQLite API, and MMOItems build 22 failed
 with this MythicLib stack. Use `runtime/plugins/` as a set. The build alias
