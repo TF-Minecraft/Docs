@@ -38,6 +38,16 @@ ServerAssets verifies every entry in its file manifest before uploading a timest
 
 Both repositories accept numeric `v*` tags for archive releases. The same verification runs before packaging the tagged source, checksums, and `build.json` into a draft release. Archive versions come from the tag; these repositories do not have Maven versions to match.
 
+## ProvinceSystem
+
+PRs run frontend Vitest and backend pytest suites, upload JUnit reports, and build the Next.js frontend. CI uses Node 22 and Python 3.12; the backend tests use SQLite's connection-limit testing API. A failed suite prevents application artifact publication.
+
+Development artifacts include timestamped source and frontend archives, checksums, and build metadata. Both archives share the same root directory; extracting the frontend archive over the source archive supplies the compiled `.next` output and generated public assets. Dependencies and configuration must be installed separately to run the application.
+
+The frontend bundle uses `NEXT_PUBLIC_API_URL=http://127.0.0.1:8000` at build time. Build with the intended URL for a deployment that needs a different API endpoint. The pipeline does not deploy the application.
+
+Numeric `v*` tags must match `frontend/package.json`. The release workflow runs the same tests and build, then creates a draft archive release.
+
 ## Verification scope
 
 A successful pull request build verifies compilation, available unit tests, and packaging. Check the downloaded JAR's embedded version as well as its filename. A tagged release run additionally verifies draft publication and release assets. Minecraft runtime and integration tests are separate checks.
