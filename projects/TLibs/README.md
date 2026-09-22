@@ -6,11 +6,11 @@ TLibs provides shared item and block APIs, MMOItems rebuild and socket handling,
 
 TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
 
-Published Java 21 replacement: [1.1.1](https://github.com/TF-Minecraft/TLibs/releases/tag/v1.1.1), verified locally. See the [replacement release status](../../PLATFORM.md#java-21-dependency-replacements) for provenance, verification and deployment status.
+See the [shared API versions](../../PLATFORM.md#shared-api-versions) for the matching provider dependency set.
 
 ## Runtime and integration
 
-The entrypoint is `me.Plugins.TLibs.TLibs`. `TLibs.getItemAPI()` and `TLibs.getBlockAPI()` expose the shared APIs; `getApiInstance(APIType)` is deprecated. Item path handlers let integrations register and remove their own item prefixes.
+The entrypoint is `net.tfminecraft.tlibs.TLibs`. `TLibs.getItemAPI()` and `TLibs.getBlockAPI()` expose the shared APIs; `getApiInstance(APIType)` is deprecated. Item path handlers let integrations register and remove their own item prefixes.
 
 Startup loads `config.yml`, initializes APIs, registers armour and furniture listeners, and attempts to register the MMOItems rebuild bridge. `/tlibs` is restricted by `tlibs.admin` (operator by default). The plugin descriptor declares optional integrations for MMOItems, MythicLib, ItemsAdder, MythicMobs, MMOCore and MCPets, and requests loading before RPCharacters. Optional runtime hooks still have compile-time dependency requirements in the POM.
 

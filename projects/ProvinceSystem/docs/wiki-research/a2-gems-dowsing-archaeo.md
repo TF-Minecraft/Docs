@@ -9,7 +9,7 @@ syntax: `STONE_HOE` / `mmoitems:TYPE:ID` / `itemsadder:namespace:id`.
 
 Sources read:
 - `C:\Users\MSI\Desktop\plugins\GemInfusion\` (config.yml, goldsmithing.yml, goldsmithing/*.yml)
-- `C:\Users\MSI\Desktop\plugin-src\geminfusion\` (full source, `src/main/java/me/Plugins/GemInfusion/`)
+- `C:\Users\MSI\Desktop\plugin-src\geminfusion\` (full source, `src/main/java/net/tfminecraft/geminfusion/`)
 - `C:\Users\MSI\Desktop\plugins\Dowsing\` (config.yml, blocks.yml, types.yml, slots.yml, production_methods.yml, guild_capacity.json)
 - `C:\Users\MSI\Desktop\plugins\Archaeo\` (all 7 yml)
 - `C:\Users\MSI\Desktop\plugin-src\archeology-plugin\` (docs/gameplay.md, docs/concepto.md, src/, pack/)
@@ -20,7 +20,7 @@ Sources read:
 
 Jar: `C:\Users\MSI\Desktop\plugins\geminfusion-2.2.jar`
 Source: `C:\Users\MSI\Desktop\plugin-src\geminfusion` (HEAD `b5a5d76 merged goldsmithing`)
-Main class `me.Plugins.GemInfusion.InfusionMain`, author Drefvelin.
+Main class `net.tfminecraft.geminfusion.InfusionMain`, author Drefvelin.
 Hard depends on TLibs, MMOItems, MythicLib; soft-depends MMOCore.
 (`plugin-src/geminfusion/src/main/resources/plugin.yml`)
 
@@ -378,7 +378,7 @@ the dowsing stick as a proximity detector.**
 
 | Wiki page | Actual plugin | Evidence |
 |---|---|---|
-| **Arcane Trace Detector** (`GEIGER_COUNTER`) | `geiger_counter-1.1.2.jar` | Its `plugin.yml` declares `name: geiger_counter`, `main: tfmc.justin.geiger_counter`, author Justin, command `/geiger <locate\|move\|limits\|resetlimits\|droplist\|reload>` under `geiger.admin`, plus a `geiger.limit.bypass` per-player drop limit — exactly the single-hidden-source loot race the existing page describes. |
+| **Arcane Trace Detector** (`GEIGER_COUNTER`) | `geiger_counter-1.1.2.jar` | Its `plugin.yml` declares `name: geiger_counter`, `main: net.tfminecraft.geigercounters.geiger_counter`, author Justin, command `/geiger <locate\|move\|limits\|resetlimits\|droplist\|reload>` under `geiger.admin`, plus a `geiger.limit.bypass` per-player drop limit — exactly the single-hidden-source loot race the existing page describes. |
 | **Mount Whistle** (`ANIMAL_WHISTLE`) | Not Dowsing. **GUESS:** TFMCCore or MCPets. Not investigated (out of scope), but Dowsing's bytecode contains no whistle, no glow effect, no entity scan and no 64-block radius anywhere. |
 | **Dowsing** | `dowsing-3.1.2.jar` | Guild-owned **resource-node industry**: place a node block in a chunk, pick a node type, slot production methods, run timed production cycles that consume inputs and drop outputs. It hard-depends on **SimpleFactions**, which neither of the other two does. |
 
@@ -739,7 +739,7 @@ is not.
 
 ## Cross-links
 
-- **SimpleFactions** (`me.Plugins.SimpleFactions.Guild.Guild`) — **hard dependency**. Node
+- **SimpleFactions** (`net.tfminecraft.simplefactions.guild.Guild`) — **hard dependency**. Node
   ownership, the guild bank (upgrade costs, capacity purchases), guild-leader-only claiming,
   member-count-driven efficiency and the node capacity limit all live there. Dowsing is a
   guild feature, not a solo one.

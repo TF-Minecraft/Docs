@@ -1,7 +1,7 @@
 # Phase 0 — Injuries, Healing, Prosthetics Design Lock
 
 **Status:** Design spec  
-**Target:** RPCharacters (`net.tfminecraft.RPCharacters`)  
+**Target:** RPCharacters (`net.tfminecraft.rpcharacters`)  
 **Context:** Replaces flat injury traits (`one_handed`, `one_legged`, etc.) with healing vs permanent injuries, remedies, prosthetic replacements, and optional fuel.
 
 ---

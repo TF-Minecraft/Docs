@@ -14,14 +14,13 @@ Development builds use `DEV-YYYYMMDD-HHmm`, with the date and time in UTC. The r
 
 Tags with prerelease suffixes create prereleases. Snapshot versions are rejected. An existing release causes the run to fail; use a new version for corrections. The workflow does not deploy to a Minecraft server.
 
-`build.json` records the source commit, repository, tag, workflow run, JAR name, and checksum. Only the publishing job has repository write permission; the build job has read access. For the coordinated Java 21 replacement builds, artifacts were verified locally from exact source-release commits; `run: null` and local build provenance distinguish them from workflow-produced releases. Their dependency hashes record the bootstrap inputs used for cyclic APIs. Draft download/hash inspection still precedes publication; existing release assets are not replaced.
+`build.json` records the source commit, repository, tag, workflow run, JAR name,
+checksum, and dependency inputs. Locally built releases record their build
+method and use `run: null`. Verify draft assets before publication. Release
+publication does not deploy a Minecraft server.
 
-TFMC's source migration to **Java 21 / Minecraft 1.21.10** and matching
-dependency-pin updates are merged; see the [shared platform baseline](PLATFORM.md).
-The [replacement release status](PLATFORM.md#java-21-dependency-replacements)
-lists the eight published Java 21 artifacts and their verification results.
-Source merges and release publication do not deploy a Minecraft server or
-establish gameplay compatibility.
+All plugins target **Java 21 / Minecraft 1.21.10**; see the
+[shared platform baseline](PLATFORM.md).
 
 ## Build dependencies
 
@@ -29,15 +28,31 @@ Plugins with file dependencies use `.github/scripts/prepare-release.sh` to downl
 
 `DEPS_TOKEN` is an organisation Actions secret with Contents read access to ServerAssets. Grant the consuming repositories access to this one secret. A separate token for each repository is unnecessary. The workflow passes it only to dependency preparation steps. Fork pull requests do not receive Actions secrets and cannot run builds that require these private inputs.
 
-Shared TFMC plugins use their native Maven coordinates with `provided` scope. Development and release workflows run the [shared plugin installer](https://github.com/TF-Minecraft/TLibs/blob/main/DEPENDENCIES.md) with `mode: latest`. It resolves each direct declared plugin dependency, verifies the JAR's SHA-256, installs its actual Maven version with a minimal POM, and updates the checkout's version properties after all inputs succeed. The action implementation remains pinned to a full commit SHA. Providers' build dependencies are not recursively installed or shaded; this handles existing source dependency cycles without requiring recursive builds.
+Shared TFMC plugins use their Maven coordinates with `provided` scope.
+Development and release workflows run the
+[shared plugin installer](https://github.com/TF-Minecraft/TLibs/blob/main/DEPENDENCIES.md)
+with `mode: pinned`. It resolves each direct dependency at the version committed
+in the POM, verifies the JAR checksum, and installs a minimal Maven POM. The action
+is pinned to a reviewed commit SHA. Provider build dependencies are not installed
+recursively or shaded into consumers.
 
-Stable plugins use GitHub's latest published release. Cooking and InteractibleFurniture explicitly permit their existing ALPHA/BETA release channels. Drafts and DEV artifacts are excluded. A missing release, asset, credential or checksum mismatch fails the build. Publishing a release promotes that API to future builds; it does not deploy anything to a Minecraft server.
+Shared APIs use public source-built releases. Cooking and InteractibleFurniture
+permit their ALPHA/BETA channels; other managed plugins use stable releases.
+Drafts and development artifacts are excluded. Missing releases, artifacts,
+credentials, or matching checksums fail the build. Public release lookup uses
+`github.token`; licensed third-party inputs use `DEPS_TOKEN`.
 
-Shared plugin APIs resolve from public source-built releases. AdvancedCrafting 1.2.3 is the verified Java 21 replacement for 1.2.2; MusicalInstruments remains at 2.5. MusicalInstruments supplies the `InstrumentPlayEvent` API used by ActivityTF. Its former private JAR remains available for exact legacy rebuilds through the retained installer revision; current pinned and latest mode use the public release. Public release lookup uses the default GitHub token. Third-party licensed inputs continue to use the private preparation script and `DEPS_TOKEN`.
+Builds record coordinates, checksums, and sources in
+`.build/plugin-dependencies.json`. Development artifacts preserve this file;
+release metadata includes the same inputs in `build.json`. Local builds use:
 
-Every migrated build records exact coordinates, checksums and sources in `.build/plugin-dependencies.json`, uploaded alongside its development JAR. Tagged releases include that list in `build.json`. Local builds use `python3 ../tlibs/tools/install-plugins.py --pom pom.xml`; add `--mode latest` to update local version properties, or use the default `--mode pinned` and versions from a successful build's metadata for reproducible API selection. The private inputs also require `TFMC_PRIVATE_TOKEN` or `--assets /path/to/server-assets`.
+```sh
+python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned
+```
 
-Archaeo's initial API release `v1.0.1` was built from unchanged source and records its source commit and checksum. Its existing embedded plugin descriptor still says `1.0`; this is documented in the release metadata. It has no automated release workflow yet.
+To upgrade dependencies, run the installer locally with `--mode latest`, review
+the POM changes, and commit the chosen versions. Build consumers against matching
+provider packages before releasing the dependent set.
 
 ServerAssets' `manifest.json` is authoritative for filenames, hashes, embedded plugin versions, and sources. Keep licensed dependency JARs in that private repository and out of public release assets.
 

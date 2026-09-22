@@ -8,7 +8,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 ## Runtime and ownership
 
-The entrypoint is `net.tfminecraft.TFMCWeb.TFMCWeb`. TLibs is a required plugin; RPCharacters and Essentials are optional integrations declared in `src/main/resources/plugin.yml`. Without RPCharacters, the Discord Survival gate is disabled while linking and HTTP remain active.
+The entrypoint is `net.tfminecraft.tfmcweb.TFMCWeb`. TLibs is a required plugin; RPCharacters and Essentials are optional integrations declared in `src/main/resources/plugin.yml`. Without RPCharacters, the Discord Survival gate is disabled while linking and HTTP remain active.
 
 `ProvinceSystemGateway` provides the shared web transport. The plugin loads `config.yml`, maintains a link cache, starts the notice poller, and registers `/linkdiscord`, `/unlinkdiscord`, `/web`, `/token` and `/warning`. Configure the API URL, plugin key and realm using the identity guide below; permission defaults and exact command syntax live in `plugin.yml`.
 
@@ -16,7 +16,7 @@ The entrypoint is `net.tfminecraft.TFMCWeb.TFMCWeb`. TLibs is a required plugin;
 
 Run Maven with **JDK 21** from the source checkout. The POM sets `maven.compiler.release=21` and resolves `org.spigotmc:spigot-api:1.21.10-R0.1-SNAPSHOT` with `provided` scope from Spigot snapshots. The plugin descriptor declares `api-version: 1.21.10`.
 
-Install these matching Java 21 TFMC artifacts into local Maven before building: `me.plugins:tlibs:1.1.1`. Use the [shared installer](../TLibs/README.md) for published dependencies, or `mvn clean install` from matching source versions. CI uses the shared dependency setup actions.
+Install these matching Java 21 TFMC artifacts into local Maven before building: `me.plugins:tlibs:2.0.0`. Use the [shared installer](../TLibs/README.md) for published dependencies, or `mvn clean install` from matching source versions. CI uses the shared dependency setup actions.
 
 Populate `libs/` with the exact files and hashes listed in `.github/dependencies.sha256`. `.github/scripts/prepare-release.sh` downloads those pinned private assets when supplied with the approved dependency token.
 

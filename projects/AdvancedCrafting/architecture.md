@@ -4,7 +4,7 @@
 
 ## Source ownership
 
-The root package is `net.tfminecraft.AdvancedCrafting` (case-sensitive).
+The root package is `net.tfminecraft.advancedcrafting` (case-sensitive).
 `AdvancedCrafting` owns enable/disable, default files, loaders, listeners and
 manager startup. `Loaders` interpret YAML registries. `Managers` own station,
 alloy, ingredient and command interactions. `Objects` contains recipes, craft
@@ -33,7 +33,7 @@ and dependency migration do not change persistence formats or player data.
 
 ## Public API
 
-Events live in `net.tfminecraft.AdvancedCrafting.lifecycle`:
+Events live in `net.tfminecraft.advancedcrafting.lifecycle`:
 
 | Event | Payload |
 | --- | --- |

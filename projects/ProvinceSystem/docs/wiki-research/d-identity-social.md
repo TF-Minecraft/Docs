@@ -38,7 +38,7 @@ Every `.jar` in the plugins folder was enumerated and its `plugin.yml` `name:` f
 
 ## RPCharacters
 
-`rpcharacters-1.1.6.jar` · author Drefvelin · `main: net.tfminecraft.RPCharacters.RPCharacters`
+`rpcharacters-1.1.6.jar` · author Drefvelin · `main: net.tfminecraft.rpcharacters.RPCharacters`
 
 ### What it is
 
@@ -182,7 +182,7 @@ RPCharacters is the roleplay-character backbone of the server: it makes each pla
 
 ### Cross-links
 
-- **TLibs** (hard depend) — all item references use TLibs paths (`m.tools.*`, `m.currency.*`, `v.*`); `PvpCommand` imports `me.Plugins.TLibs.Armour.ArmorEquipEvent`.
+- **TLibs** (hard depend) — all item references use TLibs paths (`m.tools.*`, `m.currency.*`, `v.*`); `PvpCommand` imports `net.tfminecraft.tlibs.armour.ArmorEquipEvent`.
 - **MMOCore** (hard depend) — character classes are MMOCore `PlayerClass` objects; RPCharacters hooks `/mmocore admin skill-points` and `attribute-points`.
 - **MMOItems** (hard depend) — `professions.yml` `types.*.mmoitem_types` lists MMOItems types (sword, spear, musket, shield...).
 - **MythicLib** (hard depend) — attribute/stat layer under MMOCore.
@@ -213,7 +213,7 @@ RPCharacters is the roleplay-character backbone of the server: it makes each pla
 ---
 ## SimpleFactions
 
-`simplefactions-2.8.7.jar` · `net.tfminecraft:simplefactions:2.8.7` · author Drefvelin
+`simplefactions-2.8.7.jar` · `net.tfminecraft:simplefactions:3.0.0` · author Drefvelin
 
 > **Source warning.** The public GitHub repo `drefvelin/simplefactions` is **stale** — HEAD is `ad9b048` (Feb 2026), 80 Java files, a `plugin.yml` declaring only the single `faction` command, and **no guild / vehicle / installation / mercenary / war-campaign code at all**. Everything below was read from the deployed 2.8.7 jar's bytecode and the live configs, not the repo. Consequences are listed under "Uncertain".
 
@@ -404,7 +404,7 @@ Highest vanilla requirement WHEAT **0.90**; TORCHFLOWER / BEETROOTS 0.80; lowest
 
 - **DenarEconomy** (hard depend) — all banks, upkeep, loans, dividends and mercenary wages are denars. Vehicle maintenance is charged to the player **pouch**, not the bank.
 - **TLibs** (hard depend) — hex formatting and the item-reference syntax used throughout configs (`v.diamond`, `ia.namespace:id`, `m.type.id`, `iaf(...)`).
-- **TFMCWeb / ProvinceSystem web map** (softdepend) — `api.GatewayClient` reflectively calls `net.tfminecraft.TFMCWeb.api.ProvinceSystemGateway`. Startup warns: *"enable-map is true but TFMCWeb is not loaded. Map upload, province lookup, and regen require TFMCWeb + api.base-url / api.plugin-key."* Backend at `http://127.0.0.1:8000`, realm `main`, matching `map-reference: main`. Exports land in `MapAPI/`. The war-declare code gate also calls ProvinceSystem.
+- **TFMCWeb / ProvinceSystem web map** (softdepend) — `api.GatewayClient` reflectively calls `net.tfminecraft.tfmcweb.api.ProvinceSystemGateway`. Startup warns: *"enable-map is true but TFMCWeb is not loaded. Map upload, province lookup, and regen require TFMCWeb + api.base-url / api.plugin-key."* Backend at `http://127.0.0.1:8000`, realm `main`, matching `map-reference: main`. Exports land in `MapAPI/`. The war-declare code gate also calls ProvinceSystem.
 - **VehicleFramework + VFBuilders** (softdepends) — startup logs *"VehicleFramework vehicle integration enabled"* and *"VFBuilders vehicle integration enabled"*. The whole `vehicles/` package wraps VF vehicles.
 - **MMOCore / MythicLib / MMOItems** (softdepends) — `GuildModifier` exposes `MAX_HEALTH`, `MAX_MANA`, `MANA_REGEN`, which mercenary company upgrades apply; mana is an MMOCore stat.
 - **RPCharacters** (softdepend) — the per-member playtime prestige term "Needs RPCharacters; without it the term is 0." Also a mercenary-eligibility trait probe.
@@ -739,7 +739,7 @@ Each page references another system:
 
 ## AACommandsFiller
 
-`AACommandsFiller-2.0.jar` · author Justin · `main: tfmc.justin.AACommandsFiller`
+`AACommandsFiller-2.0.jar` · author Justin · `main: net.tfminecraft.aacommandsfiller.AACommandsFiller`
 
 ### What it is
 

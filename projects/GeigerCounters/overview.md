@@ -69,7 +69,7 @@ Players with `geiger.limit.bypass` are never limited.
 Small, deliberate footprint — each class has one job:
 
 ```
-src/main/java/tfmc/justin/
+src/main/java/net/tfminecraft/geigercounters/
 ├── geiger_counter.java                # Entry point: wiring, lifecycle
 ├── config/
 │   ├── ConfigMigrator.java            # Adds new keys to existing configs, splits out messages.yml
@@ -314,7 +314,7 @@ python3 ../tlibs/tools/install-dependency.py --pom pom.xml
 mvn clean verify
 ```
 
-Use JDK 21, Maven and Python 3. The shared installer verifies the pinned release checksum; see [TLibs dependency setup](../TLibs/README.md). Install the matching `me.plugins:tlibs:1.1.1` artifact as described in the [shared baseline](../../PLATFORM.md), then run `mvn clean verify`. Paper API, WorldGuard API and bStats resolve from Maven; MMOItems is not a direct build dependency. The artifact is written to `target/`.
+Use JDK 21, Maven and Python 3. The shared installer verifies the pinned release checksum; see [TLibs dependency setup](../TLibs/README.md). Install the matching `me.plugins:tlibs:2.0.0` artifact as described in the [shared baseline](../../PLATFORM.md), then run `mvn clean verify`. Paper API, WorldGuard API and bStats resolve from Maven; MMOItems is not a direct build dependency. The artifact is written to `target/`.
 
 ## Source build metadata
 

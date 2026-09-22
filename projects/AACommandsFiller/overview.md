@@ -41,7 +41,7 @@ No listeners, no scheduled tasks — everything happens inside the command and t
 Small, deliberate footprint — each class has one job:
 
 ```
-src/main/java/tfmc/justin/
+src/main/java/net/tfminecraft/aacommandsfiller/
 ├── AACommandsFiller.java              # Entry point: wiring, lifecycle
 ├── config/
 │   └── ConfigHelper.java              # config.yml parsing: command tree, permissions, base command
