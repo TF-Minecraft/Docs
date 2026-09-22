@@ -19,7 +19,7 @@ Track displays spawn and despawn with their chunks.
 Spline (JSON, always loaded or loaded per world)
   samples     motion + bake source
   segments    health / broken (bombs write here)
-  visuals     ItemDisplay / ModelEngine, optional, chunk-local
+  visuals     ItemDisplay entities, chunk-local
 Consist       ordered cars + splineId + arc length s
 ```
 
@@ -49,7 +49,7 @@ Reuse `behaviour.train` front/back connector bones ([`Connector`](https://github
 ## Visuals
 
 - **Source of truth:** samples. **Meshes:** anchored to the spline at bake intervals.
-- **Meshes:** 1x3 JSON / ModelEngine piece (one plank, rails on either side), about **one per block** on curves and slopes.
+- **Meshes:** ItemDisplays use the `item-small`, `item-medium` and `item-large` ItemsAdder paths in `trains.yml`. Small pieces are 1x3 (one plank, rails on either side), about **one per block** on curves and slopes.
 - Collinear unbroken runs merge into medium and large pieces up to 3x3; motion samples remain dense.
 - Spawn displays when the **chunk loads**; remove when it unloads.
 - Bake is **cached** on the spline (`visuals()`). Chunk spawn iterates that list; it does not rebake per chunk. `replace` invalidates the cache.
@@ -127,7 +127,7 @@ Do **not** require spawning the whole consist when one chunk loads. Accept tempo
 - container `allow-items` (TLibs paths).
 - loco YAML `fuel-cars` (vehicle ids). Each engine slow-tick, the loco drains one matching fuel item from containers on the car directly behind if that car's id is on the list. Empty list = no auto-drain. Cargo GUIs share one inventory so every viewer sees the take.
 - recorder item (`tracks.item-recorder`) stores throttle vs spline `s`, travel sign, and **hold ticks** at a stop (engine off still counts). Circuits only: recording runs until one full lap of the **origin** loop (or you cancel). Time on a siding is recorded but does not finish the lap. Samples may include `splineId` and `junction`. Playback ramps throttle one step per tick (autopilot). Captain seat is manual (A/D still choose the frog); leaving resumes the tape from current `s`. Without a captain, a tape that recorded that junction diverges; legacy tapes stay through. Loaded consist. Not a second path.
-- Same-spline collision: if a locomotive dummy hitbox overlaps another train piece that is not on the same consist, those **two** vehicles explode. The rest of each consist stays and uncouples. Through vs branch at the frog does **not** explode (no frog AABB). Junction display meshes are not shipped.
+- Same-spline collision: if a locomotive dummy hitbox overlaps another train piece that is not on the same consist, those **two** vehicles explode. The rest of each consist stays and uncouples. Through vs branch at the frog does **not** explode (no frog AABB). Railroad switches use the configured `item-switch` ItemDisplay at each frog.
 - generic vehicle tickets (planes too). Owner toggles in the ownership GUI. Passenger seats need a matching ticket; captain, gunner, mechanic, owner, and whitelist skip. Consist uses the loco ticket id. On coupled trains, whitelist and ticket settings use the locomotive (`ticketSource`); a loco ticket opens passenger seats on any connected car. Tickets are not consumed.
 
 ## Validation

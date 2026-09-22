@@ -80,7 +80,7 @@ Leave-distance still does not clear dealer. Logout / pickup still does (existing
 
 ## Options GUI
 
-After game-select **blackjack** (not free play / poker ): second inventory.
+After game-select **blackjack** (not free play / poker): second inventory.
 
 - Auto on/off
 - Staff mint on/off (hidden without perm)
