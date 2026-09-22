@@ -8,8 +8,4 @@ Keep setup instructions and configuration references current. Label plans and te
 
 This repository is public. Keep licensed jars, model/resource-pack archives, credentials and production/player data in their authorized private stores. Preserve upstream attribution and license terms. Licenses, contribution policies, inline code comments, runtime configs and player-facing application content stay with their source repositories.
 
-## Checking changes
-
-Run `python3 tools/check_docs.py` to check repository-local link destinations.
-
 CoreProtect's MkDocs configuration is in `projects/CoreProtect`; run its documentation build from that directory.
