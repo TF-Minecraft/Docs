@@ -6,7 +6,6 @@ Technical documentation is maintained here. Run commands from the source checkou
 
 TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
 
-- [Project overview](overview.md)
 - [docs/BLACKJACK.md](docs/BLACKJACK.md)
 - [docs/FIVEDRAW.md](docs/FIVEDRAW.md)
 - [docs/GUILD_TABLES.md](docs/GUILD_TABLES.md)

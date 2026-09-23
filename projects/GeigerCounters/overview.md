@@ -306,7 +306,7 @@ Upgrading? Messages are migrated automatically — out of `config.yml` and into 
 
 ```bash
 git clone --branch main https://github.com/TF-Minecraft/TLibs.git tlibs
-git clone https://github.com/TF-Minecraft/geiger-counters.git
+git clone https://github.com/TF-Minecraft/GeigerCounters.git geiger-counters
 cd geiger-counters
 python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned
 mvn clean verify

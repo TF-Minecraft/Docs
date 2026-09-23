@@ -17,8 +17,8 @@ mode. Prepare the private inputs in `libs/` with
 The POM uses the Paper 1.21.10 API and writes the JAR under `target/` using
 its declared version. Validate server behavior against the intended dependencies.
 
-The plugin manifest requires TLibs and MythicMobs. ProtocolLib is also a build
-input; resolve the exact runtime integration versions with the shared baseline.
+The plugin manifest requires TLibs; resolve the exact runtime integration
+versions with the shared baseline.
 
 ## Configuration and operations
 

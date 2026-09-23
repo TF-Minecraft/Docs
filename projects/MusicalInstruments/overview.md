@@ -171,7 +171,7 @@ accordion:
 ## Building from Source
 
 ```bash
-git clone https://github.com/TF-Minecraft/musical-instruments.git musical-instruments
+git clone https://github.com/TF-Minecraft/MusicalInstruments.git musical-instruments
 cd musical-instruments
 mvn package
 ```
