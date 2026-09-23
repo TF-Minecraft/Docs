@@ -6,8 +6,7 @@ packs. Its `main` branch and `manifest.json` define the available assets.
 
 ## Contents
 
-- `runtime/plugins/`: stored plugin binaries.
-- `jars/`: additional plugin and API inputs, identified by the manifest.
+- `jars/`: plugin and API binaries, grouped by SHA-256 prefix with versioned filenames.
 - `configs/`: plugin settings, MMOItems definitions and ItemsAdder rail assets.
 - `configs/Archaeo/`: TFMC's Archaeo preset and lore catalogs, preserved from the
   source repository. See [configuration ownership and installation](../Archaeo/docs/configuration.md).
