@@ -1,0 +1,160 @@
+# Behaviour, configuration, and operations
+
+[Infestations documentation](README.md) · [All projects](../../README.md)
+
+## System model
+
+An infestation belongs to one SimpleFactions province and has a mob group from
+`groups.yml` and a severity: `mild`, `worrying`, `severe`, or `extreme`. Each
+province holds at most one infestation. Only land provinces can be infested:
+provinces with a terrain listed in `skip-terrains` are refused, and a group
+with a `terrains` list is limited to those terrains.
+
+```mermaid
+stateDiagram-v2
+  [*] --> Idle: set or spread
+  Idle --> Joining: lure placed
+  Joining --> Active: join window ends
+  Joining --> Idle: committed player leaves
+  Active --> Idle: committed player leaves or party lost
+  Active --> [*]: remaining reaches zero
+  Idle --> [*]: admin clear
+```
+
+**Idle.** Every `ambient-interval-ticks`, each player in Survival or Adventure
+inside an idle infested province triggers one spawn attempt, as long as the
+province's tagged ambient mobs are below `ambient-cap`. Spots lie in a ring
+between `ambient-ring-min` and `ambient-ring-max` blocks from the player, within
+two blocks of the player's height, inside the same province, and at or above
+the group's `min-y`. Each spot needs a clear 3×3×3 space over a solid 3×3
+floor. `night-only` groups spawn only while world time is 13000–22999. Mobs are
+picked from the group's weighted MythicMobs list and tagged with the province
+and kind. Killing ambient mobs never clears an infestation, and the plugin does
+not remove spawned mobs.
+
+**Lure.** Placing InteractibleFurniture whose item path equals `lure-item`
+starts a lure. Placement is cancelled unless the province is infested land with
+no lure; placing the lure item as an ordinary block is always cancelled. The
+placer joins automatically and other players in the province are notified.
+During the `join-seconds` window, players in the province see an action-bar
+countdown and join by right-clicking the lure. Ambient spawning stops for the
+duration of the lure; existing ambient mobs stay.
+
+When the window ends, the lure releases up to `lure-count` mobs, paced evenly
+across `lure-duration-seconds`, between 4 and `lure-spawn-radius` blocks from
+the lure. The duration paces spawning; it is not a time limit. A floating text
+display above the lure shows the countdown or the remaining count to players
+within `hologram-view-range`. Any death of a lure-tagged mob reduces the
+remaining count. Right-clicking an active lure makes the remaining lure mobs
+glow for 10 seconds and commits a player who has not yet joined. Uncommitted
+Survival and Adventure players in the province take `deserter-damage` every
+second until they leave.
+
+- **Victory:** when the remaining count reaches zero, the lure is removed and
+  the infestation is cleared.
+- **Failure:** the lure is removed and the infestation returns to idle at the
+  same severity if a committed player is outside the province, or, once the
+  lure is active, if no committed player is alive, online, or within the logout
+  grace period.
+- **Logout:** a committed player who logs out has `logout-grace-seconds` to
+  return and remains committed. After the grace period, they are killed on
+  their next login. A committed player who dies leaves the lure.
+
+Players cannot break the lure, and explosions and pistons cannot move it. Lure
+furniture that does not match saved lure state is removed on enable, reload,
+chunk load, or when a player touches it.
+
+**Spread.** When `spread` is `true`, every `spread-interval-seconds` each idle
+infestation rolls `worsen-chance` to rise one severity (up to `extreme`). It
+then considers uninfested land neighbours its group may occupy, plus such land
+on the far side of one adjacent `water` or `sea` province. Two-province hops are
+not considered. Each candidate uses its easiest route (land, then water, then
+sea); one candidate is chosen, weighted by route chance, and a single roll
+against `spread-chance-<route>` for the source severity decides whether it
+becomes a new `mild` infestation of the same group. Infestations with a lure
+neither worsen nor spread.
+
+## Configuration files
+
+The plugin copies its defaults into `plugins/Infestations/` on first start.
+
+| File | Purpose |
+| --- | --- |
+| `config.yml` | Debug and spawn-log switches, spread switch, interval and chances, lure item, join window, lure spawn radius, logout grace, deserter damage, hologram range, and `skip-terrains`. |
+| `groups.yml` | Mob groups: `display` name, `night-only`, optional `min-y`, optional SimpleFactions `terrains`, weighted MythicMobs `mobs`, and per-severity `ambient-cap`, `ambient-interval-ticks`, `ambient-ring-min`, `ambient-ring-max`, `lure-count`, and `lure-duration-seconds`. |
+| `messages.yml` | Chat, action-bar, and hologram text. `{prefix}` inserts the `prefix` entry; hex colours are formatted through TLibs. |
+
+Chances are values from 0 to 1. Groups without `mobs` are skipped with a
+warning, unknown terrain names are reported but kept, and omitted severity rows
+use built-in defaults. The default `swamp_mobs` group spawns `SwampGhoul` at
+night in `bog` provinces.
+
+## Commands and permissions
+
+The command is `/infestation` (alias `/infestations`). Province arguments take
+a numeric SimpleFactions province ID or `here` for the player's province.
+
+| Command | Permission | Effect |
+| --- | --- | --- |
+| `/infestation set <province\|here> <group> <severity>` | `infestations.admin` | Infest an uninfested land province that the group's terrain rules allow. |
+| `/infestation clear <province\|here>` | `infestations.admin` | Remove an infestation and any lure it has. |
+| `/infestation list` | `infestations.admin` | List infestations by province, group, and severity, marking those with a lure. |
+| `/infestation reload` | `infestations.admin.reload` | Reload all three files, then reload saved state from disk. |
+
+Both permissions default to operators, and `infestations.admin` grants
+`infestations.admin.reload`. Because `plugin.yml` also requires
+`infestations.admin` for the command itself, the reload permission alone is not
+enough. Reloading re-reads `Data/infestations.json`, removes stray lure
+furniture and text displays, recounts loaded ambient mobs, and re-exports the
+map data.
+
+## Integrations
+
+- **SimpleFactions** supplies province lookups, terrain, neighbours, and the
+  province enter and leave events that govern lure commitment.
+- **MythicMobs** spawns every ambient and lure mob. Unknown mob IDs are logged
+  and skipped.
+- **InteractibleFurniture** hosts the lure; placement, interaction, and break
+  events drive the lure lifecycle. TLibs item paths identify the lure item.
+- **Map export:** on start and whenever infestations are set, spread, cleared,
+  or reloaded, the plugin writes each province's ID, severity, group, and
+  display name to `MapAPI/infestation_data.json` and uploads it through the
+  SimpleFactions REST server as `infestation_data`.
+
+## Persistence and shutdown
+
+- Infestations and lure state, including committed players, logout grace, and
+  lure counters, are stored in `plugins/Infestations/Data/infestations.json`.
+- The latest map export is `plugins/Infestations/MapAPI/infestation_data.json`.
+- When `logging` is true, spawn decisions are appended to
+  `plugins/Infestations/logs/spawn.log`; `wipe-log` deletes it on each start
+  and reload.
+
+State is saved after each change and every five seconds. On a normal disable,
+the plugin removes lure text displays and saves state. Lure timers use
+wall-clock time, so a join window that expired during downtime activates immediately.
+Stop the server before editing the data file, since periodic saves overwrite
+manual changes.
+
+## Validation
+
+For a server-side change, verify the following on Paper 1.21.10 with the pinned
+dependency set:
+
+1. Start with both an empty data directory and a copy of representative
+   infestation data, and confirm the configs load without group or terrain
+   warnings and every configured MythicMobs ID exists.
+2. Set, list, and clear infestations with both a province ID and `here`, and
+   confirm refusals for water or sea, disallowed terrain, and provinces that
+   are already infested.
+3. Confirm ambient mobs spawn in the configured ring inside the province, stop
+   at the cap, and honour `night-only` and `min-y`.
+4. Place lures with and without an infestation, then exercise joining, the
+   countdown, activation, paced spawning, highlighting, and deserter damage.
+5. Exercise victory, a committed player leaving, losing the whole party, and a
+   logout both within and beyond the grace period.
+6. On a test server, enable `spread` with a short interval and confirm
+   worsening, land spread, single water and sea hops, and group terrain limits.
+7. Confirm `MapAPI/infestation_data.json` is written and uploaded.
+8. Reload and restart cleanly during a lure, and confirm infestations, the lure,
+   its text display, and its counters are restored without duplicates.

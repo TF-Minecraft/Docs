@@ -84,10 +84,12 @@ consumer set. Source builds must pass clean verification before publication.
 | [DrinkBuilder](projects/DrinkBuilder/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Dowsing](projects/Dowsing/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Games](projects/Games/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [Gathering](projects/Gathering/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [GeigerCounters](projects/GeigerCounters/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [GemInfusion](projects/GemInfusion/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Goldsmithing](projects/Goldsmithing/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [GunsAndGadgets](projects/GunsAndGadgets/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [Infestations](projects/Infestations/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [InteractibleFurniture](projects/InteractibleFurniture/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Magic](projects/Magic/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [MarketBlock](projects/MarketBlock/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
@@ -96,6 +98,7 @@ consumer set. Source builds must pass clean verification before publication.
 | [PermCleaner](projects/PermCleaner/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [PointShop](projects/PointShop/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Recycler](projects/Recycler/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [Research](projects/Research/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [RPCharacters](projects/RPCharacters/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [SimpleFactions](projects/SimpleFactions/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Surgery](projects/Surgery/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
@@ -103,6 +106,7 @@ consumer set. Source builds must pass clean verification before publication.
 | [TFMCWeb](projects/TFMCWeb/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Thievery](projects/Thievery/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [TLibs](projects/TLibs/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [TrialRooms](projects/TrialRooms/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [VehicleFramework](projects/VehicleFramework/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [VFBuilders](projects/VFBuilders/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Woodworking](projects/Woodworking/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
