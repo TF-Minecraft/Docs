@@ -131,7 +131,7 @@ from Java package names.
 | [Marketblock](https://github.com/TF-Minecraft/MarketBlock) | `0.1.0` |
 | [musical-instruments](https://github.com/TF-Minecraft/MusicalInstruments) | `3.0.0` |
 | [rpcharacters](https://github.com/TF-Minecraft/RPCharacters) | `2.0.0` |
-| [simplefactions](https://github.com/TF-Minecraft/SimpleFactions) | `3.0.0` |
+| [simplefactions](https://github.com/TF-Minecraft/SimpleFactions) | `3.0.1` |
 | [tfmccore](https://github.com/TF-Minecraft/TFMCCore) | `2.0.0` |
 | [tlibs](https://github.com/TF-Minecraft/TLibs) | `2.0.0` |
 | [vehicleframework](https://github.com/TF-Minecraft/VehicleFramework) | `2.0.0` |
