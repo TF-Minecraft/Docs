@@ -82,6 +82,7 @@ consumer set. Source builds must pass clean verification before publication.
 | [CoreProtect](projects/CoreProtect/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [DenarEconomy](projects/DenarEconomy/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [DrinkBuilder](projects/DrinkBuilder/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [Dowsing](projects/Dowsing/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Games](projects/Games/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [GeigerCounters](projects/GeigerCounters/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [GemInfusion](projects/GemInfusion/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
