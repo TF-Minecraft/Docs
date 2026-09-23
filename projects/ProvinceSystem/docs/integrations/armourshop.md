@@ -76,6 +76,7 @@ Namespace: **`tfmc_submissions`**.
 | `book` | `{slug}` (`WRITABLE_BOOK`) + `{slug}_signed` (`WRITTEN_BOOK`); shop lists `{slug}` only |
 | `item_3d` | `generate: false` + donor JSON (`PAPER`) |
 | `helmet_3d` | `CARVED_PUMPKIN` + `behaviours.hat: true` (armor-set 3D helmets use the same) |
+| `mask` | Same hat item as `helmet_3d`; ArmourShop also upserts `ia.{namespace}:{slug}` into RPCharacters `custom-masks.yml` |
 | `shield` | Donor JSON + ArmourShop blocking clone |
 | `gun` | STONE_HOE carry/reload + CROSSBOW aim; GaG `skins.yml` |
 
