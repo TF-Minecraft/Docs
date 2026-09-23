@@ -78,6 +78,7 @@ consumer set. Source builds must pass clean verification before publication.
 | [ArmourShop](projects/ArmourShop/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [BarterShops](projects/BarterShops/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [BirdMessenger](projects/BirdMessenger/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [CompanionPets](projects/CompanionPets/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Cooking](projects/Cooking/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [CoreProtect](projects/CoreProtect/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [DenarEconomy](projects/DenarEconomy/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
