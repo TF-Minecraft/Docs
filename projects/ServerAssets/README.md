@@ -8,9 +8,7 @@ Technical documentation is maintained here. Run commands from the source checkou
 
 - [JARS.md](JARS.md)
 - [README.md](overview.md)
-- [docs/LAB.md](docs/LAB.md)
-- [docs/LEARNINGS.md](docs/LEARNINGS.md)
 
-## Builds and releases
+## Verification and dependency access
 
-See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.
+See the [shared pipeline guide](../../PIPELINES.md#documentation-and-assets) for asset verification and commit-pinned dependency access.
