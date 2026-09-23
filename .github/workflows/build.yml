@@ -1,14 +1,6 @@
 name: Build
 
 on:
-  workflow_call:
-    inputs:
-      version:
-        required: true
-        type: string
-    outputs:
-      artifact-name:
-        value: ${{ jobs.build.outputs.artifact-name }}
   push:
     branches: [main]
   pull_request:
@@ -19,8 +11,6 @@ permissions:
 
 jobs:
   build:
-    outputs:
-      artifact-name: ${{ steps.package.outputs.name }}-${{ github.run_id }}-${{ github.run_attempt }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -43,14 +33,3 @@ jobs:
       - name: Build CoreProtect documentation
         working-directory: projects/CoreProtect
         run: python -m mkdocs build --strict --site-dir "$RUNNER_TEMP/coreprotect-site"
-      - name: Package documentation
-        id: package
-        env:
-          BUILD_VERSION: ${{ inputs.version }}
-          SITE_DIR: ${{ runner.temp }}/coreprotect-site
-        run: python3 .github/scripts/package.py
-      - uses: actions/upload-artifact@v7
-        with:
-          name: ${{ steps.package.outputs.name }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: dist/
-          if-no-files-found: error
