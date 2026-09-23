@@ -26,8 +26,7 @@ source builds or the shared installer in pinned mode. Then run
 `mvn clean verify` from `main`; Maven writes the JAR under `target/` using
 the version declared in `pom.xml`.
 
-The ModelEngine build alias `ModelEngine-4.0.8.jar` points to the supplied R4.1.1
-runtime in the dependency script. Its newer-server adapters may contain newer
+The ModelEngine input is the supplied `ModelEngine-R4.1.1.jar` runtime. Its newer-server adapters may contain newer
 bytecode; the Minecraft 1.21.10 adapter and API compile on Java 21. Keep the exact
 checksum-matching jar instead of substituting an older binary by filename.
 

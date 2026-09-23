@@ -18,8 +18,8 @@ the declared TLibs and VehicleFramework versions with the
 
 Prepare the authorized private dependencies with
 `.github/scripts/prepare-release.sh` and verify `.github/dependencies.sha256`.
-The remaining local inputs in `libs/` are `ItemsAdder_3.5.0-r2.jar`,
-`json-simple-1.1.jar` and `gson-2.10.1.jar`.
+The remaining local inputs in `libs/` are `ItemsAdder-4.0.18.jar`,
+`json-simple-1.1.1.jar` and `gson-2.14.0.jar`.
 
 ```sh
 mvn clean verify
