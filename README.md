@@ -43,6 +43,7 @@ Choose a project to open its technical documentation and source repository link.
 | --- | --- |
 | [ActivityTF](projects/ActivityTF/README.md) | Daily activity tasks, weekly progress, and player rewards. |
 | [BirdMessenger](projects/BirdMessenger/README.md) | Bird-delivered letters and interactive mailboxes. |
+| [CompanionPets](projects/CompanionPets/README.md) | Companion pet scaffold and designs for hatching, care, training, and play. |
 | [Games](projects/Games/README.md) | Tabletop games, card games, and wagering. |
 | [GeigerCounters](projects/GeigerCounters/README.md) | Geiger counter treasure hunts with proximity signals and tiered loot. |
 | [Magic](projects/Magic/README.md) | Magic, resonance, artifacts, and shrines. |
