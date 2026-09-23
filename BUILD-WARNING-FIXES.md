@@ -1,6 +1,6 @@
 # Build warning fixes
 
-Follow-up to the [latest-build warning audit](BUILD-WARNINGS.md), collected on 22 September 2026. Scope: the latest Build workflow for each of the 39 repositories, plus warnings exposed by compiling with deprecation diagnostics enabled.
+Follow-up to the latest-build warning audit collected on 22 September 2026 (the original snapshot, `BUILD-WARNINGS.md`, is in git history). Scope: the latest Build workflow for each of the 39 repositories, plus warnings exposed by compiling with deprecation diagnostics enabled.
 
 36 Java repositories pass local Java 21 `mvn clean verify` with 3,504 tests enabled and no failures. The current Java verification emitted no compiler, shade, agent-loading, or SLF4J warnings. The 113 private dependency declarations in 29 repositories retain their exact checksum-pinned bytes and use hash-qualified Maven versions with `provided` scope. This also covers DenarEconomy, whose property-based `systemPath` did not produce a warning in the original log.
 
