@@ -85,15 +85,6 @@ One spline per track (no stored sections). A **stroke** is one lay with the conf
 - `/vf track resync` applies rail item paths and `display-y-offset` from `trains.yml` to loaded chunks (throttled). Switches follow `/vf reload` and chunk load without this command.
 - `/vf track dump` appends a network snapshot to `logs/track.log` (`DUMP`, `SPLINE`, `PT` every 32 along `s`, then `JUNCTION` frogs including `thrown`). The same dump runs on plugin load. `JUNCTION_DROP` is written if a junction JSON is skipped (`no-stem` / `no-branch`) or cancelled as incomplete. On load and after lay/dig/delete, non-loop splines up to 16 blocks long that lie entirely on a longer spline in the same world are removed automatically (duplicate overlays and stray stubs).
 
-The optional [track viewer](https://github.com/TF-Minecraft/VehicleFramework/tree/main/tools)
-plots these dumps for debugging splines and junctions. From the VehicleFramework
-source checkout, create a Python virtual environment with `python3 -m venv .venv`,
-install Pygame with `.venv/bin/python -m pip install -r tools/requirements.txt`,
-then run `.venv/bin/python tools/plot_track_log.py /path/to/track.log`. It is a
-developer tool; building and running the Minecraft plugin does not require Python
-or Pygame. Keep captured logs and investigation notes in `.scratch/` or the test
-lab; Python caches and virtual environments are ignored.
-
 ## Persistence
 
 ### Spline
