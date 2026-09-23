@@ -11,9 +11,9 @@ regen/
     v0-baseline/
     v1-map-paint/
     ...
-  timings/            # committed — JSON from _RegenTimings
+  timings/            # gitignored — JSON from _RegenTimings
     v0-baseline.json
-  manifests/          # committed — path → sha256 per snapshot
+  manifests/          # gitignored — path → sha256 per snapshot
     v0-baseline.json
 ```
 
@@ -53,7 +53,7 @@ Do **not** use `run_benchmark_regen` to capture `v0-baseline`. The baseline was 
 - `output/main/regions/{mode}/*.png`
 - Timing steps from [`regeneration.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/scripts/util/regeneration.py)
 
-Commit **manifests** and **timings** only. Keep **snapshots** local (large).
+All outputs stay local. The v0–v5 results summarised below were removed from the repository once the optimisation finished; they remain in git history.
 
 ## Baseline reference (2026-08-16)
 
