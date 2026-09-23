@@ -172,7 +172,7 @@ child = clamp(avg + bonus * careRatio + careExtra, 0, maxGenetics)
   `careRatio` is average parent care / `care-max`. Care 0: child stays at the average (no climb). Care max: full bump plus `care-influence * maxGenetics` (default +20 at cap 1000). Baby's own care is 0 at birth.
 - Cancel if either parent is Hungry, Dirty, neutered, or **still growing up**. Hungry/dirty block breed; they do not replace the care ratio.
 - Offspring get an UNTAMED SQLite row with rolled genetics for **same-session** tame. If the chunk unloads/loads before anyone owns them, they despawn and the row is deleted.
-- **Baby growth:** global `grow-up` (default `1h`); optional per-species override (e.g. `CHICKEN: 45m`). Stored as `mature_at` in SQLite; `NULL` = adult. Immature animals can be tamed but cannot breed, milk, shear, lay eggs, or drop Cooking roast on death. When maturity is reached, the entity is set adult if loaded.
+- **Baby growth:** global `grow-up` (default `1h`); optional per-species override (e.g. `CHICKEN: 45m`). Stored as `mature_at` in SQLite; `NULL` = adult. Immature animals can be tamed but cannot breed, milk, shear, lay eggs, or drop Cooking roast on death. While `mature_at` is still in the future, the entity stays on the baby model with its age locked, so vanilla growth and breeding food cannot switch it to the adult model early. When maturity is reached, the lock is cleared and the entity is set adult if loaded.
 - Neutering: all husbandry species, owner (or staff). Neutered animals cannot breed.
 
 ## Harvest
