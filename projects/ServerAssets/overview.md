@@ -6,7 +6,7 @@ packs. Its `main` branch and `manifest.json` define the available assets.
 
 ## Contents
 
-- `runtime/plugins/` and `runtime/server/`: stored plugin and Paper binaries.
+- `runtime/plugins/`: stored plugin binaries.
 - `jars/`: additional plugin and API inputs, identified by the manifest.
 - `configs/`: plugin settings, MMOItems definitions and ItemsAdder rail assets.
 - `configs/Archaeo/`: TFMC's Archaeo preset and lore catalogs, preserved from the
@@ -19,32 +19,17 @@ The retained ItemsAdder content is the rail subset. Keep licensed binaries and
 private configurations in this repository. Use the [jar inventory](JARS.md)
 for dependency selection.
 
-## Verify and prepare
+## Verify assets
 
 Run from an authorized checkout of ServerAssets `main`:
 
 ```sh
 python3 tools/verify.py
-python3 tools/materialize.py /path/to/an/empty-lab
 ```
 
-Materialization verifies the manifest, copies its runtime and configuration set,
-blueprints and resource packs, and creates the mapped dependency filenames.
-This includes the Archaeo configuration import, whose checksums verify the
-transfer but whose `unverified-import` role does not claim runtime validation.
-It does not add or enable an Archaeo runtime JAR.
-It requires an absent or empty destination and does not start Minecraft or
-accept its EULA. The stored runtime set is an asset input; build the TFMC plugins
-from `main` using their committed dependencies before testing current source.
+Verification checks the size and SHA-256 checksum of every file in the manifest.
+For the Archaeo configuration import, these checks verify the transfer; its
+`unverified-import` role does not claim runtime validation.
 
-See the [test lab guide](docs/LAB.md) for the installed tooling and
-[integration notes](docs/LEARNINGS.md) for asset and protocol requirements.
-
-## Validation
-
-Use Java 21 and Paper 1.21.10 under the [shared baseline](../../PLATFORM.md).
-Record the source commit, dependency checksums, server version, configuration and
-results for each run. Check fresh vehicles and persistence after unload/restart,
-as well as rail placement, train coupling, movement, weapons and client rendering.
-Store logs and captures with the run or PR; compilation alone does not verify
-these behaviors.
+Use each consuming plugin's committed dependency scripts and checksums to select
+build inputs. See the [shared pipeline guide](../../PIPELINES.md#build-dependencies).

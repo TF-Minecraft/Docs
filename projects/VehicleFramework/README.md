@@ -11,11 +11,9 @@ Technical documentation is maintained here. Run commands from the source checkou
 - [Architecture and configuration](overview.md)
 - [Trains](docs/trains.md)
 
-## Minecraft 1.21.10 test lab
+## Assets and dependencies
 
-- [Setup and client/server tooling](../ServerAssets/docs/LAB.md)
-- [Integration learnings and dependency compatibility](../ServerAssets/docs/LEARNINGS.md)
-- [Jar inventory](../ServerAssets/JARS.md) (binaries remain private)
+See the [jar inventory](../ServerAssets/JARS.md) for the private binary inputs.
 
 Use `m.utils.arcane_fuel` for fuel. Matching MMOItems UTILS definitions, item types, ItemsAdder rails, ModelEngine blueprints and client resource packs are required alongside the jars. Use the asset manifest and record the exact versions for each test run.
 

@@ -17,7 +17,6 @@ TFMC runs **Minecraft 1.21.10 on Java 21**. The [shared platform and build basel
 | Java and Minecraft targets | [Shared platform baseline](PLATFORM.md) |
 | A project's guides | [Browse the projects below](#projects) |
 | Build and release conventions | [Builds and releases](PIPELINES.md) |
-| The server test environment | [Minecraft test lab](projects/ServerAssets/docs/LAB.md) |
 | The website and backend | [Web hub documentation](projects/ProvinceSystem/docs/README.md) |
 | Documentation contribution guidance | [Maintaining the documentation](MAINTAINING.md) |
 
@@ -84,7 +83,7 @@ Choose a project to open its technical documentation and source repository link.
 | [CoreProtect](projects/CoreProtect/README.md) | TFMC-maintained CoreProtect source for block logging, rollbacks, and anti-griefing on Minecraft servers. |
 | [PermCleaner](projects/PermCleaner/README.md) | Permission inspection and cleanup with LuckPerms integration. |
 | [ProvinceSystem](projects/ProvinceSystem/README.md) | TFMC web hub with interactive political maps, character creation, cosmetics, and identity services. |
-| [ServerAssets](projects/ServerAssets/README.md) | Private server binaries, tested configurations, models, resource packs, and test-lab assets. |
+| [ServerAssets](projects/ServerAssets/README.md) | Private plugin dependencies, configurations, models, and resource packs. |
 | [TFMCCore](projects/TFMCCore/README.md) | Shared gameplay systems, server utilities, and plugin integrations. |
 | [TFMCWeb](projects/TFMCWeb/README.md) | Website integration, Discord account linking, and player identity services. |
 | [TLibs](projects/TLibs/README.md) | Shared Java utilities and integration APIs. |
