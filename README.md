@@ -106,6 +106,8 @@ Minecraft 1.21.10 baseline on `main`.
 
 ## Documentation
 
+Documentation is maintained on `main`; this repository does not publish versioned releases. Use a commit SHA to reference an exact revision.
+
 See the [build warning fixes, validation, and pull requests](BUILD-WARNING-FIXES.md).
 
 Technical documentation is maintained in [TF-Minecraft/Docs](https://github.com/TF-Minecraft/Docs).

@@ -126,11 +126,11 @@ Workflows use Ubuntu 24.04 and actions with Node.js 24 runtimes. The Java versio
 
 ## Documentation and assets
 
-Docs checks local links and section anchors in every Markdown page, verifies navigation between the project list and project indexes, and builds CoreProtect's MkDocs site in strict mode. Development artifacts contain the documentation source archive, generated CoreProtect site, and checksums, named with the same UTC timestamp format.
+Docs checks local links and section anchors in every Markdown page, verifies navigation between the project list and project indexes, and builds CoreProtect's MkDocs site in strict mode.
 
-ServerAssets verifies every entry in its file manifest before uploading a timestamped source archive and checksums. Its artifacts retain the private repository's access controls.
+ServerAssets verifies every entry in its file manifest. Plugin build dependencies are downloaded from pinned ServerAssets commits and verified against their checksums.
 
-Both repositories accept numeric `v*` tags for archive releases. The same verification runs before packaging the tagged source, checksums, and `build.json` into a draft release. Archive versions come from the tag; these repositories do not have Maven versions to match.
+Both repositories run these checks for pull requests and pushes to `main`. They do not package archives, upload build artifacts, or publish GitHub releases. Use `main` for current content and commit SHAs when an exact revision is needed.
 
 ## ProvinceSystem
 
