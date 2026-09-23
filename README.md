@@ -33,7 +33,9 @@ Choose a project to open its technical documentation and source repository link.
 | [Archaeo](projects/Archaeo/README.md) | Archaeology, hidden ruins, excavation, and fragile finds. |
 | [Cooking](projects/Cooking/README.md) | Interactive cooking stations and custom food crafting. |
 | [Dowsing](projects/Dowsing/README.md) | Resource nodes, production chains, and faction-based gathering. |
+| [Gathering](projects/Gathering/README.md) | Hidden gathering spots, character discovery, and weighted harvest drops. |
 | [GemInfusion](projects/GemInfusion/README.md) | Gem infusion and jewellery crafting mechanics. |
+| [Research](projects/Research/README.md) | Research stations, item experiments, and hidden-recipe discovery. |
 | [Woodworking](projects/Woodworking/README.md) | Woodworking stations, crafting projects, and material quality. |
 
 ### Roleplay and activities
@@ -67,7 +69,9 @@ Choose a project to open its technical documentation and source repository link.
 | Project | What it does |
 | --- | --- |
 | [GunsAndGadgets](projects/GunsAndGadgets/README.md) | Configurable firearms, ammunition, and gadgets. |
+| [Infestations](projects/Infestations/README.md) | Province infestations, ambient monsters, and lure raids. |
 | [SimpleFactions](projects/SimpleFactions/README.md) | Nations, diplomacy, taxation, and ProvinceSystem map integration. |
+| [TrialRooms](projects/TrialRooms/README.md) | Keyed dungeon rooms, levelled MythicMobs encounters, and rarity-rolled loot. |
 | [VehicleFramework](projects/VehicleFramework/README.md) | Configurable vehicles, movement physics, turrets, and weapons. |
 | [VFBuilders](projects/VFBuilders/README.md) | Vehicle construction stations and blueprints for VehicleFramework. |
 | [WorldBorder](projects/WorldBorder/README.md) | Configurable world borders, player warnings, and border damage. |
