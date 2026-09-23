@@ -32,6 +32,7 @@ Choose a project to open its technical documentation and source repository link.
 | [AdvancedCrafting](projects/AdvancedCrafting/README.md) | TF-Minecraft crafting stations, alloys, ingredient conversion and lifecycle APIs |
 | [Archaeo](projects/Archaeo/README.md) | Archaeology, hidden ruins, excavation, and fragile finds. |
 | [Cooking](projects/Cooking/README.md) | Interactive cooking stations and custom food crafting. |
+| [Dowsing](projects/Dowsing/README.md) | Resource nodes, production chains, and faction-based gathering. |
 | [GemInfusion](projects/GemInfusion/README.md) | Gem infusion and jewellery crafting mechanics. |
 | [Woodworking](projects/Woodworking/README.md) | Woodworking stations, crafting projects, and material quality. |
 
