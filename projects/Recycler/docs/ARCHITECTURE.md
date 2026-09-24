@@ -31,6 +31,7 @@ net.tfminecraft.recycler/
     AdvancedCraftingProvider.java
     MagicGearProvider.java
     GunsAndGadgetsProvider.java
+    GoldsmithProvider.java
     ConfigProvider.java
 
   manager/
@@ -61,6 +62,7 @@ Specialized providers run before the config fallback:
 | 10 | `AdvancedCraftingProvider` | AdvancedCrafting plugin present |
 | 15 | `MagicGearProvider` | Magic present with stamped gear provenance |
 | 20 | `GunsAndGadgetsProvider` | GunsAndGadgets present with stamped provenance |
+| 25 | `GoldsmithProvider` | GemInfusion present; item matches one jewelry project |
 | max | `ConfigProvider` | Always (yaml recipes) |
 
 Resolution flow:
@@ -85,9 +87,9 @@ BirdMessenger and Research only keep items in memory or GUI slots - Recycler mus
 ## Dependencies
 
 - **Required:** TLibs, ItemsAdder (station block + icons)
-- **Soft:** AdvancedCrafting, Magic, GunsAndGadgets, MMOItems
+- **Soft:** AdvancedCrafting, Magic, GunsAndGadgets, GemInfusion, MMOItems
 
-AC/GG providers require stamped provenance from those plugins. Admin escrow tooling: `/recycler escrow list|return`.
+AdvancedCrafting, Magic, and GunsAndGadgets providers require stamped provenance from those plugins. Goldsmithing matches the live jewelry project for the item. Admin escrow tooling: `/recycler escrow list|return`.
 
 ## What not to add yet
 
