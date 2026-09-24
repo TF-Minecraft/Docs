@@ -8,7 +8,7 @@ Keep this guide aligned with the implementation and configuration on `main`.
 
 | Stat | What it is | What it is not |
 |------|------------|----------------|
-| **Genetics** | 0-1k, from breeding (wild roll up to `initial-genetic-max`). Mount health/speed/jump use genetics and care. An animal's stored genes do not drift from its own care. | Not a food-quality field. Parent **care** only scales the **offspring** gene bonus. |
+| **Genetics** | 0-1k, from breeding (wild roll up to `initial-genetic-max`). Mount health/speed/jump use genetics and care. An animal's stored genes do not drift from its own care. Parent **care** and the **stars of the breeding food** scale the offspring gene bonus. | Not a food-quality field on the animal. Universal feed does not reduce the bonus. |
 | **Care** | 0-200. Loaded happy time raises it. Neglect lowers it. Neglected parents produce weaker babies. | Does not rewrite this animal's genes. Does not pick star quality. |
 | **Hungry / Dirty** | Negative states. Stop care-up. After grace, cause decay. Block breeding. | Not friendship. Not “slept outside.” |
 | **Yield** | `care / care-max` (default care/200). Multiplies **amount** (roast cuts, wool count). | Does not change star quality. |
@@ -162,14 +162,17 @@ Owner online/offline does not matter. What matters is whether the **entity chunk
 
 ## Breeding
 
-- Child genes from parent average plus a random bonus, scaled by parent care:
+- Child genes from parent average plus a random bonus. Parent care and breeding-food stars scale that bonus:
 
 ```
 avg = (mother + father) / 2
-child = clamp(avg + bonus * careRatio + careExtra, 0, maxGenetics)
+boost = (int)(bonus * careRatio) + careExtra
+feedScale = average of the two parents' feed scales
+child = clamp(avg + (int)(boost * feedScale), 0, maxGenetics)
 ```
 
   `careRatio` is average parent care / `care-max`. Care 0: child stays at the average (no climb). Care max: full bump plus `care-influence * maxGenetics` (default +20 at cap 1000). Baby's own care is 0 at birth.
+  Each feed scale is `stars / 5`. 5★ is `1` and matches the roll from before feed quality applied. 1★ keeps one fifth of `boost`. The two parents are averaged, so 1★ wheat and 5★ wheat (or universal feed) is a 3★ scale. Universal feed (`items.feed`) and any item with no cooking `food_quality` always use scale `1`. Stars are read from the item in hand when each parent enters love mode.
 - Cancel if either parent is Hungry, Dirty, neutered, or **still growing up**. Hungry/dirty block breed; they do not replace the care ratio.
 - Offspring get an UNTAMED SQLite row with rolled genetics for **same-session** tame. If the chunk unloads/loads before anyone owns them, they despawn and the row is deleted.
 - **Baby growth:** global `grow-up` (default `1h`); optional per-species override (e.g. `CHICKEN: 45m`). Stored as `mature_at` in SQLite; `NULL` = adult. Immature animals can be tamed but cannot breed, milk, shear, lay eggs, or drop Cooking roast on death. While `mature_at` is still in the future, the entity stays on the baby model with its age locked, so vanilla growth and breeding food cannot switch it to the adult model early. When maturity is reached, the lock is cleared and the entity is set adult if loaded.
