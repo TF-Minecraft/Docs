@@ -13,11 +13,10 @@ handleDeath(player, location):
   if rollPermadeath(risk) → permakill
   healing = listHealingInjuryTraits(character)
   if healing not empty:
-    for each trait in healing:
-      permanentId = InjuryProgressionLoader.getPermanent(trait.id)
-      convertTrait(player, character, trait, permanentId)
-      // remove healing trait + state, add permanent trait
-    return   // conversion covers this death's injury roll
+    trait = first healing injury only
+    permanentId = InjuryProgressionLoader.getPermanent(trait.id)
+    convertTrait(player, character, trait, permanentId)
+    return   // one upgrade covers this death's injury roll
   picked = InjuryPoolLoader.pickRandom(ownedIds)
   if picked == null → log warning, return
   addTrait with full duration state initialized
@@ -43,7 +42,7 @@ handleDeath(player, location):
 
 ## Multiple healing injuries
 
-Convert **all** on one death. Still no pool roll.
+Upgrade **one** healing injury on a death. Any others stay healing until a later death. Still no pool roll on that death.
 
 ## Admin `/rpcharacter injure`
 
@@ -57,14 +56,14 @@ Convert **all** on one death. Still no pool roll.
 
 ## Acceptance
 
-- [ ] Death with healing injury converts, does not add second injury
+- [ ] Death with healing injury converts one injury, does not add or upgrade a second
 - [ ] Death with no healing injuries adds pool injury
 - [ ] Permakill roll happens before convert/roll
 - [ ] Injury count unchanged across convert
 
 ## Implementation
 
-- `PermadeathService.handleDeath` rolls permakill first, converts all healing injuries via `InjuryProgressionLoader`, then pool pick
+- `PermadeathService.handleDeath` rolls permakill first, upgrades one healing injury via `InjuryProgressionLoader`, then pool pick
 - `convertTrait`, `listHealingInjuryTraits`, `ownsTraitId` helpers
 - Pool-exhaustion 100% risk shortcut removed from `computeRisk`
 - `PermadeathRisk` lore shows injury count and permakill chance
