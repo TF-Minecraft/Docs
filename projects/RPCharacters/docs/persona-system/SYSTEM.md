@@ -31,6 +31,7 @@ safe for TAB when hidden characters are enabled. No-character rendering follows
 | `permission-groups.yml` | Rank limits and character-switch cooldowns |
 | `chat.yml` | Channels, formats, ranges, permissions and character requirements |
 | `masks.yml` | Mask item matching and display label |
+| `custom-masks.yml` | Approved custom 3D masks written by ArmourShop (`ia.{namespace}:{slug}`) |
 | `rolls.yml` | Dice limits and attribute modifiers |
 | `calendar.yml` | Season calendar and age rules |
 | `races.yml` | Race definitions and age limits |

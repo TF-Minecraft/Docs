@@ -6,7 +6,7 @@ End-to-end design for donator texture submissions on **ProvinceSystem** (store +
 
 ## Goals
 
-- Donators submit **armor sets** (2D, optional per-tier 3D helmet), **weapon/tool skins** (`handheld` / `large_handheld` / `bow` / `large_bow` / `crossbow`), **3D kinds** (`item_3d` / `shield` / `helmet_3d`), **guns** (`gun`), and **books** (`book`; unsigned + signed covers).
+- Donators submit **armor sets** (2D, optional per-tier 3D helmet), **weapon/tool skins** (`handheld` / `large_handheld` / `bow` / `large_bow` / `crossbow`), **3D kinds** (`item_3d` / `shield` / `helmet_3d` / `mask`), **guns** (`gun`), and **books** (`book`; unsigned + signed covers).
 - No website logins; codes from TFMCWeb (`/token create skin` or **`/token create skin staff`**) bound to player UUID.
 - **Player:** staff approve/deny in Discord; ArmourShop writes **`tfmc_submissions`** + `ps_*` + LP.
 - **Staff curated:** auto-approve (no bot); category + scroll on upload; writes **`tfmc_armorshop`** into real ArmourShop categories.
@@ -26,6 +26,7 @@ End-to-end design for donator texture submissions on **ProvinceSystem** (store +
 | `item_3d` | `texture` + `model` | Pair byte budget from entitlements | `generate: false` |
 | `shield` | `texture` + `model` | Same pair budget | Blocking clone at apply |
 | `helmet_3d` | `texture` + `model` | Same pair budget | `set: helmets` |
+| `mask` | `texture` + `model` | Same pair budget | `set: masks`. Wearing the skinned mask hides identity in RPCharacters |
 | `gun` | `texture` + carry/reload/aim models | Three pair checks | GaG `skins.yml` `ia.…` |
 | `book` | `unsigned` + `signed` | Both **16×16** | `base_set: books` |
 
@@ -87,7 +88,7 @@ Configured in `permission-groups.yml` (synced via catalog + player-meta on join/
 | defaults / no rank | disallowed | none | false |
 | Noble | 28 days | handheld, large_handheld, bow, large_bow, crossbow, book | false |
 | Gilded | 21 days | + armor_set | false |
-| Ascended | 14 days | + item_3d, shield, helmet_3d, gun | true |
+| Ascended | 14 days | + item_3d, shield, helmet_3d, mask, gun | true |
 | Legacy | 7 days | (same as Ascended) | true |
 
 ## Discord link (MC ↔ Discord)

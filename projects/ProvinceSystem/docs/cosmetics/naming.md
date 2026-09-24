@@ -54,7 +54,7 @@ One `texture` field. Sizes: `handheld` **16×16**; `large_handheld` **32×32**. 
 
 Fields `texture`, `pull_0`, `pull_1`, `pull_2` (bow four + `charged` for crossbow). Sizes: `bow` **16×16**; `large_bow` **32×32**.
 
-### `item_3d` / `shield` / `helmet_3d` / `gun`
+### `item_3d` / `shield` / `helmet_3d` / `mask` / `gun`
 
 Multipart `texture` + model JSON(s). Combined texture+JSON pair byte budget from ArmourShop `permission-groups.yml`. Shield blocking model is **not** uploaded (ArmourShop clones at apply).
 
