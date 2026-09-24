@@ -104,11 +104,10 @@ Admin `/magic open` without a character stays ephemeral (nothing saved). Drift s
 
 ## Dependencies
 
-- **TLibs** (required) - item refs, formatHex
+- **TLibs** (required, 2.1.0 or newer) - item refs, formatHex, inventory scanning
 - **ItemsAdder** (required) - `ia.` icons in gui.yml / elements
-- **RPCharacters** (required, 2.1.0 or newer) - character Focus pool
+- **RPCharacters** (required, 2.1.0 or newer) - character Focus pool, character head and per-character MagicProfile persistence
 - **InteractibleFurniture** (required) - pedestals
-- **RPCharacters** (soft) - character head and per-character MagicProfile persistence
 
 ## Commands
 
