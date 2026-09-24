@@ -45,64 +45,17 @@ The default mail acceptance includes the configured blank/sealed/opened letter
 variants. An explicit `letters` list or a custom `letter` setting remains
 authoritative. Check that these settings accept the items used by the server.
 
-## Build order
+## API requirements
 
-1. Build and publish TLibs 2.1.0 and RPCharacters 2.1.0 from their merged source.
-   Verify the release JARs, embedded versions, checksums and build metadata.
-2. Build Cooking, Magic and Research against those published provider versions.
-   Require their pinned-dependency CI builds to pass. Build BirdMessenger and
-   TFMCCore from the merged source as well.
-3. Stage all seven JARs together: TLibs, RPCharacters, Cooking, Magic, Research,
-   BirdMessenger and TFMCCore. Record the source commit and checksum of each JAR;
-   use the same verified set for dev and main. Publishing a release does not
-   update either server.
+Inventory-scanning consumers require TLibs 2.1.0 or newer. Character-focus
+consumers require RPCharacters 2.1.0 or newer. Use the dependency versions
+pinned in each consumer's POM and the [shared pipeline guide](../../PIPELINES.md)
+for build and release verification.
 
-## Manual dev and main update
+## Verification
 
-The installations are controlled together. There are no automatic data imports,
-version-detection paths, old API wrappers or old command aliases. Update the full
-plugin set while each server is stopped. Complete and verify dev before main.
-
-Back up the plugin jars and all affected configuration/data folders. Before first
-starting the updated plugins, manually copy these files under that server's
-`plugins` directory:
-
-| Copy from | Copy to |
-| --- | --- |
-| `TFMCCore/focus.yml` | `RPCharacters/focus.yml` |
-| `TFMCCore/data/focus/*.json` | `RPCharacters/data/focus/` (same filenames) |
-| `TFMCCore/letters-config.yml` | `BirdMessenger/letters-config.yml` |
-
-Create destination directories as needed. Compare existing destination files
-before copying and resolve differences explicitly; do not overwrite newer
-balances or server settings. Keep the source copies in the backup until the
-update is verified. Starting without the copies creates defaults/new focus state,
-so perform the file transfer first. No scanner data needs moving.
-
-Install the updated TLibs, RPCharacters, BirdMessenger, Core, Cooking, Magic and
-Research jars as one coordinated set. Update staff permissions and configured
-commands to use `/focus` and `/birdmessenger reload`. Core's reload targets now
-cover its own configuration, drops, stations, stats, whistle and lorestones.
-Remove the replaced JARs from the plugins directory so each plugin has exactly
-one installed JAR. Use a full stop/start rather than a plugin reload.
-
-Consumer builds require TLibs 2.1.0 for scanning and RPCharacters 2.1.0 for focus;
-BirdMessenger's letter feature targets 1.1.0. Publish provider releases before
-building dependent consumers through the pinned-release CI. Local source-built
-candidates can verify the changes together, but are not published releases.
-
-After startup, verify food freshness/fish conversion, artifact updates, focus
-spending and character switching, offline regeneration, restart persistence,
-letter editing/sealing/opening in both hands, and queued mail. Compare copied balances and item
-content before exercising them. Repeat the same procedure on main after dev
-passes. Unit tests do not replace these Paper integration checks.
-
-Copy main's own current files during main's maintenance window; do not copy dev's
-focus balances over main. Sealed items keep their existing identifier and need
-no item conversion. No scanner files need transferring.
-
-For rollback, stop the server and restore a compatible set of jars/configuration.
-If players have used the updated system, manually reconcile the current
-RPCharacters focus records back into Core before restoring its ownership; the
-pre-update backup no longer contains the latest balances. Retain current mail
-storage and reconcile any changed letter settings as well.
+On Paper, check food freshness and fish conversion, artifact updates, focus
+spending and character switching, offline regeneration, and restart persistence.
+For letters, check editing, sealing and opening in both hands, plus queued mail.
+Verify that balances and item contents remain correct across these operations.
+Unit tests do not replace these integration checks.
