@@ -6,5 +6,5 @@ Default editable-kit PNGs live here as `{skin_png}.png` (for example `knife_skin
 `PUT /characters/plugin/kit-skins/{name}` from `plugins/RPCharacters/assets/`.
 Do not hand-copy assets onto the website host.
 
-**Local fallbacks:** the API also checks `KIT_SKINS_DIR` and the monorepo path
-`Workspace/rpcharacters/src/main/resources/assets/{skin_png}.png` when present.
+**Local fallbacks:** the API also checks `KIT_SKINS_DIR` and a sibling RPCharacters
+checkout, `rpcharacters/src/main/resources/assets/{skin_png}.png`, when present.
