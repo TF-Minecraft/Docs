@@ -11,6 +11,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 - [Injuries, healing and prosthetics](docs/injuries-system/README.md)
 - [Persona, identity and chat](docs/persona-system/SYSTEM.md)
 - [Persona validation](docs/persona-system/RUNBOOK.md)
+- [Online player list](docs/player-list.md)
 - [Professions](docs/professions-system/SYSTEM.md)
 - [Profession validation](docs/professions-system/RUNBOOK.md)
 - [Development characters and realm wipes](docs/dev-characters.md)
