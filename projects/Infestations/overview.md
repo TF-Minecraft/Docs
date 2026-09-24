@@ -27,10 +27,17 @@ province's tagged ambient mobs are below `ambient-cap`. Spots lie in a ring
 between `ambient-ring-min` and `ambient-ring-max` blocks from the player, within
 two blocks of the player's height, inside the same province, and at or above
 the group's `min-y`. Each spot needs a clear 3×3×3 space over a solid 3×3
-floor. `night-only` groups spawn only while world time is 13000–22999. Mobs are
-picked from the group's weighted MythicMobs list and tagged with the province
-and kind. Killing ambient mobs never clears an infestation, and the plugin does
-not remove spawned mobs.
+floor in loaded chunks. No spot may be within `min-player-distance` of any
+player other than spectators, checked again when the delayed spawn fires; the
+ring minimum is raised to that distance and the ring maximum to at least eight
+blocks beyond it. The search tries a capped number of random points, so a
+failed search logs `no-spot` without loading chunks. `night-only` groups spawn
+only while world time is 13000–22999. Mobs are picked from the group's weighted
+MythicMobs list and tagged with the province and kind. Mobs that a dying
+tagged mob summons, such as parasitic worms, take its tags. Killing ambient
+mobs never clears an infestation, and the plugin does not remove spawned mobs.
+The loaded ambient count is recounted at most every five seconds after tagged
+mobs load or unload.
 
 **Lure.** Placing InteractibleFurniture whose item path equals `lure-item`
 starts a lure. Placement is cancelled unless the province is infested land with
@@ -40,18 +47,26 @@ During the `join-seconds` window, players in the province see an action-bar
 countdown and join by right-clicking the lure. Ambient spawning stops for the
 duration of the lure; existing ambient mobs stay.
 
-When the window ends, the lure releases up to `lure-count` mobs, paced evenly
-across `lure-duration-seconds`, between 4 and `lure-spawn-radius` blocks from
-the lure. The duration paces spawning; it is not a time limit. A floating text
-display above the lure shows the countdown or the remaining count to players
-within `hologram-view-range`. Any death of a lure-tagged mob reduces the
-remaining count. Right-clicking an active lure makes the remaining lure mobs
+When the window ends, the province's loaded ambient mobs become lure mobs and
+count toward `lure-count`. The remaining count starts at `lure-count`, or at
+the number of mobs taken over if that is larger. It is the number of mobs left
+to kill: any death of a lure-tagged mob reduces it, and each mob summoned by a
+dying lure mob (for example the parasitic worms a bug zombie leaves) is tagged
+and adds one to it. The lure spawns mobs until everything left to kill is in
+the field, paced evenly across `lure-duration-seconds`, between
+`min-player-distance` (at least 4) and `lure-spawn-radius` blocks from the lure
+and never within `min-player-distance` of a player. The duration paces
+spawning; it is not a time limit. Every five seconds the lure recounts its
+loaded mobs, takes over ambient mobs that loaded since, and replaces mobs that
+were lost without being killed. A floating text display above the lure shows
+the countdown or the remaining count to players within `hologram-view-range`. Right-clicking an active lure makes the remaining lure mobs
 glow for 10 seconds and commits a player who has not yet joined. Uncommitted
 Survival and Adventure players in the province take `deserter-damage` every
 second until they leave.
 
-- **Victory:** when the remaining count reaches zero, the lure is removed and
-  the infestation is cleared.
+- **Victory:** two seconds after the remaining count reaches zero, if it is
+  still zero, the lure is removed and the infestation is cleared. The delay lets
+  death summons join the count.
 - **Failure:** the lure is removed and the infestation returns to idle at the
   same severity if a committed player is outside the province, or, once the
   lure is active, if no committed player is alive, online, or within the logout
@@ -80,7 +95,7 @@ The plugin copies its defaults into `plugins/Infestations/` on first start.
 
 | File | Purpose |
 | --- | --- |
-| `config.yml` | Debug and spawn-log switches, spread switch, interval and chances, lure item, join window, lure spawn radius, logout grace, deserter damage, hologram range, and `skip-terrains`. |
+| `config.yml` | Debug and spawn-log switches, spread switch, interval and chances, lure item, join window, lure spawn radius, minimum spawn distance from players, logout grace, deserter damage, hologram range, and `skip-terrains`. |
 | `groups.yml` | Mob groups: `display` name, `night-only`, optional `min-y`, optional SimpleFactions `terrains`, weighted MythicMobs `mobs`, and per-severity `ambient-cap`, `ambient-interval-ticks`, `ambient-ring-min`, `ambient-ring-max`, `lure-count`, and `lure-duration-seconds`. |
 | `messages.yml` | Chat, action-bar, and hologram text. `{prefix}` inserts the `prefix` entry; hex colours are formatted through TLibs. |
 
@@ -147,10 +162,13 @@ dependency set:
 2. Set, list, and clear infestations with both a province ID and `here`, and
    confirm refusals for water or sea, disallowed terrain, and provinces that
    are already infested.
-3. Confirm ambient mobs spawn in the configured ring inside the province, stop
-   at the cap, and honour `night-only` and `min-y`.
+3. Confirm ambient mobs spawn in the configured ring inside the province, never
+   within `min-player-distance` of a player, stop at the cap, and honour
+   `night-only` and `min-y`.
 4. Place lures with and without an infestation, then exercise joining, the
    countdown, activation, paced spawning, highlighting, and deserter damage.
+   Confirm roaming ambient mobs count toward the lure when it activates, and
+   that killing a mob that summons parasitic worms raises the remaining count.
 5. Exercise victory, a committed player leaving, losing the whole party, and a
    logout both within and beyond the grace period.
 6. On a test server, enable `spread` with a short interval and confirm
