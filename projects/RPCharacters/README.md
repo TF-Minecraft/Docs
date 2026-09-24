@@ -20,3 +20,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 ## Builds and releases
 
 See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.
+
+## Shared feature ownership
+
+See [feature ownership and migration](../TFMCCore/ownership-migration.md) for scanner, focus and letter APIs, coordinated upgrades, and rollback.
