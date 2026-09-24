@@ -186,7 +186,7 @@ No custom slaughter tool. If an **owned** animal **dies**, it drops configured C
 | Amount | From **effective genetics** (care yield). Roast `carve_remaining` (existing carve sequences / roast models 1–8). Counted drop tables use hide/wool yield. Honour `min-roast-cuts`. |
 | Sheep | Vanilla wool **always** on shear. If `wool_ready_at <= now`, also roll `shear.drops`, then reset the wool timer. |
 | Milk | `milk: true` on the species. Per-animal cooldown (`milk-cooldown`, default 20m). Mature only. Empty bucket interact; hand becomes cooking `milk_bucket` with quality from the **animal** (Cow/Goat origin from entity type). |
-| Eggs | Chickens with `egg:` set: when loaded, mature, and happy, drop one egg after `egg-timer` (default 10m) on the 1-minute tick. Item from `egg` (`vanilla` → `Material.EGG`; `food(...)` or TLibs path otherwise). Vanilla egg drops from managed chickens are cancelled (`EntityDropItemEvent`). Bees: vanilla, not husbandry. |
+| Eggs | Chickens with `egg:` set: when loaded, mature, and happy, drop one egg after `egg-timer` (default 10m) on the 1-minute tick. Item from `egg` (`vanilla` → `Material.EGG`; `food(...)` or TLibs path otherwise). The chicken config uses `food(type=egg;...)`, so the drop is a raw cooking egg whose stars come from that chicken's genetics. It is not edible until fried. Vanilla egg drops from managed chickens are cancelled (`EntityDropItemEvent`). Bees: vanilla, not husbandry. |
 | Shed | Species with `shed.drops`: when loaded, mature, and happy, roll `shed-chance` after `shed-timer` (default 8h) on the 1-minute tick. Success rolls `shed.drops` at the animal's feet and resets the timer. |
 
 Genetics → stars **and** amount tables both live in YAML (`husbandry.yml`). Do not hardcode thresholds.
@@ -347,7 +347,7 @@ Under `species.<TYPE>` (presence defines capability; no `harvest` list):
 | `slaughter.drops` | Star-gated extras on slaughter (`common`, `rare`, `epic`, `legendary`; optional `mode: counted`) |
 | `shear.drops` | Star-gated items given on shear (after wool timer) |
 | `shed.drops` | Star-gated items dropped on successful shed tick |
-| `egg` | `vanilla`, `food(...)`, or TLibs path for timed egg lay |
+| `egg` | `vanilla`, `food(...)`, or TLibs path for timed egg lay. Chickens use `food(type=egg;origin=Egg;tags=freshness.0:cooked.0)` so quality follows the chicken's genetics |
 | `grow-up` | Optional per-species baby duration override |
 | `wool-timer` | Optional per-species shear cooldown override |
 
