@@ -14,7 +14,7 @@ Keep this guide aligned with the implementation and configuration on `main`.
 | **Yield** | `care / care-max` (default care/200). Multiplies **amount** (roast cuts, wool count). | Does not change star quality. |
 | **Stars** | Cooking `food_quality` 1–5 from **raw genetics** via a YAML table. | Not averaged with care. |
 
-**Effective genetics (amounts only):** `genetics * (care / care-max)`. Care 0 → 0% amount (honour `min-roast-cuts`). Care 100 / 200 → 50%. Care 200 → 100%.
+**Effective genetics (amounts only):** `genetics * (care / care-max)`. Care 0 → 0% amount (honour `min-roast-cuts`). Care 100 / 200 → 50%. Care 200 → 100%. Roast amount is meat portions before the bone. Poultry never goes below two legs and one filet (`min-food-cuts` on the poultry sequence).
 
 ## What we keep from BreedingBuddies
 
@@ -183,7 +183,7 @@ No custom slaughter tool. If an **owned** animal **dies**, it drops configured C
 |--------|------|
 | Death | Owned mature: Cooking roast from `slaughter.meat` + extras from `slaughter.drops`. Immature: no Cooking roast or extras. Unowned `remove-unowned` types: no drops. |
 | Quality (stars) | From **raw genetics** via YAML table → 1–5. Apply with `ItemBuilder` / existing quality PDC. Stars gate drop tiers: common always, rare 3★+, epic 4★+, legendary 5★ only. |
-| Amount | From **effective genetics** (care yield). Roast `carve_remaining` (existing carve sequences / roast models 1–8). Counted drop tables use hide/wool yield. Honour `min-roast-cuts`. |
+| Amount | From **effective genetics** (care yield). That many meat cuts from the start of the carve sequence, then the bone. The roast model starts whole (stage 1) and moves toward the bone stage as those cuts are taken. Poultry floor is two legs and one filet, then bone. Other roasts floor at one meat cut, then bone. Counted drop tables use hide/wool yield. Honour `min-roast-cuts` and the sequence `min-food-cuts`. |
 | Sheep | Vanilla wool **always** on shear. If `wool_ready_at <= now`, also roll `shear.drops`, then reset the wool timer. |
 | Milk | `milk: true` on the species. Per-animal cooldown (`milk-cooldown`, default 20m). Mature only. Empty bucket interact; hand becomes cooking `milk_bucket` with quality from the **animal** (Cow/Goat origin from entity type). |
 | Eggs | Chickens with `egg:` set: when loaded, mature, and happy, drop one egg after `egg-timer` (default 10m) on the 1-minute tick. Item from `egg` (`vanilla` → `Material.EGG`; `food(...)` or TLibs path otherwise). The chicken config uses `food(type=egg;...)`, so the drop is a raw cooking egg whose stars come from that chicken's genetics. It is not edible until fried. Vanilla egg drops from managed chickens are cancelled (`EntityDropItemEvent`). Bees: vanilla, not husbandry. |
