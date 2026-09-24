@@ -50,4 +50,4 @@ build inputs. TLibs remains a separate server plugin.
 
 ## Shared feature ownership
 
-See [feature ownership and migration](../TFMCCore/ownership-migration.md) for scanner, focus and letter APIs, coordinated upgrades, and rollback.
+See [feature ownership and manual updates](../TFMCCore/ownership.md) for scanner, focus and letter APIs and the manual dev/main update steps.
