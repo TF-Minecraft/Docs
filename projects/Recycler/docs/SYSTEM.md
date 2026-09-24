@@ -25,7 +25,7 @@ Reference: `util/GridLayout.java`.
 
 ## Return math
 
-Provider recipes (AdvancedCrafting, GunsAndGadgets):
+Provider recipes (AdvancedCrafting, Magic, GunsAndGadgets, goldsmithing):
 
 ```
 final_amount = floor(base_amount * max_return_rate * durability_factor * stack_amount)
@@ -37,7 +37,7 @@ Config recipes (`recipes/*.yml`):
 final_amount = floor(base_amount * durability_factor * stack_amount)
 ```
 
-- `max_return_rate`: config default `0.8` (80% cap). Applies only to AC/GG providers, not yaml config recipes.
+- `max_return_rate`: config default `0.8` (80% cap). Applies to AdvancedCrafting, Magic, GunsAndGadgets, and goldsmithing providers, not yaml config recipes.
 - `durability_factor`: `0.0` when broken, `1.0` when full. Vanilla `Damageable` items and MMOItems custom durability NBT when MMOItems is present.
 - `stack_amount`: full stack placed in station (one stack per deposit).
 - Use `floor`; zero yield blocks confirm when `block_confirm_when_zero_yield` is true.
@@ -55,6 +55,10 @@ Raw AC ingredients/alloys (`ac_ingredient_id` / `ac_alloy_id`) are not provenanc
 ### GunsAndGadgets (guns)
 
 Read stamped part list from gun PDC (`gg_craft_parts`), sum each `GunPart.getCost()` from live `parts.yml` via `GunsAndGadgetsProvider`. Broken guns and guns with missing stamped ids are not handled by this provider.
+
+### Goldsmithing (GemInfusion jewelry)
+
+Match the item to exactly one live jewelry project with `TLibs ItemChecker` against that project's output path. Return each recipe material's live item path and amount. The infused gem is not returned. Pieces with socketed gems, and items that match more than one project, are not handled by this provider.
 
 ### Config fallback (`recipes/*.yml`)
 
