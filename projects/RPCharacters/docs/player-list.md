@@ -11,9 +11,10 @@ character sheet: a pixel portrait of the player's current skin beside their
 or Esc returns to the list.
 
 The sheet uses the normal profile view rules through `CharacterProfileViewEvent`
-with the `SHEET` presentation. Viewers need `rpchar.profile`; masked players are
-refused with the concealed-identity message; the view cooldown applies. A hidden
-active character shows its facade.
+with the `SHEET` presentation. Viewers need `rpchar.profile`, and the view
+cooldown applies. Masks do not hide sheets here: the list is out of character, and
+refusing masked players would reveal who is masked. Shift-right-clicking a masked
+player in the world is still refused. A hidden active character shows its facade.
 
 ## Configuration
 
@@ -53,6 +54,6 @@ outbound HTTPS for portraits; without it the sheet shows the profile lines only.
 - [ ] `/players` lists everyone visible, sorted by rank, with faces and tags
 - [ ] Hovering shows the account name, rank and ping
 - [ ] Clicking a name opens the sheet; **Back to player list** returns
-- [ ] A masked player's sheet is refused with the concealed-identity message
+- [ ] A masked player's sheet opens from the list; shift-right-clicking them in the world is refused
 - [ ] A hidden active character shows its facade in the list and on the sheet
 - [ ] After a restart, G shows **Who's online** and opens the list
