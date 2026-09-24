@@ -11,7 +11,7 @@ ProvinceSystem on the live box uses **production ports** only:
 
 Plugins, Red bot, and MC servers on the same host talk to the API at **`http://127.0.0.1:8000`** (not 18001).
 
-**Staging** (optional, separate clone) uses **18001** / **13001** via `docker-compose.staging.yml` — see [STAGING.md](STAGING.md) and section 6 below. Do **not** use staging scripts for production deploy.
+**Staging** (optional, separate clone) uses **18001** / **13001** via `docker-compose.staging.yml` — see [STAGING.md](STAGING.md) and section 5 below. Do **not** use staging scripts for production deploy.
 
 ---
 
@@ -27,57 +27,9 @@ docker compose up -d
 
 ---
 
-## 1. Purge the old production stack
+## 1. One-time production setup
 
-If old `provincesystem-*` containers are still running:
-
-```bash
-docker stop provincesystem-frontend-1 provincesystem-backend-1 2>/dev/null || true
-docker rm provincesystem-frontend-1 provincesystem-backend-1 2>/dev/null || true
-```
-
-Or from the old compose directory:
-
-```bash
-docker inspect provincesystem-backend-1 --format '{{index .Config.Labels "com.docker.compose.project.working_dir"}}'
-cd <that-directory>
-docker compose down
-```
-
-Confirm ports **8000** and **3000** are free:
-
-```bash
-sudo ss -tlnp | grep -E ':8000|:3000'
-```
-
----
-
-## 2. Purge the staging stack (18001 / 13001)
-
-Only if `tfmc-staging-*` containers are still up:
-
-```bash
-cd ~/tfmc-staging   # or wherever the staging clone lives
-docker compose -f docker-compose.staging.yml down --rmi local
-```
-
-Optional aggressive cleanup:
-
-```bash
-docker compose -f docker-compose.staging.yml down --rmi local --volumes
-```
-
-Confirm staging ports are gone:
-
-```bash
-sudo ss -tlnp | grep -E ':18001|:13001'
-```
-
----
-
-## 3. One-time production setup
-
-### 3a. `backend/.env` (required)
+### 1a. `backend/.env` (required)
 
 `docker-compose.yml` loads **`backend/.env`** into the API container. Create it on the server before the first `docker compose up` (file is gitignored):
 
@@ -102,7 +54,7 @@ MINESKIN_API_KEY=your-mineskin-api-key
 
 If `backend/.env` is missing, compose may warn or the backend may start without keys.
 
-### 3b. Do not let `frontend/.env` override the public API URL
+### 1b. Do not let `frontend/.env` override the public API URL
 
 The Docker build log may show `Environments: .env`. If **`frontend/.env`** exists on the server with:
 
@@ -123,13 +75,13 @@ NEXT_PUBLIC_API_URL=https://www.tfminecraft.net/api
 
 The compose file also passes `NEXT_PUBLIC_API_URL` as a Docker build arg; avoid conflicting `frontend/.env` values.
 
-### 3c. Data directories
+### 1c. Data directories
 
-Ensure `backend/src/data`, `input`, `output`, and `defines` exist and contain the data you need (copy from the old stack if migrating).
+Ensure `backend/src/data`, `input`, `output`, and `defines` exist and contain the data you need.
 
 ---
 
-## 4. Production deploy / redeploy
+## 2. Production deploy / redeploy
 
 SSH in, then from **`~/ProvinceSystem`**:
 
@@ -168,9 +120,7 @@ curl -s https://www.tfminecraft.net/api/ping
 
 ### Optional: Season 5 dev landing
 
-Production `docker-compose.yml` enables the gate by default (`NEXT_PUBLIC_SITE_DEV_GATE=1` build arg).
-
-**Launch day:** set the build arg to `"0"` (or remove the line), then rebuild the frontend:
+Production `docker-compose.yml` builds with the gate off (`NEXT_PUBLIC_SITE_DEV_GATE: "0"`). To enable it, set the build arg to `"1"`, then rebuild the frontend:
 
 ```bash
 docker compose build --no-cache frontend
@@ -179,7 +129,7 @@ docker compose up -d
 
 ---
 
-## 5. nginx (`/etc/nginx/sites-enabled/tfminecraft.net`)
+## 3. nginx (`/etc/nginx/sites-enabled/tfminecraft.net`)
 
 Existing layout is correct. No new `location` blocks needed.
 
@@ -195,7 +145,7 @@ Existing layout is correct. No new `location` blocks needed.
 add_header Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS" always;
 ```
 
-The new site uses PUT, PATCH, and DELETE (character editor, map editor, logout).
+The site uses PUT, PATCH, and DELETE (character editor, map editor, logout).
 
 After edits:
 
@@ -205,7 +155,7 @@ sudo nginx -t && sudo systemctl reload nginx
 
 ---
 
-## 6. Same-host integrations
+## 4. Same-host integrations
 
 | Component | Setting | Value |
 |-----------|---------|-------|
@@ -220,59 +170,19 @@ TFMCWeb and SimpleFactions must use **loopback** API URLs on the game host, not 
 
 ---
 
-## 7. Staging stack (optional, later)
+## 5. Staging stack (optional, later)
 
 Only for a **separate** test clone (`~/tfmc-staging`), not the live `~/ProvinceSystem` deploy:
 
 ```bash
 cd ~/tfmc-staging
 git fetch origin && git checkout main && git reset --hard origin/main
-chmod +x scripts/staging-*.sh
 ./scripts/staging-down.sh
 ./scripts/staging-up.sh
 curl -s http://127.0.0.1:18001/ping
 ```
 
 Full checklist: [STAGING.md](STAGING.md).
-
----
-
-## Web character creator gate (noble+) — post-deploy checks
-
-After deploying backend changes that persist `web_creator_access` and accept `donator_tier`:
-
-1. Rebuild/restart ProvinceSystem backend.
-2. **Restart the MC server** (or reload RPCharacters) so the creation catalog PUT runs again.
-3. Verify catalog policy in SQLite (expect `main` → `min_tier: 1`):
-
-```bash
-docker compose exec backend python3 -c "
-import sqlite3, json
-conn = sqlite3.connect('/app/src/data/province.db')
-data = json.loads(conn.execute('SELECT payload FROM creation_catalog WHERE id=1').fetchone()[0])
-print(data.get('web_creator_access'))
-conn.close()
-"
-```
-
-- If `None`: RPCharacters must include `web_creator_access` in the catalog PUT (wire existing `web-creator-access.yml`).
-
-4. Have a known **noble+** player relog; check tier histogram:
-
-```bash
-docker compose exec backend python3 -c "
-import sqlite3
-conn = sqlite3.connect('/app/src/data/province.db')
-print(conn.execute('SELECT donator_tier, COUNT(*) FROM rpc_player_meta GROUP BY donator_tier').fetchall())
-conn.close()
-"
-```
-
-- If still all `0` after noble relog: TFMCWeb must send `donator_tier` on `PUT /characters/plugin/rpc-player-meta` (from existing permission-group tiers).
-
-5. Smoke: non-donator `GET /api/characters` → `web_creator_allowed: false`; noble → `true` after tier sync.
-
-Existing characters and pending web creates are **not** purged; the gate applies only to **new** `POST /characters`.
 
 ---
 
@@ -284,7 +194,7 @@ Existing characters and pending web creates are **not** purged; the gate applies
 | Chrome asks to use apps on device | Frontend built with `NEXT_PUBLIC_API_URL=http://127.0.0.1:8000` — fix `frontend/.env` or rebuild with compose build arg |
 | `env_file` / missing keys | Create `backend/.env` with `PLUGIN_KEY` and `STAFF_KEY` |
 | API 401 from bot / TFMCWeb | Keys in `backend/.env` do not match plugin/bot configs |
-| `version` obsolete warning | Harmless; removed from `docker-compose.yml` in newer commits |
+| Noble+ player gets `web_creator_allowed: false` | Creation catalog (RPCharacters `web-creator.yml`) or `donator_tier` (TFMCWeb player meta) not synced; restart the MC server or have the player relog |
 
 ---
 
@@ -292,4 +202,3 @@ Existing characters and pending web creates are **not** purged; the gate applies
 
 - `git reset --hard` does not delete `backend/.env` if it is gitignored and already on disk.
 - Does **not** update Paper jars (TFMCWeb, ArmourShop, etc.) — deploy those via AMP separately.
-- `defines/{map}/chronicle.json` is orphaned leftover from before the ledger's `chronicle` upload mode got its own partitioned branch (see [docs/map/ledger.md](docs/map/ledger.md)) — it holds exactly one stale snapshot from the old overwrite-one-file behaviour, nothing reads it any more, safe to delete manually on each map.

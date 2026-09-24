@@ -127,14 +127,6 @@ open station menus before changing `labels` titles or `colors.inventory_title`.
   resolved item path rather than a `t.` template. `getProjectId()` is a
   deprecated alias for `getOutputId()`.
 
-## Replacing AdvancedResearch
-
-Research replaces the archived AdvancedResearch plugin. It cancels right-clicks
-on every station block, so do not run both plugins on the same lecterns. It
-does not read AdvancedResearch data under `plugins/AdvancedResearch/`; rebuild
-the content as aspects, outputs, inputs, and templates, and expect projects in
-progress to be restarted.
-
 ## Persistence and shutdown
 
 - Each active station is a JSON file under

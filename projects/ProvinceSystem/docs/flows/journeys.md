@@ -13,6 +13,7 @@ flowchart TB
   end
   subgraph mc [Minecraft]
     SF[SimpleFactions]
+    TW[TFMCWeb]
     AS[ArmourShop]
     IA[ItemsAdder_tfmc_submissions]
   end
@@ -23,7 +24,8 @@ flowchart TB
   SF -->|upload_regen| API
   Hub --> API
   SkinsUI --> API
-  AS -->|codes_and_pull| API
+  TW -->|codes| API
+  AS -->|pull_via_TFMCWeb| API
   API --> SkinsCog
   SkinsCog -->|approve_deny| API
   AS --> IA
@@ -132,18 +134,9 @@ flowchart TB
 
 ---
 
-## Flow 4 - Map chronicle (planned)
+## Flow 4 - Map chronicle
 
-After chronicle ships:
-
-```text
-SF claim change → upload + regen → daily snapshot job
-  → composited map frame stored
-  → events.jsonl (SF events + diffs)
-  → optional slideshow / season recap UI
-```
-
-See [roadmap.md](../roadmap.md).
+Daily map timelapse snapshots and economy ledger charts: [map/ledger.md](../map/ledger.md).
 
 ---
 
@@ -176,7 +169,7 @@ sequenceDiagram
 
 ## Definition of done (platform MVP)
 
-- Flow 1 works on live map; map platform delivers parchment UX, modals, settlements, forts; chronicle and wealth charts planned.
+- Flow 1 works on live map; map platform delivers parchment UX, modals, settlements, forts, chronicle and wealth charts.
 - Flow 2 works for all enabled skin kinds with Discord approve and ArmourShop apply.
 - Flow 3 DM/log + **Banned role add/clear** shipped.
 - Naming enforced on Flow 2.

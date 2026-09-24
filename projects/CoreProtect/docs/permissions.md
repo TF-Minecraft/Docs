@@ -49,8 +49,6 @@ The following permissions can be used to restrict functionality within the plugi
 
 ## Child Permissions
 
-> **Note:** Child permissions are not presently supported by [CoreProtect for Hytale](https://coreprotect.net/hytale).
-
 * **coreprotect.lookup.block** *(default: op)*  
   Can be optionally used as a negative permission to prevent block lookups.  
   &nbsp;

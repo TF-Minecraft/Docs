@@ -8,7 +8,7 @@ Archaeo provides archaeology, hidden ruins, excavation, and fragile finds for TF
 
 Use the shared [Java 21 / Minecraft 1.21.10 platform baseline](../../PLATFORM.md).
 From the source checkout, run `mvn clean verify`. The JAR is written to
-`target/archeology-plugin-<version>.jar`.
+`target/archaeo-<version>.jar`.
 
 - [Plugin commands and permissions](https://github.com/TF-Minecraft/Archaeo/blob/main/src/main/resources/plugin.yml)
 - [Default configuration and catalogs](https://github.com/TF-Minecraft/Archaeo/tree/main/src/main/resources)

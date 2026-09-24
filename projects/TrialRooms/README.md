@@ -12,7 +12,7 @@ TrialRooms builds with Java **21** against
 `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT`. Install the pinned TLibs
 `2.0.1` and DenarEconomy `0.2.1` release artifacts with the shared dependency
 installer. The build also prepares a checksum-verified MythicMobs
-`5.8.0-SNAPSHOT` input from the private ServerAssets repository.
+`5.13.1-SNAPSHOT` input from the private ServerAssets repository.
 
 At runtime, `plugin.yml` requires MythicMobs, TLibs, and DenarEconomy. Magic is
 not declared; `magic.` item paths in loot tables only resolve when Magic is

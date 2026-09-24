@@ -10,13 +10,13 @@ See the [shared API versions](../../PLATFORM.md#shared-api-versions) for the mat
 
 ## Build and dependencies
 
-Run Maven from the source checkout. The current [POM](https://github.com/TF-Minecraft/cooking/blob/main/pom.xml) declares Java **release 21** and **paper-api 1.21.10-R0.1-SNAPSHOT**; [plugin.yml](https://github.com/TF-Minecraft/cooking/blob/main/src/main/resources/plugin.yml) declares `api-version: 1.21.10`. The build and loader metadata target the shared runtime. Gameplay validation remains separate from build verification.
+Run Maven from the source checkout. The current [POM](https://github.com/TF-Minecraft/Cooking/blob/main/pom.xml) declares Java **release 21** and **paper-api 1.21.10-R0.1-SNAPSHOT**; [plugin.yml](https://github.com/TF-Minecraft/Cooking/blob/main/src/main/resources/plugin.yml) declares `api-version: 1.21.10`. The build and loader metadata target the shared runtime. Gameplay validation remains separate from build verification.
 
 Use JDK 21, install the matching TLibs Maven artifact (`me.plugins:tlibs`, version from `tlibs.version`), install the other TFMC Maven dependencies listed in the POM, and populate `libs/` using the pinned private dependency preparation script. Run `mvn clean verify`; the artifact stays in `target/`. Optional runtime integrations can still be required at compile time.
 
 ## Runtime and configuration
 
-The plugin registers food item paths with TLibs and integrates furniture stations, TLibs inventory scanning, crops and husbandry. The manifest requires TLibs 2.1.0 or newer and InteractibleFurniture; RPCharacters, MMOCore, CustomCrops, SimpleFactions and CustomFishing enable additional integrations. `/cooking` requires `cooking.admin` (op by default). The guides below define crop and husbandry behavior and their configuration boundaries.
+The plugin registers food item paths with TLibs and integrates furniture stations, TLibs inventory scanning, crops and husbandry. The manifest requires TLibs and InteractibleFurniture, and the POM pins TLibs 2.1.0; RPCharacters, MMOCore, CustomCrops, SimpleFactions and CustomFishing enable additional integrations. `/cooking` requires `cooking.admin` (op by default). The guides below define crop and husbandry behavior and their configuration boundaries.
 
 ## Guides
 

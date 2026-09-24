@@ -8,9 +8,9 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 ## Build and dependencies
 
-Run Maven from the source checkout. The current [POM](https://github.com/TF-Minecraft/denareconomy/blob/main/pom.xml) declares Java **release 21** and **paper-api 1.21.10-R0.1-SNAPSHOT**; [plugin.yml](https://github.com/TF-Minecraft/denareconomy/blob/main/src/main/resources/plugin.yml) declares `api-version: 1.21.10`. The build and loader metadata target the shared runtime. Gameplay validation remains separate from build verification.
+Run Maven from the source checkout. The current [POM](https://github.com/TF-Minecraft/DenarEconomy/blob/main/pom.xml) declares Java **release 21** and **paper-api 1.21.10-R0.1-SNAPSHOT**; [plugin.yml](https://github.com/TF-Minecraft/DenarEconomy/blob/main/src/main/resources/plugin.yml) declares `api-version: 1.21.10`. The build and loader metadata target the shared runtime. Gameplay validation remains separate from build verification.
 
-Build with JDK 21. Install the matching TLibs Maven release and populate `libs/` using `.github/scripts/prepare-release.sh`, then verify `.github/dependencies.sha256` and run `mvn clean verify`. The primary output is `target/denareconomy-0.1.9.jar`. The current CI workflow records the exact dependency setup.
+Build with JDK 21. Install the matching TLibs Maven release and populate `libs/` using `.github/scripts/prepare-release.sh`, then verify `.github/dependencies.sha256` and run `mvn clean verify`. The primary output is `target/denareconomy-<version>.jar`. The current CI workflow records the exact dependency setup.
 
 ## Runtime and configuration
 

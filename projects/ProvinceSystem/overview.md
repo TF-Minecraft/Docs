@@ -13,7 +13,7 @@ ProvinceSystem powers **[tfminecraft.net](https://www.tfminecraft.net/)** - the 
 | `/skins` | Redeem code, upload textures, track review status |
 | `/drinks` | BreweryX drink builder |
 | `/character` | Character creator, kits, wardrobe |
-| `/map/editor` | Staff map title editor (county through empire) |
+| `/map/editor` | Staff map title editor (county through empire); hidden unless `NEXT_PUBLIC_MAP_EDITOR_ENABLED=1` |
 
 Players authenticate with in-game tokens from TFMCWeb - no website passwords.
 
@@ -36,7 +36,7 @@ FastAPI ── mapgen/regiongen ──► backend/src/output/{map}/…
 Next.js  ◄── hub, /map, /skins, /drinks, /character
 ```
 
-- Map generators write to `backend/src/output/`; the API serves assets via [`file_routes.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/api/file_routes.py) (not into `frontend/public`).
+- Map generators write to `backend/src/output/`; the API serves assets via [`file_routes.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/api/file_routes.py) (not into `frontend/public`).
 - Cosmetics metadata in SQLite; pending uploads on disk under `backend/src/data/`.
 - Full detail: [docs/architecture.md](docs/architecture.md)
 
@@ -64,4 +64,4 @@ Next.js  ◄── hub, /map, /skins, /drinks, /character
 - **Backend:** Python 3.x, FastAPI, Uvicorn, Pillow (mapgen), SQLite
 - **Frontend:** Next.js (App Router), React, Tailwind
 - **Deploy:** `docker-compose.yml` - backend `:8000`, frontend `:3000`; nginx terminates TLS on the live host
-- **Map code:** [loader](https://github.com/TF-Minecraft/ProvinceSystem/tree/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/scripts/loader), [mapgen](https://github.com/TF-Minecraft/ProvinceSystem/tree/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/scripts/mapgen), [MapViewer](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/app/components/MapViewer.tsx)
+- **Map code:** [loader](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/backend/src/scripts/loader), [mapgen](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/backend/src/scripts/mapgen), [MapViewer](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/MapViewer.tsx)

@@ -4,7 +4,7 @@ Put technical manuals in `projects/<repository>/`, using the canonical PascalCas
 
 When changing behavior, update the relevant guide in a docs PR and link it from the implementation PR. Use relative links for other guides and GitHub source links for code. Commands and filesystem paths refer to the source checkout unless a guide says otherwise.
 
-Use [PLATFORM.md](PLATFORM.md) as the shared **Java 21 / Minecraft 1.21.10** baseline. Every project index links to it. Keep runtime versions separate from Maven API dependencies, Java compiler targets and plugin loader metadata; document source mismatches rather than changing their labels to suggest a completed migration. When source build settings change, update the matrix and build instructions.
+Use [PLATFORM.md](PLATFORM.md) as the shared **Java 21 / Minecraft 1.21.10** baseline. Every project index links to it. Keep runtime versions separate from Maven API dependencies, Java compiler targets and plugin loader metadata; document any deviation from the baseline. When source build settings change, update the matrix and build instructions.
 
 Document `main` as the current source and build baseline (`master` for CoreProtect). Use its declared dependency versions and link to current source paths. Keep superseded implementation details and build reports in Git history.
 

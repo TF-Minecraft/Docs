@@ -48,7 +48,3 @@ committed Maven version. The tag workflow creates a draft release with the JAR,
 `SHA256SUMS`, and `build.json` containing source and resolved dependency provenance.
 Inspect the draft before publication. Use a new version for corrections; never
 replace an existing published version's bytes.
-
-The source archive SHA-256 and import changes are recorded in
-[SOURCE.md](https://github.com/TF-Minecraft/AdvancedCrafting/blob/main/SOURCE.md).
-The archive supplied no Git history or license file; no new license is inferred.

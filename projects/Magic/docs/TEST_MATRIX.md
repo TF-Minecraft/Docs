@@ -87,7 +87,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 - [ ] `/magic refresh` on the held weapon resyncs alignment
 - [ ] `/magic reload` rebuilds online modifiers once
 - [ ] Quit / disable clears applied modifiers
-- [ ] Spark: idle decay no longer nests a full `SpellModifierApplyService.syncOnline` under `MagicTickService.tick`
+- [ ] Spark: idle decay does not nest a full `SpellModifierApplyService.syncOnline` under `MagicTickService.tick`
 
 ## Artifact generator
 
@@ -97,13 +97,11 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 - [ ] MMOItems item `m.artifacts.template_artifact` exists
 - [ ] Scrap path `m.crafting.scrap` exists
 - [ ] Copy `magic/ItemsAdder/tfmc_magic` into ItemsAdder `contents/`, zip/reload IA
-- [ ] Copy live `plugins/Magic/artifacts/` `model-schemes.yml`, `naming-schemes.yml`, `generator.yml`, and `shrines.yml` from the jar (existing servers are not overwritten)
-- [ ] IA pack copy only if `tfmc_magic` item ids or textures changed (naming/affinity YAML is enough for this pass)
-- [ ] `/magic artifact give <self> cerrith legendary` uses an `ia.tfmc_magic:` skin (not `iaalchemy`)
-- [ ] `plugins/Magic/artifacts/` present (copy from jar if the data folder already existed)
-- [ ] Live `messages.yml` includes `artifact.roll` and `artifact.give` keys
-- [ ] Live `config.yml` has `meditation.pedestal_slot: "*"` and `artifacts.aura_cap: 80` (not overwritten on existing servers)
-- [ ] IF pedestal whitelist includes `item` (reload IF if YAML was already on disk)
+- [ ] `/magic artifact give <self> cerrith legendary` uses an `ia.tfmc_magic:` skin
+- [ ] `plugins/Magic/artifacts/` present
+- [ ] `messages.yml` includes `artifact.roll` and `artifact.give` keys
+- [ ] `config.yml` has `meditation.pedestal_slot: "*"` and `artifacts.aura_cap: 150`
+- [ ] IF pedestal whitelist includes `item`
 
 ### Affinity companions (generator.yml groups)
 
@@ -121,9 +119,8 @@ Secondaries are the union of every group that contains the primary. Names: Title
 
 Scoring is loaded from `artifacts/shrines.yml`. Charge runs when an artifact is placed on a `pedestal` IF slot.
 
-- [ ] Copy live `plugins/Magic/artifacts/shrines.yml` (not overwritten on existing servers)
 - [ ] `/magic reload` logs shrine element count; missing file warns and Magic still enables
-- [ ] Empty Cerrith on a mixed grove pedestal: fill rises, lore `fill / 80`, `hasStoredAura` becomes true
+- [ ] Empty Cerrith on a mixed grove pedestal: fill rises, lore `fill / aura_cap`, `hasStoredAura` becomes true
 - [ ] Moss-only shrine: little or no fill (`min_families`)
 - [ ] Cerrith item on a lava shrine: Oseni slot appears and fills
 - [ ] Necromancy on a grove: no Cerrith fill
@@ -138,7 +135,7 @@ Scoring is loaded from `artifacts/shrines.yml`. Charge runs when an artifact is 
 
 - [ ] `/magic artifact roll arcanum common` reports scrap
 - [ ] `/magic artifact roll necromancy legendary` secondaries are only shadowmancy and/or bloodmagic (not cerrith)
-- [ ] `/magic artifact give <self> cerrith legendary` gives a named artifact with Aura lore, fill 0 / `aura_cap` (80), slots present, and an `ia.tfmc_magic:` model
+- [ ] `/magic artifact give <self> cerrith legendary` gives a named artifact with Aura lore, fill 0 / `aura_cap` (150), slots present, and an `ia.tfmc_magic:` model
 - [ ] `/magic artifact roll` chat still prints roller share caps; those are not the stored item cap
 - [ ] `/magic artifact give <self> arcanum common` gives scrap with no Aura lore
 - [ ] `/magic artifact give <self> spirit rare` and `illusion rare` succeed (not unknown element)
@@ -152,7 +149,6 @@ Empty generated items have cap PDC but `hasStoredAura` is false until shrine cha
 - [ ] Older filled artifacts whose lore still shows Aura (even if PDC was dropped on pickup) still start a session
 - [ ] Scrap on a pedestal does not count (same no-artifacts message if nothing else is charged)
 - [ ] Sit on a complete ring with charged artifacts already attuned: `meditation.nothing`
-- [ ] Copy live `messages.yml` `meditation` keys (not overwritten on existing servers)
 - [ ] Multi-element artifact: hits credit the dominant fill; other fills still feed power-by-element
 - [ ] Eight pedestals + sit: session starts when at least one charged artifact is present; orbs spawn from those pedestals
 
@@ -178,7 +174,6 @@ Empty generated items have cap PDC but `hasStoredAura` is false until shrine cha
 
 ### Server setup
 
-- [ ] TLibs jar includes `registerPathHandler` / `ItemPathHandler.matches`
 - [ ] Load order: TLibs, then Magic, then TrialRooms
 - [ ] Magic enables without "No handler for path prefix magic"
 
@@ -206,7 +201,6 @@ Empty generated items have cap PDC but `hasStoredAura` is false until shrine cha
 
 ## Fillchest
 
-- [ ] Copy live `messages.yml` `fillchest` keys (not overwritten on existing servers)
 - [ ] `/magic fillchest cerrith` then right-click a chest: contents wiped and filled with empty Cerrith artifacts (rarity rolled, fill 0 / `aura_cap`)
 - [ ] `/magic fillchest random`: one element for the whole chest
 - [ ] `/magic fillchest all`: mixed elements per slot

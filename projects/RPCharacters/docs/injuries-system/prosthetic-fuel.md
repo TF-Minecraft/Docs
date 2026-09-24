@@ -6,7 +6,7 @@ Fuel burn, refuel, and powered/depowered transitions for arcane prosthetics.
 
 ## Burn tick
 
-- Reuse or share scheduler with healing tick
+- `ProstheticFuelService` runs on the healing tick interval
 - For each online active character with fueled prosthetic:
   - Every `burn-interval` from fuel template, subtract `burn-rate` from `trait-state.fuel`
   - Clamp to 0
@@ -15,10 +15,10 @@ Fuel burn, refuel, and powered/depowered transitions for arcane prosthetics.
 
 ## Refuel
 
-`ProstheticRefuelListener` or combined interact handler:
+`ProstheticRefuelListener`:
 
 - Right click with fuel template item while holding/using prosthetic context:
-  - Match `FuelTemplateLoader.getByItem`
+  - Match `FuelTemplateLoader.resolveForItem`
   - Prosthetic must reference that template
   - Add `amount-per-item`, clamp to capacity
   - Consume one item from hand
@@ -30,7 +30,7 @@ Fuel burn, refuel, and powered/depowered transitions for arcane prosthetics.
 ## Powered / depowered
 
 - Same trait id throughout
-- `Trait.resolvePresentation(character)` returns powered or depowered block for name, lore, modifiers, potions
+- `TraitEffectResolver` resolves the powered or depowered block for name, lore, modifiers, potions
 - Inventory trait list shows depowered name when empty
 
 ## Creator

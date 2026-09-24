@@ -11,8 +11,8 @@ Las secciones originales marcan el estado de cada idea:
 - **propuesta** — diseño concreto pendiente de acuerdo
 - **acordado** — se da por bueno hasta que lo cambiemos
 
-Plugin: `archeology-plugin` (`com.nowko`). Nombre de producto tentativo: **Archaeo**.
-Documentación necesaria para el desarrollo en https://hub.spigotmc.org/javadocs/spigot/index.html
+Plugin: **Archaeo** (paquete `net.tfminecraft.archaeo`).
+Documentación necesaria para el desarrollo en https://jd.papermc.io/paper/1.21.10/
 
 ---
 

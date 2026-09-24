@@ -1,6 +1,6 @@
 # Wars on the web map
 
-Website-side war visualization only. War **gameplay**, FSM, and export schema live in SimpleFactions: [`../../simplefactions/docs/wars.md`](https://github.com/TF-Minecraft/SimpleFactions/blob/main/docs/wars.md).
+Website-side war visualization only. War **gameplay**, FSM, and export live in SimpleFactions: [`war/`](https://github.com/TF-Minecraft/SimpleFactions/tree/main/src/main/java/net/tfminecraft/simplefactions/war), [`WarMapExporter.java`](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/map/export/WarMapExporter.java).
 
 ## Shipped (website)
 
@@ -13,18 +13,13 @@ Website-side war visualization only. War **gameplay**, FSM, and export schema li
 
 Data arrives via SimpleFactions nation/war upload. The website **does not infer** frontlines from territory diffs alone.
 
-## Planned
+## Chronicle
 
-| Layer | Description | Notes |
-|-------|-------------|-------|
-| **Occupation overlay** | Distinct contested fill on political modes (separate from occupier colour remap) | SF already exports `occupied_by_*` and `province_data.occupied_by`. This is a visual layer, not an export blocker. |
-| **Map chronicle** | Structured events (`war_declared`, battle, occupy, end) | SF hooks not emitted yet |
-
-See [roadmap.md](../roadmap.md).
+Daily map snapshots and economy ledger ship ([ledger.md](ledger.md)). SF does not emit war events (`war_declared`, battle, occupy, end) yet, so the `chronicle` upload's `events[]` is always empty.
 
 ## Data contract (summary)
 
-From SF war export (see SimpleFactions docs):
+From SF war export (see [`WarMapExporter.java`](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/map/export/WarMapExporter.java)):
 
 - Belligerent nation ids
 - Campaign route polyline or waypoint list for the route line layer

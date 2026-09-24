@@ -9,7 +9,7 @@
 - Source checkouts: `C:\Users\MSI\Desktop\plugin-src\{interactiblefurniture, vehicleframework, vfbuilders, gunsandgadgets, musical-instruments}`
 - Resource pack / item defs: `C:\Users\MSI\Desktop\plugins\ItemsAdder\contents\...`, `C:\Users\MSI\Desktop\plugins\MMOItems\...`, `C:\Users\MSI\Desktop\plugins\ModelEngine\...`
 
-**Deployed versions** (from each jar's `plugin.yml`)
+**Deployed versions at research time** (snapshot from each jar's `plugin.yml`; not kept current)
 
 | Plugin | Jar | Version |
 |---|---|---|

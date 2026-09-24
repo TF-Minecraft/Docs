@@ -1,4 +1,4 @@
-"""Regression checks for links that the old index-only scan missed."""
+"""Regression tests for check-indexes.py."""
 import importlib.util
 from pathlib import Path
 import tempfile

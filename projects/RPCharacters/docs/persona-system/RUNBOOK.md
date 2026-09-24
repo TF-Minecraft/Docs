@@ -6,14 +6,14 @@ Run these checks against the source and dependency set being released. Back up c
 
 Ensure these exist under `plugins/RPCharacters/` (copy from jar resources on first run or merge manually):
 
-- [ ] `persona.yml` — set `no-character-fallback: '§f§oUnknown'` if upgrading from an older file (bundled default in new jar; `createConfigs()` does not overwrite existing files)
+- [ ] `persona.yml` — `no-character-fallback` (bundled default `'#ffffff§oUnknown'`; `createConfigs()` does not overwrite existing files)
 - [ ] `chat.yml` — ensure `no-character-message` and per-channel `require-character: false` on OOC/staff channels (`ooc`, `admin`, `helper`, `dm`); IC channels default to requiring a character
 - [ ] `masks.yml`
 - [ ] `rolls.yml`
 - [ ] `profile-view.yml`
 - [ ] `permission-groups.yml` — donor/default perks (name-colour stops, character-switch cooldown days)
-- [ ] `calendar.yml` — set `base-irl-year` to the IRL year when the season started; add `age.minimum: 18` if upgrading (global minimum character age)
-- [ ] `races.yml` — remove obsolete per-race `age-min` keys if present (only `age-max` per race is used now)
+- [ ] `calendar.yml` — set `base-irl-year` to the IRL year when the season started; `age.minimum` is the global minimum character age
+- [ ] `races.yml` — per-race `age-max`
 
 Reload or restart after config changes.
 
@@ -37,8 +37,8 @@ Check permissions against the current commands and configuration:
 ## Staging — TAB / PlaceholderAPI
 
 - [ ] Tab list name: **`%rpcharacters_display_safe%`** only (never `%rpcharacters_display%` on TAB)
-- [ ] `%rpcharacters_display_no_mask%` is the **real active** character (profiles, character menus) — not TAB when hidden chars are used
-- [ ] Chat/profile placeholders: `%rpcharacters_name%`, `%rpcharacters_display%`, `%rpcharacters_display_safe%`, `%rpcharacters_age%`, `%rpcharacters_race%`, `%rpcharacters_gender%`, `%rpcharacters_description%`
+- [ ] `%rpcharacters_display_tab%` is the **real active** character (profiles, character menus) — not TAB when hidden chars are used
+- [ ] Chat/profile placeholders: `%rpcharacters_name%`, `%rpcharacters_display%`, `%rpcharacters_display_safe%`, `%rpcharacters_age%`, `%rpcharacters_birthday%`, `%rpcharacters_race%`, `%rpcharacters_gender%`, `%rpcharacters_description%`
 
 ---
 

@@ -1,10 +1,10 @@
 # Map title editor
 
-Staff-gated web editor for `county` / `duchy` / `kingdom` / `empire` JSON in `defines/{map}/`: click-combine territories, name titles, pick RGB colours, save, regen.
+Staff-gated web editor for `county` / `duchy` / `kingdom` / `empire` JSON in `defines/{map}/`: click-combine territories, name titles, pick RGB colours, export a ZIP. Hidden unless `NEXT_PUBLIC_MAP_EDITOR_ENABLED=1`.
 
 **Repos:** ProvinceSystem (FE + BE)
 
-**Related:** staff map gate in [overview.md](overview.md) · legacy Tkinter [`county_editor.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/editor/county_editor.py)
+**Related:** staff map gate in [overview.md](overview.md) · legacy Tkinter [`county_editor.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/editor/county_editor.py)
 
 ## Goals
 
@@ -13,7 +13,7 @@ Staff-gated web editor for `county` / `duchy` / `kingdom` / `empire` JSON in `de
 3. **Edit existing titles** - rename, change colour, add/remove members, delete a title.
 4. **Clear visual layers** - selection layer (child tier or unassigned) at lower opacity; active title being built/edited at high opacity.
 5. **Live canvas feedback** - colours update on click before save (no regen wait for every click).
-6. **Save** - persist JSON to `defines/{map}/` and trigger mapgen so the public viewer reflects changes.
+6. **Export** - download the tier JSON as a ZIP; an operator merges it into `defines/{map}/` and runs mapgen so the public viewer reflects changes.
 
 ## Data model
 
@@ -44,12 +44,12 @@ flowchart TD
     Editor["/map/editor?map=… from Edit titles"]
     Draft[In-memory draft state]
     Paint[Visible paint layers + pick canvas]
+    Write["Download ZIP"]
   end
 
-  subgraph ps [ProvinceSystem API]
-    Write["POST /editor/titles staff Bearer"]
+  subgraph ps [ProvinceSystem host]
     Upload["POST /data/upload/{tier} plugin IP"]
-    Regen["GET regen fullregen:county etc."]
+    Regen["operator fullregen:county etc."]
     Defines["defines/{map}/*.json"]
     Mapgen[mapgen + regiongen]
     Output["output/{map}/maps + regions"]
@@ -62,8 +62,7 @@ flowchart TD
   Editor --> Paint
   Paint --> Draft
   Draft --> Write
-  Write --> Defines
-  Draft --> Upload
+  Write -->|operator merge| Defines
   Upload --> Defines
   Defines --> Regen
   Regen --> Mapgen
@@ -85,21 +84,21 @@ flowchart TD
 
 Same as staff map viewer:
 
-1. Character page redeem → Bearer session.
+1. `/profile` redeem → Bearer session.
 2. `permission_flags["tfmc.map.staff"]` on `rpc_player_meta` for map `realm_id`.
 3. Editor route write and editor regen-trigger endpoints return **403** without permission.
 
-SimpleFactions `POST /data/upload/{mode}` (including title tiers) is not staff Bearer; it uses the same internal IP check as plugin regen. Staff saves go through `POST /{map}/editor/titles/{tier}`.
+SimpleFactions `POST /data/upload/{mode}` (including title tiers) is not staff Bearer; it uses the same internal IP check as plugin regen. The editor UI does not write through the API: `POST /{map}/editor/titles/{tier}` and `POST /{map}/editor/regen/{type}` exist, but staff changes leave as a ZIP (see [Offline export](#offline-export)).
 
 ## Entry and nav
 
 | Piece | Choice |
 |-------|--------|
 | Global nav | No "Map editor"; no staff map links in `SiteHeader` |
-| Entry | **Edit titles** on `/map/{page}` when staff can write that map (or UI dev) |
+| Entry | **Edit titles** on `/map/{page}` when `NEXT_PUBLIC_MAP_EDITOR_ENABLED=1` and staff can write that map (or UI dev) |
 | Editor URL | `/map/editor?map=main` or `?map=dev` (`map` query **required**) |
 | Editor UI | Read-only map name; no map dropdown |
-| Bare `/map/editor` | Redirect to `/map/main` or gate: open editor from map page |
+| Bare `/map/editor` | Entry gate: open the editor from the map page. With the flag unset, the editor page shows a disabled notice |
 
 **Performance:** Province index via `GET /{map}/editor/province-index` (gzip grid from committed `province_id_grid.bin.gz`). Canvas paint uses incremental subset updates; typing a title name does not repaint the full map. Grid file required; no on-demand rebuild or image fallback.
 
@@ -129,13 +128,13 @@ Or a single `fullregen` for a full rebuild.
 ### County rename (lore staff)
 
 1. From `/map/main`, click **Edit titles** (or open `/map/editor?map=main&tier=county`).
-2. For each county: select, set lore name, adjust colour if needed, save.
-3. Regenerate `fullregen:county`.
+2. For each county: select, set lore name, adjust colour if needed; then **Download ZIP**.
+3. Operator merges the ZIP into `defines/main/` and runs `fullregen:county`.
 4. Check `/map/main` county mode labels.
 
 ### Rebuild duchies / kingdom / empire
 
-Same pattern on each tier tab. Save each tier, then regen the matching `fullregen:{tier}`.
+Same pattern on each tier tab. Export the ZIP; the operator merges it and runs the matching `fullregen:{tier}`.
 
 ### QA
 
@@ -158,7 +157,7 @@ Expect exit 0: every province in exactly one county; when duchies exist, each co
 
 - Lore staff can open the editor with profile login + `tfmc.map.staff`, pick `main` or `dev`, and work without touching JSON files.
 - County through empire modes: create, rename, recolour, add/remove members, delete.
-- Save uploads JSON; viewer reflects changes after operator regen.
-- Calavorn hierarchy visible on `/map/main`.
+- ZIP export; viewer reflects changes after the operator merges and regens.
+- Adavaar hierarchy visible on `/map/main`.
 
 Operator checklist: [STAGING.md](../../STAGING.md).

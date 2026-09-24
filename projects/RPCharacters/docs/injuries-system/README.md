@@ -20,6 +20,6 @@ The maintained references describe the current source on `main`:
 | [Character creation](creator-stages.md) | Injury/prosthetic selection |
 | [Web catalog](web-catalog-sync.md) | ProvinceSystem contract |
 | [Content and saved data](content-and-migration.md) | Trait definitions and compatibility |
-| [Verification](verify-and-deploy.md) | Test matrix and release procedure |
+| [Verification](verify-and-deploy.md) | Test matrix and rollback |
 
 Checklists describe checks to run, not a claim that a release passed them.

@@ -16,19 +16,19 @@ See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist.
 
 When a **block hopper** moves items (`InventoryMoveItemEvent`), allow pull/deposit only if the hopper and every involved block container (chest, barrel, hopper, etc.) share the same **non-null owner UUID**. Guild/PUBLIC player access does not apply to hoppers — only owner equality. Unowned containers block automation; hopper minecarts are not covered. Droppers and other initiators are unchanged.
 
-Do not put displays on the chest GUI. Do not copy `LockPickManager` into a second bar. Doors and displays share one engine.
+Displays do not use the chest GUI. Doors and displays share one engine.
 
 ## Bar engine
 
-`LockPickManager` is the only bar. Generalize it; do not fork.
+`LockPickManager` is the only bar.
 
-- Cooldown identity is a **string target id**, not `packDoorKey(Location)`:
+- Cooldown identity is a **string target id**:
   - Doors: `door:<world>:<x>:<y>:<z>`
   - Entities: `entity:<uuid>`
 - `SessionKind`: `DOOR` and `DISPLAY` (furniture, armor stand, and item frame all use `DISPLAY`).
-- `DoorLockpick.ProximityAnchor` stays. Add `EntityProximityAnchor` (same `door-max-distance`).
-- `startDoorSession` remains a thin wrapper. Displays call the shared `startSession`.
-- Fail and break still `cancelSession(uuid, true)` so they share `lockpickFailCooldownMs`.
+- `DoorLockpick.ProximityAnchor` has `DoorProximityAnchor` and `EntityProximityAnchor` implementations (both use `door-max-distance`).
+- `startDoorSession` is a thin wrapper. Displays call the shared `startSession`.
+- Fail and break call `cancelSession(uuid, true)` so they share `lockpickFailCooldownMs`.
 - Right-click while already in a session for **that** target is select. Starting a session cancels (and penalizes) any previous one.
 
 Display bar difficulty uses config `lockpicking.display-lock-strength` (no key). Same formula as doors:
@@ -104,11 +104,3 @@ When removing IF slot items, fire `FurnitureSlotItemTakeEvent` first. If another
 ## Risk and clues
 
 Starting the bar uses `RiskSource.DOOR` (same minigame). After a successful dump, drop door-style clues at the display location (owner UUID). Do not open a chest GUI or ramp chest break chance.
-
-## Out of scope
-
-- Changing chest GUI lockpicking
-- Keys on displays
-- Locking every IF type
-- Clear-clues-on-entity in the first cut (may follow later)
-- Putting lock fields into the IF plugin API unless `variables` proves insufficient

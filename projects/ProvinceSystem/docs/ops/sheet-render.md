@@ -1,6 +1,6 @@
 # 3D review-sheet renderer (ops)
 
-Staff skin review sheets include headless 3D preview tiles for `item_3d`, `shield`, `helmet_3d`, `gun`, armor body views, etc. The renderer lives in [`backend/render/`](../../backend/render).
+Staff skin review sheets include headless 3D preview tiles for `item_3d`, `shield`, `helmet_3d`, `gun`, armor body views, etc. The renderer lives in [`backend/render/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/backend/render).
 
 ## Deploy
 

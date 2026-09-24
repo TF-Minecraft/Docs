@@ -43,7 +43,7 @@ Choose a project to open its technical documentation and source repository link.
 | --- | --- |
 | [ActivityTF](projects/ActivityTF/README.md) | Daily activity tasks, weekly progress, and player rewards. |
 | [BirdMessenger](projects/BirdMessenger/README.md) | Bird-delivered letters and interactive mailboxes. |
-| [CompanionPets](projects/CompanionPets/README.md) | Companion pet scaffold and designs for hatching, care, training, and play. |
+| [CompanionPets](projects/CompanionPets/README.md) | Companion pet hatching, care, training, and play. |
 | [Games](projects/Games/README.md) | Tabletop games, card games, and wagering. |
 | [GeigerCounters](projects/GeigerCounters/README.md) | Geiger counter treasure hunts with proximity signals and tiered loot. |
 | [Magic](projects/Magic/README.md) | Magic, resonance, artifacts, and shrines. |
@@ -88,21 +88,6 @@ Choose a project to open its technical documentation and source repository link.
 | [TFMCCore](projects/TFMCCore/README.md) | Shared gameplay systems, server utilities, and plugin integrations. |
 | [TFMCWeb](projects/TFMCWeb/README.md) | Website integration, Discord account linking, and player identity services. |
 | [TLibs](projects/TLibs/README.md) | Shared Java utilities and integration APIs. |
-
-### Archived projects
-
-AdvancedGunpowder, AdvancedResearch, Goldsmithing, Nutrition, PointShop and
-BreedingBuddies are archived. The first five target the shared Java 21 /
-Minecraft 1.21.10 baseline on `main`.
-
-| Project | What it does |
-| --- | --- |
-| [AdvancedGunpowder](projects/AdvancedGunpowder/README.md) | Musket and gunpowder weapon mechanics. |
-| [AdvancedResearch](projects/AdvancedResearch/README.md) | Research stations, notes, and progression. |
-| [BreedingBuddies](projects/BreedingBuddies/README.md) | Animal breeding, care, ownership, and mount stats. |
-| [Goldsmithing](projects/Goldsmithing/README.md) | Goldsmithing tables and jewellery crafting. |
-| [Nutrition](projects/Nutrition/README.md) | Food groups, diet variety, and player nutrition. |
-| [PointShop](projects/PointShop/README.md) | Points-based shops and configurable player rewards. |
 
 ## Documentation
 

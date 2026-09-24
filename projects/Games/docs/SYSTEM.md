@@ -26,7 +26,6 @@ Game rules use the shared deck, display and wagering engines.
 
 ```
 games/
-  docs/
   ItemsAdder/tfmc_games/
   src/main/java/net/tfminecraft/games/
     card/                         # CardId, composition

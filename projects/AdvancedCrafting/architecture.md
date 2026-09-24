@@ -4,11 +4,11 @@
 
 ## Source ownership
 
-The root package is `net.tfminecraft.advancedcrafting` (case-sensitive).
+The root package is `net.tfminecraft.advancedcrafting`.
 `AdvancedCrafting` owns enable/disable, default files, loaders, listeners and
-manager startup. `Loaders` interpret YAML registries. `Managers` own station,
-alloy, ingredient and command interactions. `Objects` contains recipes, craft
-state, ingredients, alloys, schemes and stat templates. `Utils` handles stat
+manager startup. `loaders` interpret YAML registries. `managers` own station,
+alloy, ingredient and command interactions. `objects` contains recipes, craft
+state, ingredients, alloys, schemes and stat templates. `utils` handles stat
 calculation/refresh, permissions, lore, item tags and provenance.
 
 Enable loads revision metadata, schemes, categories, stats, socket groups and
@@ -44,7 +44,7 @@ Events live in `net.tfminecraft.advancedcrafting.lifecycle`:
 `CraftLifecycle.fireAlloyOutcome` records the forge, emits `AlloyCraftedEvent`,
 then emits `AlloyDiscoveredEvent` for a first forge. Category, hit and alloy IDs
 are normalised in the lifecycle helpers. Events expose ordinary Bukkit HandlerLists.
-`Utils.ThieveryBridge` provides guarded ingredient/alloy/provenance access for
+`utils.ThieveryBridge` provides guarded ingredient/alloy/provenance access for
 Thievery. Recycler uses item/craft types; ActivityTF and TFMCCore consume lifecycle
 APIs. The bridge class does not create a compile-time dependency on Thievery.
 

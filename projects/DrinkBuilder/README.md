@@ -22,7 +22,7 @@ Startup loads `config.yml`, `ingredients.yml`, `effects-blacklist.yml`, `categor
 
 ## Guides
 
-- [Drink texture assets](src/main/resources/assets/README.md)
+- [Drink texture assets](https://github.com/TF-Minecraft/DrinkBuilder/tree/main/src/main/resources/assets) (`potion_overlay.png`, `glass_bottle.png`)
 - [Drinks workflow and integration](../ProvinceSystem/docs/cosmetics/drinks.md)
 
 ## Builds and releases

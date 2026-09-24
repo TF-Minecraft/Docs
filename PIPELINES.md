@@ -8,13 +8,13 @@ Development builds use `DEV-YYYYMMDD-HHmm`, with the date and time in UTC. The r
 
 1. Select the commit to release. No version-bump commit is needed. Keep the plugin descriptor's version as `${project.version}` so Maven supplies it.
 2. Push a release tag, such as `v1.2`, `v1.2.3`, or `v1.2.3-rc.1`. The tag is the only source of the release version.
-3. The release workflow validates the tag, prepares dependencies, sets Maven's project version from the tag without its leading `v`, and runs `mvn clean verify` with tests enabled and the `deploy-live` profile disabled. It does not commit the version change back to the branch.
+3. The release workflow validates the tag, prepares dependencies, sets Maven's project version from the tag without its leading `v`, and runs `mvn clean verify` with tests enabled. It does not commit the version change back to the branch.
 4. It validates and uploads the exact runtime JAR, `SHA256SUMS`, and `build.json` to a draft GitHub release.
 5. Download and inspect the artifacts, review the generated notes, and publish the draft.
 
 Tags with prerelease suffixes create prereleases. Snapshot versions are rejected. An existing release causes the run to fail; use a new version for corrections. The workflow does not deploy to a Minecraft server.
 
-Dependency and build-tool versions remain pinned in the POM; those select build inputs and are independent of the plugin's own release version. Archived plugins retain their historical POMs and workflows; this process applies to active plugins.
+Dependency and build-tool versions remain pinned in the POM; those select build inputs and are independent of the plugin's own release version.
 
 ### Release presentation
 
@@ -27,7 +27,7 @@ Every release uses the same two top-level sections:
   `SHA256SUMS` and `build.json`.
 
 Keep project versions independent. Active plugins run in production and use stable
-numeric release versions. Nutrition retains its historical BETA release while archived.
+numeric release versions.
 Do not add project names, build timestamps, or feature subtitles to release
 titles. Put compatibility requirements and relevant limitations in the Changes
 section. Source-only releases must say explicitly that they contain no plugin
@@ -72,8 +72,7 @@ in the POM, verifies the JAR checksum, and installs a minimal Maven POM. The act
 is pinned to a reviewed commit SHA. Provider build dependencies are not installed
 recursively or shaded into consumers.
 
-Shared APIs use public source-built releases. Active providers, including Cooking
-and InteractibleFurniture, use stable releases.
+Shared APIs use public source-built releases. Providers use stable releases.
 Drafts and development artifacts are excluded. Missing releases, artifacts,
 credentials, or matching checksums fail the build. Public release lookup uses
 `github.token`; licensed third-party inputs use `DEPS_TOKEN`.
@@ -87,8 +86,7 @@ python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned
 ```
 
 To upgrade dependencies, run the installer locally with `--mode latest`, review
-the POM changes, and commit the chosen versions. Build consumers against matching
-provider packages before releasing the dependent set.
+the POM changes, and commit the chosen versions.
 
 ServerAssets' `manifest.json` is authoritative for filenames, hashes, embedded plugin versions, and sources. Keep licensed dependency JARs in that private repository and out of public release assets.
 
@@ -112,17 +110,15 @@ repository checks the lowercase alphanumeric filename, resolved JAR path, archiv
 `plugin.yml` or `paper-plugin.yml` version before either build type uploads it.
 Releases use the same helper to stage the runtime JAR, `SHA256SUMS` and
 `build.json`, including resolved plugin dependency metadata where applicable.
-Both build types run Maven verification with tests enabled and the
-`deploy-live` profile disabled.
+Both build types run Maven verification with tests enabled.
 
 Plugin `.gitignore` files share rules for build output, downloaded JARs, Maven
 backup files, dependency-resolution metadata, IDE files and local caches.
 Maven wrapper JARs and launchers, source/tests, dependency checksums and README
 files remain trackable. Repository-specific runtime data exclusions follow the
-common rules. BreedingBuddies shares the ignore rules but remains a source-only
-archived project without a supported plugin release workflow.
+common rules.
 
-Workflows use Ubuntu 24.04 and actions with Node.js 24 runtimes. The Java version is chosen for the repository and its compiled dependencies. This does not change the runtime compatibility promised by the plugin's source configuration.
+Workflows use Ubuntu 24.04 and actions with Node.js 24 runtimes. Plugin workflows build with Temurin JDK 21.
 
 ## Documentation and assets
 

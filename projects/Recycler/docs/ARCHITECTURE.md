@@ -82,8 +82,6 @@ The GUI is **not** the source of truth for the input item.
 4. On disable: return all online players; offline entries move to `data/pending_returns/`.
 5. On join: deliver any pending return file.
 
-BirdMessenger and Research only keep items in memory or GUI slots - Recycler must be stricter.
-
 ## Dependencies
 
 - **Required:** TLibs, ItemsAdder (station block + icons)

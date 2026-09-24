@@ -64,7 +64,7 @@ cracks stay frozen. Listen:
 | Release too late | More cubes leave (worse control). |
 | Find cling (different timbre), often with *Stop* | That cube is not dirt. **Do not** treat it as fill. The piece stays in the ground. |
 
-The HUD shows the **stratum** and **Hand Pick actions left today** (default 8
+The HUD shows the **stratum** and **Hand Pick actions left today** (default 10
 per Minecraft day). No force bar, no `3/6` on the block.
 
 Default tool profiles (pack names in parentheses):

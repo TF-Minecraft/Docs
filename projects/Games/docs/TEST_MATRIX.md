@@ -88,13 +88,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 - [ ] Pot displays at the `pot` anchor
 - [ ] Disconnect / table break refunds
 
-- [ ] Shift+right-click the shoe pays the pot to you (engine). Poker will disable this during a hand.
-
----
-
-## Poker
-
-- [ ] (Add variant rules, betting, showdown checks when implemented)
+- [ ] Shift+right-click the shoe pays the pot to you (engine). Set games, including poker, disable this.
 
 ---
 

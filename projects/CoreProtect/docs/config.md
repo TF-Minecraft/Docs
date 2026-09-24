@@ -8,14 +8,14 @@ New installations use embedded DuckDB by default. Upgrading an existing SQLite o
 
 | Value | Storage | Requirements |
 | --- | --- | --- |
-| `duckdb` | Embedded columnar database; the default for new installations | CoreProtect 25.0+ |
-| `clickhouse` | External columnar database | CoreProtect 25.0+ and a reachable ClickHouse 25.6+ server |
+| `duckdb` | Embedded columnar database; the default for new installations | None beyond CoreProtect |
+| `clickhouse` | External columnar database | A reachable ClickHouse 25.6+ server |
 | `sqlite` | Embedded legacy relational database | None beyond CoreProtect |
 | `mysql` | External legacy relational database | A reachable MySQL server |
 
 The server downloads the DuckDB JDBC driver automatically as a plugin library, while the ClickHouse JDBC driver is packaged inside CoreProtect; neither requires manual driver installation. DuckDB includes its database engine, while ClickHouse requires a separate server.
 
-Changing `database-type` selects a separate dataset; it does not copy existing data. CoreProtect 23.0+ Patreon builds can migrate between SQLite and MySQL; any migration involving DuckDB or ClickHouse requires CoreProtect 25.0+. The target namespace must contain no CoreProtect data; DuckDB requires a new target file, and `database-lock` must remain enabled. See the [database migration guide](database-migration.md) for preparation and switchover instructions.
+Changing `database-type` selects a separate dataset; it does not copy existing data.
 
 ### DuckDB
 
@@ -94,7 +94,3 @@ minecraft:stone ; Stone blocks
 minecraft:creeper ; Creeper entity
 minecraft:shears@#dispenser ; Shears being dispensed
 ```
-
-
-*Please note that to disable logging for blocks, CoreProtect v23+ is required.*
-*To disable logging for entities or to use filtering, CoreProtect v24+ is required.*

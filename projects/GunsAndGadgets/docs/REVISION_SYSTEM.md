@@ -132,12 +132,6 @@ Wired on gun use and hotbar switch (next tick).
 
 `SkinResolver` picks a skin from weighted votes across parts. Multiple part combinations can share a skin. Recycling must use **actual part costs** from `GunPart.getCost()`, not skin heuristics.
 
-## Remaining batches
-
-### GG-1d - Recycler integration
-
-- [x] Enable `recycler` `GunsAndGadgetsProvider` (sums live `GunPart.getCost()` from stamped ids)
-
 ## Source files
 
 | File | Role |
@@ -172,4 +166,4 @@ Wired on gun use and hotbar switch (next tick).
 ## Related docs
 
 - [Recycler provider architecture](../../Recycler/docs/ARCHITECTURE.md)
-- `recycler/docs/SYSTEM.md` - GG provider section
+- [Recycler system](../../Recycler/docs/SYSTEM.md#gunsandgadgets-guns) - GG provider section

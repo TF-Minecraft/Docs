@@ -8,8 +8,8 @@ Persist per trait instance state on characters and migrate missing fields on loa
 
 | Id | Type |
 |----|------|
-| `one_handed` | permanent arm loss (legacy id) |
-| `one_legged` | permanent leg loss (legacy id) |
+| `one_handed` | permanent arm loss |
+| `one_legged` | permanent leg loss |
 | `broken_arm` | healing arm injury |
 | `broken_leg` | healing leg injury |
 | `half_blind` | healing |
@@ -60,7 +60,7 @@ Map<String, TraitInstanceState> traitState; // keyed by trait id (lowercase)
 
 ## API on `RPCharacter`
 
-- `getTraitState(traitId)`, `setDurationRemaining`, `setFuel`, `removeTraitState`
+- `getTraitState(traitId)`, `setDurationRemainingMs`, `setFuel`, `removeTraitState`
 - `initializeTraitState` on `addTrait`, clear on `removeTrait`
 - `ensureTraitStateDefaults()` after load
 
@@ -68,4 +68,4 @@ Map<String, TraitInstanceState> traitState; // keyed by trait id (lowercase)
 
 - [ ] Old characters without `trait-state` load cleanly
 - [ ] Round trip save/load preserves duration and fuel
-- [ ] Legacy ids (`one_handed`, `one_legged`) resolve without JSON rewrite
+- [ ] Saved `one_handed` / `one_legged` ids resolve without JSON rewrite

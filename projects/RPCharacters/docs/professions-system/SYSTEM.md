@@ -6,7 +6,7 @@ RPCharacters provides account-wide lifetime profession points and per-character 
 
 | Data | Owner | Storage |
 |------|-------|---------|
-| MMOCore profession XP/levels | Account (MMOCore) | unchanged |
+| MMOCore profession XP/levels | Account (MMOCore) | MMOCore player data |
 | Trait profession XP % | Per character | `RPCharacter` / `AttributeData` |
 | Lifetime points earned | Account | `PlayerData.accountProfessionPoints` — `Map<String, Integer>` |
 | Owned upgrades | Per character | `RPCharacter.professionUpgrades` — ordered upgrade id list |

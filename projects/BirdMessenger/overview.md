@@ -5,8 +5,8 @@ Right-click the mailbox to send letters. Ordinary left-clicks are protected;
 sneak-break to remove the mailbox deliberately.
 
 The default `letter: ia.iasurvival:letter` accepts blank, sealed and opened
-letter variants, including for existing configurations. The default also accepts letter variants configured by the transferred sealing
-feature. Custom legacy values still match only that item. An optional `letters` list overrides `letter`:
+letter variants and the items listed in `letters-config.yml`. A custom `letter`
+value matches only that item. An optional `letters` list overrides `letter`:
 
 ```yaml
 letters:

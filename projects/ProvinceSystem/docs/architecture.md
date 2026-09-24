@@ -1,10 +1,10 @@
 # Architecture
 
-End-state shape of the **TFMC platform**: modular website hub plus SimpleFactions (map), ArmourShop/ItemsAdder (skins), DrinkBuilder (drinks), and tfmc_bot (Discord).
+Shape of the **TFMC platform**: modular website hub plus SimpleFactions (map), ArmourShop/ItemsAdder (skins), DrinkBuilder (drinks), and tfmc_bot (Discord).
 
 Component journeys: [flows/journeys.md](flows/journeys.md). Dev-only flags: [ops/dev-config.md](ops/dev-config.md).
 
-## Current stack (`dev` branch)
+## Current stack (`main` branch)
 
 | Layer | Tech |
 |-------|------|
@@ -24,8 +24,8 @@ Next.js  ◄── hub, /map, /skins, /drinks, /character
 ```
 
 - Generators **do not** write into `frontend/public`.
-- Assets served by [`backend/src/api/file_routes.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/api/file_routes.py).
-- Paths centralized in [`backend/src/scripts/util/dirs.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/scripts/util/dirs.py).
+- Assets served by [`backend/src/api/file_routes.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/api/file_routes.py).
+- Paths centralized in [`backend/src/scripts/util/dirs.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/scripts/util/dirs.py).
 
 ## Product shape
 
@@ -45,14 +45,14 @@ Backend stays FastAPI. Frontend stays Next.js. New capabilities are **modules** 
 
 ```mermaid
 flowchart LR
-  Player -->|generate_code| ArmourShop
+  Player -->|generate_code| TFMCWeb
   Player -->|redeem_and_upload| Web
   Web --> API
   API --> SQLite
   API --> Disk
   API -->|notify| Discord
   Discord -->|approve_or_deny| API
-  ArmourShop -->|poll_or_pull| API
+  ArmourShop -->|pull_via_TFMCWeb| API
   ArmourShop -->|write_yml_textures| IA
   SimpleFactions -->|map_json_regen| API
 ```
@@ -64,7 +64,8 @@ flowchart LR
 | **SQLite** | Codes, submissions, status, audit - not PNG blobs |
 | **Disk** | Map `output/`; pending skins under `backend/src/data/skins/` |
 | **Discord bot** | Skins/drinks approve/deny; ban/warn DMs; Discord banned-role mute |
-| **ArmourShop** | Mint UUID-bound codes; pull approved; write `tfmc_submissions` + category YAML |
+| **TFMCWeb** | Mint UUID-bound codes; Discord link; plugin gateway to the API |
+| **ArmourShop** | Pull approved via TFMCWeb; write `tfmc_submissions` + category YAML |
 | **SimpleFactions** | Map upload / province lookup / regen only |
 | **ItemsAdder** | Serves pack content ArmourShop wrote |
 
@@ -72,14 +73,14 @@ flowchart LR
 
 | Path | Role |
 |------|------|
-| [`frontend/app/page.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/app/page.tsx) | TFMC hub landing |
+| [`frontend/app/page.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/page.tsx) | TFMC hub landing |
 | [`frontend/app/map/[map]/page.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/map/%5Bmap%5D/page.tsx) | Dynamic map route, including `main` and `r3b1rth` |
-| [`frontend/app/skins/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/app/skins) | Skins redeem, upload, status |
-| [`frontend/app/drinks/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/app/drinks) | Drink brew form |
-| [`frontend/app/character/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/app/character) | Character creator + kits + wardrobe |
-| [`frontend/app/map/editor/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/app/map/editor) | Staff map title editor |
-| [`frontend/app/components/MapViewer.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/app/components/MapViewer.tsx) | Map composer |
-| [`frontend/app/components/shell/SiteHeader.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/app/components/shell/SiteHeader.tsx) | Shared nav |
+| [`frontend/app/skins/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/skins) | Skins redeem, upload, status |
+| [`frontend/app/drinks/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/drinks) | Drink brew form |
+| [`frontend/app/character/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/character) | Character creator + kits + wardrobe |
+| [`frontend/app/map/editor/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/map/editor) | Staff map title editor |
+| [`frontend/app/components/MapViewer.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/MapViewer.tsx) | Map composer |
+| [`frontend/app/components/shell/SiteHeader.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/shell/SiteHeader.tsx) | Shared nav |
 
 API base: `process.env.NEXT_PUBLIC_API_URL`.
 
@@ -101,7 +102,7 @@ Map regen auth: hashed key on claim/regen routes. Cosmetic routes use session to
 frontend/app/
   layout.tsx              Shared shell: nav, fonts, atmosphere
   page.tsx                Hub
-  map/[mapId]/page.tsx    Thin wrapper → MapViewer
+  map/[map]/page.tsx      Thin wrapper → MapViewer
   skins/page.tsx          Redeem + upload + status
   components/
     shell/                Header, footer, nav
@@ -125,9 +126,9 @@ backend/
     map_*.py / file_*.py    Map surface
     skins_routes.py         Codes, upload, status, staff actions, plugin pull
     drinks_routes.py        Drink submissions and catalog
-  src/db/
-    sqlite.py               Connection, migrations
-  src/data/skins/           Runtime files (gitignored except .gitkeep)
+  src/skins/
+    db.py, schema.sql       Connection, schema
+  src/data/skins/           Runtime files (gitignored)
   src/scripts/…             Mapgen
 ```
 
@@ -141,7 +142,7 @@ Path example: `backend/src/data/province.db` (volume-mounted in compose).
 
 | Table family | Purpose |
 |--------------|---------|
-| `codes`, `submissions`, `audit_log` | Skins workflow |
+| `codes`, `submissions` | Skins workflow |
 | `drink_submissions`, `drink_textures`, `drink_catalog` | Drinks workflow |
 | `discord_links`, `discord_link_codes` | Identity |
 | Character sessions and catalog | Characters API |
@@ -162,7 +163,7 @@ Map assets remain under `backend/src/output/{map}/…`. **Why not store PNGs in 
 | Map plugin regen / queue | Shared secret in path (prefer env) |
 | Skins/drinks/character player actions | Redeem **code** → short-lived Bearer session tied to issuer UUID |
 | Skins staff (Discord) | Server-side staff API key; never `NEXT_PUBLIC_*` |
-| Skins/drinks ArmourShop/DrinkBuilder pull | Plugin secret; only **approved** payloads |
+| Skins/drinks ArmourShop/DrinkBuilder pull (via TFMCWeb) | Plugin secret; only **approved** payloads |
 | Staff map / editor | Profile Bearer session + `tfmc.map.staff` permission flag |
 
 No website passwords. Codes are **not shareable by design**: cosmetics are granted to the **issuer UUID** only. Full hardening details: [identity/auth-security.md](identity/auth-security.md).

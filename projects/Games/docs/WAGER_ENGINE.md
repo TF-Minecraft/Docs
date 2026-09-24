@@ -2,8 +2,6 @@
 
 Every denar that moves on a table moves through `net.tfminecraft.games.wager`. Games describe what they want and commit once; they never touch a player's inventory, the ledger, or a guild bank themselves.
 
-This exists because the old shape was mutate-then-compensate: take some coins, put some coins somewhere, and if the second step failed, hand back what the first one took. Refunds were allowed to return less than they took, and one caller ignored the return value entirely, which is how a player could pay for a double and not get one.
-
 ## Accounts
 
 A `MoneyAccount` is a place money can sit. All of them answer the same questions: what have you got, can you produce exactly this much without moving it yet, and will you take this.
@@ -84,7 +82,7 @@ Greedy largest-first is wrong here. Holding 6, 5 and 5 and needing 10, greedy ta
 
 The live coins are pouch 100, stack 10, handful 5, gold coin 1, and `v.gold_ingot` at 1 with `withdraw: false`. Silver at 0.1, 0.05 and 0.01 exists but cannot be staked, since anything below a whole denar is rejected.
 
-The usable set is therefore 100, 10, 5, 1, and the gap from 10 to 100 is why doubles used to fail so often: a 50 double needs five stacks, and a player holding one pouch could not pay at all. There is no 25 or 50 coin to bridge it.
+The usable set is therefore 100, 10, 5, 1. There is no 25 or 50 coin, so a 50 double needs five stacks and a player holding only one pouch cannot pay it exactly.
 
 So DenarEconomy makes change. `MoneyManager.breakCoin(stack, minUnitValue)` returns strictly smaller coins worth exactly the same, honouring `canWithdraw()` so a gold ingot is never produced, and refusing to break below 1 denar because the result would be unstakeable. The arithmetic sits in `CoinChange`, which is Bukkit-free and tested in `CoinChangeTest`.
 

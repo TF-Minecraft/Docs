@@ -1,6 +1,6 @@
 # Staff review-sheet 3D renderer
 
-Headless Chromium (Playwright) + Three.js. Python [`review_sheet.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/skins/review_sheet.py) calls `cli.mjs` via [`preview_3d.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/skins/preview_3d.py).
+Headless Chromium (Playwright) + Three.js. Python [`review_sheet.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/review_sheet.py) calls `cli.mjs` via [`preview_3d.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/preview_3d.py).
 
 ## Local setup
 
@@ -10,11 +10,11 @@ npm install
 npx playwright install chromium
 ```
 
-`npm install` runs `prebuild`, which copies [`frontend/lib/skins`](https://github.com/TF-Minecraft/ProvinceSystem/tree/9b34fd3fd336af9025ca187ca9610690695c0efa/frontend/lib/skins) into `src/skins/` so esbuild can resolve `three` from this package’s `node_modules`.
+`npm install` runs `prebuild`, which copies [`frontend/lib/skins`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/lib/skins) into `src/skins/` so esbuild can resolve `three` from this package’s `node_modules`.
 
 ## Production
 
-The backend Docker image runs `npm ci`, installs Playwright Chromium, and `install-deps` during build ([`backend/Dockerfile`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/Dockerfile)). The image copies the same skin helpers to `backend/render/src/skins` before `npm ci`. Rebuild the backend image after any change under `backend/render/` or those shared skin modules.
+The backend Docker image runs `npm ci`, installs Playwright Chromium, and `install-deps` during build ([`backend/Dockerfile`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/Dockerfile)). The image copies the same skin helpers to `backend/render/src/skins` before `npm ci`. Rebuild the backend image after any change under `backend/render/` or those shared skin modules.
 
 Non-Docker hosts: run the local setup commands above on the API machine; ensure `node` is on `PATH` for the uvicorn process.
 

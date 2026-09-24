@@ -9,17 +9,16 @@ This section is the product and technical reference for **ProvinceSystem**. Tech
 ## Reading order
 
 1. [architecture.md](architecture.md) - stack, routes, data layout
-2. [roadmap.md](roadmap.md) - shipped vs planned
-3. Product areas (pick what you need):
+2. Product areas (pick what you need):
    - [map/overview.md](map/overview.md) - map platform goals and layers
    - [cosmetics/skins.md](cosmetics/skins.md) - skins upload and review
    - [cosmetics/drinks.md](cosmetics/drinks.md) - BreweryX drink builder
    - [characters/creator.md](characters/creator.md) - web character creator
    - [identity/tfmcweb.md](identity/tfmcweb.md) - Discord link, tokens, gate
-4. [flows/journeys.md](flows/journeys.md) - end-to-end player and staff journeys
-5. [ops/local-dev.md](ops/local-dev.md) - run the site locally
-6. [ops/sheet-render.md](ops/sheet-render.md) - 3D review-sheet renderer (prod deploy + smoke)
-7. [ops/dev-config.md](ops/dev-config.md) - dev-only flags and shortcuts
+3. [flows/journeys.md](flows/journeys.md) - end-to-end player and staff journeys
+4. [ops/local-dev.md](ops/local-dev.md) - run the site locally
+5. [ops/sheet-render.md](ops/sheet-render.md) - 3D review-sheet renderer (prod deploy + smoke)
+6. [ops/dev-config.md](ops/dev-config.md) - dev-only flags and shortcuts
 
 Schema assets: [assets/map-export-schema.json](assets/map-export-schema.json) (SF map export contract).
 
@@ -27,7 +26,7 @@ Schema assets: [assets/map-export-schema.json](assets/map-export-schema.json) (S
 
 | Component | Path | Role | Docs |
 |-----------|------|------|------|
-| **ProvinceSystem** | `ProvinceSystem/` (select the branch for your task) | Website + FastAPI: maps, skins, drinks, characters, identity | This folder |
+| **ProvinceSystem** | `ProvinceSystem/` | Website + FastAPI: maps, skins, drinks, characters, identity | This folder |
 | **TFMCWeb** | `tfmcweb/` | MC ↔ web gate: Discord link, scoped tokens, Survival Discord freeze, warn/ban mirror | [identity/tfmcweb.md](identity/tfmcweb.md) |
 | **SimpleFactions** | `simplefactions/` | Map bridge: nation JSON upload, queue, regen, province lookup | [integrations/simplefactions.md](integrations/simplefactions.md) |
 | **ArmourShop** | `armourshop/` | Skins pack writer + apply | [integrations/armourshop.md](integrations/armourshop.md) |
@@ -48,4 +47,4 @@ Schema assets: [assets/map-export-schema.json](assets/map-export-schema.json) (S
 ## Ops references
 
 - Deployment and QA checklists: [STAGING.md](../STAGING.md)
-- Release notes: [UPDATE.md](../UPDATE.md)
+- Production deploy guide: [UPDATE.md](../UPDATE.md)

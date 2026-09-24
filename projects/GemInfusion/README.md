@@ -17,7 +17,7 @@ Install the TLibs version declared in `pom.xml` using the
 Prepare the authorized private jars in `libs/` with
 `.github/scripts/prepare-release.sh` and verify `.github/dependencies.sha256`.
 These supply Gson, MMOCore, MMOItems and MythicLib; TLibs and the server API
-are Maven dependencies. Output is `target/geminfusion-2.2.jar`.
+are Maven dependencies. Output is `target/geminfusion-<version>.jar`.
 
 Gameplay validation remains separate from compilation; follow the
 [shared baseline](../../PLATFORM.md) for build and validation requirements.

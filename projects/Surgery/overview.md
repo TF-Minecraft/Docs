@@ -5,7 +5,6 @@
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
 ![Paper](https://img.shields.io/badge/Paper-1.21.10-blue)
 ![Maven](https://img.shields.io/badge/Build-Maven-red?logo=apachemaven&logoColor=white)
-![Version](https://img.shields.io/badge/Version-1.2.0-green)
 
 Built for the [TFMC](https://www.patreon.com/c/TFMCRP) roleplay server, where it runs in production as the medical roleplay system for doctors and field medics.
 
@@ -50,19 +49,17 @@ src/main/java/net/tfminecraft/surgery/
 │   └── SurgeryCommand.java             # /surgery <player> validation + menu open
 ├── listeners/
 │   └── PlayerListener.java             # Inventory click/close + join hooks
-├── managers/
-│   ├── SurgeryMenuManager.java         # Facade: owns and wires all components
-│   ├── SurgeryMenuBuilder.java         # GUI layout, diagnosis roll, initial state
-│   ├── SurgeryStateManager.java        # Per-patient state maps (UUID-keyed)
-│   ├── SurgeryItemHandler.java         # Tool click → effect pipeline
-│   ├── SurgeryMechanicsManager.java    # Per-move simulation: temp, pulse, countdowns
-│   ├── SurgeryUIUpdater.java           # Status block rendering + messages.yml access
-│   ├── SurgeryCompletionHandler.java   # Success/failure resolution + console commands
-│   ├── DiagnosisChecker.java           # Diagnosis classification (bones? flu?)
-│   ├── SurgeryItemsConfig.java         # surgeryItemsConfig.yml tool item paths
-│   └── SurgeryConstants.java           # Shared slot/label constants
-└── utils/
-    └── Utils.java                      # Shared helpers
+└── managers/
+    ├── SurgeryMenuManager.java         # Facade: owns and wires all components
+    ├── SurgeryMenuBuilder.java         # GUI layout, diagnosis roll, initial state
+    ├── SurgeryStateManager.java        # Per-patient state maps (UUID-keyed)
+    ├── SurgeryItemHandler.java         # Tool click → effect pipeline
+    ├── SurgeryMechanicsManager.java    # Per-move simulation: temp, pulse, countdowns
+    ├── SurgeryUIUpdater.java           # Status block rendering + messages.yml access
+    ├── SurgeryCompletionHandler.java   # Success/failure resolution + console commands
+    ├── DiagnosisChecker.java           # Diagnosis classification (bones? flu?)
+    ├── SurgeryItemsConfig.java         # surgeryItemsConfig.yml tool item paths
+    └── SurgeryConstants.java           # Shared slot/label constants
 ```
 
 ```mermaid
@@ -124,7 +121,7 @@ classDiagram
 
 ## Installation
 
-1. Drop `surgery-1.2.0.jar` into your server's `plugins/` folder
+1. Drop `surgery-<version>.jar` into your server's `plugins/` folder
 2. Install **TLibs** (required). **MMOItems** / **ItemsAdder** are optional item sources
 3. Restart the server
 4. Configure `plugins/surgery/config.yml`, `messages.yml`, and `surgeryItemsConfig.yml` as needed
@@ -136,7 +133,7 @@ classDiagram
 |---|---|
 | [Paper](https://papermc.io/) 1.21.10 | TFMC runtime target |
 | Java | Follow the [shared runtime and build baseline](../../PLATFORM.md); this plugin targets Java 21 bytecode |
-| [TLibs](https://www.spigotmc.org/resources/tlibs.127713/) | Yes |
+| [TLibs](../TLibs/README.md) | Yes |
 | [MMOItems](https://www.spigotmc.org/resources/mmoitems-premium.39267/) | Optional |
 | [ItemsAdder](https://itemsadder.com/) | Optional |
 
@@ -144,7 +141,7 @@ classDiagram
 
 | Command | Description | Permission |
 |---|---|---|
-| `/surgery <player>` | Open the surgery menu for the target patient | (default) |
+| `/surgery <player>` | Open the surgery menu for the target patient | `surgery.use` (default: true) |
 
 ### Performing a surgery
 

@@ -4,7 +4,7 @@ Everything under `/wiki` is a public player manual. Write for someone joining th
 
 ## Content rules
 
-- Use only facts supported by the research dossiers in `docs/wiki-research` or another approved read-only source.
+- Use only facts supported by the research dossiers in [`docs/wiki-research`](../../../docs/wiki-research/) or another approved read-only source.
 - Describe player actions. Leave plugin names, configuration details, database details, permission nodes, deployment notes, audit findings, and developer jargon in the research dossiers.
 - Do not publish staff or administration commands, bug reports, draft notices, uncertainty reports, or unavailable workflows.
 - Include every ordinary player command supported by the evidence. Omit commands that require an operator or an unconfirmed external grant.

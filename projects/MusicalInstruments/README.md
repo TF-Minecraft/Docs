@@ -14,13 +14,10 @@ See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, r
 
 ## Playback events
 
-Version [3.0.0](https://github.com/TF-Minecraft/MusicalInstruments/releases/tag/v3.0.0)
-emits `net.tfminecraft.musicalinstruments.events.InstrumentPlayEvent` after playing a configured note.
+MusicalInstruments emits `net.tfminecraft.musicalinstruments.events.InstrumentPlayEvent` after playing a configured note.
 Listeners can read `getPlayer()`, `getInstrument()` and `getSoundKey()`. The event
 is informational and is not cancellable. It is emitted before the note particle
 and hotbar reset, only when an instrument and sound mapping have been found.
 
-ActivityTF consumes this API through the public release. Maven consumers declare
-`net.tfminecraft.musicalinstruments:musicalinstruments` with `provided` scope and use the shared installer.
-The plugin remains a separate server JAR. Java 21 is required; the release filename
-and embedded plugin version both use 3.0.0. Existing configuration remains compatible.
+Maven consumers declare `net.tfminecraft.musicalinstruments:musicalinstruments`
+with `provided` scope and use the shared installer.

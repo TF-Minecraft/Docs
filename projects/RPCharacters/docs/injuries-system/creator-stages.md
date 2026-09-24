@@ -18,9 +18,9 @@ type: selection
 lock-time: 24h
 target: trait
 key: injury
-filter: permanent-only   # new flag OR filter traits without duration
+filter: permanent-only   # traits without duration
 min-select: 0
-max-select: 99           # practical cap or unlimited
+max-select: 99
 # no points
 gui-size: 54
 slots: [...]
@@ -61,16 +61,16 @@ If a character owns a prosthetic and the matching backstory permanent injury (se
 
 Prosthetic always wins; players cannot keep both via re-editing the injury stage within the lock window.
 
-## `SelectionStage` / `InventoryManager` changes
+## `SelectionStage` / `InventoryManager`
 
 - **`filter: permanent-only`:** options = `key: injury` and trait has no `duration`
 - **Icons:** distinct material/icon per injury and prosthetic tier (config or convention)
 - **Skip:** allow confirm with 0 selections (like evil min-select 0)
 - **Prosthetic from creator:** add trait with full fuel if arcane
 
-## Stage graph (`stages.yml` next map)
+## Stage order
 
-Insert after personality or before finish, parallel to evil branch skippability.
+Stages run in `stages.yml` order. The injury and prosthetic stages follow the evil stages and precede `creation_description_stage`; like the evil stages, they can be skipped.
 
 ## Web messages
 

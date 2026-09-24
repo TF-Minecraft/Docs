@@ -1,7 +1,7 @@
 site_name: CoreProtect Documentation
-site_url: https://docs.coreprotect.net
 theme: readthedocs
-repo_url: https://github.com/PlayPro/CoreProtect
+repo_url: https://github.com/TF-Minecraft/CoreProtect
+edit_uri: https://github.com/TF-Minecraft/Docs/edit/main/projects/CoreProtect/docs/
 docs_dir: 'docs'
 extra_css:
      - css/extra.css

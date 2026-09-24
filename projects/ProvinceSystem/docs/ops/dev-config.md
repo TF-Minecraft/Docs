@@ -9,7 +9,7 @@ Dev-only shortcuts, bypasses, and fixture data for ProvinceSystem. **Unset all d
 | `SKINS_DEV` | backend env | Relaxed skins dev helpers | **Unset** when `PS_PRODUCTION=1` |
 | `CHARACTER_UI_DEV` | backend env | `ui-dev-session` Bearer bypass for staff map/editor | **Unset** when `PS_PRODUCTION=1` |
 | `PS_PRODUCTION` | backend env | Unset on staging/dev | Set `PS_PRODUCTION=1` on prod; requires `PLUGIN_KEY` + `STAFF_KEY` |
-| Calavorn trade/prosperity **spoof** | `backend/src/input/main/guilds.json`, `province_data.json` | Fake guilds until SF export | Replace with SF upload; see [STAGING.md](../../STAGING.md) |
+| Committed map input | `backend/src/input/main/guilds.json`, `province_data.json` | Seed data for local regen | SF uploads replace them every 300 s on live |
 | Spoof generator | `scripts/tools/generate_spoof_province_data.py` | Regenerates fake data | Keep tool; stop using output on prod map |
 | Skin test code seeder | `skins/seed_dev_code.py` | Seeds `TEST-CODE-1` | Local/staging only |
 | CORS origins | `backend/server.py` | `localhost:3000`, etc. | Restrict to prod domains on deploy |
@@ -21,10 +21,10 @@ Dev-only shortcuts, bypasses, and fixture data for ProvinceSystem. **Unset all d
 | Item | Env / path | Dev behavior | Production action |
 |------|------------|--------------|-------------------|
 | Character UI dev | `NEXT_PUBLIC_CHARACTER_UI_DEV=1` | Fake session, no redeem | **Unset** on prod build |
-| UI dev modules | `lib/characters/uiDev.ts`, `sheetDev.ts`, `loreItemsDev.ts`, `kitsDev.ts`, `entitlementsDev.ts` | Fixtures when flag set | Harmless if flag off; verify CI/prod env |
+| UI dev modules | `lib/characters/uiDev.ts`, `sheetDev.ts`, `loreItemsDev.ts`, `kitsDev.ts`; `lib/skins/entitlementsDev.ts` | Fixtures when flag set | Harmless if flag off; verify CI/prod env |
 | Creation catalog fixture | `fixtures/creationCatalog.dev.json` | Used by UI-dev lore editor | Local only |
 | Dev map route | `/map/r3b1rth` → `mapId=dev` | URL-only test map | Not in nav; optional on prod |
-| Map title editor | `/map/editor?map=main\|dev`; entry via **Edit titles** on map viewer | `NEXT_PUBLIC_CHARACTER_UI_DEV=1` + backend `CHARACTER_UI_DEV=1` uses `ui-dev-session` | Staff-only; unset both on prod |
+| Map title editor | `/map/editor?map=main\|dev`; entry via **Edit titles** on map viewer; hidden unless `NEXT_PUBLIC_MAP_EDITOR_ENABLED=1` | `NEXT_PUBLIC_CHARACTER_UI_DEV=1` + backend `CHARACTER_UI_DEV=1` uses `ui-dev-session` | Staff-only; unset both on prod |
 | Editor regen (no SF hash) | `POST /{map}/editor/regen/fullregen:{tier}` | Bearer staff session token | Not plugin regen URL |
 | Province id grid (editor) | `defines/{map}/province_id_grid.bin.gz` | Rebuilt by every regen when `provinces.png` / `provinces.txt` change - no manual step needed. Fallback when editing `provinces.png` without a regen: `python -m scripts.tools.build_province_id_grid --map main` from `ProvinceSystem/backend/src` | Editor requires grid file |
 | Province geometry (labels) | `defines/{map}/province_neighbors.json`, `province_label_neighbors.json`, `province_centroids.json`, `province_label_grid.bin.gz` \| `.json` | Same gate as the id grid; ~68 s on `main`, so it runs only when the province sources actually change. Manual fallback: `python -m scripts.map_tools.build_province_geometry main` from `ProvinceSystem/backend/src`. Set `REGEN_SKIP_PROVINCE_GEOMETRY=1` to force regen to leave it alone | Keep gate on; stale geometry breaks label placement |
@@ -42,4 +42,4 @@ Dev-only shortcuts, bypasses, and fixture data for ProvinceSystem. **Unset all d
 | `input/dev/` | Secondary test map; not in public nav |
 | `defines/main/` title JSON | May be edited via map title editor; operator merges ZIP on host |
 
-Sibling repo dev shortcuts: [`simplefactions/docs/dev-config.md`](https://github.com/TF-Minecraft/SimpleFactions/blob/main/docs/dev-config.md), `tfmc_bot/docs/local-dev.md`. ArmourShop and TFMCWeb: see those repos.
+Sibling repo dev shortcuts: `tfmc_bot/docs/local-dev.md`. SimpleFactions, ArmourShop and TFMCWeb: see those repos.
