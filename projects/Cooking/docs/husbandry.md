@@ -61,6 +61,7 @@ Owned/managed entities must `setPersistent(true)` and `setRemoveWhenFarAway(fals
 - `last_milk_at`, `wool_ready_at`, `shed_ready_at`, `egg_ready_at`
 - `mature_at` (baby growth; null = adult)
 - `neutered`
+- `world`, `x`, `y`, `z` (last block the animal was seen at; null until it loads once)
 
 `owners`
 
@@ -87,10 +88,11 @@ Migrations run once when the plugin opens `husbandry.db` (`PRAGMA user_version`)
 | 4 → 5 | Add `egg_ready_at` column |
 | 5 → 6 | Add `care_up_remainder` and `care_down_remainder` |
 | 6 → 7 | Add `stats_revision` |
+| 7 → 8 | Add `world`, `x`, `y`, `z` (null on existing rows until the animal next loads) |
 
 ### Stats revision
 
-YAML `stats-revision` (string, default `"1"`). Blank skips the wipe. On plugin enable (after the DB opens) and on `/cooking reload`, every row whose `stats_revision` is null, blank, or not equal to the config id is reset: wild genetics (`0 … initial-genetic-max`), care 0, care remainders 0, then stamp the current id. Keep owners, name, state, neuter, `mature_at`, harvest timers, hungry/dirty. New tame/breed/spawn rows stamp the current id. Bump the id in config when gene rules change so live stock is wild-reset.
+YAML `stats-revision` (string, default `"1"`). Blank skips the wipe. On plugin enable (after the DB opens) and on `/cooking reload`, every row whose `stats_revision` is null, blank, or not equal to the config id is reset: wild genetics (`0 … initial-genetic-max`), care 0, care remainders 0, then stamp the current id. Keep owners, name, state, neuter, `mature_at`, harvest timers, hungry/dirty, and last location. New tame/breed/spawn rows stamp the current id. Bump the id in config when gene rules change so live stock is wild-reset.
 
 Bred-but-not-tamed animals get an UNTAMED row in the **same loaded visit** so tame uses parent genetics. They are **not** protected across chunk load: no owner → despawn.
 
@@ -253,6 +255,14 @@ Stars are **not** shown in the GUI (visible on slaughter quality instead). No af
 
 ## Commands
 
+Players (no permission node):
+
+- `/animals` (alias `/livestock`) — list every animal you own or co-own. Each line is name, species, co-owner when shared, growing when immature, Happy / Hungry / Dirty, then the world and block coordinates last recorded for that animal. Click the coordinates to copy them. Animals that have not loaded since coordinates were added show `location not recorded yet` until the next visit. The header is `Your animals (owned/max)`.
+
+Staff with `cooking.admin`, including the console, can run `/animals <player>` for someone who has joined. A player without that permission cannot list another player's animals.
+
+The last location is written when the animal loads, on the one-minute tick while loaded, on unload, and on plugin disable if the entity is still present. Listing refreshes a loaded animal from the live entity before printing.
+
 Requires `cooking.admin`:
 
 - `/cooking husbandry spawn <type> [genetics] [care]` — spawn untamed animal with SQLite row
@@ -273,7 +283,8 @@ No async entity or SQLite access. All husbandry logic runs on the main thread.
 | DB | `HusbandryRepository`, `HusbandryAnimal` |
 | Lifecycle | `HusbandryLifecycleListener`, `HusbandryTickTask` |
 | Care | `HusbandrySimulator`, `HusbandryCareListener`, `HusbandryStateDisplay` (entity name + visibility sync) |
-| Ownership | `HusbandryOwnershipService`, `HusbandryTamingListener` |
+| Ownership | `HusbandryOwnershipService`, `HusbandryTamingListener`, `HusbandryAnimalsCommand`, `HusbandryRoster` |
+| Location | `HusbandryLocation` (last block, stored on the animal row) |
 | Breed / growth | `HusbandryBreedListener`, `HusbandryNeuterListener`, `HusbandryGrowth`, `HusbandryGenetics` |
 | Harvest | `HusbandryDeathListener`, `HusbandryHarvestListener`, `HusbandryHarvest`, `HusbandryShed`, `HusbandryEggs`, `HusbandryDropRoller` |
 | Mounts / damage | `HusbandryMounts`, `HusbandryMountListener`, `HusbandryDamageListener` |
