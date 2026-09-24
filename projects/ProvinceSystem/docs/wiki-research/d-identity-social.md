@@ -215,7 +215,7 @@ RPCharacters is the roleplay-character backbone of the server: it makes each pla
 
 `simplefactions-2.8.7.jar` · `net.tfminecraft:simplefactions:3.0.0` · author Drefvelin
 
-> **Source warning.** The public GitHub repo `drefvelin/simplefactions` is **stale** — HEAD is `ad9b048` (Feb 2026), 80 Java files, a `plugin.yml` declaring only the single `faction` command, and **no guild / vehicle / installation / mercenary / war-campaign code at all**. Everything below was read from the deployed 2.8.7 jar's bytecode and the live configs, not the repo. Consequences are listed under "Uncertain".
+> **Source.** [TF-Minecraft/SimpleFactions](https://github.com/TF-Minecraft/SimpleFactions). Everything below was read from the deployed 2.8.7 jar's bytecode and the live configs, not the repo. Consequences are listed under "Uncertain".
 
 ### What it is
 

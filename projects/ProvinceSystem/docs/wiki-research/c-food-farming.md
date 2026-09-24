@@ -7,7 +7,7 @@ Status: factual dossier for a wiki writer. Every non-obvious claim cites a file 
 Sources used:
 - Live server plugin folders `C:\Users\MSI\Desktop\plugins\<Plugin>\` (read-only; authoritative for this server).
 - Jar `plugin.yml` extracted from `C:\Users\MSI\Desktop\plugins\*.jar`.
-- Source clones in `C:\Users\MSI\Desktop\plugin-src\Cooking` (github.com/drefvelin/cooking, HEAD `09a58ee`, 2026-08-31) and `C:\Users\MSI\Desktop\plugin-src\DrinkBuilder` (github.com/drefvelin/drinkbuilder).
+- Source clones in `C:\Users\MSI\Desktop\plugin-src\Cooking` (github.com/TF-Minecraft/Cooking, HEAD `09a58ee`, 2026-08-31) and `C:\Users\MSI\Desktop\plugin-src\DrinkBuilder` (github.com/TF-Minecraft/DrinkBuilder).
 - ItemsAdder pack `C:\Users\MSI\Desktop\plugins\ItemsAdder\contents\tfmc_cooking\contents\*.yml` for display names.
 
 ---

@@ -75,7 +75,7 @@ flowchart LR
 ```
 
 1. **Source plugin** fires Bukkit events when domain facts occur (create, kill, chat, etc.).
-2. **TFMCCore** compiles against source JAR (`pom.xml` system scope) and lists `softdepend` in `plugin.yml`.
+2. **TFMCCore** compiles against the source plugin's `provided`-scope Maven artefact (installed by `install-plugins.py`, or `prepare-release.sh` for private jars) and lists `softdepend` in `plugin.yml`.
 3. **Source plugin does not** add `depend` or `softdepend` on TFMCCore.
 4. **TFMCCore.initStats()** registers the category only when the source plugin is loaded:
 
@@ -124,7 +124,7 @@ Unknown stat keys fall back to `StatLabelFormatter.format(statKey)`.
 ## Checklist: new category
 
 1. **Source plugin (if needed):** fire Bukkit events for facts TFMCCore should count.
-2. **TFMCCore pom.xml:** system dependency on source JAR for compile.
+2. **TFMCCore pom.xml:** `provided`-scope dependency on the source plugin's Maven artefact, installed by `install-plugins.py`.
 3. **plugin.yml:** add source plugin to `softdepend`.
 4. **Package:** create `stats/categories/<id>/` with Config, Main, Listener, Query, Category.
 5. **Resource:** `src/main/resources/<id>stats.yml` with labels.

@@ -1,65 +1,33 @@
 ![CoreProtect](https://userfolio.com/uploads/coreprotect-banner-v19.png)
 
-[![Artistic License 2.0](https://img.shields.io/github/license/PlayPro/CoreProtect?&logo=github)](https://github.com/PlayPro/CoreProtect/blob/master/LICENSE)
-[![GitHub Workflows](https://github.com/PlayPro/CoreProtect/actions/workflows/build.yml/badge.svg)](https://github.com/PlayPro/CoreProtect/actions)
-[![Netlify Status](https://img.shields.io/netlify/c1d26a0f-65c5-4e4b-95d7-e08af671ab67)](https://app.netlify.com/sites/coreprotect/deploys)
-[![CodeFactor](https://www.codefactor.io/repository/github/playpro/coreprotect/badge)](https://www.codefactor.io/repository/github/playpro/coreprotect)
-[![Join us on Discord](https://img.shields.io/discord/348680641560313868.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/b4DZ4jy)
-
 # CoreProtect
 
-TFMC targets Minecraft **1.21.10**; see the [shared platform baseline](../../PLATFORM.md) for the TFMC build inventory. The upstream feature, download and API references below cover multiple Minecraft versions and do not establish compatibility of a particular TFMC build.
+This is the TFMC fork of [PlayPro/CoreProtect](https://github.com/PlayPro/CoreProtect), distributed under the [Artistic License 2.0](https://github.com/TF-Minecraft/CoreProtect/blob/master/LICENSE).
+
+TFMC targets Minecraft **1.21.10**; see the [shared platform baseline](../../PLATFORM.md) for the TFMC build inventory. The upstream feature and API references below cover multiple Minecraft versions and do not establish compatibility of a particular TFMC build.
 
 CoreProtect is a fast, efficient data logging and anti-griefing tool. Inspect, lookup, rollback, and restore any amount of damage without impacting your server performance.
 
 CoreProtect is the [#1 anti-griefing plugin](https://bstats.org/plugin/bukkit/CoreProtect), and has been actively developed since early 2012.
 
-| Quick Links |  |
-| --- | --- |
-| CoreProtect Discord: | [discord.gg/b4DZ4jy](https://discord.gg/b4DZ4jy) |
-| CoreProtect Patreon: | [patreon.com/coreprotect](https://www.patreon.com/coreprotect) |
-| CoreProtect Documentation: | [docs.coreprotect.net](https://docs.coreprotect.net) |
-| Downloads for MC 1.14 - 26.2: | [coreprotect.net/latest](https://coreprotect.net/latest/) |
-| Downloads for MC 1.8 - 1.12: | [coreprotect.net/legacy](https://coreprotect.net/legacy/) |
-| Downloads for Fabric: | [coreprotect.net/fabric](https://coreprotect.net/fabric) |
-| Downloads for Hytale: | [coreprotect.net/hytale](https://coreprotect.net/hytale) |
-
 ## API
 
-### [API Documentation](https://docs.coreprotect.net/api/)
+### [API Documentation](docs/api/index.md)
 
 ### Dependency Information
 
 Maven:
 
 ```xml
-<repository>
-    <id>playpro-repo</id>
-    <url>https://maven.playpro.com</url>
-</repository>
-```
-
-```xml
 <dependency>
-    <groupId>net.tfminecraft.coreprotect</groupId>
-    <artifactId>coreprotect</artifactId>
-    <version>24.0</version>
+    <groupId>net.coreprotect</groupId>
+    <artifactId>CoreProtect</artifactId>
+    <version>${coreprotect.version}</version>
     <scope>provided</scope>
 </dependency>
 ```
 
-## Donation Keys
-
-To support the project and obtain a donation key, visit [coreprotect.net/donate](https://coreprotect.net/donate/).
-
-## Other Plugins
-
-* DarkerNights: [spigotmc.org/resources/darkernights.87814](https://www.spigotmc.org/resources/darkernights.87814/)
-* TransitTubes: [patreon.com/posts/75731668](https://www.patreon.com/posts/75731668)
-
-## Video Tutorial
-
-[![CoreProtect video tutorial](https://www.userfolio.com/uploads/coreprotect-video-tutorial.png)](https://youtu.be/JwijCiueZ3Y)
+The fork is not published to a Maven repository. Consumers pin `coreprotect.version` in their POM, and the [shared plugin installer](../../PIPELINES.md#build-dependencies) resolves it from [TF-Minecraft/CoreProtect](https://github.com/TF-Minecraft/CoreProtect/releases) releases.
 
 ## Core Features
 
@@ -68,7 +36,6 @@ To support the project and obtain a donation key, visit [coreprotect.net/donate]
 * Multi-threaded to ensure server performance is never impacted.
 * No configuration required. Install the plugin, and you're good to go.
 * Embedded DuckDB columnar storage by default, with optional ClickHouse, SQLite, and MySQL support.
-* Supports Bukkit, Spigot, Paper, Folia, MultiPaper, and more.
 * Permission system support and advanced lookup permissions.
 * Easy-to-use commands and inspector.
 * Advanced lookup filters and operation limits by radius, world, or WorldEdit selection.
@@ -153,56 +120,10 @@ Once you have the inspector enabled with `/core inspect` or `/co i`, you can do 
 * Right-click while placing a block in another block to see who placed it. For example, place dirt in water to see who placed the water.
 * Right-click a door, button, lever, container, or similar block to see who last used it.
 
-## A Few Reviews
-
-* *"It's easy to use and lightning fast when it comes to rollbacks."*
-* *"I've been running a MC server since before Bukkit, so I've used just about every block logger out there. CoreProtect is the best and the fastest."*
-* *"Go with CoreProtect. It's fast, updated frequently, and logs WorldEdit."*
-* *"Overall it felt more natural, simpler, and much faster to use CoreProtect than Prism, which just doesn't compare."*
-* *"CoreProtect brings complex logging and rollbacks, whilst at the same time keeping a low profile."*
-* *Featured on [Linus Tech Tips](https://www.userfolio.com/uploads/coreprotect-linus.png).*
-
-## Useful Links
-
-**Documentation**  
-https://docs.coreprotect.net
-
-**Commands**  
-https://docs.coreprotect.net/commands/
-
-**Permissions**  
-https://docs.coreprotect.net/permissions/
-
-**API Documentation**  
-https://docs.coreprotect.net/api/
-
-**Feedback & Support**  
-https://github.com/PlayPro/CoreProtect/issues
-
-**Discord**  
-Join us on Discord: https://discord.gg/b4DZ4jy
-
-**Donate**  
-Enjoy using CoreProtect and want to show your support? [Join our Patreon!](https://www.patreon.com/coreprotect)
-
-**Sponsors**  
-Thanks to [HostHorde](https://www.hosthorde.com) for sponsoring CoreProtect!
-
-## Bug Reports
-
-For any bug reports, please submit a ticket here:  
-https://github.com/PlayPro/CoreProtect/issues
-
-Thanks for your support!
-
-## bStats
-
-[![bStats Graph Data](https://bstats.org/signatures/bukkit/CoreProtect.svg)](https://bstats.org/plugin/bukkit/CoreProtect)
-
 ## Contributing
 
 CoreProtect is an open source project, and gladly accepts community contributions.
 
-If you'd like to contribute, please read our contributing guidelines here: [CONTRIBUTING.md](https://github.com/TF-Minecraft/CoreProtect/blob/5525a825ba6e454885128692d65730eb69bd8250/CONTRIBUTING.md)
+If you'd like to contribute, please read our contributing guidelines here: [CONTRIBUTING.md](https://github.com/TF-Minecraft/CoreProtect/blob/master/CONTRIBUTING.md)
 
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](https://github.com/TF-Minecraft/CoreProtect/blob/5525a825ba6e454885128692d65730eb69bd8250/CONTRIBUTING.md#code-of-conduct)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](https://github.com/TF-Minecraft/CoreProtect/blob/master/CONTRIBUTING.md#code-of-conduct)

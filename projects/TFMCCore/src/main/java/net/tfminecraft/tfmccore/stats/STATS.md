@@ -129,14 +129,3 @@ Labels: `skillsstats.yml`
 | `battles_joined` | Battles joined | +1 per participant UUID when a battle ends with a system winner |
 
 Labels: `factionsstats.yml`
-
----
-
-## Changelog
-
-| Date | Change |
-|------|--------|
-| 2026-08-24 | Added `factions` category (battle participation via `BattleEndedEvent`) |
-| 2026-08-24 | Added `skills` category (active skill casts via MythicLib) |
-| 2026-08-24 | Added `advancedcrafting` category (alloys, items, smithing hits) |
-| 2026-08-24 | Initial registry for `vehicles`, `rpcharacters`, `advancedcrafting` |

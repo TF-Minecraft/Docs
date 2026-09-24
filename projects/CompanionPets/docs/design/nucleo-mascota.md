@@ -1,8 +1,8 @@
 # Núcleo de la mascota
 
-Documento vivo del diseño. Lo que acordemos después se añade aquí. El código todavía no implementa este núcleo.
+Documento vivo del diseño. Lo que acordemos después se añade aquí. El código implementa este núcleo; `PetBehavior` y `PetEntity` son nombres de diseño: en el código el movimiento está en `behavior/` y `runtime/`, y el cuerpo en `body/`.
 
-Servidor objetivo: Paper 1.21. El seguimiento usa `Mob#getPathfinder()` (`moveTo`, `stopPathfinding`), que está en la API de Paper. La dependencia de compilación pasa de `spigot-api` a `paper-api`, en scope `provided`.
+Servidor objetivo: Paper 1.21. El seguimiento usa `Mob#getPathfinder()` (`moveTo`, `stopPathfinding`), que está en la API de Paper.
 
 ## Idea
 
@@ -71,11 +71,9 @@ En un mob de MythicMobs pensado como mascota, los goals de vagar o de seguir se 
 
 ## Integraciones opcionales
 
-`plugin.yml` las declara como `softdepend: [MythicMobs, ModelEngine]`.
+`plugin.yml` las declara como `softdepend: [MythicMobs, ModelEngine, ItemsAdder, MMOItems]`.
 
-Al arrancar, el plugin comprueba si están activos y solo entonces carga la clase del adaptador. El núcleo solo ve `PetEntityFactory` y `PetVisual`. Las clases de MythicMobs y ModelEngine no se referencian desde el núcleo, así que no hace falta tenerlos para compilar ni para arrancar.
-
-MythicMobs y ModelEngine no entran en el classpath obligatorio del núcleo. Sus adaptadores se compilan aparte cuando se implementen.
+Al arrancar, el plugin comprueba si ModelEngine está activo y elige `ModelHook` o `IdleVisual` como `PetVisual`. Los adaptadores de `integration/` (`MythicSpawn` y `ModelHook`) llaman a MythicMobs y ModelEngine por reflexión, así que no hace falta tenerlos para compilar ni para arrancar.
 
 ## Configuración de tipos
 

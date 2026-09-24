@@ -4,7 +4,7 @@
 
 Define YAML schemas and load them at plugin startup.
 
-## New files (resources)
+## Resource files
 
 ### `fuel-templates.yml`
 
@@ -43,11 +43,11 @@ replacements:
 
 Six prosthetic traits with `key: prosthetic`, tiered modifiers, arcane entries with `fuel-template`, `fuel-capacity`, `powered` / `depowered` sections.
 
-### Update `injuries.yml`
+### `injuries.yml`
 
 Pool lists **healing** trait ids only (`broken_arm`, `broken_leg`, `half_blind`).
 
-### Update `traits/injury-traits.yml`
+### `traits/injury-traits.yml`
 
 Healing and permanent traits form progression pairs. Healing traits include `duration`; saved permanent IDs remain valid.
 
@@ -55,24 +55,24 @@ Healing and permanent traits form progression pairs. Healing traits include `dur
 
 | Field | Type | Notes |
 |-------|------|-------|
-| `duration` | duration string | Healing only; parsed via existing duration util or new parser |
+| `duration` | duration string | Healing only; parsed by `DurationParser.parseLockTimeMs` |
 | `fuel-template` | string | Prosthetic only |
 | `fuel-capacity` | double | Prosthetic only |
 | `powered` | section | name override, description, attribute-modifiers, potion-effects |
 | `depowered` | section | same shape |
 
-## New loaders
+## Loaders
 
 | Loader | Registry API |
 |--------|----------------|
-| `FuelTemplateLoader` | `get(id)`, `getByItem(path)` |
-| `InjuryProgressionLoader` | `getPermanent(healingId)`, `isHealingTrait(id)` via trait duration |
+| `FuelTemplateLoader` | `getByString(id)`, `getByItem(path)` |
+| `InjuryProgressionLoader` | `getPermanentId(healingId)`, `isHealingTrait(id)` via trait duration |
 | `ProstheticLoader` | `getReplacement(injuryId)`, `getReplacementForProsthetic(prostheticId)`, `resolveForItem(item)` |
 
 ## Bootstrap (`RPCharacters.java`)
 
-- `createConfigs()` / `createFolders()`: add new yml files
-- `loadConfigs()`: load new loaders after traits
+- `createConfigs()` / `createFolders()`: copy missing bundled yml files
+- `loadConfigs()`: loads these loaders after traits
 
 ## Acceptance
 

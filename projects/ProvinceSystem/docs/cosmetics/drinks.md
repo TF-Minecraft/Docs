@@ -4,13 +4,12 @@ End-to-end design for donator **custom BreweryX recipes**: token → website bre
 
 **Status:** Code **shipped**. Operator staging smoke in [STAGING.md](../../STAGING.md).
 
-**Repos:** `Workspace/drinkbuilder/` · `Workspace/tfmcweb/` · `ProvinceSystem/` · `tfmc_bot/` · ItemsAdder `tfmc_drinks` · BreweryX
+**Repos:** `drinkbuilder/` · `tfmcweb/` · `ProvinceSystem/` · `tfmc_bot/` · ItemsAdder `tfmc_drinks` · BreweryX
 
 **Related:** [cosmetics/skins.md](skins.md) · [identity/tfmcweb.md](../identity/tfmcweb.md) · [flows/journeys.md](../flows/journeys.md)
 
 ## Goals
 
-- Replace the closed-source DrinkBuilder GUI + staff-ticket flow with TFMCWeb token + website + Discord review (same pattern as skins).
 - Curated ingredient allowlist in DrinkBuilder synced to the site.
 - Optional custom potion PNG → IA `tfmc_drinks` with forced CMD; BreweryX `customModelData` matches.
 - Texture **reuse** across drinks (refcount); staff delete without orphaning shared skins.
@@ -24,7 +23,7 @@ End-to-end design for donator **custom BreweryX recipes**: token → website bre
 | Shared cooldown | Skin + drink share one clock; config **only on TFMCWeb** |
 | Noble | Can mint drink; **color-only** (no custom texture upload/reuse) |
 | Gilded+ | Can upload texture **or** reuse an existing owned drink texture |
-| Ingredients | Allowlist in DrinkBuilder `ingredients.yml`; sync catalog to PS/web. Historical seed: [assets/drink-ingredients-draft.yml](../assets/drink-ingredients-draft.yml) |
+| Ingredients | Allowlist in DrinkBuilder `ingredients.yml`; sync catalog to PS/web |
 | Texture base | Vanilla **potion** + CMD - never paper |
 | IA namespace | **`tfmc_drinks`** |
 | Color xor texture | Color-only **or** custom texture, not both |
@@ -67,16 +66,16 @@ sequenceDiagram
 - `drink_submissions` - recipe JSON, status, player UUID, optional texture
 - `drink_textures` - owner UUID, CMD, IA id, refcount, png path
 - `drink_catalog` - ingredients allowlist + category labels + effects blacklist
-- `drink_player_meta` - `allow_drink_texture` + `name_colour_stops`
+- `drink_player_meta` - legacy `allow_drink_texture` + `name_colour_stops` (fallback when `rpc_player_meta` has no row)
 - `drink_notifications` - staff/bot outbox
 
-**API (`/drinks`):** redeem · submit · catalog · staff pending/approve/deny · plugin catalog/meta.
+**API (`/drinks`):** redeem · submit · catalog · staff pending/approve/deny · plugin catalog. Drink entitlements come from TFMCWeb via `PUT /characters/plugin/rpc-player-meta`; `PUT /drinks/plugin/player-meta` is deprecated.
 
 ## Plugin surface (DrinkBuilder)
 
 | Command | Role |
 |---------|------|
-| `/drinkbuilder reload` | Reload config + re-push catalog + online meta |
+| `/drinkbuilder reload` | Reload config + re-push catalog + assets |
 | `/drinkbuilder catalog sync` | Push ingredients + categories + blacklist to PS |
 | `/drinkbuilder pack pull [force]` | Pull approved → IA + Brewery merge + ack |
 | `/drinkbuilder drink delete <id>` | Remove recipe; free CMD iff refcount 0 |
@@ -91,10 +90,6 @@ sequenceDiagram
 ## Discord
 
 `drinksreview` cog polls `/drinks/staff/pending`, posts recipe embed + review sheet, Approve/Deny; player DMs via drink notifications outbox. See [integrations/discord-bot.md](../integrations/discord-bot.md).
-
-## Cutover
-
-Players use `/token create drink` then redeem on `/drinks`. Legacy ConditionalEvents `/tfmc drinks` retired.
 
 ## Out of scope
 

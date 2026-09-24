@@ -12,7 +12,7 @@ Gathering builds with Java **21** against
 `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT`. Install the pinned TLibs
 `2.0.1` and RPCharacters `2.0.2` release artifacts with the shared dependency
 installer. The build also prepares checksum-verified MMOCore `1.13.1` and
-MythicLib `1.7` inputs from the private ServerAssets repository.
+MythicLib `1.7.1-SNAPSHOT` inputs from the private ServerAssets repository.
 
 At runtime, `plugin.yml` requires TLibs and RPCharacters. MMOCore is optional;
 the profession bonus to discovery chance is only applied when that plugin is

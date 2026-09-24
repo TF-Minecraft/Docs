@@ -6,12 +6,13 @@ MMOItems/MMOCore/ItemsAdder configs, and the resource pack.
 
 Nothing in this file is guide prose. Every non-obvious claim cites a file path.
 
-Status of source code: **no source repository was found for Magic or Research.**
-`github.com/drefvelin/magic` and `github.com/drefvelin/research` both return
-"Repository not found". `C:\Users\MSI\Desktop\plugin-src\advancedresearch` is a
-*different, unrelated* plugin (`net.tfminecraft.advancedresearch`), **not** the deployed
+Source code: [TF-Minecraft/Magic](https://github.com/TF-Minecraft/Magic) and
+[TF-Minecraft/Research](https://github.com/TF-Minecraft/Research).
+`C:\Users\MSI\Desktop\plugin-src\advancedresearch` is a
+*different, unrelated* plugin (`net.tfminecraft.advancedresearch`, archived as
+TF-Minecraft/AdvancedResearch), **not** the deployed
 `Research` plugin (`net.tfminecraft.research.Research`). All Magic and Research facts
-below are therefore derived from live config + data files and the jar `plugin.yml`.
+below are derived from live config + data files and the jar `plugin.yml`.
 
 ---
 

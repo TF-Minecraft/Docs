@@ -4,16 +4,16 @@
 **Status:** factual dossier for a wiki writer. Not player-facing prose.
 **Method:** live server config folders at `C:\Users\MSI\Desktop\plugins\<Plugin>\` (read-only), plugin jars decompiled with `javap` (jars are Java 25 class files; a copy was version-patched to read them), GitHub sources cloned to `C:\Users\MSI\Desktop\plugin-src\`, and the ItemsAdder pack at `C:\Users\MSI\Desktop\plugins\ItemsAdder\contents\`.
 
-### Repository availability (checked with `git ls-remote`)
+### Source repositories
 
 | Plugin | GitHub repo | Notes |
 |---|---|---|
-| AdvancedCrafting | none found | drefvelin/advancedcrafting and JustinasLa/AdvancedCrafting do not exist. Jar-only. |
-| Gathering | none found | Jar-only. |
-| Recycler | none found | Jar-only. |
-| MarketBlock | none found | Jar-only. **Not** the same plugin as `bartershops` — BarterShops is a separate installed jar (`net.tfminecraft.bartershops.ShopMain`) with no data folder. |
-| DenarEconomy | `drefvelin/denareconomy` (cloned) | Source is from 2025-05-11 and is **behind** the live 0.1.8 jar (no `/pouch`, no `baltop`, no `toitem`). Facts below come from the jar. |
-| ArmourShop | `drefvelin/armourshop` (cloned) | Source commit `b1462f1`, 2026-07-13. Matches the live jar for GUI/skin logic; the jar has extra admin subcommands the source lacks. |
+| AdvancedCrafting | [TF-Minecraft/AdvancedCrafting](https://github.com/TF-Minecraft/AdvancedCrafting) | |
+| Gathering | [TF-Minecraft/Gathering](https://github.com/TF-Minecraft/Gathering) | |
+| Recycler | [TF-Minecraft/Recycler](https://github.com/TF-Minecraft/Recycler) | |
+| MarketBlock | [TF-Minecraft/MarketBlock](https://github.com/TF-Minecraft/MarketBlock) | **Not** the same plugin as BarterShops ([TF-Minecraft/BarterShops](https://github.com/TF-Minecraft/BarterShops), `net.tfminecraft.bartershops.ShopMain`), a separate installed jar with no data folder. |
+| DenarEconomy | [TF-Minecraft/DenarEconomy](https://github.com/TF-Minecraft/DenarEconomy) | Facts below come from the live 0.1.8 jar. |
+| ArmourShop | [TF-Minecraft/ArmourShop](https://github.com/TF-Minecraft/ArmourShop) | |
 | ExcellentCrates | third-party (NightExpress) | Jar + configs only. |
 
 ### ID-prefix convention used across these plugins (TLibs item paths)

@@ -2,7 +2,7 @@
 
 **Status:** Implemented.
 
-**Repos:** `Workspace/tfmcweb/` (Bukkit plugin) · `ProvinceSystem` · `tfmc_bot` · soft-depends `Workspace/rpcharacters` · consumers `armourshop`, `drinkbuilder`, SimpleFactions
+**Repos:** `tfmcweb/` (Bukkit plugin; depends on TLibs, soft-depends on Essentials) · `ProvinceSystem` · `tfmc_bot` · consumers `rpcharacters`, `armourshop`, `drinkbuilder` (depend) and `simplefactions` (soft-depend)
 
 Companion: [integrations/discord-bot.md](../integrations/discord-bot.md) · [cosmetics/skins.md](../cosmetics/skins.md)
 
@@ -31,7 +31,7 @@ Companion: [integrations/discord-bot.md](../integrations/discord-bot.md) · [cos
 |---------|--------|
 | Base URL, `X-Plugin-Key`, async HTTP | TFMCWeb (`ProvinceSystemGateway`) |
 | UUID ↔ Discord link + guild membership + grace | ProvinceSystem identity + TFMCWeb cache + bot leave/join |
-| Scoped feature codes (`skin`, `drink`, `character`, …) | ProvinceSystem + TFMCWeb `/token create <scope>` |
+| Scoped feature codes (`skin`, `drink`, `profile`, `skin_staff`) | ProvinceSystem + TFMCWeb `/token create <scope>` |
 | Survival Discord gate freeze | TFMCWeb → RPCharacters API |
 | Skin pack apply | ArmourShop (HTTP via TFMCWeb gateway) |
 | Drink pack apply | DrinkBuilder (HTTP via TFMCWeb gateway) |
@@ -39,7 +39,7 @@ Companion: [integrations/discord-bot.md](../integrations/discord-bot.md) · [cos
 | Essentials ban/unban | Essentials executes; TFMCWeb mirrors |
 | Discord DMs / banned role / leave events | `tfmc_bot` |
 
-Domain plugins **depend on TFMCWeb** for network/identity. They do not open raw HTTP to ProvinceSystem once migrated.
+Domain plugins **depend on TFMCWeb** for network/identity. They do not open raw HTTP to ProvinceSystem.
 
 ## Architecture
 
@@ -73,7 +73,7 @@ flowchart LR
 
 ## Identity
 
-Link tables live under skins SQLite (`discord_links`, `discord_link_codes`) and routes under `/skins/discord/…` (identity module extraction to `/v1/identity/…` is a future cleanup).
+Link tables live under skins SQLite (`discord_links`, `discord_link_codes`) and routes under `/skins/discord/…`.
 
 | Route | Auth | Role |
 |-------|------|------|
@@ -109,18 +109,18 @@ Rules:
 |---------|--------|------------|
 | `/token create skin` | `skin` | `/skins` |
 | `/token create drink` | `drink` | `/drinks` |
-| `/token create character` | `character` | `/character` |
+| `/token create profile` | `profile` | `/profile` |
 | `/token create skin staff` | `skin_staff` | `/skins` (auto-approve) |
 
 Rules:
 
 - Must be Discord-linked and not past grace (Survival players).
 - Codes bound to UUID.
-- Session TTL: default **8h** after redeem; Remember me **30d** for character.
-- Codes consumed on submit (skin/drink) or create (character).
-- **Shared mint cooldown (`skin` + `drink`):** owned by **TFMCWeb** only. Character is not in the shared family.
+- Session TTL: default **8h** after redeem; Remember me **30d** for profile.
+- Codes consumed on submit (skin/drink) or redeem (profile).
+- **Shared mint cooldown (`skin` + `drink`):** owned by **TFMCWeb** only. Profile is not in the shared family.
 - **Command gate:** LP `tfmcweb.token.create`; staff perm `tfmcweb.token.create.staff`.
-- Skins **upload** entitlements remain ArmourShop → PS player-meta.
+- Skin and drink **upload** entitlements: TFMCWeb `player-meta.*` → `PUT /characters/plugin/rpc-player-meta`.
 
 ## Discord gate + RPCharacters freeze
 
@@ -146,7 +146,7 @@ Bot does **not** execute MC bans.
 |---------|--------|
 | `/linkdiscord` | Issue link code |
 | `/unlinkdiscord` | Explicit unlink |
-| `/token create skin\|drink\|character` | Scoped code |
+| `/token create skin\|drink\|profile` | Scoped code |
 | `/token resetcooldowns <player>` | Clear shared skin+drink mint cooldown |
 
 ### Staff
@@ -165,7 +165,7 @@ Per-realm HTTP gateway, `rpc_player_meta` sync, realm-scoped token policy, and s
 
 ### Site-wide snapshots are owned by the primary server
 
-The creation catalog, kit skins, masked template, ArmourShop catalog, DrinkBuilder catalog and drink assets are stored **once for the whole site**, and their push routes carry no `realm_id`. Every server pushes them on start, so a dev or tutorial restart used to replace the live copy.
+The creation catalog, kit skins, masked template, ArmourShop catalog, DrinkBuilder catalog and drink assets are stored **once for the whole site**, and their push routes carry no `realm_id`. Every server pushes them on start; a dev or tutorial restart must not replace the live copy.
 
 Non-primary servers therefore use their own key: list it in `PLUGIN_KEYS_SECONDARY` (comma-separated, `backend/.env`) and set it as `api.plugin-key` in that server's TFMCWeb config. A secondary key works on every plugin route, but pushes to the routes above answer `200` with `"ignored": true` and store nothing. Only the `PLUGIN_KEY` server decides what the website shows.
 
@@ -175,9 +175,8 @@ Non-primary servers therefore use their own key: list it in `PLUGIN_KEYS_SECONDA
 - Staff in non-Survival are not Discord-gated.
 - Leave Discord → 1h grace → rejoin OK; after 1h → freeze.
 - No alts (one Discord ↔ one UUID).
-- `/token create skin`, `drink`, and `character` work from TFMCWeb.
+- `/token create skin`, `drink`, and `profile` work from TFMCWeb.
 - Shared skin↔drink mint cooldown enforced on TFMCWeb.
 - `/tempban` mirrors to Discord; `/warning` hits chat + Discord.
-- ArmourShop no longer owns link/HTTP identity.
 
 Staging verify: [STAGING.md](../../STAGING.md).

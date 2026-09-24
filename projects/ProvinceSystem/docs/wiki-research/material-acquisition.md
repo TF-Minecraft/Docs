@@ -2,12 +2,6 @@
 
 Checked 2026-09-12 against `C:/Users/MSI/Desktop/plugins`, the cloned server configuration. This is evidence for the wiki, not a claim to have tested drops on a running Minecraft server. No server configuration was edited.
 
-## Root cause and presentation
-
-The material catalogue resolved the first recipe producing an item, including storage-block unpacking, while the overview called the same entries “Drop / gather only” and claimed they had no recipes. Niter and Arcane Crystal also remained in `serverCraftedMaterials` despite having no registered output recipes.
-
-The four entries now provide acquisition methods independently from recipes. Tin and Ignitium retain their real unpacking recipes in a separate “Block unpacking” section. These two conversions are excluded from the material overview's production recipe sections, but remain registered for station pages. Other materials without verified acquisition information receive a neutral unknown-details message instead of an invented loot/mining/mob source.
-
 ## Mining and logging
 
 All config paths below are relative to `C:/Users/MSI/Desktop/plugins`.

@@ -1,16 +1,6 @@
 # VehicleFramework
 A highly configurable system to allow semi-realistic vehicles with weapons in Minecraft
 
-You will not be able to run this as a standalone program, due to it being dependent on other plugins and the Paper server environment.
-
-## Why This Project Is Interesting
-This framework implements several systems that do not exist in the standard Paper API, including:
-
-- **Full 3D rotation (pitch/yaw/roll)** - Minecraft normally exposes only yaw and limited pitch control. I implemented full rotational freedom for vehicles and weapon systems.
-- **Player-controlled turrets** - Instead of simply spawning a projectile in the direction the player is looking (the default behavior), the turret physically rotates, aims, and fires based on its own orientation. The projectile direction is derived from the turret’s current rotation, not the player’s.
-
-To achieve this, I leveraged the external plugin **ModelEngine**, but used parts of its API in unconventional ways. For example, the control system is built using the plugin’s manual bone animation interface, which is normally meant for running animations — not for real-time input-driven rotation. Because ModelEngine uses **JOML** for its math, I integrated JOML into my calculations to ensure compatibility and seamless model manipulation.
-
 ## Features
 - Highly customizable vehicles based on YAML configuration files (Controlled from [ActiveVehicle.java](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/vehicles/ActiveVehicle.java))
 - Advanced movement and rotation logic with Joml and ModelEngine ([BoneRotator.java](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/bones/BoneRotator.java))
@@ -38,34 +28,17 @@ TFMC's runtime baseline is **Minecraft 1.21.10**; see the
 ### Robust Persistence & Crash Recovery
 Since all runtime data is lost when a Minecraft server restarts, live vehicles are stored in SQLite (`plugins/VehicleFramework/data/vehicles.db`). Each row holds a `payload_json` blob plus chunk/owner columns so spawn can load by chunk without scanning JSON files. Periodic `VACUUM INTO` snapshots land in `data/backups/` (three newest kept). If `vehicles.db` fails to open, the plugin copies the newest good snapshot over the live file and retries; with no usable backup it stays disabled.
 
-To reduce RAM usage, vehicles are not fully loaded until a player is close enough. Lightweight in-memory `SpawnLocation` objects queue work, and the full `ActiveVehicle` is created only when needed. Both share the same UUID so lifecycle stays aligned. Track splines still use JSON under `data/tracks/`; vehicle type templates stay YAML.
-
-### Full Project Refactor as Scope Expanded
-The current plugin is far larger and more complex than what I originally planned. As I expanded into more advanced usage of the ModelEngine API, the initial architecture became a bottleneck. To fix this, I performed a full project refactor - keeping the original concept, but rebuilding the entire foundation.
-
-This rewrite greatly improved maintainability, allowed much cleaner separation of concerns, and enabled the advanced features the project has today.
-
-### Quaternions
-One of the more challenging parts of this project was implementing smooth, physically consistent rotation for aircraft. What began as a simple idea - making the tail of a plane dip during landing - turned into a deep dive into the JOML math library and the fundamentals of quaternion-based rotation.
-
-Along the way, I learned the practical differences between Euler angles and quaternions, why quaternions avoid gimbal lock, and how to blend rotations smoothly regardless of input. After about a week of experimentation, testing, and reading documentation, I built a fully consistent quaternion-driven rotation system that works regardless of the starting rotation.
-
-## AI Tools
-I used **ChatGPT** primarily for math-heavy components, such as understanding and verifying quaternion operations in the **BoneRotator**. It was especially helpful for breaking down complex concepts and providing alternate explanations while I learned JOML’s rotation systems.
-
-For architecture, class design, and the overall structure of the plugin, I relied on my own judgment. In my experience, AI struggles with maintaining coherent object-oriented structure in larger projects, so all high-level design, class relationships, and system architecture were created and implemented by me.
-
-Most of the plugin was written manually for efficiency and to maintain full control over the design. **ChatGPT** was also used to help format and refine this README.
+To reduce RAM usage, vehicles are not fully loaded until a player is close enough. Lightweight in-memory `SpawnLocation` objects queue work, and the full `ActiveVehicle` is created only when needed. Both share the same UUID so lifecycle stays aligned. Track splines use JSON under `data/tracks/`; vehicle type templates stay YAML.
 
 ## Configuration
 The framework uses YAML files to define vehicle behavior, components, seats, and weapons.
 
 Fuel types are in `fuel.yml`. Optional `sound` (namespaced key, volume, pitch) plays on click-refuel. `refuel-while-running: true` lets you add fuel while throttle is up (coal). Omit both to keep bucket-fill and idle-engine. Engine `refuel-states` still limits which vehicle states accept fuel.
 
-Here is a short example excerpt from the configuration of the first vehicle I made, a fixed artillery piece:
+Example excerpt from a fixed artillery piece:
 
 ```yaml
-fixed_artillery: # First vehicle I made
+fixed_artillery:
   name: "§l§eFixed Artillery"
   model: fixed_artillery            # Refers to the skin id
   fixed: true
@@ -330,7 +303,7 @@ Wings lift scales with HP as `1 - damage-factor * (1 - healthRatio)` (`damage-fa
 
 ### Land terrain-follow (opt-in)
 
-Default ground movement is still velocity-based. The climb hop is gone for every vehicle.
+Default ground movement is velocity-based.
 
 Carts and cars opt in per state. Planes and ships should omit the flag.
 
@@ -377,7 +350,7 @@ Spline tracks persist samples and segment health separately from displays. Consi
 - `weapon-aim-debug` (default `false`) - When true, shows an `END_ROD` particle at the resolved cursor aim target for the gunner and logs aim angles/target to console every 0.5s.
 - `terrain-follow-debug` (default `false`) - When true, shows `END_ROD` particles at terrain-follow probe (or body) starts and down-ray hits for nearby players.
 - `ground-engine-logging` (default `true`) - When true, appends each terrain-follow step (`state=` plus dest/vel, `lookaheadY`, `effSnap`, `air`, airborne `vx`, and geared-engine `gear`/`thr` when present) and each state swap (`state=A->B reason=... isDefault=...`) to `plugins/VehicleFramework/logs/ground_engine.log`.
-- `wipe-log` (default `true`) - When true, deletes `ground_engine.log` and `track.log` on plugin start and `/vf reload`. Live `config.yml` is not overwritten; add these keys if they are missing.
+- `wipe-log` (default `true`) - When true, deletes `ground_engine.log` and `track.log` on plugin start and `/vf reload`.
 
 ### Weapon aim mode (optional)
 

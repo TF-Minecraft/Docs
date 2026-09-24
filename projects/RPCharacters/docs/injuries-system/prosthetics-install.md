@@ -53,5 +53,5 @@ Right click with a prosthetic item to install it for a mapped permanent injury, 
 ## Implementation
 
 - `ProstheticLoader.resolveForItem(ItemStack)` returns a single trait+item match
-- `TraitChangeService.replaceInjuryWithProsthetic` and `replaceProsthetic` (no fuel % migrate)
+- `TraitChangeService.replaceInjuryWithProsthetic` and `replaceProsthetic` (fuel is not carried over)
 - `ProstheticInstallListener` registered in `RPCharacters`

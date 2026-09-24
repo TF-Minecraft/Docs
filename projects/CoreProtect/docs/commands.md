@@ -16,7 +16,6 @@ ___
 | [/co reload](#co-reload) | Reload the configuration file |
 | [/co status](#co-status) | View the plugin status |
 | [/co consumer](#co-consumer) | Toggle consumer processing |
-| [/co migrate-db](#co-migrate-db) | Migrate between database backends |
 
 ### Alias Commands
 
@@ -102,16 +101,16 @@ For example, `/co purge t:30d` will delete all data older than one month, and on
 > If used from the console, only data older than 24 hours can be purged.
 
 **Purging Worlds**  
-You can optionally specify a world in CoreProtect v19+.  
+You can optionally specify a world.  
 For example, `/co purge t:30d r:#world_nether` will delete all data older than one month in the Nether, without removing data in any other worlds.
 
 **Purging Blocks**  
-You can optionally specify block types in CoreProtect v23+.  
+You can optionally specify block types.  
 For example, `/co purge t:30d i:stone,dirt` will delete all stone and dirt data older than one month, without removing other block data.
 
 **Database Optimization**
 
-In CoreProtect v2.15+, adding `#optimize` to the end of the command (for example, `/co purge t:30d #optimize`) will also optimize supported database tables and reclaim unused disk space. How this option is handled depends on the database backend:
+Adding `#optimize` to the end of the command (for example, `/co purge t:30d #optimize`) will also optimize supported database tables and reclaim unused disk space. How this option is handled depends on the database backend:
 
 * SQLite already rebuilds the database from retained data and reclaims unused file space as part of a manual purge, so `#optimize` is not needed.
 * MySQL normally deletes matching rows. Adding `#optimize` also optimizes its tables to reclaim unused space.
@@ -132,21 +131,6 @@ ___
 
 ### /co consumer
 Console command to pause or resume consumer queue processing.
-___
-
-### /co migrate-db
-Migrate data from the active database backend to a different backend. This is a console-only command.
-
-| Command | Parameters |
-| --- | --- |
-| /co migrate-db | `<sqlite|mysql|duckdb|clickhouse>` |
-
-The target namespace must contain no CoreProtect data; a DuckDB target must use a new database file, and `database-lock` must remain enabled. After a successful migration, CoreProtect automatically updates `database-type` in `config.yml` before queued writes resume.
-
-> **Note:** Migrations between SQLite and MySQL require a CoreProtect 23.0+ Patreon build. Any migration involving DuckDB or ClickHouse requires CoreProtect 25.0+.
-
-For complete migration instructions, safety guidelines, and troubleshooting information, see the [Database Migration documentation](database-migration.md).
-
 ___
 
 

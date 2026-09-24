@@ -6,7 +6,7 @@ Technical documentation is maintained here. Run commands from the source checkou
 
 TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
 
-- [README.md](overview.md)
+- [overview.md](overview.md)
 - [STAGING.md](STAGING.md)
 - [UPDATE.md](UPDATE.md)
 - [backend/assets/kit_skins/README.md](backend/assets/kit_skins/README.md)
@@ -34,7 +34,6 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 - [docs/ops/dev-config.md](docs/ops/dev-config.md)
 - [docs/ops/local-dev.md](docs/ops/local-dev.md)
 - [docs/ops/sheet-render.md](docs/ops/sheet-render.md)
-- [docs/roadmap.md](docs/roadmap.md)
 - [docs/wiki-research/a-magic-knowledge.md](docs/wiki-research/a-magic-knowledge.md)
 - [docs/wiki-research/a2-gems-dowsing-archaeo.md](docs/wiki-research/a2-gems-dowsing-archaeo.md)
 - [docs/wiki-research/animal-husbandry.md](docs/wiki-research/animal-husbandry.md)
@@ -46,13 +45,9 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 - [docs/wiki-research/e-adventure.md](docs/wiki-research/e-adventure.md)
 - [docs/wiki-research/f-rpg-stack.md](docs/wiki-research/f-rpg-stack.md)
 - [docs/wiki-research/g-gadgets.md](docs/wiki-research/g-gadgets.md)
-- [docs/wiki-research/h-wiki-frontend.md](docs/wiki-research/h-wiki-frontend.md)
 - [docs/wiki-research/herb-material-acquisition.md](docs/wiki-research/herb-material-acquisition.md)
 - [docs/wiki-research/material-acquisition.md](docs/wiki-research/material-acquisition.md)
-- [docs/wiki-research/vehicle-model-audit.md](docs/wiki-research/vehicle-model-audit.md)
-- [frontend/README.md](frontend/README.md)
 - [frontend/app/wiki/README.md](frontend/app/wiki/README.md)
-- [docker_run.txt](docker_run.md)
 
 ## Builds and releases
 

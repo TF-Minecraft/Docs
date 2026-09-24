@@ -5,7 +5,7 @@ SimpleFactions POSTs an economy snapshot (faction wealth, prestige, guild data) 
 these into a raw + daily-canonical series and serves them for the timelapse
 studio's right-hand chart panel.
 
-**See also:** [map/generation.md](generation.md) (map timelapse itself) ·
+**See also:** [`backend/src/scripts/chronicle/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/backend/src/scripts/chronicle) (map timelapse itself) ·
 [integrations/simplefactions.md](../integrations/simplefactions.md) (upload modes)
 
 ## Why `ledger`, not `chronicle`
@@ -30,9 +30,9 @@ One snapshot: `schema_version`, `map_id`, `captured_at` (ISO instant), `server_d
 `day_progress_seconds`, `complete`, `global{}`, `factions[]`, `guilds[]`, `events[]`
 (always empty, discarded on ingest). See `backend/src/scripts/ledger/schema.py`
 (`normalize_snapshot`) for the authoritative field list and types — the field
-authority is SF's Java type (`ChronicleSnapshot.java`), not its own payload-example
-doc, which has `rank`/`rank_level` swapped; the parser accepts either order and logs
-a warning when it detects the swap (`_faction_rank`).
+authority is SF's Java type (`ChronicleSnapshot.java`). The parser accepts
+`rank`/`rank_level` in either order and logs a warning when it detects the swap
+(`_faction_rank`).
 
 Unknown extra keys are ignored (a plugin-side field addition should not 400 a whole
 season) and non-finite floats (`NaN`/`Infinity`) are normalised to `null`, mirroring

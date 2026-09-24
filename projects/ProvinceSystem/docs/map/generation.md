@@ -8,7 +8,7 @@ Product goals: [overview.md](overview.md). Performance detail: [viewer.md](viewe
 
 | Piece | Path | Job |
 |-------|------|-----|
-| SimpleFactions | `Workspace/simplefactions/` | Owns nations/provinces; talks HTTP to API |
+| SimpleFactions | `simplefactions/` | Owns nations/provinces; talks HTTP to API |
 | ProvinceSystem API | `ProvinceSystem/backend/` | Upload defines, regen maps/regions, serve files |
 | ProvinceSystem web | `ProvinceSystem/frontend/` | MapViewer, modes, drill-down |
 | Data | `backend/src/input\|defines\|output/{map}/` | Per-map worlds (`main`, `dev`, …) |
@@ -32,7 +32,7 @@ sequenceDiagram
 
 ## SimpleFactions REST
 
-Primary client: `Workspace/simplefactions/.../REST/RestServer.java` - delegates to TFMCWeb `ProvinceSystemGateway` via `api/GatewayClient.java`.
+Primary client: `simplefactions/src/main/java/net/tfminecraft/simplefactions/rest/RestServer.java` - delegates to TFMCWeb `ProvinceSystemGateway` via `api/GatewayClient.java`.
 
 | Call | Purpose |
 |------|---------|
@@ -57,8 +57,8 @@ Claim changes typically `enqueue("nation", rgb)` then later upload queue + regen
 
 1. Load/compile nation (and other modes) into `defines/{map}/`.  
 2. `create_map` / `generate_regions` write `output/{map}/maps/` and `regions/`.  
-3. [`file_routes`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/api/file_routes.py) serves PNGs; data routes serve JSON (including `GET /{map}/data/markers` for settlement pins). Infestation overlay is `output/{map}/maps/infestation_map.png` from `infestation_data.json` (yellow to dark red, no green).  
-4. Frontend uses `NEXT_PUBLIC_API_URL` + `mapId` (e.g. `/map/main`); `MapSettlementMarkers` renders pins + straight labels on political modes when zoomed in.
+3. [`file_routes`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/api/file_routes.py) serves PNGs; data routes serve JSON (including `GET /{map}/data/markers` for settlement pins). Infestation overlay is `output/{map}/maps/infestation_map.png` from `infestation_data.json` (yellow to dark red, no green).  
+4. Frontend uses `NEXT_PUBLIC_API_URL` + `mapId` (e.g. `/map/main`); `app/components/map/MapMarkerLayer.tsx` (layout in `app/lib/settlementMarkers.ts`) renders pins + straight labels on political modes when zoomed in.
 
 ## Multi-map
 
@@ -79,4 +79,4 @@ Integration summary (queue upload, regen, loopback URL contract): [integrations/
 ## See also
 
 - [flows/journeys.md](../flows/journeys.md) - journey "map border update"
-- [roadmap.md](../roadmap.md) - planned chronicle and wealth
+- [ledger.md](ledger.md) - economy ledger and wealth charts

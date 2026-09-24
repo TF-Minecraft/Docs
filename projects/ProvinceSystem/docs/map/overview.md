@@ -13,16 +13,15 @@ Turn the live political map from flat colour blobs into a **fantasy cartography 
 | Fast refined layout, click modal, drill-down, cropped overlays, mobile | Shipped |
 | Xaero world map → colour base + ink parchment washes | Shipped |
 | Fantasy muted nation overlays | Shipped |
-| Nation / title / trade labels; Calavorn terrain/fertility/trade/prosperity/infestation modes | Shipped |
+| Nation / title / trade labels; terrain/fertility/trade/prosperity/infestation modes | Shipped |
 | Pan and zoom (wheel + middle-mouse pan, clamped bounds) | Shipped |
 | Staff-only maps (configurable per `mapId`) | Shipped |
 | Named capitals / guild settlements | Shipped |
 | Forts + zone of control | Shipped |
 | Wars: campaign route line + battle pins | Shipped |
 | Wars: occupier nation fill (`occupied_by`) | Shipped |
-| Wars: dedicated occupation overlay | Planned |
-| Daily map snapshots + changelog | Planned |
-| Nation / global wealth charts over time | Planned |
+| Daily map snapshots (chronicle) | Shipped |
+| Nation / global wealth charts over time ([ledger.md](ledger.md)) | Shipped |
 | Staff web map title editor (county → empire) | Shipped |
 
 ## Architecture
@@ -70,10 +69,10 @@ flowchart TD
 | `political_{mode}` | `provinces.png` + nation defines | Desaturated fills, borders, hover |
 | `labels_{mode}` | Province graph + nation names (frontend SVG) | Straight text per contiguous blob |
 | `markers` | SF export (`capitals`, `forts`, …) | Town/fort icons |
-| `war_{id}` | SF war export | Campaign line, battle pins, occupier fill (dedicated contested overlay planned) |
+| `war_{id}` | SF war export | Campaign line, battle pins, occupier fill |
 | `pick_{mode}` | Raw RGB map (`apply_overrides=False`) | Hit-testing only; never styled away |
 
-Pick layer must stay separate from display (see [`mapgen.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/scripts/mapgen/mapgen.py) `apply_overrides=False` rule) so vassal pixels remain selectable.
+Pick layer must stay separate from display (see [`mapgen.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/scripts/mapgen/mapgen.py) `apply_overrides=False` rule) so vassal pixels remain selectable.
 
 ## Locked product rules
 
@@ -84,9 +83,9 @@ Pick layer must stay separate from display (see [`mapgen.py`](https://github.com
 | Interaction | **Click** → nation detail modal; **Ctrl+click** (Cmd on Mac) → drill into subjects; mobile: tap + explicit drill |
 | Staff maps | Gated by profile Bearer session + `permission_flags["tfmc.map.staff"]` from TFMCWeb/LP sync; `public` vs staff per map in PS `maps.yml` + SF `mapRef` |
 | SF export | Draft schema: [`map-export-schema.json`](../assets/map-export-schema.json) |
-| Wars | **Do not infer** frontlines from territory diffs alone; require SF war export ([`../../simplefactions/docs/wars.md`](https://github.com/TF-Minecraft/SimpleFactions/blob/main/docs/wars.md)) |
+| Wars | **Do not infer** frontlines from territory diffs alone; require SF war export ([`WarMapExporter.java`](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/map/export/WarMapExporter.java)) |
 | Chronicle | Daily composited snapshot + structured event log (prefer SF-emitted events over pure JSON diff) |
-| Wealth history | Append-only time series from nation upload `balance` + global aggregate |
+| Wealth history | Ledger series from the SF `chronicle` upload ([ledger.md](ledger.md)) |
 
 ## SimpleFactions contract (summary)
 
@@ -110,8 +109,8 @@ Full SF ↔ API pipeline: [integrations/simplefactions.md](../integrations/simpl
 - Click nation → modal with size, subjects, culture, relations, wealth
 - `main` public; staff maps hidden without permission
 - Named capitals visible when SF exports them
-- Daily snapshot + diff/event log stored (planned)
-- Nation wealth chart over season (planned)
+- Daily map snapshots stored
+- Nation wealth chart over season ([ledger.md](ledger.md))
 
 Operator checklists: [STAGING.md](../../STAGING.md).
 

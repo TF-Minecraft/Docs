@@ -20,12 +20,12 @@ This project also demonstrates cross-language integration through **ProvinceSyst
 
 ## Features
 - Faction objects that function as nations in-game  
-  ([Faction.java](https://github.com/TF-Minecraft/SimpleFactions/blob/ad9b048ec42c1842b277f4657f490b25691f854d/src/main/java/net/tfminecraft/simplefactions/objects/Faction.java))
+  ([Faction.java](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/objects/Faction.java))
 - Faction relationships  
-  ([RelationManager.java](https://github.com/TF-Minecraft/SimpleFactions/blob/ad9b048ec42c1842b277f4657f490b25691f854d/src/main/java/net/tfminecraft/simplefactions/managers/RelationManager.java))
+  ([RelationManager.java](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/managers/RelationManager.java))
 - Titles (Kingdom, Duchy, etc.) connected with the REST server and the TitleManager  
   ([ProvinceSystem](https://github.com/TF-Minecraft/ProvinceSystem),
-  [TitleManager.java](https://github.com/TF-Minecraft/SimpleFactions/blob/ad9b048ec42c1842b277f4657f490b25691f854d/src/main/java/net/tfminecraft/simplefactions/managers/TitleManager.java))
+  [TitleManager.java](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/managers/TitleManager.java))
 
 ## Technical Overview
 - Runtime target: TFMC Minecraft **1.21.10**; follow the [shared platform baseline](../../PLATFORM.md).
@@ -34,16 +34,16 @@ This project also demonstrates cross-language integration through **ProvinceSyst
 
 ### Architecture
 - The main class initializes managers and overall plugin setup  
-  ([SimpleFactions.java](https://github.com/TF-Minecraft/SimpleFactions/blob/ad9b048ec42c1842b277f4657f490b25691f854d/src/main/java/net/tfminecraft/simplefactions/SimpleFactions.java))
+  ([SimpleFactions.java](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/SimpleFactions.java))
 - Configuration files (and titles from JSON) are loaded and stored via the Loader classes  
-  ([Loaders](https://github.com/TF-Minecraft/SimpleFactions/tree/ad9b048ec42c1842b277f4657f490b25691f854d/src/main/java/net/tfminecraft/simplefactions/loaders))
+  ([Loaders](https://github.com/TF-Minecraft/SimpleFactions/tree/main/src/main/java/net/tfminecraft/simplefactions/loaders))
 - `FactionManager` handles faction creation, lookups, member/leader queries, and database calls  
-  ([FactionManager.java](https://github.com/TF-Minecraft/SimpleFactions/blob/ad9b048ec42c1842b277f4657f490b25691f854d/src/main/java/net/tfminecraft/simplefactions/managers/FactionManager.java))
-- The `Inventory` package contains the extensive GUI classes players interact with  
-  ([Inventory](https://github.com/TF-Minecraft/SimpleFactions/tree/ad9b048ec42c1842b277f4657f490b25691f854d/src/main/java/net/tfminecraft/simplefactions/managers/inventory))
+  ([FactionManager.java](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/managers/FactionManager.java))
+- The `inventory` package contains the extensive GUI classes players interact with  
+  ([Inventory](https://github.com/TF-Minecraft/SimpleFactions/tree/main/src/main/java/net/tfminecraft/simplefactions/managers/inventory))
 - `MapSystem` is the primary interface for REST communication, while `RestServer` manages the actual requests and responses  
-  ([MapSystem.java](https://github.com/TF-Minecraft/SimpleFactions/blob/ad9b048ec42c1842b277f4657f490b25691f854d/src/main/java/net/tfminecraft/simplefactions/map/MapSystem.java),\
-  [RestServer.java](https://github.com/TF-Minecraft/SimpleFactions/blob/ad9b048ec42c1842b277f4657f490b25691f854d/src/main/java/net/tfminecraft/simplefactions/rest/RestServer.java))
+  ([MapSystem.java](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/map/MapSystem.java),\
+  [RestServer.java](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/rest/RestServer.java))
 
 ## Key Challenges Solved
 

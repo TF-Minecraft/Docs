@@ -1,9 +1,5 @@
 # Welcome to the CoreProtect Documentation
 
-For more information about CoreProtect, visit [coreprotect.net](http://coreprotect.net).
-
-Looking for another platform? Visit [CoreProtect for Fabric](https://coreprotect.net/fabric) or [CoreProtect for Hytale](https://coreprotect.net/hytale).
-
 ## Getting Started
 
 Please visit one of the following links for more information.
@@ -19,15 +15,6 @@ A list of all language codes that can be used with CoreProtect.
 
 [**CoreProtect API Documentation**](api/index.md)  
 Log your own block changes, perform lookups, rollbacks, restores, and more.  
-
-[**Database Migration**](database-migration.md)  
-Migrate your CoreProtect database between supported backends.
-
-[**Automatic Purging**](auto-purge.md)  
-Automatically remove old CoreProtect data on a daily schedule.  
-
-[**Compatible Third-Party Plugins & Tools**](tools-integrations.md)  
-A list of plugins and tools that are compatible with CoreProtect.  
 
 [**Per-World Configuration Files**](config.md#per-world-configuration)  
 Modify the logging settings for a specific world on your server.  

@@ -5,7 +5,7 @@ Scope: Thievery, Infestations, TrialRooms, Games, MythicMobs, MythicDungeons, MC
 Source of truth: the live server plugin data folders at `C:\Users\MSI\Desktop\plugins\` (read-only), plugin `.jar` `plugin.yml` manifests, the ItemsAdder pack at `C:\Users\MSI\Desktop\plugins\ItemsAdder\`, and (for in-house plugins) source at `C:\Users\MSI\Desktop\plugin-src\`.
 
 Conventions used throughout this dossier for item references, confirmed from TLibs
-(`C:\Users\MSI\Desktop\plugin-src\tlibs\src\main\java\me\Plugins\TLibs\Objects\API\SubAPI\ItemChecker.java`):
+([`ItemChecker.java`](https://github.com/TF-Minecraft/TLibs/blob/main/src/main/java/net/tfminecraft/tlibs/objects/api/subapi/ItemChecker.java)):
 
 | Prefix | Means | Example |
 |---|---|---|
@@ -193,7 +193,7 @@ The critical clue text is literally: `This seems to be the work of <Character Na
 
 **What it is** — Whole map provinces get overrun by monsters; you can see which ones on the map, you fight ambient spawns while you are there, and you can place a Lure to trigger a wave fight that, if you win, clears the province.
 
-Jar: `infestations-0.1.0.jar`. Data: `C:\Users\MSI\Desktop\plugins\Infestations\`. No public source repository was found. Hard dependencies: TLibs, SimpleFactions, MythicMobs, ItemsAdder, InteractibleFurniture.
+Jar: `infestations-0.1.0.jar`. Data: `C:\Users\MSI\Desktop\plugins\Infestations\`. Source: [TF-Minecraft/Infestations](https://github.com/TF-Minecraft/Infestations). Hard dependencies: TLibs, SimpleFactions, MythicMobs, ItemsAdder, InteractibleFurniture.
 
 ### How a player actually uses it
 

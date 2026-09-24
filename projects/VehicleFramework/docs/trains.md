@@ -29,7 +29,7 @@ Consist       ordered cars + splineId + arc length s
 
 ### Motion (1D)
 
-- Locomotive: `s +=` signed panel speed (throttle already signed; reverse is negative). `travelSign` is `+1` / `-1` from that speed for junctions and car rewind. No `travelSign * speed` (that inverted forward when bind facing was wrong).
+- Locomotive: `s +=` signed panel speed (throttle already signed; reverse is negative). `travelSign` is `+1` / `-1` from that speed for junctions and car rewind. No `travelSign * speed`.
 - Car `i`: `s_i` is coupler spacing **behind** the parent along stem + optional branch, not always `s_loco` on one spline.
 - Branch spillover in `rewind` only when forward travel spans the frog; reverse on the stem keeps all cars on the stem.
 - Each car's `rewind` uses its **parent's** `travelSign` (loco for the first car); branch cars use `+1` along the branch arc.
@@ -80,7 +80,7 @@ One spline per track (no stored sections). A **stroke** is one lay with the conf
 - Clearance: a 3-wide by 3-tall corridor must be passable (air and plants are fine; solids and overlapping tracks are not).
 - Punching track in survival or adventure, and explosions (TNT, creepers, VF ammunition), mark edges broken and drop one `item-track` per newly broken edge. Creative punch and the remover dig do not drop.
 - `place-keepout-radius` (default 1.5): cannot place blocks or empty buckets within that XZ distance of a sample at the rail's block Y or above. Blocks strictly below that Y (new ground under the rails) are allowed.
-- Moving trains spawn `fx` gravel `BLOCK_CRACK` crumbs on that 3-wide ballast (rotated with the rail yaw). `fx.sound` is a string (vanilla `minecraft:block.stone.break` or a custom namespaced sound). Copy `fx` and `build` into an existing `plugins/VehicleFramework/trains.yml`.
+- Moving trains spawn `fx` gravel `BLOCK_CRACK` crumbs on that 3-wide ballast (rotated with the rail yaw). `fx.sound` is a string (vanilla `minecraft:block.stone.break` or a custom namespaced sound).
 - `/vf track delete <uuid>` removes the whole track. `/vf track start` and `/vf track end` use your current position.
 - `/vf track resync` applies rail item paths and `display-y-offset` from `trains.yml` to loaded chunks (throttled). Switches follow `/vf reload` and chunk load without this command.
 - `/vf track dump` appends a network snapshot to `logs/track.log` (`DUMP`, `SPLINE`, `PT` every 32 along `s`, then `JUNCTION` frogs including `thrown`). The same dump runs on plugin load. `JUNCTION_DROP` is written if a junction JSON is skipped (`no-stem` / `no-branch`) or cancelled as incomplete. On load and after lay/dig/delete, non-loop splines up to 16 blocks long that lie entirely on a longer spline in the same world are removed automatically (duplicate overlays and stray stubs).

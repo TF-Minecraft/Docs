@@ -26,7 +26,7 @@ flowchart TD
 
 | Piece | Choice |
 |-------|--------|
-| Config | `dev-characters` boolean on `config.yml`. Default **false** in the jar. Pre-season / current playtest box sets **true**. |
+| Config | `dev-characters` boolean on `config.yml`. Default **false** in the jar. |
 | Flag true = isolate | No character sync from the site. Skip pending create pull/apply/**ack**. Skip kit-customise ingest. Skip **all** roster push. Catalog push stays on. |
 | Flag false = live | Existing pending ingest + roster. Website characters appear in-game. |
 | Tag when | Only `CharacterCreation` finish (`pd.addCharacter` path). Flag read at that moment. |
@@ -39,21 +39,7 @@ flowchart TD
 | Auth | Command: `rpcharacters.admin`. HTTP: `X-Plugin-Key` via `ProvinceSystemClient`. |
 | Player meta | Website wipe does **not** clear `rpc_player_meta` / `character_player_meta` (ranks, 18+, slots). |
 
-`web-creator.yml` `min-tier` is unrelated. Keep Noble lock on `main` until you open the season; do not fold that into this flag.
-
----
-
-## Realm `main` on lobby / current playtest box
-
-Website character rows are keyed by `realm_id`. Lobby + this game server both using `main` is **fine** for pre-season **if**:
-
-1. This box keeps `dev-characters: true` so it never acks website creates (they stay pending for the real world).
-2. You do **not** run `wipe website` on this box while it is still `main` unless you intend to delete **all** `main` site characters, including donor/helper pending creates.
-3. Only one future live world with the flag **off** should ingest `main`. Two ingesting servers would race on pending ack.
-
-`wipe tagged` is local plugin files. Requires the explicit confirmation described below. `wipe website` follows **this server's** TFMCWeb `realm_id`. If that is `main`, it wipes the public `main` bucket.
-
-Cleaner later: retag this playtest box as realm `dev`, keep lobby + real world as `main`. Then `wipe website` on the playtest box only deletes `dev`. Donor `main` pending is untouched. Until you do that, treat `wipe website` as deletion of that realm's website character data.
+`web-creator.yml` `min-tier` is unrelated to this flag. Only one server with the flag **false** should ingest a realm; two ingesting servers would race on pending ack.
 
 ---
 
@@ -66,7 +52,7 @@ Cleaner later: retag this playtest box as realm `dev`, keep lobby + real world a
 | `/rpcharacter wipe tagged` | Admin. Prints count of tagged characters on disk. |
 | `/rpcharacter wipe tagged confirm` | Admin + pending. Deletes tagged in-game characters. Then optional plugin-key delete of those ids on the site if they leaked. |
 
-Usage / errors: `Usage: /rpcharacter wipe website confirm`. `Nothing to confirm.` `Confirm expired. Run the wipe command again.`
+Usage / errors: `Usage: /rpcharacter wipe <website|tagged> [confirm]`. `Nothing to confirm.` `Confirm expired. Run the wipe command again.`
 
 ---
 
@@ -95,13 +81,3 @@ For every owner UUID under `data/characterdata`:
 3. If the active character was removed: clear active, `reevaluateFreeze`, kit/wardrobe/mail cleanup (`MailRecipientDirectory.remove`).
 4. Save remaining. Roster push only if `dev-characters` is false (keepers only).
 5. Collect deleted ids; plugin-key cleanup of site rows for those ids (best-effort, log warning on fail). Skip if flag is true (no site mirror).
-
----
-
-## Out of scope
-
-- Auto wipe on `onEnable` (same helper can be reused later).
-- Backfill-tag of old untagged in-game characters.
-- Gating in-game `/rpcharacter create` by donator rank.
-- Changing `web-creator.yml` policy.
-- Wiping other realms' site data.

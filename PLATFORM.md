@@ -35,9 +35,7 @@ and shaded-library destinations aligned with the source folders. Maven artifact
 coordinates, plugin names, and data-directory names are separate identifiers
 from Java packages.
 
-Build consumers against matching provider jars and release the dependent plugin
-set together. CoreProtect integrations use this fork's
-`net.tfminecraft.coreprotect` API.
+CoreProtect integrations use this fork's `net.tfminecraft.coreprotect` API.
 
 ### Build inputs
 
@@ -72,8 +70,6 @@ consumer set. Source builds must pass clean verification before publication.
 | [AACommandsFiller](projects/AACommandsFiller/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [ActivityTF](projects/ActivityTF/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [AdvancedCrafting](projects/AdvancedCrafting/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [AdvancedGunpowder](projects/AdvancedGunpowder/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [AdvancedResearch](projects/AdvancedResearch/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Archaeo](projects/Archaeo/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [ArmourShop](projects/ArmourShop/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [BarterShops](projects/BarterShops/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
@@ -88,16 +84,13 @@ consumer set. Source builds must pass clean verification before publication.
 | [Gathering](projects/Gathering/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [GeigerCounters](projects/GeigerCounters/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [GemInfusion](projects/GemInfusion/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [Goldsmithing](projects/Goldsmithing/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [GunsAndGadgets](projects/GunsAndGadgets/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Infestations](projects/Infestations/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [InteractibleFurniture](projects/InteractibleFurniture/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Magic](projects/Magic/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [MarketBlock](projects/MarketBlock/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [MusicalInstruments](projects/MusicalInstruments/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [Nutrition](projects/Nutrition/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [PermCleaner](projects/PermCleaner/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [PointShop](projects/PointShop/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Recycler](projects/Recycler/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Research](projects/Research/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [RPCharacters](projects/RPCharacters/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
@@ -118,29 +111,10 @@ models, resource packs, and private build inputs. Neither produces a plugin jar.
 
 ## Shared API versions
 
-These source versions provide the `net.tfminecraft.<plugin>` Java APIs used by
-the corresponding consumer dependency pins. Maven coordinates remain separate
-from Java package names.
-
-| Project | Version |
-| --- | --- |
-| [AdvancedCrafting](https://github.com/TF-Minecraft/AdvancedCrafting) | `2.0.0` |
-| [cooking](https://github.com/TF-Minecraft/Cooking) | `0.2.1` |
-| [CoreProtect](https://github.com/TF-Minecraft/CoreProtect) | `25.0.0` |
-| [denareconomy](https://github.com/TF-Minecraft/DenarEconomy) | `0.2.0` |
-| [games](https://github.com/TF-Minecraft/Games) | `0.2.0` |
-| [geiger-counters](https://github.com/TF-Minecraft/GeigerCounters) | `2.0.0` |
-| [gunsandgadgets](https://github.com/TF-Minecraft/GunsAndGadgets) | `2.0.0` |
-| [interactiblefurniture](https://github.com/TF-Minecraft/InteractibleFurniture) | `0.2.0` |
-| [magic](https://github.com/TF-Minecraft/Magic) | `0.2.0` |
-| [Marketblock](https://github.com/TF-Minecraft/MarketBlock) | `0.1.0` |
-| [musical-instruments](https://github.com/TF-Minecraft/MusicalInstruments) | `3.0.0` |
-| [rpcharacters](https://github.com/TF-Minecraft/RPCharacters) | `2.0.0` |
-| [simplefactions](https://github.com/TF-Minecraft/SimpleFactions) | `3.0.1` |
-| [tfmccore](https://github.com/TF-Minecraft/TFMCCore) | `2.0.0` |
-| [tlibs](https://github.com/TF-Minecraft/TLibs) | `2.0.0` |
-| [vehicleframework](https://github.com/TF-Minecraft/VehicleFramework) | `2.0.0` |
-| [vfbuilders](https://github.com/TF-Minecraft/VFBuilders) | `2.0.0` |
+Consumers pin exact provider versions in their POMs. TLibs'
+[`tools/plugins.json`](https://github.com/TF-Minecraft/TLibs/blob/main/tools/plugins.json)
+lists the published provider artefacts that the
+[shared installer](PIPELINES.md#build-dependencies) resolves.
 
 ## Dependencies and validation
 

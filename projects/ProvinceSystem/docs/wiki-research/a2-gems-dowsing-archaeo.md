@@ -362,12 +362,10 @@ MMOItems' socketing roll, applied later when the gem is put into gear.
 # 2. Dowsing
 
 Jar: `C:\Users\MSI\Desktop\plugins\dowsing-3.1.2.jar` (its plugin.yml reports `version: 3.0.3`).
-Main class `me.Plugins.Dowsing.DowsingMain`, author Drefvelin, api-version 1.20.
+Author Drefvelin.
 `depend: [TLibs, SimpleFactions, MMOItems, MythicLib, ItemsAdder]`, `softdepend: [Magic]`.
 
-**No public source repo.** All candidates were probed with `git ls-remote` and returned
-"Repository not found": `drefvelin/dowsing`, `JustinasLa/dowsing`, `drefvelin/Dowsing`,
-`JustinasLa/Dowsing`, `drefvelin/dowsing-plugin`, `JustinasLa/dowsing-plugin`.
+Source: [TF-Minecraft/Dowsing](https://github.com/TF-Minecraft/Dowsing) (main class `net.tfminecraft.dowsing.DowsingMain`).
 Everything below the config files is read from the jar's bytecode with `javap -p -c`
 (JDK 24 read the classes fine; no class-version patching was needed).
 
@@ -789,7 +787,7 @@ is not.
 # 3. Archaeo (archeology-plugin)
 
 Jar: `C:\Users\MSI\Desktop\plugins\archeology-plugin-1.0.jar`
-Source: `C:\Users\MSI\Desktop\plugin-src\archeology-plugin` (107 Java files, package `com.nowko.archeology`, author **nowko**, api-version 1.21)
+Source: [TF-Minecraft/Archaeo](https://github.com/TF-Minecraft/Archaeo) (package `net.tfminecraft.archaeo`, author **nowko**); read from a local clone at `C:\Users\MSI\Desktop\plugin-src\archeology-plugin`
 Data folder: `C:\Users\MSI\Desktop\plugins\Archaeo\`
 `softdepend: [ItemsAdder, MMOItems]` — **both optional**. The jar runs on pure vanilla items.
 

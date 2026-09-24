@@ -2,7 +2,7 @@
 
 ProvinceSystem authentication model, production guards, and staff access controls.
 
-Sources: [`prod_guard.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/api/prod_guard.py), [`map_access.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/api/map_access.py), [`internal_access.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/api/internal_access.py), [STAGING.md](../../STAGING.md).
+Sources: [`prod_guard.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/api/prod_guard.py), [`map_access.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/api/map_access.py), [`internal_access.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/api/internal_access.py), [STAGING.md](../../STAGING.md).
 
 ## Threat model (intentional)
 
@@ -14,10 +14,10 @@ Cosmetics and identity are higher sensitivity: UUID-bound codes, opaque Bearer s
 
 | Surface | Mechanism |
 |---------|-----------|
-| Player redeem (skins / drinks / character) | `POST …/redeem` with code → short-lived **opaque** session token stored in SQLite; client sends `Authorization: Bearer <token>` |
-| Session scope | Encoded in DB row (`skin`, `drink`, `character`, `profile`, …) |
-| TTL | Default **8h** after redeem; character Remember me **30d** |
-| Profile / map staff | `profile` scope session from character redeem path; carries `player_uuid` and `realm_id` for permission checks |
+| Player redeem (skins / drinks / profile) | `POST …/redeem` with code → short-lived **opaque** session token stored in SQLite; client sends `Authorization: Bearer <token>` |
+| Session scope | Encoded in DB row (`skin`, `skin_staff`, `drink`, `profile`) |
+| TTL | Default **8h** after redeem; profile Remember me **30d** |
+| Profile / map staff | `profile` scope session from `/profile` redeem; carries `player_uuid` and `realm_id` for permission checks |
 | No website passwords | Codes are UUID-bound and not shareable by design |
 
 Codes are **hashed at rest** (SHA-256). Plaintext shown once in-game at mint.
@@ -28,14 +28,14 @@ Routes validate session **scope** before acting:
 
 - Skin upload/submit requires a valid `skin` or `skin_staff` session tied to the issuer UUID.
 - Drink submit requires `drink` scope.
-- Character create requires `character` scope.
+- Character create requires `profile` scope.
 - Staff map viewer and title editor require `profile` scope plus permission flags.
 
 Invalid or expired tokens return **401**. Wrong scope returns **403**.
 
 ## Staff map and site staff
 
-[`map_access.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/api/map_access.py) centralizes map and staff checks.
+[`map_access.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/api/map_access.py) centralizes map and staff checks.
 
 ### Staff-only maps
 
@@ -66,14 +66,14 @@ When `CHARACTER_UI_DEV=1` and token is `ui-dev-session`, staff map/editor checks
 
 | Key | Header | Used by |
 |-----|--------|---------|
-| `PLUGIN_KEY` | `X-Plugin-Key` | TFMCWeb gateway, ArmourShop, DrinkBuilder, link start, code mint, plugin pull |
+| `PLUGIN_KEY` | `X-Plugin-Key` | TFMCWeb: link start, code mint, and the gateway for ArmourShop, DrinkBuilder, RPCharacters and SimpleFactions |
 | `STAFF_KEY` | `X-Staff-Key` | tfmc_bot approve/deny, notifications, staff file download |
 
 Never expose these as `NEXT_PUBLIC_*` env vars.
 
 ## Internal plugin routes (IP, not staff tokens)
 
-[`internal_access.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/api/internal_access.py) defines `require_localhost(request)`:
+[`internal_access.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/api/internal_access.py) defines `require_localhost(request)`:
 
 - Allows loopback (`127.0.0.1`, `::1`) and private TCP peers (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) so Paper on the Docker host can reach a published API (peer is often `172.18.0.1`).
 - Rejects the request if `X-Forwarded-For` or `X-Real-IP` is set, so public nginx `/api/` cannot use the same Docker gateway IP to regen or overwrite map JSON.
@@ -84,7 +84,7 @@ Never expose these as `NEXT_PUBLIC_*` env vars.
 
 ## Production startup guard
 
-[`prod_guard.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/api/prod_guard.py) runs at server startup when `PS_PRODUCTION=1`:
+[`prod_guard.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/api/prod_guard.py) runs at server startup when `PS_PRODUCTION=1`:
 
 | Check | Failure if |
 |-------|------------|
@@ -126,7 +126,7 @@ Invalid input is **rejected** at the API (400). React renders user strings as te
 
 ## Site dev gate (optional)
 
-When `NEXT_PUBLIC_SITE_DEV_GATE=1`, the entire UI is replaced by a dev landing page until the visitor redeems a **character** code and has `tfmc.map.staff`.
+When `NEXT_PUBLIC_SITE_DEV_GATE=1`, the entire UI is replaced by a dev landing page until the visitor redeems a **profile** code and has `tfmc.map.staff`.
 
 **Security:** Client-side gate only; API routes remain reachable if endpoints are known. Unset on public launch.
 

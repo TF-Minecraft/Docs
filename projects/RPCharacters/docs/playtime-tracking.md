@@ -2,7 +2,7 @@
 
 Real time a character has spent **online**, accumulated per character. Added so SimpleFactions can pay faction prestige for member engagement rather than for headcount alone.
 
-**Counter:** `Objects/RPCharacter.onlinePlaytimeSeconds` - **Service:** `playtime/PlaytimeService` - **Index file:** `Database/PlaytimeIndexDatabase`
+**Counter:** `objects/RPCharacter.onlinePlaytimeSeconds` - **Service:** `playtime/PlaytimeService` - **Index file:** `database/PlaytimeIndexDatabase`
 
 ---
 
@@ -13,7 +13,7 @@ The codebase already used the word for two things that are not online time. Keep
 | Name | What it measures | Used by |
 |------|------------------|---------|
 | `RPCharacter.getAgeSeconds()` | Wall-clock seconds since the character was created. Climbs while the player is offline | Character age readouts |
-| `PlayerData.getAgeSeconds()`, via `Utils/PlaytimeGate` | Wall-clock account age, despite the class name and the `required-account-playtime-seconds` trait key | Trait selection requirements |
+| `PlayerData.getAgeSeconds()`, via `utils/PlaytimeGate` | Wall-clock account age, despite the class name and the `required-account-playtime-seconds` trait key | Trait selection requirements |
 | `RPCharacter.getOnlinePlaytimeSeconds()` | Seconds the character was actually online | Faction prestige |
 
 ## How it accrues
@@ -60,4 +60,4 @@ Integer seconds = PlaytimeService.getSeconds("Steve");   // or getSeconds(UUID)
 
 ## Consumer
 
-SimpleFactions faction prestige. See `simplefactions/docs/prestige.md` for the curve, the cap and the probe seam it reads through.
+SimpleFactions faction prestige, read through [`RpCharactersPlaytimeProbe`](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/prestige/RpCharactersPlaytimeProbe.java).

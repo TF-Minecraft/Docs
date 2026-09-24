@@ -2,9 +2,10 @@
 
 [Source repository](https://github.com/TF-Minecraft/CompanionPets) · [All projects](../../README.md)
 
-CompanionPets is an early scaffold for companion pet hatching, care, training,
-and play. The current plugin only logs startup and shutdown. The design notes
-below describe planned systems, not implemented gameplay.
+CompanionPets adds companion pet hatching, care, training, and play. It keeps
+one record per pet (name, sex, needs, bond, tricks, and a rolled favourite toy);
+the Minecraft entity is only the pet's current body. Vanilla wolves, cats, and
+foxes work without other plugins.
 
 TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md)
 for runtime, build, and validation conventions.
@@ -23,8 +24,10 @@ The build uses `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT` with
 The plugin entry point is `net.tfminecraft.companionpets.PetsPlugin`.
 
 The descriptor declares MythicMobs, ModelEngine, ItemsAdder, and MMOItems as
-optional integrations. The scaffold does not currently call their APIs.
-There is no unit-test suite yet.
+optional integrations. MythicMobs and ModelEngine are loaded by reflection when
+installed (`integration/MythicSpawn.java`, `integration/ModelHook.java`); the
+plugin does not call ItemsAdder or MMOItems. The build command above runs the
+unit tests under `src/test/java`.
 
 ## Design notes
 

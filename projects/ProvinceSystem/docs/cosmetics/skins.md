@@ -79,9 +79,9 @@ sequenceDiagram
 
 Upload requires a prior **Discord link** for that UUID ([identity/tfmcweb.md](../identity/tfmcweb.md)).
 
-## Skin-upload entitlements (ArmourShop)
+## Skin-upload entitlements (TFMCWeb)
 
-Configured in `permission-groups.yml` (synced via catalog + player-meta on join/reload).
+Configured in TFMCWeb `config.yml` `player-meta.skins`; pushed on join/reload via `PUT /characters/plugin/rpc-player-meta`. `PUT /skins/plugin/player-meta` is deprecated.
 
 | Rank | Cooldown | Kinds (additive inherit) | Armor 3D helmet |
 |------|----------|--------------------------|-----------------|
@@ -138,12 +138,17 @@ Deploy and verify the headless renderer: [ops/sheet-render.md](../ops/sheet-rend
 
 ## HTTP contracts
 
-### ArmourShop → API (`X-Plugin-Key`)
+### TFMCWeb → API (`X-Plugin-Key`)
 
 | Method | Purpose |
 |--------|---------|
 | `POST /skins/discord/link/start` | Issue link code |
 | `POST /skins/codes` | Mint skin code |
+
+### ArmourShop → API (via TFMCWeb gateway)
+
+| Method | Purpose |
+|--------|---------|
 | `GET /skins/plugin/approved?since=…` | Pull approvals |
 | `POST /skins/plugin/applied` | Ack applied |
 

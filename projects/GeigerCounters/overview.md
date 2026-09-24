@@ -5,7 +5,6 @@
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
 ![Paper](https://img.shields.io/badge/Paper-1.21.10-blue)
 ![Maven](https://img.shields.io/badge/Build-Maven-red?logo=apachemaven&logoColor=white)
-![Version](https://img.shields.io/badge/Version-1.1.3-green)
 
 Built for the [TFMC](https://www.patreon.com/c/TFMCRP) roleplay server, where it runs in production as a server-wide scavenger-hunt event mechanic.
 
@@ -145,7 +144,7 @@ classDiagram
 
 ## Installation
 
-1. Drop `geigercounters-2.0.0.jar` into your server's `plugins/` folder
+1. Drop `geigercounters-<version>.jar` into your server's `plugins/` folder
 2. Install **TLibs** (required). **MMOItems** / **ItemsAdder** are optional item sources
 3. Restart the server
 4. Configure `plugins/geiger_counter/config.yml` and `messages.yml` — the source spawns at a random location within the configured area
@@ -156,7 +155,7 @@ classDiagram
 |---|---|
 | [Paper](https://papermc.io/) 1.21.10 (TFMC baseline) | Yes |
 | Java | See the [shared baseline](../../PLATFORM.md); compiler release is 21 |
-| [TLibs](https://www.spigotmc.org/resources/tlibs.127713/) | Yes |
+| [TLibs](../TLibs/README.md) | Yes |
 | [MMOItems](https://www.spigotmc.org/resources/mmoitems-premium.39267/) | Optional |
 | [ItemsAdder](https://itemsadder.com/) | Optional |
 | [WorldGuard](https://enginehub.org/worldguard) 7.0+ | Optional — needed only for the region blacklist |
@@ -316,7 +315,7 @@ Use JDK 21, Maven and Python 3. The shared installer verifies the pinned release
 
 ## Source build metadata
 
-- **Java 21** · **Paper API 1.21.10 (compile dependency)** · **Maven**
+- **Java 21** · **Paper API 1.21.10 (provided)** · **Maven**
 - Bukkit event system, scheduler, and YAML configuration API
 - TLibs ItemAPI for cross-plugin item resolution
 

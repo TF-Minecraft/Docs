@@ -9,11 +9,11 @@ Build from `main` with the committed dependencies. Review `professions.yml` and 
 - [ ] Purchasing upgrade on Character A spends from A's loadout; Character B still has full free pool
 - [ ] Character switch strips Character A `professions.*` LuckPerms; Character B perks apply
 - [ ] Crafting station permission checks still work (`professions.*` recipe conditions)
-- [ ] Breeding lock/unlock behaves as before
+- [ ] `lock_breeding` animals can only be bred with a matching `breeding` upgrade
 - [ ] `/profession top <prof>` lists online players
-- [ ] `/profession restoreall` / `fixperms` if LP nodes look wrong after first login
+- [ ] `/profession restoreall` / `fixperms` if LP nodes look wrong
 
 ## External configs
 
-- AdvancedCrafting and other plugins using `permission-prefix: professions.` — **no change needed**
+- AdvancedCrafting and other plugins using `permission-prefix: professions.` read the active character's `professions.*` nodes
 - MMOCore profession IDs must match `professions/*.yml` filenames

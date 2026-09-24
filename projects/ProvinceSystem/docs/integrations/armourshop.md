@@ -31,10 +31,9 @@ Catalog (categories, skin-set keys, scrolls from AS config) syncs ArmourShop →
 
 | Piece | Location |
 |-------|----------|
-| Plugin source | `Workspace/armourshop/` |
-| Live shop YAML | `Workspace/plugins/ArmourShop/Categories/` |
-| IA contents (live) | `Workspace/plugins/ItemsAdder/contents/` |
-| IA reference copy | `ItemsAdder Copy/ItemsAdder/contents/` |
+| Plugin source | `armourshop/` |
+| Live shop YAML | `plugins/ArmourShop/Categories/` |
+| IA contents (live) | `plugins/ItemsAdder/contents/` |
 
 ## Apply flow
 
@@ -91,7 +90,7 @@ Never add new skins via manual `custom_model_data` lists in legacy `tfmc_pack`.
 | `/token create skin` | In game (TFMCWeb) | `POST /skins/codes` scope=skin |
 | `/token create skin staff` | In game (TFMCWeb) | `POST /skins/codes` scope=skin_staff |
 
-Mint cooldown for skin+drink is on **TFMCWeb** only. Upload entitlements (kinds, colours, 3D) sync from ArmourShop `permission-groups.yml`.
+Mint cooldown for skin+drink is on **TFMCWeb** only. Upload entitlements (kinds, colours, 3D) come from TFMCWeb `player-meta.skins`.
 
 ## ArmourShop shop integration
 
@@ -127,16 +126,18 @@ Delete uses the same deferred queue - never immediate reload even with staff onl
 
 | Key | Purpose |
 |-----|---------|
-| `skins-api.base-url` | ProvinceSystem (no trailing slash) |
-| `skins-api.plugin-key` | `X-Plugin-Key` |
-| `pack-apply.ia-contents-path` | Absolute path to ItemsAdder `contents/` |
-| `pack-apply.categories-path` | Absolute path to ArmourShop `Categories/` |
+| `pack-apply.ia-contents-path` | ItemsAdder `contents/` (default `plugins/ItemsAdder/contents`) |
+| `pack-apply.categories-path` | ArmourShop `Categories/` (default `plugins/ArmourShop/Categories`) |
+| `pack-apply.guns-skins-yml` | GunsAndGadgets `skins.yml` for `gun` skins |
+| `pack-apply.masks-yml` | RPCharacters `custom-masks.yml` for `mask` skins |
+| `pack-apply.force-reload-time` | Daily force pull + IA refresh, `HH:mm` (default `06:00`; blank disables) |
+| `pack-apply.ia-reload-delay-seconds` | Wait after `/iareload` before `/iazip` (default `5`) |
 
-Do **not** commit staging `base-url` / `plugin-key` as repo defaults.
+API URL and plugin key come from TFMCWeb (`api.base-url`, `api.plugin-key`).
 
 ## Local / dry run
 
-Point ArmourShop at `ItemsAdder Copy` (or a temp contents dir), not production. Pull from local API with mock approved submissions. See [ops/local-dev.md](../ops/local-dev.md).
+Point `pack-apply.ia-contents-path` at a temp contents dir, not production. Pull from local API with mock approved submissions. See [ops/local-dev.md](../ops/local-dev.md).
 
 ## See also
 

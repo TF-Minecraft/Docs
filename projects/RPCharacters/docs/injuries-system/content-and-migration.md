@@ -17,8 +17,6 @@ Author balanced YAML content and update player facing copy.
 
 Tune attribute modifiers: **healing full penalty > permanent > prosthetic T1 > T2 > arcane powered > healthy**.
 
-Obsolete doc ids `permanent_broken_arm` / `permanent_broken_leg` were never implemented; use `one_handed` / `one_legged`.
-
 ## Prosthetic traits (`traits/prosthetic-traits.yml`)
 
 | Id | Tier | Fuel |

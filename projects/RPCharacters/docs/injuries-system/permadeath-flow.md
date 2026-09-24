@@ -14,7 +14,7 @@ handleDeath(player, location):
   healing = listHealingInjuryTraits(character)
   if healing not empty:
     trait = first healing injury only
-    permanentId = InjuryProgressionLoader.getPermanent(trait.id)
+    permanentId = InjuryProgressionLoader.getPermanentId(trait.id)
     convertTrait(player, character, trait, permanentId)
     return   // one upgrade covers this death's injury roll
   picked = InjuryPoolLoader.pickRandom(ownedIds)
@@ -51,8 +51,7 @@ Upgrade **one** healing injury on a death. Any others stay healing until a later
 
 ## `PermadeathRisk` lore
 
-- Update copy if needed (no em dashes)
-- Still show injury count and total %
+- Shows injury count and total %
 
 ## Acceptance
 
@@ -65,6 +64,5 @@ Upgrade **one** healing injury on a death. Any others stay healing until a later
 
 - `PermadeathService.handleDeath` rolls permakill first, upgrades one healing injury via `InjuryProgressionLoader`, then pool pick
 - `convertTrait`, `listHealingInjuryTraits`, `ownsTraitId` helpers
-- Pool-exhaustion 100% risk shortcut removed from `computeRisk`
 - `PermadeathRisk` lore shows injury count and permakill chance
 - `/rpcharacter injure <player> [character] [permanent]` with `applyRandomPermanentInjury`

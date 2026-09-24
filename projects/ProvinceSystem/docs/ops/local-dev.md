@@ -8,13 +8,13 @@ Goal: run pieces of the TFMC platform on a workstation. Full journeys: [flows/jo
 |------|----------------|----------|
 | **Website only** | ProvinceSystem backend + frontend (+ regen `output/`) | Map UI, skins API/UI with mock codes |
 | **Website + bot** | Above + Red/`tfmc_bot` against local API | Discord skins/drinks approve/deny, ban role tests |
-| **Website + test Paper** | Above + local/test server with SimpleFactions and/or ArmourShop pointed at local API | Map upload/regen; skins code mint + pack write into a **copy** of IA contents |
+| **Website + test Paper** | Above + local/test server with TFMCWeb (and SimpleFactions and/or ArmourShop) pointed at local API | Map upload/regen; skins code mint + pack write into a **copy** of IA contents |
 | **Production-like** | Docker compose for ProvinceSystem; plugins on real host | Final integration |
 | **AMP-host staging** | Separate clone + [STAGING.md](../../STAGING.md) (`18001`/`13001`) | Discord bot vs localhost API without touching prod |
 
 Most day-to-day UI work is **website only**. Paper is not required to start map or skins UI work.
 
-## What you already have on `dev`
+## What you already have on `main`
 
 | Path | Role |
 |------|------|
@@ -23,7 +23,7 @@ Most day-to-day UI work is **website only**. Paper is not required to start map 
 | `backend/src/output/` | **Generated** maps/regions/banners - gitignored, often empty until regen; `fullregen` also writes `maps/parchment_base.png` from `map.png` |
 | `docker-compose.yml` | Backend + frontend prod images; volumes for input/defines/output |
 
-The live Minecraft plugins are **not** required to view maps or develop the skins web/API. SimpleFactions refreshes live faction data; ArmourShop mints codes and applies packs in integration environments.
+The live Minecraft plugins are **not** required to view maps or develop the skins web/API. SimpleFactions refreshes live faction data; TFMCWeb mints codes and ArmourShop applies packs in integration environments.
 
 ## Prerequisites
 
@@ -45,10 +45,10 @@ docker compose up -d
 Then:
 
 1. Ensure `output/` has images (see **Generate output** below). If empty, maps 404.
-2. Open `http://localhost:3000` (redirects to `/map/main`).
+2. Open `http://localhost:3000` (hub page).
 3. API health: `http://localhost:8000/ping`
 
-Useful reset (from [`docker_run.txt`](../../docker_run.md)):
+Useful reset:
 
 ```bash
 docker compose down --volumes --remove-orphans
@@ -83,7 +83,7 @@ Open `http://localhost:3000`. Prefer this while editing React/CSS.
 
 Without `output/{map}/maps/…` and region PNGs, the UI has nothing to show.
 
-Trigger a full regen the same way production does (hashed key from [`auth.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/src/scripts/util/auth.py) - local secret is fine for demo):
+Trigger a full regen the same way production does (hashed key from [`auth.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/scripts/util/auth.py) - local secret is fine for demo):
 
 ```text
 GET http://localhost:8000/{map}/{hashed_key}/api/regenerate/fullregen
@@ -91,15 +91,13 @@ GET http://localhost:8000/{map}/{hashed_key}/api/regenerate/fullregen
 
 Example maps on this repo: `main`, `dev`.
 
-After **cropped overlay** generator changes, run **fullregen** again so bboxes and small PNGs exist. See [map/viewer.md](../map/viewer.md).
-
 If a **public** data route answers `404 {"detail": "Artifact not found"}` - `/{map}/data/province_id_runs` or `/{map}/data/province_id_grid_q4` - the geometry artifact has not been built for that map. Build it with:
 
 ```text
 python -m src.scripts.tools.build_province_id_grid --map {map}
 ```
 
-run from `backend/`. The 404 body deliberately does not name this command: those two routes need no authentication, and an unauthenticated caller should not be handed its own input back plus a module path to run. The staff-gated editor equivalents (`/{map}/editor/province-runs`, `/{map}/editor/province-grid`) still print the command in their 404, because their caller is already authenticated as staff.
+run from `backend/`. The 404 body deliberately does not name this command: those two routes need no authentication, and an unauthenticated caller should not be handed its own input back plus a module path to run. The staff-gated editor equivalents (`/{map}/editor/province-runs`, `/{map}/editor/province-index`) still print the command in their 404, because their caller is already authenticated as staff.
 
 ## Smoke checklist (map)
 
@@ -146,7 +144,7 @@ curl -X POST http://localhost:8000/skins/submissions/{id}/approve \
 
 ### ArmourShop / ItemsAdder later
 
-Pack writes are tested against a **copy** of ItemsAdder contents (e.g. from `ItemsAdder Copy`), not production. Point ArmourShop config at that copy locally if you need a dry run ([integrations/armourshop.md](../integrations/armourshop.md)).
+Pack writes are tested against a **copy** of ItemsAdder contents, not production. Point ArmourShop `pack-apply.ia-contents-path` at that copy locally if you need a dry run ([integrations/armourshop.md](../integrations/armourshop.md)).
 
 ### Bot
 
@@ -160,12 +158,12 @@ Point TFMCWeb `api.base-url` at `http://localhost:8000` and use a test `mapRef` 
 
 ## CORS / URLs
 
-[`server.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/9b34fd3fd336af9025ca187ca9610690695c0efa/backend/server.py) allows `http://localhost:3000` and the production TFMC origins. If you use another host port, add it to CORS or use localhost as above.
+[`server.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/server.py) allows `http://localhost:3000` and the production TFMC origins. If you use another host port, add it to CORS or use localhost as above.
 
 ## What not to expect locally
 
 - Live SimpleFactions border pushes (unless you point a test server at your API)  
-- Real donator codes from ArmourShop (use TFMCWeb on a test server, or seed codes)  
+- Real donator codes from TFMCWeb (use a test server, or seed codes)  
 - Discord buttons (unless bot is running against your API)  
 - Writing into the live Paper ItemsAdder folder / pack reload  
 

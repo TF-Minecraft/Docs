@@ -5,7 +5,6 @@
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
 ![Paper](https://img.shields.io/badge/Paper-1.21.10-blue)
 ![Maven](https://img.shields.io/badge/Build-Maven-red?logo=apachemaven&logoColor=white)
-![Version](https://img.shields.io/badge/Version-2.1-green)
 
 Built for the [TFMC](https://www.patreon.com/c/TFMCRP) roleplay server, where it runs in production filling tab-completions for commands handled by external event systems.
 
@@ -109,7 +108,7 @@ classDiagram
 
 ## Installation
 
-1. Drop `aacommandsfiller-2.1.jar` into your server's `plugins/` folder
+1. Drop `aacommandsfiller-<version>.jar` into your server's `plugins/` folder
 2. Start or restart the server
 3. Configure `plugins/AACommandsFiller/config.yml` as needed
 4. Run `/aacommandsfiller reload` to apply config changes (requires `aacommandsfiller.admin`, default op)
@@ -217,7 +216,7 @@ Use JDK 21 and Maven with the [shared baseline](../../PLATFORM.md). Paper API re
 
 ## Source build metadata
 
-- **Java 21** · **Paper API 1.21.10 (compile dependency)** · **Maven**
+- **Java 21** · **Paper API 1.21.10 (provided)** · **Maven**
 - Bukkit `CommandMap` reflection, command/tab-complete API, and YAML configuration API
 
 ## Author

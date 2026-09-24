@@ -13,16 +13,15 @@ Data lives only under this clone (`backend/src/data`, etc.).
 
 ## Update staging clone (every pull)
 
-Staging boxes should track the remote branch **exactly**. Do **not** keep local edits (including `chmod +x` dirtying the scripts - that makes `git pull` fail with "local changes would be overwritten").
+Staging boxes should track the remote branch **exactly**. Do **not** keep local edits - they make `git pull` fail with "local changes would be overwritten".
 
-Use your staging path (`~/ProvinceSystem` or `~/tfmc-staging`). Checkout the branch you run on staging (**`main`**). After `reset --hard`, always `chmod +x` again before running scripts.
+Use your staging path (`~/ProvinceSystem` or `~/tfmc-staging`). Checkout the branch you run on staging (**`main`**).
 
 ```bash
 cd ~/ProvinceSystem
 git fetch origin
 git checkout main
 git reset --hard origin/main
-chmod +x scripts/staging-*.sh
 ```
 
 ## Start (SSH)
@@ -33,7 +32,6 @@ First-time clone:
 git clone <ProvinceSystem-git-url> ~/tfmc-staging
 cd ~/tfmc-staging
 git checkout main
-chmod +x scripts/staging-*.sh
 ./scripts/staging-down.sh
 ./scripts/staging-up.sh
 curl -s http://127.0.0.1:18001/ping
@@ -134,7 +132,7 @@ Tick after a staging deploy or major pull. Detail for each flow: [docs/flows/jou
 
 ### Characters
 
-- [ ] `/token create character` → redeem on `/character` → create + list on site
+- [ ] `/token create profile` → redeem on `/profile` → create + list on site
 
 ### Map
 
@@ -143,7 +141,7 @@ Tick after a staging deploy or major pull. Detail for each flow: [docs/flows/jou
 
 ### Staff tools
 
-- [ ] Map title editor opens from **Edit titles** with staff session
+- [ ] Map title editor opens from **Edit titles** with staff session (needs `NEXT_PUBLIC_MAP_EDITOR_ENABLED=1`)
 - [ ] Code inspect requires staff Bearer + `tfmc.map.staff`
 
 ### Moderation
@@ -166,7 +164,7 @@ Open `http://127.0.0.1:13001/` locally.
 
 ## Site dev gate (Season 5 landing)
 
-When `NEXT_PUBLIC_SITE_DEV_GATE=1`, the entire UI is replaced by a dev landing page until the visitor redeems a **character** code and has `tfmc.map.staff` in `permission_flags`.
+When `NEXT_PUBLIC_SITE_DEV_GATE=1`, the entire UI is replaced by a dev landing page until the visitor redeems a **profile** code and has `tfmc.map.staff` in `permission_flags`.
 
 **Security:** Client-side gate only; API routes remain reachable if endpoints are known. Unset on public launch.
 
@@ -174,7 +172,7 @@ Config detail: [docs/ops/dev-config.md](docs/ops/dev-config.md)
 
 - [ ] Gate **off**: site works as today (hub, map, skins, etc.)
 - [ ] Gate **on**, no session: dev landing on all routes
-- [ ] Gate **on**, staff character code: full site visible
+- [ ] Gate **on**, staff profile code: full site visible
 
 ## Free-text validation
 

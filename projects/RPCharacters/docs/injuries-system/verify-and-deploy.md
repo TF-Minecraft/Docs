@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Test matrix, deploy steps, operator checklist.
+Manual test matrix and rollback.
 
 ## Manual test matrix
 
@@ -49,17 +49,6 @@ Test matrix, deploy steps, operator checklist.
 |---|--------|----------|
 | 18 | Create with prosthetic on web | Matches in game after claim |
 
-## Deploy runbook
-
-1. Build RPCharacters from `main` with the committed dependency versions
-2. Deploy `fuel-templates.yml`, `injury-progression.yml`, `prosthetics.yml` to server config folder
-3. Replace `traits/injury-traits.yml`, add `traits/prosthetic-traits.yml`
-4. Update `injuries.yml`, `items.yml` remedies, `stages.yml`
-5. `/rpcharacter reload` or restart
-6. Deploy matching ProvinceSystem changes when the web catalog contract changes
-7. Update live server zip backup after smoke test
-
 ## Rollback
 
 - Keep previous jar + config backup
-- `trait-state` is additive; old jar ignores unknown JSON keys

@@ -2,27 +2,13 @@
 
 Web + RPCharacters character creation, kits, lore customise, and wardrobe.
 
-**Status:** Phases 1-4 **implemented** (staging verification ongoing).
+**Repos:** `rpcharacters/` · `ProvinceSystem` · `tfmcweb/` · `frontend` · (kits) `armourshop/`
 
-**Repos:** `Workspace/rpcharacters/` · `ProvinceSystem` · `Workspace/tfmcweb/` · `frontend` · (kits) `Workspace/armourshop/`
-
-**Depends on:** TFMCWeb identity + `/token create character` ([identity/tfmcweb.md](../identity/tfmcweb.md)).
+**Depends on:** TFMCWeb identity + `/token create profile` ([identity/tfmcweb.md](../identity/tfmcweb.md)).
 
 ## Why
 
 Donators (and later all players) create and manage RP characters on the website with the **same rules as in-game** `/rpcharacter create` / menu. Creation stages sync from the server so YAML edits update the site after reload. Auth stays **in-game tokens** (no website accounts).
-
-## Phases
-
-| Phase | Name | In scope |
-|-------|------|----------|
-| **1** | Web character creator | Attribute point-buy; creation catalog sync; redeem + Remember me; create + list alive/dead; `/character` UI |
-| **2** | Kits in RPCharacters | `kits.yml`; `KitService`; `/rpcharacter kit <id>`; per-kit cooldown + once-per-character |
-| **3** | Kit item customise | Character → Kits → Edit editable items; player skins → `ps_items`; RPC lore; hold claim while `pending_skin` |
-| **3b** | Web character sheet | Read-only identity sheet matching in-game summary |
-| **3c** | Sheet parity polish | Personality/evil traits, merged attrs, profession EXP, writable-book background |
-| **3d-f** | Kit UX polish | Submit/deny UX, asset sync, customise visibility, claim AS gate |
-| **4** | Character skin wardrobe | Mojang-signed player skins (base + rank extras + masked); web manage / in-game swap |
 
 ## Character creation
 
@@ -30,8 +16,8 @@ Donators (and later all players) create and manage RP characters on the website 
 
 | Decision | Choice |
 |----------|--------|
-| Proof of account | In-game `/token create character` (UUID-bound, Discord-eligible) |
-| Code lifetime | Consumed **on successful create/submit**; may re-redeem until consumed |
+| Proof of account | In-game `/token create profile` (UUID-bound, Discord-eligible); redeem at `/profile` |
+| Code lifetime | Consumed **on redeem** |
 | After redeem | API **session** Bearer - default **8h**; Remember me **30d** |
 | Storage | sessionStorage if not remembered; localStorage if Remember me |
 | Website accounts | **None** |
@@ -82,8 +68,6 @@ Configurable kits in `plugins/RPCharacters/kits.yml`:
 | Once per character | Per kit `once-per-character: true|false` |
 | Sync | All kit defs + per-character status → ProvinceSystem |
 
-Starter kit `starter` replaces legacy ConditionalEvents `/tfmc starter`.
-
 ## kit item customise (summary)
 
 Customise **editable** kit lines on the website (character detail → Kits → Edit). Texture via player skins pipeline → `ps_items`; lore via RPCharacters. Block claim while skin pending approval or slug missing on ArmourShop.
@@ -100,7 +84,7 @@ Editable templates: `2d-template` (required), optional `3d-template`. Book journ
 |---------|--------|
 | Slots | `base` + `masked` + up to 2 extras by rank |
 | PNG | **64×64 only**; MineSkin v2 sign |
-| Apply | Join + character switch; `/rpcharacterwardrobe` in-game |
+| Apply | Join + character switch; `/rpcharacter wardrobe` in-game |
 | Web | Standing frames; modal preview |
 
 Separate from item `/skins` and RP identity masks.
@@ -112,16 +96,16 @@ flowchart LR
   subgraph mc [Minecraft]
     TW[TFMCWeb]
     RPC[RPCharacters]
-    TW -->|mint character code| API
+    TW -->|mint profile code| API
     RPC -->|PUT catalog + kits| API
     RPC -->|pull / apply creates| API
   end
   subgraph web [ProvinceSystem]
     API[Characters + kits + sessions]
-    FE["/character"]
+    FE["/profile, /character"]
     FE -->|Bearer session| API
   end
-  Player -->|/token create character| TW
+  Player -->|/token create profile| TW
   Player -->|redeem| FE
 ```
 

@@ -11,13 +11,11 @@ temporary file and replacement, and invalid saved data causes loading to fail
 instead of silently resetting the parties.
 
 Explicit `/rpcharacter party leave` still removes a member. If the leader leaves,
-the party is disbanded, matching the existing command behaviour. Pending invites
+the party is disbanded. Pending invites
 remain temporary and are not restored on restart.
 
-After upgrading from the in-memory implementation, players may need to create
-and join their party once; there is no previous party file to import.
+## Manual checks
 
-Verified by automated restart round trips, leader/member logout checks, persisted
-leave/kick/disband checks, and invalid-file protection. Before live deployment,
-create a party with two players, exchange party chat messages, disconnect both,
-restart, and confirm chat still reaches both after reconnecting.
+- [ ] Create a party with two players and exchange party chat messages
+- [ ] Disconnect both players and restart the server
+- [ ] After reconnecting, party chat still reaches both players

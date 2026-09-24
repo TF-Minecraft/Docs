@@ -1,6 +1,6 @@
 # Cooking — Animal husbandry
 
-Livestock lives inside **Cooking**, not a second plugin. BreedingBuddies is a reference for genetics, ownership, and mounts only. Do not port friendship, stable chunks, bundles, IRL day-change, or async simulation.
+Livestock lives inside **Cooking**, not a second plugin.
 
 Keep this guide aligned with the implementation and configuration on `main`.
 
@@ -16,24 +16,7 @@ Keep this guide aligned with the implementation and configuration on `main`.
 
 **Effective genetics (amounts only):** `genetics * (care / care-max)`. Care 0 → 0% amount (honour `min-roast-cuts`). Care 100 / 200 → 50%. Care 200 → 100%. Roast amount is meat portions before the bone. Poultry never goes below two legs and one filet (`min-food-cuts` on the poultry sequence).
 
-## What we keep from BreedingBuddies
-
-- BB-style breeding roll (parent average + variance + slowdown at high parent genetics), scaled to **0-1k** (`max-genetics: 1000`). Variance base is `max/10`, min variance is `max/100`. Defaults: `genetic-variance-multiplier` / `genetic-slowdown-divisor` `0.4`. Parent **care** replaces BB friendship (`care-influence`, default `0.02`).
-- Ownership + co-ownership (token item)
-- Tame + name (anvil-named tame item)
-- Mount stat ranges, genetics-to-stats, owner-only ride
-- Neutering (all species, not only horses)
-- Inspect GUI (care + yield bars, no friendship hearts, no bundle timer)
-
-## What we do not keep
-
-- Friendship
-- Stable chunks, water/space/sleep-in-plot
-- Bundles, collector item, hours-between-rewards
-- IRL UTC day-change scheduler
-- Async world/entity work
-- MMOItems item ids (use TLibs paths like the rest of Cooking)
-- `Cleanser` that deletes records because `Bukkit.getEntity` is null
+**Breeding roll:** parent average + variance + slowdown at high parent genetics, scaled to **0-1k** (`max-genetics: 1000`). Variance base is `max/10`, min variance is `max/100`. Defaults: `genetic-variance-multiplier` `0.2`, `genetic-slowdown-divisor` `0.6`. Parent **care** scales the bonus (`care-influence`, default `0.02`).
 
 ## Persistence
 
@@ -100,7 +83,7 @@ Tame on a world / spawn-egg animal with **no row** inserts one (wild genetics `0
 
 On death: delete animal + owner rows. Unowned listed types drop nothing.
 
-The BB `???` bug (6-arg constructor forcing name `???` and ignoring owner) must not return. Persist `name` in SQLite and `setCustomName` on the entity. Never default to `???`.
+Persist `name` in SQLite and `setCustomName` on the entity.
 
 ## Lifecycle and timing
 
@@ -143,7 +126,7 @@ Happy = no Hungry and no Dirty.
 
 Feed (universal feed) clears Hungry (consumes 1). Glove clears Dirty (not consumed). Clearing a state does **not** add care; it only allows care-up again once both are gone.
 
-Entity name tag while afflicted: `{name} (Hungry)`, `(Dirty)`, or `(Hungry, Dirty)` — always visible. When happy, only the base name is set and the tag is hidden (hover only). Base name stays in SQLite; suffix is applied at sync time. Legacy TextDisplay passengers are removed on sync. Neuter (`v.shears`) costs 1 durability per use. Feed/glove play firework sparkle particles and a pickup sound.
+Entity name tag while afflicted: `{name} (Hungry)`, `(Dirty)`, or `(Hungry, Dirty)` — always visible. When happy, only the base name is set and the tag is hidden (hover only). Base name stays in SQLite; suffix is applied at sync time. Legacy TextDisplay passengers are removed on sync. Neuter (`m.pets.neutering_item`) costs 1 durability per use (one item if it has no durability). Feed/glove play firework sparkle particles and a pickup sound.
 
 ### Two clocks
 
@@ -151,13 +134,13 @@ Owner online/offline does not matter. What matters is whether the **entity chunk
 
 | | Chunk loaded | Chunk unloaded |
 |---|---|---|
-| Care up | +`care.up.amount` every `care.up.interval` (default +1 / 1h) while happy, **no cap** | At most `offline-care` (default 8h), then stop |
+| Care up | +`care.up.amount` every `care.up.interval` (default +1 / 1m) while happy, **no cap** | At most `offline-care` (default 8h), then stop |
 | New Hungry/Dirty | Mean every `affliction.mean` (default 6h) of **loaded** time | Frozen, except unload **> `long-unload-force`** (default 8h) forces a state on next load |
 | Decay | After `decay-grace` (24h) with a negative, −`care.down.amount` every `care.down.interval` | **Same wall-clock.** Catch-up can dump care to 0 |
 
 ### Anti-game (locked)
 
-- You cannot max care in spawn: unload > 8h → at most +8 care and you come back Hungry or Dirty.
+- You cannot max care in spawn: unload > 8h → care gain stops after `offline-care` and you come back Hungry or Dirty.
 - You cannot max care AFK at the pen: ~6h later a state appears, gain stops, then decay after 24h.
 - You cannot freeze decay by unloading: decay uses wall-clock from original `*_since`.
 - Pulse-loading (touch the chunk for one tick): `loaded_part` under `min-loaded` (default 60s) counts as **still unloaded**. Care-up and affliction elapsed only apply after the animal has been loaded for that long this visit.
@@ -190,9 +173,9 @@ No custom slaughter tool. If an **owned** animal **dies**, it drops configured C
 | Quality (stars) | From **raw genetics** via YAML table → 1–5. Apply with `ItemBuilder` / existing quality PDC. Stars gate drop tiers: common always, rare 3★+, epic 4★+, legendary 5★ only. |
 | Amount | From **effective genetics** (care yield). That many meat cuts from the start of the carve sequence, then the bone. The roast model starts whole (stage 1) and moves toward the bone stage as those cuts are taken. Poultry floor is two legs and one filet, then bone. Other roasts floor at one meat cut, then bone. Counted drop tables use hide/wool yield. Honour `min-roast-cuts` and the sequence `min-food-cuts`. |
 | Sheep | Vanilla wool **always** on shear. If `wool_ready_at <= now`, also roll `shear.drops`, then reset the wool timer. |
-| Milk | `milk: true` on the species. Per-animal cooldown (`milk-cooldown`, default 20m). Mature only. Empty bucket interact; hand becomes cooking `milk_bucket` with quality from the **animal** (Cow/Goat origin from entity type). |
+| Milk | `milk: true` on the species. Per-animal cooldown (`milk-timer`, default 20m). Mature only. Empty bucket interact; hand becomes cooking `milk_bucket` with quality from the **animal** (Cow/Goat origin from entity type). |
 | Eggs | Chickens with `egg:` set: when loaded, mature, and happy, drop one egg after `egg-timer` (default 10m) on the 1-minute tick. Item from `egg` (`vanilla` → `Material.EGG`; `food(...)` or TLibs path otherwise). The chicken config uses `food(type=egg;...)`, so the drop is a raw cooking egg whose stars come from that chicken's genetics. It is not edible until fried. Vanilla egg drops from managed chickens are cancelled (`EntityDropItemEvent`). Bees: vanilla, not husbandry. |
-| Shed | Species with `shed.drops`: when loaded, mature, and happy, roll `shed-chance` after `shed-timer` (default 8h) on the 1-minute tick. Success rolls `shed.drops` at the animal's feet and resets the timer. |
+| Shed | Species with `shed.drops`: when loaded, mature, and happy, roll `shed-chance` after `shed-timer` (default 4h) on the 1-minute tick. Success rolls `shed.drops` at the animal's feet and resets the timer. |
 
 Genetics → stars **and** amount tables both live in YAML (`husbandry.yml`). Do not hardcode thresholds.
 
@@ -202,11 +185,11 @@ Genetics → stars **and** amount tables both live in YAML (`husbandry.yml`). Do
 
 On chunk **load**, for each entity type in `remove-unowned` (cows, pigs, sheep, chickens, goats, horses, camels, llamas, … — **not bees**): if there is **no owner**, `remove()` and delete any orphan SQLite row — **except** horse/donkey/mule/camel that already have a SQLite row (first-interact enroll; they stay unowned until tamed). Spawn-egg and natural animals can be tamed only while that chunk stays loaded, unless they were enrolled.
 
-Never delete a row on unload just because `Bukkit.getEntity` is null. If an **owned** row exists but the entity is missing, keep the row (admin / later reconcile). Unowned wipe on load is an explicit despawn, not that Cleanser path.
+Never delete a row on unload just because `Bukkit.getEntity` is null. If an **owned** row exists but the entity is missing, keep the row (admin / later reconcile). Unowned wipe on load is an explicit despawn.
 
 ## Mounts
 
-Mount types in code: all `AbstractHorse` (horse, donkey, mule, camel, llama). Attributes use Paper 1.21.8 names (`MAX_HEALTH`, `MOVEMENT_SPEED`, jump strength API).
+Mount types in code: all `AbstractHorse` (horse, donkey, mule, camel, llama). Attributes use Paper names (`MAX_HEALTH`, `MOVEMENT_SPEED`, jump strength API).
 
 **Configured in `husbandry.yml` `mounts:` today:** HORSE, DONKEY, MULE, CAMEL. **LLAMA has no stat block yet** - enroll and genetics-to-stats fall back to no override until `mounts.LLAMA` is added.
 
@@ -270,7 +253,7 @@ Requires `cooking.admin`:
 
 Reload config (including `husbandry.yml`) via `/cooking reload`. This reloads YAML only; it does **not** reopen the SQLite database.
 
-No `/breedingbuddies`. Unowned admin-spawned livestock still despawn on chunk load until tamed. Enrolled or spawned horse/donkey/mule/camel keep their SQLite row without an owner.
+Unowned admin-spawned livestock still despawn on chunk load until tamed. Enrolled or spawned horse/donkey/mule/camel keep their SQLite row without an owner.
 
 ## Architecture
 
@@ -302,9 +285,9 @@ min-loaded: 60s
 decay-grace: 24h
 offline-care: 8h
 long-unload-force: 8h
-milk-cooldown: 20m
-wool-timer: 8h
-shed-timer: 8h
+milk-timer: 20m
+wool-timer: 4h
+shed-timer: 4h
 shed-chance: 0.15
 egg-timer: 10m
 
@@ -315,10 +298,10 @@ affliction:
 
 care:
   up:
-    interval: 1h
+    interval: 1m
     amount: 1
   down:
-    interval: 1h
+    interval: 10h
     amount: 1
 
 grow-up: 1h
@@ -327,8 +310,8 @@ items:
   tame: m.pets.taming_item
   co-own: m.pets.coownership_item
   feed: m.pets.universal_feed
-  glove: m.pets.caring_glove
-  neuter: v.shears
+  glove: m.pets.caring_item
+  neuter: m.pets.neutering_item
   inspect: ""
   mount-stats: ""
 
@@ -338,8 +321,8 @@ min-roast-cuts: 1
 stats-revision: "1"
 
 breeding:
-  genetic-variance-multiplier: 0.4
-  genetic-slowdown-divisor: 0.4
+  genetic-variance-multiplier: 0.2
+  genetic-slowdown-divisor: 0.6
   care-influence: 0.02
 
 # Per-species grow-up override example:
