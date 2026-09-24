@@ -27,3 +27,7 @@ The manifest requires TLibs and marks RPCharacters, TFMCWeb and ItemsAdder optio
 ## Builds and releases
 
 See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.
+
+## Shared feature ownership
+
+See [feature ownership and manual updates](../TFMCCore/ownership.md) for scanner, focus and letter APIs and the manual dev/main update steps.

@@ -16,7 +16,7 @@ Use JDK 21, install the matching TLibs Maven artifact (`me.plugins:tlibs`, versi
 
 ## Runtime and configuration
 
-The plugin registers food item paths with TLibs and integrates furniture stations, TFMCCore, crops and husbandry. The manifest requires TLibs, InteractibleFurniture and TFMCCore; RPCharacters, MMOCore, CustomCrops, SimpleFactions and CustomFishing enable additional integrations. `/cooking` requires `cooking.admin` (op by default). The guides below define crop and husbandry behavior and their configuration boundaries.
+The plugin registers food item paths with TLibs and integrates furniture stations, TLibs inventory scanning, crops and husbandry. The manifest requires TLibs 2.1.0 or newer and InteractibleFurniture; RPCharacters, MMOCore, CustomCrops, SimpleFactions and CustomFishing enable additional integrations. `/cooking` requires `cooking.admin` (op by default). The guides below define crop and husbandry behavior and their configuration boundaries.
 
 ## Guides
 
@@ -26,3 +26,7 @@ The plugin registers food item paths with TLibs and integrates furniture station
 ## Builds and releases
 
 See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.
+
+## Shared feature ownership
+
+See [feature ownership and manual updates](../TFMCCore/ownership.md) for scanner, focus and letter APIs and the manual dev/main update steps.

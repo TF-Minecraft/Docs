@@ -88,7 +88,7 @@ Sit with GSit on the circle center (must be in a vehicle). Eight InteractibleFur
 
 No chat or action bar. A white starter orb appears in front of you; left-click hitscan (VehicleFramework-style) begins the orbit field. White orbs are Flow, red are Surge. Mix follows Equilibrium (`whiteChance = 0.5 * (1 + eq/max)`). Hitting red starts a 10s all-Surge lock; another red hit refreshes it.
 
-Each hit costs 1 Focus (TFMCCore, character-keyed). Flow nudges Equilibrium up; Surge nudges it down. Resonance toward cap `sum(element power on sockets) / 8`. Charged artifacts supply usable aura, adjusted by their care state. Empty artifacts do not start a session; missing furniture means no session.
+Each hit costs 1 Focus (RPCharacters, character-keyed). Flow nudges Equilibrium up; Surge nudges it down. Resonance toward cap `sum(element power on sockets) / 8`. Charged artifacts supply usable aura, adjusted by their care state. Empty artifacts do not start a session; missing furniture means no session.
 
 ## Persistence (MagicProfile)
 
@@ -104,11 +104,10 @@ Admin `/magic open` without a character stays ephemeral (nothing saved). Drift s
 
 ## Dependencies
 
-- **TLibs** (required) - item refs, formatHex
+- **TLibs** (required, 2.1.0 or newer) - item refs, formatHex, inventory scanning
 - **ItemsAdder** (required) - `ia.` icons in gui.yml / elements
-- **TFMCCore** (required) - character Focus pool
+- **RPCharacters** (required, 2.1.0 or newer) - character Focus pool, character head and per-character MagicProfile persistence
 - **InteractibleFurniture** (required) - pedestals
-- **RPCharacters** (soft) - character head and per-character MagicProfile persistence
 
 ## Commands
 

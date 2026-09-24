@@ -10,12 +10,12 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 Research builds with Java **21** against
 `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT`. Install the pinned TLibs
-`2.0.1` and TFMCCore `2.0.1` release artifacts with the shared dependency
+`2.0.1` and RPCharacters `2.1.0` release artifacts with the shared dependency
 installer. The build also prepares checksum-verified MMOCore `1.13.1` and
 MythicLib `1.7` inputs from the private ServerAssets repository.
 
 At runtime, `plugin.yml` requires MMOItems, MythicLib, ItemsAdder, TLibs, and
-TFMCCore. The code reaches MMOItems and ItemsAdder only through TLibs item
+RPCharacters. The code reaches MMOItems and ItemsAdder only through TLibs item
 paths. MMOCore is declared as a soft dependency, but the discovery attribute
 lookup calls MMOCore classes directly, so install MMOCore wherever Research
 runs.
@@ -28,3 +28,7 @@ runs.
 
 See the [shared pipeline guide](../../PIPELINES.md) for development artifacts,
 release tags, private dependency access, and release verification.
+
+## Shared feature ownership
+
+See [feature ownership and manual updates](../TFMCCore/ownership.md) for scanner, focus and letter APIs and the manual dev/main update steps.

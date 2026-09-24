@@ -2,7 +2,7 @@
 
 [Source repository](https://github.com/TF-Minecraft/TLibs) · [All projects](../../README.md)
 
-TLibs provides shared item and block APIs, MMOItems rebuild and socket handling, armour events, and SQLite helpers used by TFMC plugins. Run build commands from the `tlibs` source checkout.
+TLibs provides shared item and block APIs, MMOItems rebuild and socket handling, armour events, inventory scanning, and SQLite helpers used by TFMC plugins. Run build commands from the `tlibs` source checkout.
 
 TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
 
@@ -47,3 +47,7 @@ Pinned mode installs the versions declared in the consumer POM. Use
 `--mode latest` when intentionally upgrading those dependencies, then review
 and commit the POM changes. Release provenance records the exact source and
 build inputs. TLibs remains a separate server plugin.
+
+## Shared feature ownership
+
+See [feature ownership and manual updates](../TFMCCore/ownership.md) for scanner, focus and letter APIs and the manual dev/main update steps.

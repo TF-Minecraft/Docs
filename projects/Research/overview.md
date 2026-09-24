@@ -113,9 +113,9 @@ open station menus before changing `labels` titles or `colors.inventory_title`.
 
 ## Integrations
 
-- **TFMCCore Focus.** Mental points are the TFMCCore Focus pool for the player's
+- **RPCharacters Focus.** Mental points are the RPCharacters Focus pool for the player's
   active RPCharacters character, shared with Magic meditation. The cap and
-  regeneration, including attribute bonuses, are set in TFMCCore `focus.yml`. A
+  regeneration, including attribute bonuses, are set in RPCharacters `focus.yml`. A
   player without an active character has no points and cannot experiment.
 - **MMOCore.** The discovery attribute is read as the attribute's total value;
   a missing attribute counts as zero.
