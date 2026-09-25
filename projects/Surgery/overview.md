@@ -1,309 +1,101 @@
 # Surgery
 
-**A Minecraft server plugin that turns healing into a mini-game — open a surgery GUI on another player, diagnose one of 29 ailments, and operate with 14 tools while managing vitals, bleeding, and death timers.**
+**A physician operates on another character's healing injury, using Victorian instruments, and a successful operation cures that ailment in RPCharacters.**
 
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
 ![Paper](https://img.shields.io/badge/Paper-1.21.10-blue)
 ![Maven](https://img.shields.io/badge/Build-Maven-red?logo=apachemaven&logoColor=white)
 
-Built for the [TFMC](https://www.patreon.com/c/TFMCRP) roleplay server, where it runs in production as the medical roleplay system for doctors and field medics.
+Built for the [TFMC](https://www.patreon.com/c/TFMCRP) roleplay server. Permanent injuries cannot be treated. Healing ailments such as a broken arm, a broken leg, or a half-blind eye can.
 
----
+## What it does
 
-## What It Does
-
-Run `/surgery <player>` next to a patient and a surgery GUI opens: colored status blocks show the patient's consciousness, pulse, temperature, and operation-site cleanliness, while the toolbar holds your surgical instruments. Diagnose with the ultrasound, anesthetize, cut, manage whatever goes wrong, fix the problem, and stitch up — or lose the patient to fever, bleeding, or cardiac arrest.
+A physician offers `/surgery <player>`. The patient accepts, and an inventory operating table opens on that character's worst healing injury (the one with the most time left). Each move uses a surgical instrument from the physician's inventory. Success removes the ailment through RPCharacters. Failure, after the patient has been sedated or cut, adds healing time. Walking away before that point cancels with no penalty.
 
 | | |
 |---|---|
-| **Interactive surgery GUI** | Inventory-based operating table with live colored status indicators |
-| **29 diagnoses** | Injuries, infections, tumors, flu strains, and mysterious ailments — randomly assigned per operation |
-| **14 surgical tools** | Scalpel, sponge, stitches, defibrillator, transfusion, and more — each with a specific job |
-| **Live patient vitals** | Temperature, pulse, consciousness, and bleeding all shift as the surgery progresses |
-| **Skill-fail mechanics** | Every move can fail; bleeding raises the fail chance, sponging lowers it |
-| **Bone surgery** | Broken and shattered bones revealed by incisions, repaired with pins and splints |
-| **Diagnosis-specific twists** | Flu strains need an exact temperature; Arcane Infection causes random chaos; Lupus patients howl |
-| **Time pressure** | Cardiac-arrest countdowns, weak-pulse timers, and hyperthermia death thresholds |
-| **Config-driven design** | Diagnoses, incision counts, fail chances, timers, tool items, and all messages live in YAML |
+| **Real ailments** | The diagnosis is the patient's RPCharacters healing injury, not a random name |
+| **Consent** | The patient accepts or denies the offer, which states the ailment and the failure cost |
+| **Physicians** | Operating requires `professions.physician` by default |
+| **Victorian instruments** | Stethoscope, chloroform, carbolic acid, scalpel, catgut, artery forceps, silver wire, splint, smelling salts, and the rest |
+| **One procedure per ailment** | Incisions, bones, and complications live in `config.yml`, keyed by trait id |
+| **Complications** | Haemorrhage, shock, and sepsis change bleeding, collapse, and fever |
 
-## How It Works
+## How it works
 
-The `/surgery <player>` command validates that the patient is online and within range (5 blocks by default), then opens the surgery menu:
-
-1. `SurgeryMenuBuilder` lays out the GUI and rolls a random diagnosis (hidden until ultrasound) plus the patient's starting vitals and bone state.
-2. Every tool click routes through `SurgeryItemHandler`, which resolves the clicked item against the configured TLibs item paths and applies the tool's effect.
-3. After each move, `SurgeryMechanicsManager` advances the simulation: temperature rises unless the site is clean, pulse can degrade while bleeding, countdowns tick, and diagnosis-specific mechanics fire.
-4. `SurgeryUIUpdater` repaints the status blocks (patient status, pulse, temperature, operation site) with color-coded concrete.
-5. `SurgeryCompletionHandler` checks win/lose conditions — a finished surgery runs the configured success console command; a death runs the failure command. Closing the inventory mid-operation abandons (and fails) the surgery.
-
-All per-patient state lives in `SurgeryStateManager` maps keyed by player UUID and is cleaned up when the surgery ends.
-
-## Architecture
-
-One manager per concern, wired together by `SurgeryMenuManager`:
+1. `SurgeryCommand` checks permission, distance, and that the patient has a healing injury, then stores an offer.
+2. On accept, `SurgeryMenuBuilder` opens the GUI and loads the procedure for that trait id.
+3. Tool clicks go through `SurgeryItemHandler`. Instruments resolve through the TLibs item API.
+4. `SurgeryMechanicsManager` advances chloroform, fever, bleeding, and the procedure's complications.
+5. `SurgeryCompletionHandler` cures the ailment with `HealingInjuries.cure` on success, or `HealingInjuries.extend` on a penalised failure.
 
 ```
 src/main/java/net/tfminecraft/surgery/
-├── SurgeryPlugin.java                  # Entry point: wiring, lifecycle
-├── commands/
-│   └── SurgeryCommand.java             # /surgery <player> validation + menu open
-├── listeners/
-│   └── PlayerListener.java             # Inventory click/close + join hooks
-└── managers/
-    ├── SurgeryMenuManager.java         # Facade: owns and wires all components
-    ├── SurgeryMenuBuilder.java         # GUI layout, diagnosis roll, initial state
-    ├── SurgeryStateManager.java        # Per-patient state maps (UUID-keyed)
-    ├── SurgeryItemHandler.java         # Tool click → effect pipeline
-    ├── SurgeryMechanicsManager.java    # Per-move simulation: temp, pulse, countdowns
-    ├── SurgeryUIUpdater.java           # Status block rendering + messages.yml access
-    ├── SurgeryCompletionHandler.java   # Success/failure resolution + console commands
-    ├── DiagnosisChecker.java           # Diagnosis classification (bones? flu?)
-    ├── SurgeryItemsConfig.java         # surgeryItemsConfig.yml tool item paths
-    └── SurgeryConstants.java           # Shared slot/label constants
+├── SurgeryPlugin.java
+├── commands/SurgeryCommand.java
+├── listeners/PlayerListener.java
+├── managers/          # menu, items, vitals, completion
+└── procedures/        # ailment lookup and procedure config
 ```
-
-```mermaid
-classDiagram
-    class SurgeryPlugin {
-        +onEnable() void
-        +onDisable() void
-    }
-
-    class SurgeryMenuManager {
-        +initialize() void
-        +openSurgeryMenu(surgeon: Player, patient: Player) void
-        +handleItemClick(player: Player, clickedItem: ItemStack, slot: int) void
-        +handleSurgeryAbandonment(player: Player) void
-    }
-
-    class SurgeryStateManager {
-        +getDiagnosis(playerId: UUID) String
-        +getPulse(playerId: UUID) String
-        +getTemperature(playerId: UUID) double
-        +cleanup(playerId: UUID) void
-    }
-
-    class SurgeryItemHandler {
-        +handleItemClick(player: Player, clickedItem: ItemStack, slot: int) void
-    }
-
-    class SurgeryMechanicsManager {
-        +processMoveEffects(player: Player) void
-    }
-
-    class SurgeryCompletionHandler {
-        +isSurgerySuccessful(playerId: UUID) boolean
-        +handleSuccess(player: Player) void
-        +failSurgery(player: Player, message: String) void
-    }
-
-    SurgeryPlugin --> SurgeryMenuManager : creates
-    SurgeryPlugin --> SurgeryCommand : registers
-    SurgeryPlugin --> PlayerListener : registers
-    SurgeryMenuManager --> SurgeryMenuBuilder : creates
-    SurgeryMenuManager --> SurgeryStateManager : creates
-    SurgeryMenuManager --> SurgeryItemHandler : creates
-    SurgeryMenuManager --> SurgeryMechanicsManager : creates
-    SurgeryMenuManager --> SurgeryCompletionHandler : creates
-    SurgeryMenuManager --> SurgeryUIUpdater : creates
-    SurgeryItemHandler --> SurgeryMechanicsManager : uses
-    SurgeryItemHandler --> SurgeryCompletionHandler : uses
-    SurgeryMechanicsManager --> SurgeryStateManager : uses
-    SurgeryCommand --> SurgeryMenuManager : uses
-    PlayerListener --> SurgeryMenuManager : uses
-```
-
-### Design decisions
-
-- **Configuration over code** — diagnoses, incision requirements, bone counts, fail chances, temperature thresholds, death timers, and every player-facing message are YAML edits, not releases.
-- **State manager as single source of truth** — all patient state sits in UUID-keyed maps in one class, so cleanup on completion/abandonment is one call and nothing leaks between surgeries.
-- **Abstraction over item plugins** — surgical tools resolve through the TLibs `ItemAPI`, so one config format covers MMOItems, ItemsAdder, and vanilla items with a one-character prefix.
 
 ## Installation
 
-1. Drop `surgery-<version>.jar` into your server's `plugins/` folder
-2. Install **TLibs** (required). **MMOItems** / **ItemsAdder** are optional item sources
-3. Restart the server
-4. Configure `plugins/surgery/config.yml`, `messages.yml`, and `surgeryItemsConfig.yml` as needed
-5. Make sure players can obtain the surgical tool items
-
-### Requirements
+1. Install **TLibs** and **RPCharacters**, then drop `surgery-<version>.jar` into `plugins/`.
+2. Restart the server. Surgery declares a hard dependency on both.
+3. Give physicians `professions.physician` (the same permission that crafts the instruments).
+4. Point `surgeryItemsConfig.yml` at the surgical items. The defaults are the existing `m.surgery.*` MMOItems ids.
 
 | Dependency | Required |
 |---|---|
-| [Paper](https://papermc.io/) 1.21.10 | TFMC runtime target |
-| Java | Follow the [shared runtime and build baseline](../../PLATFORM.md); this plugin targets Java 21 bytecode |
-| [TLibs](../TLibs/README.md) | Yes |
-| [MMOItems](https://www.spigotmc.org/resources/mmoitems-premium.39267/) | Optional |
-| [ItemsAdder](https://itemsadder.com/) | Optional |
+| Paper 1.21.10 | Yes |
+| Java 21 | Yes |
+| TLibs | Yes |
+| RPCharacters | Yes. Surgery calls `net.tfminecraft.rpcharacters.api.HealingInjuries` |
+| MMOItems / ItemsAdder | Optional item and texture sources |
 
 ## Usage
 
-| Command | Description | Permission |
+| Command | Who | Effect |
 |---|---|---|
-| `/surgery <player>` | Open the surgery menu for the target patient | `surgery.use` (default: true) |
+| `/surgery <player>` | Physician, within 5 blocks | Offer to operate on the patient's worst healing injury |
+| `/surgery accept` | Patient | Begin the operation |
+| `/surgery deny` | Patient | Decline |
 
-### Performing a surgery
+### A procedure
 
-1. **Start**: `/surgery <player>` with the patient within 5 blocks
-2. **Diagnose** with the **Ultrasound**
-3. **Anesthetize** — cutting an awake patient fails the surgery
-4. **Check vitals** with the **Lab Kit** (temperature, pulse, status, bleeding)
-5. **Make incisions** with the **Scalpel** until the diagnosis's required count
-6. **Manage complications**: **Sponge** for blood, **Clamp** for severe bleeding, **Antiseptic** for site cleanliness, **Antibiotics** for fever, **Transfusion** for weak pulse, **Defibrillator** for cardiac arrest
-7. **Repair bones** (if revealed) with **Pins** (broken) and **Splint** (shattered)
-8. **Fix** the problem with the **Surgical Glove** once all conditions are met
-9. **Close up** with **Stitches**, then click **Finish Surgery**
+1. Examine with the **stethoscope**. This names the procedure and, for a septic wound, starts the fever.
+2. Put the patient under with **chloroform** before cutting. Cutting an awake patient fails the surgery.
+3. Clean with **carbolic acid**. Take the temperature with the **clinical thermometer**, then use **willow-bark tincture** if they are feverish.
+4. Open with the **scalpel** until the procedure's incision count is met. Bones, if any, are exposed at that point.
+5. Bind shattered bone with **silver wire**, then set broken bone with the **splint**.
+6. **Sea sponge** clears blood. **Artery forceps** stop bleeding from an open wound. **Transfusion syringe** strengthens the pulse. **Smelling salts** revive a patient who collapsed.
+7. Apply the **linen dressing** once the incisions are made and the bones are set.
+8. Close with **catgut suture**. **Finish Surgery** succeeds only when the dressing is on, the pulse is strong, the patient is unconscious, the temperature is at or below the success threshold, the site is clean, the incisions are closed, the bones are set, and the patient is not bleeding.
 
-### Surgical tools
+### Shipped procedures
 
-| Tool | Purpose | Notes |
+| Trait | Procedure | Notes |
 |---|---|---|
-| **Ultrasound** | Diagnose patient | Assigns the hidden random diagnosis |
-| **Lab Kit** | Check patient vitals | Shows temperature, pulse, status |
-| **Anesthetic** | Put patient to sleep | Required before cutting; has a reuse cooldown |
-| **Scalpel** | Make incisions | Can cause bleeding and pulse drops |
-| **Sponge** | Clear blood | Reduces skill-fail chance while active |
-| **Antiseptic** | Clean operation site | Stops temperature rise |
-| **Stitches** | Close incisions | Required before finishing |
-| **Antibiotics** | Control temperature | ±5.4°F random change |
-| **Surgical Glove** | Fix the problem | Unlocks once incisions/bones/flu-temp conditions are met |
-| **Defibrillator** | Restart heart | Available during cardiac arrest countdown |
-| **Surgical Pins** | Fix broken bones | Available when bones are revealed |
-| **Surgical Splint** | Fix shattered bones | Available when shattered bones are revealed |
-| **Surgical Clamp** | Stop bleeding | Available while bleeding |
-| **Transfusion** | Restore pulse | Improves pulse by 1–2 levels |
+| `broken_arm` | Fractured Arm | 2 incisions, 2 broken bones |
+| `broken_leg` | Compound Fracture of the Leg | 2 incisions, 2 broken bones, 1 shattered, haemorrhage |
+| `half_blind` | Injured Eye | 1 incision, shock and sepsis |
+| anything else healing | Injury | 2 incisions, no bones |
 
-### Failure conditions
+A healing trait added later needs a `procedures:` entry only when it should differ from the default.
 
-- Temperature exceeds 110°F (hyperthermia)
-- Cardiac-arrest countdown expires without defibrillation
-- Too many consecutive turns with extremely weak pulse
-- Patient bleeds out
-- Cutting while the patient is awake
-- Closing the surgery menu mid-operation
+### Failure
 
-### Special diagnosis mechanics
-
-| Diagnosis | Twist |
-|---|---|
-| **Flu strains** (Bird/Turtle/Monkey) | Temperature must be exactly 98.6°F to use the Surgical Glove |
-| **Moldy Guts** | Forced bleeding every 3–4 moves |
-| **Fatty Liver** | 20% chance the heart stops while unconscious |
-| **Broken Heart** | 35% chance the heart stops while unconscious |
-| **Arcane Infection** | 25% chaos chance per move: random temperature spikes/drops and status changes |
-| **Lupus** | 15% chance the patient howls, causing an incision + bleeding |
-| **Paper Cuts** | Requires 2 scalpel uses to examine the wounds |
-
-### Status indicators
-
-The GUI uses colored concrete blocks for at-a-glance vitals:
-
-| Indicator | Levels | Colors |
-|---|---|---|
-| **Patient Status** | Awake / Unconscious / Heart Stopped / Coming to | Yellow / Lime / Red / Orange |
-| **Pulse** | Strong / Steady / Weak / Extremely Weak | Lime / Yellow / Orange / Red |
-| **Temperature** | ≤100 / 101–104 / 105–106 / 107+ °F | Lime / Yellow / Orange / Red |
-| **Operation Site** | Clean / Not sanitized / Unclean / Unsanitary | Lime / Yellow / Orange / Red |
+Temperature at or above 110°F, an expired collapse countdown, consecutive extremely weak pulse, consecutive red temperature, cutting while awake, too much chloroform, or closing the menu after the patient was sedated or cut. That last group adds `failure-healing-penalty` (12 hours by default) to the ailment. Closing the menu before then cancels with no penalty.
 
 ## Configuration
 
-### surgeryItemsConfig.yml — tool item paths
+`config.yml` holds the physician permission, the failure penalty, request timeout, distance, procedures, vitals, and the console commands run on completion (`%surgeon%`, `%player%`, `%ailment%`).
 
-```yaml
-items:
-  sponge: "m.surgery.sponge"
-  scalpel: "m.surgery.scalpel"
-  stitches: "m.surgery.stitches"
-  antibiotics: "m.surgery.antibiotics"
-  antiseptic: "m.surgery.antiseptic"
-  surgical-glove: "m.surgery.surgical_glove"
-  ultrasound: "m.surgery.ultrasound"
-  lab-kit: "m.surgery.lab_kit"
-  anesthetic: "m.surgery.anesthetic"
-  defibrillator: "m.surgery.defibrillator"
-  pins: "m.surgery.pins"
-  splint: "m.surgery.splint"
-  clamp: "m.surgery.clamp"
-  transfusion: "m.surgery.transfusion"
+`surgeryItemsConfig.yml` maps each instrument to a TLibs item path. The keys are the Victorian names (`stethoscope`, `chloroform`, `dressing`, …). Unknown keys fall back to the built-in `m.surgery.*` paths, which are unchanged so tools players already crafted still match.
 
-  # Vanilla item example: "v.iron_ingot"
-  # ItemsAdder item example: "ia.tfmc:mythril_ingot"
-```
+`messages.yml` holds every player-facing string.
 
-**Item path formats**
-
-| Source | Format | Example |
-|---|---|---|
-| MMOItems | `m.category.item_id` | `m.surgery.scalpel` |
-| ItemsAdder | `ia.namespace:item_id` | `ia.tfmc:scalpel` |
-| Vanilla | `v.material` | `v.iron_ingot` |
-
-### config.yml — gameplay tuning
-
-```yaml
-# Maximum distance between surgeon and patient
-max-surgery-distance: 5.0
-
-# 29 possible diagnoses, randomly assigned by the ultrasound
-diagnoses:
-  - "Broken Heart"
-  - "Lung Tumor"
-  - "Appendicitis"
-  - "Arcane Infection"
-  # ... (see config for the full list)
-
-# Flu types that require an exact 98.6°F to fix
-flu-diagnoses:
-  - "Bird Flu"
-  - "Turtle Flu"
-  - "Monkey Flu"
-
-# Incisions needed before the Surgical Glove unlocks
-required-incisions:
-  "Nose Job": 1
-  "Brain Tumor": 5
-  "Appendicitis": 3
-  # ... (configurable per diagnosis)
-
-# Bone counts for bone-related diagnoses
-bone-counts:
-  "Broken Arm": { broken: 2, shattered: 0 }
-  "Broken Leg": { broken: 2, shattered: 1 }
-  "Broken Everything": { broken: 3, shattered: 2 }
-
-# Skill fail chances
-skill-fail:
-  base-chance: 0.25              # 25% base fail rate
-  bleeding-chance: 0.40          # 40% while bleeding
-  with-sponge-chance: 0.10       # 10% after using the sponge
-
-# Temperature settings
-temperature:
-  normal: 98.6                   # Starting temp (°F)
-  instant-death-threshold: 110.0 # Death above this
-  red-temp-threshold: 106.0      # Danger zone
-  success-threshold: 100.0       # Must be <= to succeed
-  rise-rate: 1.8                 # Increase per move
-
-# Death timers
-death-timers:
-  defibrillator-countdown: 2     # Moves until death after cardiac arrest
-  weak-pulse-turns: 2            # Consecutive extremely-weak-pulse turns
-  red-temp-turns: 2              # Consecutive red-temperature turns
-  anesthetic-reuse-cooldown: 4   # Moves between anesthetic uses
-
-# Console commands run on completion (%surgeon% / %player% placeholders)
-commands:
-  surgery-success: "sudo %surgeon% me Successfully treated %player%!"
-  surgery-failure: "sudo %surgeon% me Failed surgery on %player%!"
-```
-
-### messages.yml
-
-Every player-facing string: command errors, success/failure notifications, per-tool skill-fail flavor text (14+ variants), status change alerts, diagnosis-specific events, and progress updates.
-
-## Building from Source
+## Building from source
 
 ```bash
 git clone --branch main https://github.com/TF-Minecraft/TLibs.git tlibs
@@ -313,14 +105,7 @@ python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned
 mvn clean verify
 ```
 
-Use JDK 21, Maven and Python 3. The shared installer verifies the pinned release checksum; see [TLibs dependency setup](../TLibs/README.md). Install the matching `me.plugins:tlibs:2.0.0` artifact as described in the [shared baseline](../../PLATFORM.md), then run `mvn clean verify`. Paper API resolves from Maven. The artifact is written to `target/`.
-
-## Tech Stack
-
-- **Java 21 bytecode target** · **Paper API 1.21.10 build dependency** · **Maven**
-- TFMC runtime target: **Minecraft 1.21.10**. Build and loader metadata also target 1.21.10; validate releases against the [shared baseline](../../PLATFORM.md).
-- Bukkit inventory GUI, event system, and YAML configuration API
-- TLibs ItemAPI for cross-plugin item resolution
+Use JDK 21. The installer verifies pinned TLibs and RPCharacters releases. Paper API resolves from Maven.
 
 ## Author
 

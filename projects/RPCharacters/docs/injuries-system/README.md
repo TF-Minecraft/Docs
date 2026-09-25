@@ -14,7 +14,7 @@ The maintained references describe the current source on `main`:
 | [Trait effects](trait-runtime-effects.md) | Scaling and powered/depowered variants |
 | [Permadeath](permadeath-flow.md) | Death order, progression and risk |
 | [Healing](healing-tick.md) | Active-character duration and completion |
-| [Remedies](remedies.md) | Healing-only cures |
+| [Surgery](remedies.md) | Healing injuries are treated by Surgery |
 | [Prosthetic installation](prosthetics-install.md) | Install, swap and confirmation |
 | [Prosthetic fuel](prosthetic-fuel.md) | Burn, refuel and effects |
 | [Character creation](creator-stages.md) | Injury/prosthetic selection |

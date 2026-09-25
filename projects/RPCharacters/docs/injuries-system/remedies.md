@@ -1,43 +1,21 @@
-# Remedies
+# Healing injuries and surgery
 
-## Purpose
+Instant remedies are gone. A healing injury recovers over time, or a physician removes it with Surgery.
 
-Remedies instantly cure **healing** injuries only.
+## What can be treated
 
-## `RemedyListener`
+`HealingInjuries` returns traits that have a duration and are injury keys. Permanent injuries such as `one_handed`, `one_legged`, and `blind` are excluded.
 
-In `findCurableTrait`:
+| Method | Effect |
+|---|---|
+| `HealingInjuries.list(player)` | Healing injuries on the active character |
+| `HealingInjuries.cure(player, traitId)` | Removes the injury and sends its lost message |
+| `HealingInjuries.extend(player, traitId, extraMs)` | Adds time to the remaining duration |
 
-- Trait must be in remedy whitelist
-- Trait must be healing: `TraitData.hasDuration()` or `InjuryProgressionLoader.isHealingTrait(id)`
-- Permanent injuries (`blind`, `one_handed`, `one_legged`, …) → skip
-
-## `items.yml`
-
-```yaml
-remedies:
-  healing_draught:
-    item: v.potion
-    traits:
-      - broken_arm
-      - broken_leg
-      - half_blind
-```
-
-No permanent ids in list.
-
-## Edge cases
-
-- Consume with no curable healing injury: no effect, do not cancel consume (locked behavior)
+Surgery is the only treatment plugin. It cures on a successful operation and extends the duration when a surgery fails after the patient was sedated or cut.
 
 ## Acceptance
 
-- [ ] Remedy removes healing `broken_arm`
-- [ ] Remedy does nothing on `one_handed` or `blind`
-- [ ] Clears `trait-state` for removed trait
-
-## Implementation
-
-- `RemedyListener.findCurableTrait` filters by `InjuryProgressionLoader.isHealingTrait` and `current.hasDuration()`
-- `RemedyLoader` validates remedy trait ids at load (after traits); skips non-healing entries with warnings
-- `remedyLoader.load()` runs after trait/injury loaders in `RPCharacters.loadConfigs()`
+- [ ] A successful surgery removes `broken_arm`, `broken_leg`, or `half_blind`
+- [ ] Surgery cannot see or remove a permanent injury
+- [ ] A failed surgery after the patient was sedated or cut leaves the injury in place with a longer remaining time
