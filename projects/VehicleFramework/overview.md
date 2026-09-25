@@ -1,4 +1,7 @@
 # VehicleFramework
+
+Server owners should start with the [user guide](docs/playing.md). This page is the architecture note.
+
 A highly configurable system to allow semi-realistic vehicles with weapons in Minecraft
 
 ## Features

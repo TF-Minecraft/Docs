@@ -6,10 +6,23 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 See the [shared API versions](../../PLATFORM.md#shared-api-versions) for the matching provider dependency set.
 
-Technical documentation is maintained here. Run commands from the source checkout unless a guide says otherwise.
+The [user guide](docs/playing.md) is for server owners and people adding vehicles. The pages below are the TFMC build and architecture notes. Run commands from the source checkout unless a guide says otherwise.
+
+## User guide
+
+- [Playing, commands, and upkeep](docs/playing.md)
+- [Model bones](docs/models.md)
+- [Vehicle configuration](docs/configuration.md)
+- [Weapons and ammunition](docs/weapons.md)
+- [Templates](docs/templates.md)
+- [Trains](docs/using-trains.md)
+
+The same guide is published on the [VehicleFramework wiki](https://github.com/TF-Minecraft/VehicleFramework/wiki).
+
+## Architecture
 
 - [Architecture and configuration](overview.md)
-- [Trains](docs/trains.md)
+- [Spline tracks](docs/trains.md)
 
 ## Assets and dependencies
 
