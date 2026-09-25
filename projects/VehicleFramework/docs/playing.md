@@ -2,7 +2,7 @@
 
 VehicleFramework adds modeled vehicles to a Paper server. Players right-click a vehicle to board it. Owners fuel it, repair it, and decide who else can ride. Admins spawn vehicles and lay train track.
 
-This page covers a running server. Model bones are in [Models](models.md). YAML for a new vehicle is in [Configuration](configuration.md).
+This page covers a running server. Model bones are in [Models](models.md). YAML for a new vehicle is in [Configuration](configuration.md). A server that is not using the TFMC item set can start from the [free pack](https://github.com/TF-Minecraft/VehicleFramework/releases/tag/free-pack-v3).
 
 ## Requirements
 

@@ -17,7 +17,7 @@ The [user guide](docs/playing.md) is for server owners and people adding vehicle
 - [Templates](docs/templates.md)
 - [Trains](docs/using-trains.md)
 
-The same guide is published on the [VehicleFramework wiki](https://github.com/TF-Minecraft/VehicleFramework/wiki).
+The same guide is published on the [VehicleFramework wiki](https://github.com/TF-Minecraft/VehicleFramework/wiki). The [free pack](https://github.com/TF-Minecraft/VehicleFramework/releases/tag/free-pack-v3) is the models, sounds, and configs for a server that is not using the TFMC item set.
 
 ## Architecture
 
