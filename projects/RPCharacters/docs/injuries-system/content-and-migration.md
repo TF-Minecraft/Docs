@@ -36,14 +36,14 @@ Creator stages use `one_handed`, `one_legged`, and `blind` (filter: permanent-on
 
 - Death in zone may permakill or add a healing injury
 - Healing injuries recover while active online, or become permanent on another zone death
-- Remedies cure healing injuries only
+- Surgery treats healing injuries only
 - Prosthetics replace some permanent injuries
 - More injuries raise permakill chance
 
 ## `PermadeathRisk` / inventory lore
 
 - `+N% per injury` from `chancePerInjury`
-- Healing → permanent on death; remedies healing only; prosthetics for some permanent injuries
+- Healing → permanent on death; surgery treats healing injuries only; prosthetics for some permanent injuries
 - Traits GUI uses `TraitEffectResolver.resolveDisplayName` for injury/prosthetic traits
 
 ## Acceptance

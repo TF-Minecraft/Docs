@@ -23,8 +23,8 @@ Manual test matrix and rollback.
 | 6 | Active online 48h duration | Remaining decreases |
 | 7 | Switch character / offline | Remaining frozen |
 | 8 | Duration hits 0 | Trait removed, lost message |
-| 9 | Remedy on healing | Instant remove |
-| 10 | Remedy on permanent | No effect |
+| 9 | Successful surgery on a healing injury | Injury removed, lost message |
+| 10 | Surgery offer with only permanent injuries | Refused |
 
 ### Prosthetics
 
