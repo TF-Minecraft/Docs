@@ -17,8 +17,6 @@ The [user guide](docs/playing.md) is for server owners and people adding vehicle
 - [Templates](docs/templates.md)
 - [Trains](docs/using-trains.md)
 
-The same guide is published on the [VehicleFramework wiki](https://github.com/TF-Minecraft/VehicleFramework/wiki).
-
 ## Architecture
 
 - [Architecture and configuration](overview.md)
