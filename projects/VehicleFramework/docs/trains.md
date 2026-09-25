@@ -79,7 +79,7 @@ One spline per track (no stored sections). A **stroke** is one lay with the conf
 - Grade: stay **flat** as long as possible, then climb at `desired-grade-degrees` (default 6), never steeper than `max-grade-degrees` (default 10). Chat says **slope is too steep** if the end is too high for the run.
 - Clearance: a 3-wide by 3-tall corridor must be passable (air and plants are fine; solids and overlapping tracks are not).
 - Punching track in survival or adventure, and explosions (TNT, creepers, VF ammunition), mark edges broken and drop one `item-track` per newly broken edge. Creative punch and the remover dig do not drop.
-- `place-keepout-radius` (default 1.5): cannot place blocks or empty buckets within that XZ distance of a sample at the rail's block Y or above. Blocks strictly below that Y (new ground under the rails) are allowed.
+- `place-keepout-radius` (default 1.5): cannot place blocks or empty buckets within that XZ distance of a sample in the train's headroom: the rail's block Y and the two blocks above it. Blocks below that Y (new ground under the rails) and three or more blocks above it (bridges, roofs, tunnel ceilings) are allowed.
 - Moving trains spawn `fx` gravel `BLOCK_CRACK` crumbs on that 3-wide ballast (rotated with the rail yaw). `fx.sound` is a string (vanilla `minecraft:block.stone.break` or a custom namespaced sound).
 - `/vf track delete <uuid>` removes the whole track. `/vf track start` and `/vf track end` use your current position.
 - `/vf track resync` applies rail item paths and `display-y-offset` from `trains.yml` to loaded chunks (throttled). Switches follow `/vf reload` and chunk load without this command.
