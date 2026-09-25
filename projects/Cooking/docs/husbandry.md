@@ -174,7 +174,7 @@ No custom slaughter tool. If an **owned** animal **dies**, it drops configured C
 | Amount | From **effective genetics** (care yield). That many meat cuts from the start of the carve sequence, then the bone. The roast model starts whole (stage 1) and moves toward the bone stage as those cuts are taken. Poultry floor is two legs and one filet, then bone. Other roasts floor at one meat cut, then bone. Counted drop tables use hide/wool yield. Honour `min-roast-cuts` and the sequence `min-food-cuts`. |
 | Sheep | Vanilla wool **always** on shear. If `wool_ready_at <= now`, also roll `shear.drops`, then reset the wool timer. |
 | Milk | `milk: true` on the species. Per-animal cooldown (`milk-timer`, default 20m). Mature only. Empty bucket interact; hand becomes cooking `milk_bucket` with quality from the **animal** (Cow/Goat origin from entity type). |
-| Eggs | Chickens with `egg:` set: when loaded, mature, and happy, drop one egg after `egg-timer` (default 10m) on the 1-minute tick. Item from `egg` (`vanilla` → `Material.EGG`; `food(...)` or TLibs path otherwise). The chicken config uses `food(type=egg;...)`, so the drop is a raw cooking egg whose stars come from that chicken's genetics. It is not edible until fried. Vanilla egg drops from managed chickens are cancelled (`EntityDropItemEvent`). Bees: vanilla, not husbandry. |
+| Eggs | Chickens with `egg:` set: when loaded, mature, and happy, drop one egg after `egg-timer` (default 1h) on the 1-minute tick. Item from `egg` (`vanilla` → `Material.EGG`; `food(...)` or TLibs path otherwise). The chicken config uses `food(type=egg;...)`, so the drop is a raw cooking egg whose stars come from that chicken's genetics. It is not edible until fried. Vanilla egg drops from managed chickens are cancelled (`EntityDropItemEvent`). Bees: vanilla, not husbandry. |
 | Shed | Species with `shed.drops`: when loaded, mature, and happy, roll `shed-chance` after `shed-timer` (default 4h) on the 1-minute tick. Success rolls `shed.drops` at the animal's feet and resets the timer. |
 
 Genetics → stars **and** amount tables both live in YAML (`husbandry.yml`). Do not hardcode thresholds.
@@ -289,7 +289,7 @@ milk-timer: 20m
 wool-timer: 4h
 shed-timer: 4h
 shed-chance: 0.15
-egg-timer: 10m
+egg-timer: 1h
 
 affliction:
   mean: 6h
