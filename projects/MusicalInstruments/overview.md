@@ -30,7 +30,7 @@ The plugin listens for `PlayerItemHeldEvent` (hotbar slot changes). When the pla
 2. The sound plays at the player's location in the `RECORDS` sound category, using the instrument's configured volume (1.0 = 16 blocks of audible range) and pitch.
 3. A note particle spawns above the player, and the held slot resets to slot 9 — so the same note can be triggered repeatedly without dead inputs. The slot change itself is cancelled, which keeps the server on slot 9 as well as the client; Paper ignores a key press for the slot the server already has selected, so otherwise a repeated note would be dropped.
 
-Slot changes that another plugin has already cancelled are ignored. Keys without a configured sound (such as slot 9) change slot normally.
+Slot changes that another plugin has already cancelled are ignored. Keys without a configured sound change slot normally. Slot 9 never plays a note, because pressing the slot that is already selected sends nothing to the server; a config that maps `hotbar-sounds.9` or `9+sneak` is warned about at load.
 
 ## Architecture
 
@@ -153,7 +153,7 @@ accordion:
     1+sneak: instruments.accordion_1c_chord
     2: instruments.accordion_2d_single
     2+sneak: instruments.accordion_2d_chord
-    # ... slots 3-8 follow the same pattern
+    # ... slots 3-8 follow the same pattern; slot 9 is the reset slot and cannot hold a note
 
     volume: 4.0   # 1.0 = 16 blocks of range (4.0 = 64 blocks)
     pitch: 1.0    # 0.5 (lower/slower) to 2.0 (higher/faster)
