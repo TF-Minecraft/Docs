@@ -17,7 +17,8 @@ See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, r
 MusicalInstruments emits `net.tfminecraft.musicalinstruments.events.InstrumentPlayEvent` after playing a configured note.
 Listeners can read `getPlayer()`, `getInstrument()` and `getSoundKey()`. The event
 is informational and is not cancellable. It is emitted before the note particle
-and hotbar reset, only when an instrument and sound mapping have been found.
+and hotbar reset, only when an instrument and sound mapping have been found and
+no other plugin has cancelled the slot change.
 
 Maven consumers declare `net.tfminecraft.musicalinstruments:musicalinstruments`
 with `provided` scope and use the shared installer.
