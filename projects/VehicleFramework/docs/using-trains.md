@@ -50,7 +50,7 @@ Left-click with the layer item to set the start. Right-click to set the end. The
 
 Right-click existing track with the junction item to start a turnout, then right-click with the layer to lay one branch. Left-click with the layer cancels the pending junction. One branch per junction. Branches cannot be longer than `max-junction-length` (default 32). Junctions along the same track must be at least `min-junction-spacing` (default 16) apart.
 
-The remover digs a sample. Digging the middle splits the track. Digging the initial turnout lay removes that turnout. Track past that first lay stays.
+The remover digs a sample. Digging the middle splits the track. Digging the initial turnout lay removes that turnout. Track past that first lay stays. You cannot dig track under a train; move the train first. Trains elsewhere on the track stay where they are.
 
 ## Driving
 
