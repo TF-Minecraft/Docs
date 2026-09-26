@@ -15,8 +15,8 @@ stateDiagram-v2
   [*] --> Idle: set or spread
   Idle --> Joining: lure placed
   Joining --> Active: join window ends
-  Joining --> Idle: committed player leaves
-  Active --> Idle: committed player leaves or party lost
+  Joining --> Idle: no committed players remain
+  Active --> Idle: party lost
   Active --> [*]: remaining reaches zero
   Idle --> [*]: admin clear
 ```
@@ -68,9 +68,12 @@ second until they leave.
   still zero, the lure is removed and the infestation is cleared. The delay lets
   death summons join the count.
 - **Failure:** the lure is removed and the infestation returns to idle at the
-  same severity if a committed player is outside the province, or, once the
-  lure is active, if no committed player is alive, online, or within the logout
-  grace period.
+  same severity when no committed player is alive, online, or within the logout
+  grace period. A committed player who leaves the province stays in the lure and
+  takes `deserter-damage` every second, in Survival or Adventure, until
+  `/lure leave` drops them out. Coming back into the province stops that damage
+  without dropping them. `/lure leave` fails the lure when nobody committed
+  remains.
 - **Logout:** a committed player who logs out has `logout-grace-seconds` to
   return and remains committed. After the grace period, they are killed on
   their next login. A committed player who dies leaves the lure.
@@ -106,8 +109,9 @@ night in `bog` provinces.
 
 ## Commands and permissions
 
-The command is `/infestation` (alias `/infestations`). Province arguments take
-a numeric SimpleFactions province ID or `here` for the player's province.
+Admin commands use `/infestation` (alias `/infestations`). Province arguments
+take a numeric SimpleFactions province ID or `here` for the player's province.
+`/lure leave` is available to every player.
 
 | Command | Permission | Effect |
 | --- | --- | --- |
@@ -115,6 +119,7 @@ a numeric SimpleFactions province ID or `here` for the player's province.
 | `/infestation clear <province\|here>` | `infestations.admin` | Remove an infestation and any lure it has. |
 | `/infestation list` | `infestations.admin` | List infestations by province, group, and severity, marking those with a lure. |
 | `/infestation reload` | `infestations.admin.reload` | Reload all three files, then reload saved state from disk. |
+| `/lure leave` | none | Drop the player out of every lure they have joined. |
 
 Both permissions default to operators, and `infestations.admin` grants
 `infestations.admin.reload`. Because `plugin.yml` also requires
@@ -169,8 +174,9 @@ dependency set:
    countdown, activation, paced spawning, highlighting, and deserter damage.
    Confirm roaming ambient mobs count toward the lure when it activates, and
    that killing a mob that summons parasitic worms raises the remaining count.
-5. Exercise victory, a committed player leaving, losing the whole party, and a
-   logout both within and beyond the grace period.
+5. Exercise victory, a committed player leaving the province (damage until
+   `/lure leave`), losing the whole party, and a logout both within and beyond
+   the grace period.
 6. On a test server, enable `spread` with a short interval and confirm
    worsening, land spread, single water and sea hops, and group terrain limits.
 7. Confirm `MapAPI/infestation_data.json` is written and uploaded.
