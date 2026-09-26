@@ -28,9 +28,9 @@ The plugin listens for `PlayerItemHeldEvent` (hotbar slot changes). When the pla
 
 1. The new slot number and sneak state are resolved to a sound key via the instrument's config mapping (e.g. slot `3` + sneak → `instruments.accordion_3e_chord`).
 2. The sound plays at the player's location in the `RECORDS` sound category, using the instrument's configured volume (1.0 = 16 blocks of audible range) and pitch.
-3. A note particle spawns above the player, and the held slot resets to slot 9 — so the same note can be triggered repeatedly without dead inputs.
+3. A note particle spawns above the player, and the held slot resets to slot 9 — so the same note can be triggered repeatedly without dead inputs. The slot change itself is cancelled, which keeps the server on slot 9 as well as the client; Paper ignores a key press for the slot the server already has selected, so otherwise a repeated note would be dropped.
 
-A lightweight repeating task tracks each performing player and cleans itself up the moment the instrument leaves their off-hand, keeping the scheduler free of stale tasks.
+Slot changes that another plugin has already cancelled are ignored. Keys without a configured sound change slot normally. Slot 9 never plays a note, because pressing the slot that is already selected sends nothing to the server; a config that maps `hotbar-sounds.9` or `9+sneak` is warned about at load.
 
 ## Architecture
 
@@ -41,26 +41,31 @@ src/main/java/net/tfminecraft/musicalinstruments/
 ├── InstrumentPlugin.java              # Entry point: wiring, lifecycle, config loading
 ├── commands/
 │   └── InstrumentCommand.java         # /instruments command + tab completion
+├── events/
+│   └── InstrumentPlayEvent.java       # Public event fired for each played note
 ├── items/
 │   └── ItemResolver.java              # Vanilla and optional plugin item resolution
 ├── listeners/
 │   └── InstrumentListener.java        # Hotbar-change → sound playback pipeline
-└── managers/
-    └── InstrumentManager.java         # Config-backed instrument/sound resolution
+├── managers/
+│   └── InstrumentManager.java         # Config-backed instrument/sound resolution
+└── util/
+    └── LegacyModelData.java           # Integer custom model data for modeled(...) items
 ```
 
 ```mermaid
 classDiagram
     class InstrumentPlugin {
-        -instance: InstrumentPlugin
-        -itemResolver: ItemResolver
         -manager: InstrumentManager
         +onEnable() void
-        +onDisable() void
+        +recordInstrumentPlay(instrument) void
     }
 
     class InstrumentManager {
+        +loadTemplates() void
         +getInstrument(item: ItemStack) String
+        +findInstrument(name) String
+        +getInstrumentItem(instrument) ItemStack
         +getSoundKey(instrument, slot, sneaking) String
         +getKeybindMessage(instrument) String
         +getVolume(instrument) double
@@ -75,8 +80,6 @@ classDiagram
 
     class InstrumentListener {
         +onPlayerHotbarChange(event: PlayerItemHeldEvent) void
-        -startInstrumentDisplay(player, instrument) void
-        -stopInstrumentDisplay(player) void
     }
 
     InstrumentPlugin --|> JavaPlugin
@@ -93,7 +96,7 @@ classDiagram
 ### Design decisions
 
 - **Configuration over code** — instruments are pure data. Adding a new instrument (item, note layout, chords, volume) is a YAML edit, not a release.
-- **Event-driven, zero polling for input** — playback rides on Bukkit's own hotbar event; the only scheduled task is a 1-second-interval watcher per *active* performer, cancelled as soon as they stow the instrument.
+- **Event-driven, zero polling** — playback rides on Bukkit's own hotbar event. The only scheduled work is a one-off task on the first tick that resolves instrument items after the item plugins have enabled.
 - **Abstraction over item plugins** — item identity resolves through a built-in `ItemResolver`, so the same config format supports MMOItems, ItemsAdder, Nexo, and vanilla items with a short prefix. The item plugins are reached reflectively, so none is a hard dependency and no third-party library plugin is needed.
 
 ## Installation
@@ -124,7 +127,7 @@ classDiagram
 |---|---|---|
 | `/instruments keybinds` | Show the keybind layout for the instrument in your off-hand | `instruments.use` (default: everyone) |
 | `/instruments list` | List all loaded instruments | `instruments.use` (default: everyone) |
-| `/instruments give <instrument>` | Give yourself an instrument item | `instruments.give` (default: op) |
+| `/instruments give <instrument>` | Give yourself an instrument item. The name is not case-sensitive; if your inventory is full, the item drops at your feet | `instruments.give` (default: op) |
 | `/instruments reload` | Reload the config and instrument cache | `instruments.reload` (default: op) |
 
 ## Configuration
@@ -150,7 +153,7 @@ accordion:
     1+sneak: instruments.accordion_1c_chord
     2: instruments.accordion_2d_single
     2+sneak: instruments.accordion_2d_chord
-    # ... slots 3-8 follow the same pattern
+    # ... slots 3-8 follow the same pattern; slot 9 is the reset slot and cannot hold a note
 
     volume: 4.0   # 1.0 = 16 blocks of range (4.0 = 64 blocks)
     pitch: 1.0    # 0.5 (lower/slower) to 2.0 (higher/faster)
@@ -163,8 +166,10 @@ accordion:
 | MMOItems | `m.category.item_id` | `m.instruments.accordion` |
 | ItemsAdder | `ia.namespace:item_id` | `ia.tfmc:accordion` |
 | Nexo | `nx.item_id` | `nx.accordion` |
-| Vanilla | `v.material` | `v.iron_ingot` |
+| Vanilla | `v.material` | `v.iron_ingot` or `v.minecraft:iron_ingot` |
 | Vanilla + model | `modeled(type=..;name=..;model=..)` | `modeled(type=paper;name=&6Flute;model=1001)` |
+
+An instrument whose item cannot be resolved, or resolves to air, is skipped with a warning in the server log.
 
 ## Building from Source
 
@@ -175,6 +180,8 @@ mvn clean verify
 ```
 
 Use Maven and JDK 21, following the [shared baseline](../../PLATFORM.md). The compiler release is 21 and all dependencies resolve from public repositories. The artifact is written to `target/`.
+
+`verify` runs the unit tests (JUnit 5, MockBukkit and Mockito) and fails unless JaCoCo reports 100% instruction and branch coverage. The coverage report is written to `target/site/jacoco/index.html`. The tests replace MMOItems, ItemsAdder and Nexo with small stand-in classes under `src/test/java`, which have those plugins' package names. MockBukkit does not implement custom model data components, so model data for `modeled(...)` items is only covered with mocks.
 
 ## Metrics
 
