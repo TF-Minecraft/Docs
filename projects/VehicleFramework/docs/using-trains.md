@@ -43,6 +43,7 @@ Left-click with the layer item to set the start. Right-click to set the end. The
 
 - Click an existing end to extend that track, or to join two tracks into one when the start and end are on different tracks.
 - Ends within `join-distance` (default 1.5) can join. A join that turns more than `max-turn-degrees` (default 35) is refused.
+- Joining never turns a train round. If both tracks have trains on them and one would have to run the other way, the join is refused; move a train first.
 - A new stroke shorter than `min-lay-distance` (default 8) is refused. Loops are exempt.
 - Grade stays flat, then climbs at `desired-grade-degrees` (default 6) and never steeper than `max-grade-degrees` (default 10).
 - The corridor is 3 blocks wide and 3 tall. Solids and overlapping track refuse the lay. Plants do not.
@@ -50,7 +51,7 @@ Left-click with the layer item to set the start. Right-click to set the end. The
 
 Right-click existing track with the junction item to start a turnout, then right-click with the layer to lay one branch. Left-click with the layer cancels the pending junction. One branch per junction. Branches cannot be longer than `max-junction-length` (default 32). Junctions along the same track must be at least `min-junction-spacing` (default 16) apart.
 
-The remover digs a sample. Digging the middle splits the track. Digging the initial turnout lay removes that turnout. Track past that first lay stays. You cannot dig track under a train; move the train first. Trains elsewhere on the track stay where they are.
+The remover digs a sample. Digging the middle splits the track. Digging the initial turnout lay removes that turnout. Track past that first lay stays. You cannot dig track under a train, or next to a junction when that would remove a turnout a train is on; move the train first. Trains elsewhere on the track stay where they are.
 
 ## Driving
 
