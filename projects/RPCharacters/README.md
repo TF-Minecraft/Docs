@@ -14,7 +14,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 - [Online player list](docs/player-list.md)
 - [Professions](docs/professions-system/SYSTEM.md)
 - [Profession validation](docs/professions-system/RUNBOOK.md)
-- [Development characters and realm wipes](docs/dev-characters.md)
+- [Website realm wipe](docs/realm-wipe.md)
 - [Persistent parties](docs/persistent-parties.md)
 - [Playtime tracking](docs/playtime-tracking.md)
 
