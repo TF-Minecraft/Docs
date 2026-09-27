@@ -29,6 +29,8 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 | L9 | Item frame / glow frame: sneak-hit toggles; locked frame cannot be rotated, emptied, or broken by stranger |
 | L10 | Chunk unload/reload: furniture lock still there (variables). Armor stand / frame lock still there (uuid file) |
 | L11 | Pick up and replace furniture: lock still on that piece |
+| L12 | Shift left-click on an owned chest, display and furniture: `/co inspect` or `/co lookup` shows `<player> set <block> lock to <state>.`; display and furniture entries sit on the supporting block |
+| L13 | Staff shift left-click on another player's lock changes state, keeps the owner, and logs with "(staff override)" |
 
 ## Robbery
 
