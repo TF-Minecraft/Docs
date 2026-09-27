@@ -31,6 +31,12 @@ Provider recipes (AdvancedCrafting, Magic, GunsAndGadgets, goldsmithing):
 final_amount = floor(base_amount * max_return_rate * durability_factor * stack_amount)
 ```
 
+AdvancedCrafting alloy scrap:
+
+```
+final_amount = floor(1 * scrap_return_rate * stack_amount)
+```
+
 Config recipes (`recipes/*.yml`):
 
 ```
@@ -38,6 +44,7 @@ final_amount = floor(base_amount * durability_factor * stack_amount)
 ```
 
 - `max_return_rate`: config default `0.8` (80% cap). Applies to AdvancedCrafting, Magic, GunsAndGadgets, and goldsmithing providers, not yaml config recipes.
+- `scrap_return_rate`: config default `0.5` (1 base metal per 2 scrap). Only applies to alloy scrap; `max_return_rate` does not. Values outside `0.0`-`1.0` are clamped with a console warning.
 - `durability_factor`: `0.0` when broken, `1.0` when full. Vanilla `Damageable` items and MMOItems custom durability NBT when MMOItems is present.
 - `stack_amount`: full stack placed in station (one stack per deposit).
 - Use `floor`; zero yield blocks confirm when `block_confirm_when_zero_yield` is true.
@@ -51,6 +58,10 @@ Read `CraftProvenance` from item PDC (`ac_craft_inputs` JSON list of kind/id/amo
 Map `ingredient.*` inputs to live `Ingredient.getPath()` x stamped amount. Map `alloy.*` inputs by decomposing each alloy's forge recipe (base + catalyst ingredient paths) x stamped amount. Use **live** yaml definitions when resolving (revision sync like AC stat refresh).
 
 Raw AC ingredients/alloys (`ac_ingredient_id` / `ac_alloy_id`) are not provenance-backed - handle via config recipes or a future AC rule.
+
+### AdvancedCrafting (alloy scrap)
+
+A failed alloy forge tags its scrap with the base ingredient id (`ac_scrap_base`, AdvancedCrafting 2.2.0+). `AlloyScrapProvider` reads it with `ScrapProvenance.readBaseId` and returns one live `Ingredient.getPath()` per scrap, scaled by `scrap_return_rate`. Output rounds down per deposit, so a single scrap at `0.5` is a zero-yield deposit; players stack scrap first. Scrap forged before 2.2.0 has no tag and is not handled. Scrap from different base metals does not stack.
 
 ### GunsAndGadgets (guns)
 
