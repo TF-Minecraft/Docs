@@ -240,7 +240,7 @@ Stars are **not** shown in the GUI (visible on slaughter quality instead). No af
 
 Players (no permission node):
 
-- `/animals` (alias `/livestock`) — list every animal you own or co-own. Each line is name, species, co-owner when shared, growing when immature, Happy / Hungry / Dirty, then the world and block coordinates last recorded for that animal. Click the coordinates to copy them. Animals that have not loaded since coordinates were added show `location not recorded yet` until the next visit. The header is `Your animals (owned/max)`.
+- `/animals` (alias `/livestock`) — list every animal you own or co-own. Each line is name, species, co-owner when shared, growing when immature, Happy / Hungry / Dirty, then the world and block coordinates last recorded for that animal. Click the coordinates to copy them. Animals in unloaded chunks are listed too. When the server starts, Cooking reads the saved entity chunks to fill in or correct where each unloaded animal is. An owned animal that is not in any saved chunk shows `Missing` (with `last seen` coordinates if any were recorded) until it loads again. `location not recorded yet` only appears when neither a recorded spot nor a saved chunk is available, for example when some chunks could not be read. The header is `Your animals (owned/max)`.
 
 Staff with `cooking.admin`, including the console, can run `/animals <player>` for someone who has joined. A player without that permission cannot list another player's animals.
 
