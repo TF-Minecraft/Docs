@@ -79,7 +79,7 @@
         },
         "population": {
           "type": "integer",
-          "description": "Guild capitals in the settlement province (SF export)"
+          "description": "Members of guilds whose capital is in the settlement province (SF export)"
         },
         "marker_size": {
           "type": "string",
