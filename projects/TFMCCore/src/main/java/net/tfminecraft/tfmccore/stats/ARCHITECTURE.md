@@ -8,7 +8,7 @@ Centralized player and server stat tracking for TFMC plugins. TFMCCore owns stor
 |-----------|----------|
 | `StatManager` | `net.tfminecraft.tfmccore.stats.StatManager` |
 | SQLite database | `plugins/TFMCCore/stats.db` |
-| Command | `/tfmc stats <category> [player]` |
+| Command | `/tcore stats <category> [player]` |
 | Global toggle | `plugins/TFMCCore/stats.yml` (`enabled: true`) |
 
 Staff with `tfmccore.admin` can view other players' stats and server-wide totals.
@@ -58,7 +58,7 @@ stats/categories/<categoryId>/
 | `StatConfig` | Load yaml labels and any key-mapping sections |
 | `StatMain` | Pure logic: which UUID gets which stat key |
 | `StatListener` | `@EventHandler(MONITOR, ignoreCancelled = true)` unless documented exception |
-| `StatQuery` | `getLabel(statKey)` for `/tfmc stats` display |
+| `StatQuery` | `getLabel(statKey)` for `/tcore stats` display |
 | `StatCategory` | `getId()`, `register(plugin)` registers listener on TFMCCore |
 
 Put category code in `stats/categories/`.
@@ -71,7 +71,7 @@ flowchart LR
   Listener --> Main[Category StatMain]
   Main --> StatManager
   StatManager --> Sqlite[stats.db]
-  StatsCmd["/tfmc stats"] --> StatCategoryRegistry
+  StatsCmd["/tcore stats"] --> StatCategoryRegistry
 ```
 
 1. **Source plugin** fires Bukkit events when domain facts occur (create, kill, chat, etc.).
@@ -99,7 +99,7 @@ Add new yaml files to `TFMCCore.createConfigs()` and `loadConfigs()`.
 
 Typical yaml sections:
 
-- `labels` - stat key to display string for `/tfmc stats`
+- `labels` - stat key to display string for `/tcore stats`
 - Optional mapping sections per category (e.g. vehicle groups, `class_labels`, `race_labels`)
 
 Unknown stat keys fall back to `StatLabelFormatter.format(statKey)`.
@@ -131,7 +131,7 @@ Unknown stat keys fall back to `StatLabelFormatter.format(statKey)`.
 6. **TFMCCore.java:** field for config, `loadConfigs()`, `createConfigs()`, conditional `StatCategoryRegistry.register` in `initStats()`.
 7. **Test:** config load test mirroring `VehiclesStatConfigTest` or `RpCharactersStatConfigTest`.
 8. **Build:** `mvn package` in `tfmccore/`.
-9. **Manual:** `/tfmc stats <id>` for self and staff server totals.
+9. **Manual:** `/tcore stats <id>` for self and staff server totals.
 
 ## Registry and command
 
