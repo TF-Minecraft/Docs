@@ -80,7 +80,6 @@ Choose a project to open its technical documentation and source repository link.
 
 | Project | What it does |
 | --- | --- |
-| [AACommandsFiller](projects/AACommandsFiller/README.md) | Configurable command trees and permission-aware tab completion. |
 | [CoreProtect](projects/CoreProtect/README.md) | TFMC-maintained CoreProtect source for block logging, rollbacks, and anti-griefing on Minecraft servers. |
 | [PermCleaner](projects/PermCleaner/README.md) | Permission inspection and cleanup with LuckPerms integration. |
 | [ProvinceSystem](projects/ProvinceSystem/README.md) | TFMC web hub with interactive political maps, character creation, cosmetics, and identity services. |
