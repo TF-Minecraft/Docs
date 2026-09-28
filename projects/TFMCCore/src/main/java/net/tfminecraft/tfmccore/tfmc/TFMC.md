@@ -23,6 +23,17 @@ Before this, `/tfmc` was served by AACommandsFiller (suggestions only) with Cond
 | `helper promote\|demote` | `helper.promote` / `helper.demote` | One step along the `helper` LuckPerms track |
 | `helper+ promote\|demote` | `helper+.promote` / `helper+.demote` | One step along the `helper+` LuckPerms track |
 
+### Disabled by default
+
+These sections ship with `enabled: false` in `tfmc.yml` and stay out of the command tree until enabled. TFMCDev01 enables them; Main does not have the content yet.
+
+| Subcommand | Who | Effect |
+|---|---|---|
+| `tutorial <name> clear` | everyone | Takes back the items a tutorial lantern handed out (`tutorials.list`); 10 s cooldown per tutorial |
+| `parrot` | `parrot.permissions` (empty = everyone) | Parrot disguise and 20 s of slow flight; 5 min cooldown. Flight settings are restored on expiry, `unparrot`, logout or plugin disable |
+| `unparrot` | everyone | Ends a parrot flight early |
+| `worldboss info` | everyone | World-boss explainer |
+
 ## Configuration
 
 `plugins/TFMCCore/tfmc.yml` holds the messages (MiniMessage), console commands, item and mask lists, calendar names, donor tiers and posters. Reload it with `/tcore reload tfmc`; changes to `helper-tracks` need a restart because they add or remove command nodes.
