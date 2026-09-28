@@ -67,7 +67,6 @@ consumer set. Source builds must pass clean verification before publication.
 
 | Project | Java release | API | API version |
 | --- | --- | --- | --- |
-| [AACommandsFiller](projects/AACommandsFiller/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [ActivityTF](projects/ActivityTF/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [AdvancedCrafting](projects/AdvancedCrafting/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Archaeo](projects/Archaeo/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
