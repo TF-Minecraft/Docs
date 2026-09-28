@@ -30,7 +30,7 @@ These sections ship with `enabled: false` in `tfmc.yml` and stay out of the comm
 | Subcommand | Who | Effect |
 |---|---|---|
 | `tutorial <name> clear` | everyone | Takes back the items a tutorial lantern handed out (`tutorials.list`); 10 s cooldown per tutorial |
-| `parrot` | `parrot.permissions` (empty = everyone) | Parrot disguise and 20 s of slow flight; 5 min cooldown. Flight settings are restored on expiry, `unparrot`, logout or plugin disable |
+| `parrot` | `group.ascended` (Ascended and Legacy; `parrot.permissions`) | Parrot disguise and 20 s of slow flight; 5 min cooldown. Flight settings are restored on expiry, `unparrot`, logout or plugin disable |
 | `unparrot` | everyone | Ends a parrot flight early |
 | `worldboss info` | everyone | World-boss explainer |
 
