@@ -7,6 +7,7 @@ Example (replace the sample rewards with your own):
 ```yaml
 rewards:
   multiplier: 1
+  multiplier-pools: [pool_prologue]
   drops:
     drop_1: pool_prologue
     drop_2: pool_prologue
@@ -32,7 +33,17 @@ daily-reward:
 ```
 
 Groups use the existing `group.<name>` permissions, with the first matching group
-winning. Daily rewards draw once; milestone rewards draw `multiplier` times.
+winning. Daily pool rewards draw once. Weekly milestone pools draw `multiplier`
+times only when listed in `rewards.multiplier-pools`; all other pools draw once.
+The whitelist is case-insensitive. Missing, empty, or malformed lists enable no
+extra pool draws. Include `pool` explicitly if the default pool should multiply.
+
+Whitelist only material pools, such as `pool_prologue`, and leave skin/scroll
+pools out. At multiplier 2, this gives two independent material draws per
+material milestone while a `pool_skin` milestone still awards one scroll.
+Existing configurations must add the whitelist before extra pool draws apply;
+`/activity reload` picks up changes. Fixed-item rewards retain their existing
+amount multiplier.
 `drop_N` selects the Nth configured milestone, so only define drops that exist.
 
 Named pools use the `pool_` prefix and are case-insensitive. Lists directly under
