@@ -10,6 +10,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 - [Shared feature ownership](ownership.md)
 - [src/main/java/net/tfminecraft/tfmccore/stats/ARCHITECTURE.md](src/main/java/net/tfminecraft/tfmccore/stats/ARCHITECTURE.md)
 - [src/main/java/net/tfminecraft/tfmccore/stats/STATS.md](src/main/java/net/tfminecraft/tfmccore/stats/STATS.md)
+- [src/main/java/net/tfminecraft/tfmccore/tfmc/TFMC.md](src/main/java/net/tfminecraft/tfmccore/tfmc/TFMC.md)
 
 ## Builds and releases
 

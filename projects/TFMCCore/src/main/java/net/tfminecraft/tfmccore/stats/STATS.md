@@ -6,7 +6,7 @@ See also: [ARCHITECTURE.md](ARCHITECTURE.md)
 
 ## How to view
 
-- **Command:** `/tfmc stats <category> [player]`
+- **Command:** `/tcore stats <category> [player]`
 - **Self:** omit the player argument
 - **Other players / server totals:** requires `tfmccore.admin`
 - **Global toggle:** `plugins/TFMCCore/stats.yml` (`enabled: true`)
@@ -15,11 +15,11 @@ See also: [ARCHITECTURE.md](ARCHITECTURE.md)
 
 | Category | Source plugin | Command |
 |----------|---------------|---------|
-| `vehicles` | VehicleFramework | `/tfmc stats vehicles` |
-| `rpcharacters` | RPCharacters | `/tfmc stats rpcharacters` |
-| `advancedcrafting` | AdvancedCrafting | `/tfmc stats advancedcrafting` |
-| `skills` | MythicLib (MMOCore skills) | `/tfmc stats skills` |
-| `factions` | SimpleFactions | `/tfmc stats factions` |
+| `vehicles` | VehicleFramework | `/tcore stats vehicles` |
+| `rpcharacters` | RPCharacters | `/tcore stats rpcharacters` |
+| `advancedcrafting` | AdvancedCrafting | `/tcore stats advancedcrafting` |
+| `skills` | MythicLib (MMOCore skills) | `/tcore stats skills` |
+| `factions` | SimpleFactions | `/tcore stats factions` |
 
 ---
 
