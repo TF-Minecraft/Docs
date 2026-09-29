@@ -53,12 +53,20 @@ the number of mobs taken over if that is larger. It is the number of mobs left
 to kill: any death of a lure-tagged mob reduces it, and each mob summoned by a
 dying lure mob (for example the parasitic worms a bug zombie leaves) is tagged
 and adds one to it. The lure spawns mobs until everything left to kill is in
-the field, paced evenly across `lure-duration-seconds`, between
-`min-player-distance` (at least 4) and `lure-spawn-radius` blocks from the lure
-and never within `min-player-distance` of a player. The duration paces
-spawning; it is not a time limit. Every five seconds the lure recounts its
-loaded mobs, takes over ambient mobs that loaded since, and replaces mobs that
-were lost without being killed. A floating text display above the lure shows
+the field, paced evenly across `lure-duration-seconds`. The pace counts
+introductions against the clock, and mobs already sent wait for the next share.
+A tally that has run ahead of both the clock and the mobs actually in the field
+cannot stop the lure while enemies remain: the field is brought back up to the
+share the clock has reached. After the duration, anything still owed is
+released. The first mob is sent as soon as the lure is active. Spots lie
+between `min-player-distance` (at least 4) and `lure-spawn-radius` blocks from
+the lure and stay that far from players when such a spot exists. If the ring
+has nowhere to put an owed mob, the search loosens to a single column of air
+on a taller band, and any mobs still unplaced spawn at the lure. A delayed
+spawn that a player has walked up to is moved to the lure instead of being
+cancelled. The duration paces spawning; it is not a time limit. Every five
+seconds the lure recounts its loaded mobs, takes over ambient mobs that loaded
+since, and replaces mobs that were lost without being killed. A floating text display above the lure shows
 the countdown or the remaining count to players within `hologram-view-range`. Right-clicking an active lure makes the remaining lure mobs
 glow for 10 seconds and commits a player who has not yet joined. Uncommitted
 Survival and Adventure players in the province take `deserter-damage` every
@@ -172,6 +180,8 @@ dependency set:
    `night-only` and `min-y`.
 4. Place lures with and without an infestation, then exercise joining, the
    countdown, activation, paced spawning, highlighting, and deserter damage.
+   Confirm a lure that still owes mobs spawns them even when the ring has no
+   clear spot away from players, using the lure itself as a last resort.
    Confirm roaming ambient mobs count toward the lure when it activates, and
    that killing a mob that summons parasitic worms raises the remaining count.
 5. Exercise victory, a committed player leaving the province (damage until
