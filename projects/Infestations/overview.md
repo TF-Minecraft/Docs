@@ -15,8 +15,8 @@ stateDiagram-v2
   [*] --> Idle: set or spread
   Idle --> Joining: lure placed
   Joining --> Active: join window ends
-  Joining --> Idle: no committed players remain
-  Active --> Idle: party lost
+  Joining --> Idle: committed player leaves
+  Active --> Idle: committed player leaves or party lost
   Active --> [*]: remaining reaches zero
   Idle --> [*]: admin clear
 ```
@@ -53,12 +53,20 @@ the number of mobs taken over if that is larger. It is the number of mobs left
 to kill: any death of a lure-tagged mob reduces it, and each mob summoned by a
 dying lure mob (for example the parasitic worms a bug zombie leaves) is tagged
 and adds one to it. The lure spawns mobs until everything left to kill is in
-the field, paced evenly across `lure-duration-seconds`, between
-`min-player-distance` (at least 4) and `lure-spawn-radius` blocks from the lure
-and never within `min-player-distance` of a player. The duration paces
-spawning; it is not a time limit. Every five seconds the lure recounts its
-loaded mobs, takes over ambient mobs that loaded since, and replaces mobs that
-were lost without being killed. A floating text display above the lure shows
+the field, paced evenly across `lure-duration-seconds`. The pace counts
+introductions against the clock, and mobs already sent wait for the next share.
+A tally that has run ahead of both the clock and the mobs actually in the field
+cannot stop the lure while enemies remain: the field is brought back up to the
+share the clock has reached. After the duration, anything still owed is
+released. The first mob is sent as soon as the lure is active. Spots lie
+between `min-player-distance` (at least 4) and `lure-spawn-radius` blocks from
+the lure and stay that far from players when such a spot exists. If the ring
+has nowhere to put an owed mob, the search loosens to a single column of air
+on a taller band, and any mobs still unplaced spawn at the lure. A delayed
+spawn that a player has walked up to is moved to the lure instead of being
+cancelled. The duration paces spawning; it is not a time limit. Every five
+seconds the lure recounts its loaded mobs, takes over ambient mobs that loaded
+since, and replaces mobs that were lost without being killed. A floating text display above the lure shows
 the countdown or the remaining count to players within `hologram-view-range`. Right-clicking an active lure makes the remaining lure mobs
 glow for 10 seconds and commits a player who has not yet joined. Uncommitted
 Survival and Adventure players in the province take `deserter-damage` every
@@ -68,12 +76,9 @@ second until they leave.
   still zero, the lure is removed and the infestation is cleared. The delay lets
   death summons join the count.
 - **Failure:** the lure is removed and the infestation returns to idle at the
-  same severity when no committed player is alive, online, or within the logout
-  grace period. A committed player who leaves the province stays in the lure and
-  takes `deserter-damage` every second, in Survival or Adventure, until
-  `/lure leave` drops them out. Coming back into the province stops that damage
-  without dropping them. `/lure leave` fails the lure when nobody committed
-  remains.
+  same severity if a committed player is outside the province, or, once the
+  lure is active, if no committed player is alive, online, or within the logout
+  grace period.
 - **Logout:** a committed player who logs out has `logout-grace-seconds` to
   return and remains committed. After the grace period, they are killed on
   their next login. A committed player who dies leaves the lure.
@@ -109,9 +114,8 @@ night in `bog` provinces.
 
 ## Commands and permissions
 
-Admin commands use `/infestation` (alias `/infestations`). Province arguments
-take a numeric SimpleFactions province ID or `here` for the player's province.
-`/lure leave` is available to every player.
+The command is `/infestation` (alias `/infestations`). Province arguments take
+a numeric SimpleFactions province ID or `here` for the player's province.
 
 | Command | Permission | Effect |
 | --- | --- | --- |
@@ -119,7 +123,6 @@ take a numeric SimpleFactions province ID or `here` for the player's province.
 | `/infestation clear <province\|here>` | `infestations.admin` | Remove an infestation and any lure it has. |
 | `/infestation list` | `infestations.admin` | List infestations by province, group, and severity, marking those with a lure. |
 | `/infestation reload` | `infestations.admin.reload` | Reload all three files, then reload saved state from disk. |
-| `/lure leave` | none | Drop the player out of every lure they have joined. |
 
 Both permissions default to operators, and `infestations.admin` grants
 `infestations.admin.reload`. Because `plugin.yml` also requires
@@ -172,11 +175,12 @@ dependency set:
    `night-only` and `min-y`.
 4. Place lures with and without an infestation, then exercise joining, the
    countdown, activation, paced spawning, highlighting, and deserter damage.
+   Confirm a lure that still owes mobs spawns them even when the ring has no
+   clear spot away from players, using the lure itself as a last resort.
    Confirm roaming ambient mobs count toward the lure when it activates, and
    that killing a mob that summons parasitic worms raises the remaining count.
-5. Exercise victory, a committed player leaving the province (damage until
-   `/lure leave`), losing the whole party, and a logout both within and beyond
-   the grace period.
+5. Exercise victory, a committed player leaving, losing the whole party, and a
+   logout both within and beyond the grace period.
 6. On a test server, enable `spread` with a short interval and confirm
    worsening, land spread, single water and sea hops, and group terrain limits.
 7. Confirm `MapAPI/infestation_data.json` is written and uploaded.
