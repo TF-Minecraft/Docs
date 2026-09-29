@@ -183,9 +183,20 @@ Genetics → stars **and** amount tables both live in YAML (`husbandry.yml`). Do
 
 ## World cleanup
 
-On chunk **load**, for each entity type in `remove-unowned` (cows, pigs, sheep, chickens, goats, horses, camels, llamas, … — **not bees**): if there is **no owner**, `remove()` and delete any orphan SQLite row — **except** horse/donkey/mule/camel that already have a SQLite row (first-interact enroll; they stay unowned until tamed). Spawn-egg and natural animals can be tamed only while that chunk stays loaded, unless they were enrolled.
+On chunk **load**, for each entity type in `remove-unowned` (cows, pigs, sheep, chickens, goats, horses, camels, llamas, … — **not bees**): if there is **no owner**, `remove()` and delete any orphan SQLite row — **except** horse/donkey/mule/camel that already have a SQLite row (first-interact enroll; they stay unowned until tamed), and any horse-family mount that is vanilla-tamed, named or saddled, which is kept and made persistent even without a row. Spawn-egg and natural animals can be tamed only while that chunk stays loaded, unless they were enrolled.
 
-Never delete a row on unload just because `Bukkit.getEntity` is null. If an **owned** row exists but the entity is missing, keep the row (admin / later reconcile). Unowned wipe on load is an explicit despawn.
+Never delete a row on unload just because `Bukkit.getEntity` is null. Unowned wipe on load is an explicit despawn.
+
+### Lost animals
+
+A forced stop can kill the server before it saves chunks, so an owned animal that moved since the last save can be missing from every saved chunk. Cooking guards against this with snapshots:
+
+- Every minute, on chunk unload and on disable, each loaded **owned** animal is serialized into the `snapshots` table (one row per animal, cascading from `animals`).
+- At start, after the saved-chunk scan, an owned animal found in no saved chunk of its world and under no logged-out rider (`playerdata` `RootVehicle`) is lost. If it has a snapshot, Cooking spawns it again at the captured position with its UUID, name, coat, gear, owners and stats, and logs `Restored lost animal …`. If the entity turns up with its chunk first, nothing is spawned. If the spawn is refused, it stays `Missing` and is retried at the next start.
+- Without a snapshot, the row and owners are deleted and `Dropped ghost animal …` is logged.
+- A scan that could not read some chunk or player file restores and drops nothing.
+- Death deletes the snapshot with the row. Any other removal except a chunk unload or a rider logging out (plugin removal, discard) deletes the snapshot too, so a deliberately removed animal is not brought back.
+- `restore-lost-animals: false` turns restoring off; lost animals are then dropped as ghosts.
 
 ## Mounts
 
@@ -240,7 +251,7 @@ Stars are **not** shown in the GUI (visible on slaughter quality instead). No af
 
 Players (no permission node):
 
-- `/animals` (alias `/livestock`) — list every animal you own or co-own. Each line is name, species, co-owner when shared, growing when immature, Happy / Hungry / Dirty, then the world and block coordinates last recorded for that animal. Click the coordinates to copy them. Animals in unloaded chunks are listed too. When the server starts, Cooking reads the saved entity chunks to fill in or correct where each unloaded animal is. An owned animal that is not in any saved chunk shows `Missing` (with `last seen` coordinates if any were recorded) until it loads again. `location not recorded yet` only appears when neither a recorded spot nor a saved chunk is available, for example when some chunks could not be read. The header is `Your animals (owned/max)`.
+- `/animals` (alias `/livestock`) — list every animal you own or co-own. Each line is name, species, co-owner when shared, growing when immature, Happy / Hungry / Dirty, then the world and block coordinates last recorded for that animal. Click the coordinates to copy them. Animals in unloaded chunks are listed too. When the server starts, Cooking reads the saved entity chunks to fill in or correct where each unloaded animal is. An owned animal lost from the save is restored or dropped at that scan (see [Lost animals](#lost-animals)). One that could not be restored shows `Missing` (with `last seen` coordinates if any were recorded) until it loads again. `location not recorded yet` only appears when neither a recorded spot nor a saved chunk is available, for example when some chunks could not be read. The header is `Your animals (owned/max)`.
 
 Staff with `cooking.admin`, including the console, can run `/animals <player>` for someone who has joined. A player without that permission cannot list another player's animals.
 
@@ -319,6 +330,7 @@ initial-genetic-max: 20
 max-genetics: 1000
 min-roast-cuts: 1
 stats-revision: "1"
+restore-lost-animals: true
 
 breeding:
   genetic-variance-multiplier: 0.2
