@@ -183,7 +183,7 @@ Genetics → stars **and** amount tables both live in YAML (`husbandry.yml`). Do
 
 ## World cleanup
 
-On chunk **load**, for each entity type in `remove-unowned` (cows, pigs, sheep, chickens, goats, horses, camels, llamas, … — **not bees**): if there is **no owner**, `remove()` and delete any orphan SQLite row — **except** horse/donkey/mule/camel that already have a SQLite row (first-interact enroll; they stay unowned until tamed), and any horse-family mount that is vanilla-tamed, named or saddled, which is kept and made persistent even without a row. Spawn-egg and natural animals can be tamed only while that chunk stays loaded, unless they were enrolled.
+On chunk **load**, for each entity type in `remove-unowned` (cows, pigs, sheep, chickens, goats, horses, camels, llamas, … — **not bees**): if there is **no owner**, `remove()` and delete any orphan SQLite row — **except** horse/donkey/mule/camel that already have a SQLite row (first-interact enroll; they stay unowned until tamed). Spawn-egg and natural animals can be tamed only while that chunk stays loaded, unless they were enrolled.
 
 Never delete a row on unload just because `Bukkit.getEntity` is null. Unowned wipe on load is an explicit despawn.
 
