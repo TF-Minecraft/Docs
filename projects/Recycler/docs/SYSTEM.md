@@ -25,51 +25,56 @@ Reference: `util/GridLayout.java`.
 
 ## Return math
 
-Provider recipes (AdvancedCrafting, Magic, GunsAndGadgets, goldsmithing):
+Every provider uses the same formula with its own rate:
 
 ```
-final_amount = floor(base_amount * max_return_rate * durability_factor * stack_amount)
+final_amount = floor(base_amount * return_rate * durability_factor * stack_amount)
 ```
 
-AdvancedCrafting alloy scrap:
+`return_rate` comes from `return_rates` in `config.yml` (Recycler 0.3.0+):
 
-```
-final_amount = floor(1 * scrap_return_rate * stack_amount)
-```
+| Key | Provider | Default |
+|-----|----------|---------|
+| `advanced_crafting` | `AdvancedCraftingProvider` | `0.5` |
+| `alloy_scrap` | `AlloyScrapProvider` | `0.5` (1 base metal per 2 scrap) |
+| `magic_gear` | `MagicGearProvider` | `0.5` |
+| `guns` | `GunsAndGadgetsProvider` | `0.5` |
+| `goldsmith_jewelry` | `GoldsmithProvider` | `0.5` |
+| `recipes` | `ConfigProvider` | `1.0` (the amounts written in `recipes/*.yml`) |
 
-Config recipes (`recipes/*.yml`):
-
-```
-final_amount = floor(base_amount * durability_factor * stack_amount)
-```
-
-- `max_return_rate`: config default `0.8` (80% cap). Applies to AdvancedCrafting, Magic, GunsAndGadgets, and goldsmithing providers, not yaml config recipes.
-- `scrap_return_rate`: config default `0.5` (1 base metal per 2 scrap). Only applies to alloy scrap; `max_return_rate` does not. Values outside `0.0`-`1.0` are clamped with a console warning.
-- `durability_factor`: `0.0` when broken, `1.0` when full. Vanilla `Damageable` items and MMOItems custom durability NBT when MMOItems is present.
+- Rates are clamped to `0.0`-`1.0` with a console warning; non-finite values use the default.
+- A missing key falls back to the pre-0.3.0 keys when present: `max_return_rate` for the four crafted-item providers, `scrap_return_rate` for alloy scrap.
+- `durability_factor`: `0.0` when broken, `1.0` when full (`1.0` for items without durability). MMOItems custom durability (`MMOITEMS_DURABILITY` / `MMOITEMS_MAX_DURABILITY`, used by AdvancedCrafting gear) wins when present; a missing `MMOITEMS_DURABILITY` means never damaged. Otherwise the vanilla damage against the item's `max_damage` component (MMOItems `max-item-damage`, e.g. mage weapons), or the material's default maximum. Before Recycler 0.3.1 this factor was always `1.0` for our gear.
 - `stack_amount`: full stack placed in station (one stack per deposit).
 - Use `floor`; zero yield blocks confirm when `block_confirm_when_zero_yield` is true.
 
 ## Provider inputs
 
+Every provider returns what actually went into the item, never the recipe as it reads today. Items crafted before their plugin recorded this are not handled (the station says they cannot be recycled).
+
 ### AdvancedCrafting (crafted items)
 
-Read `CraftProvenance` from item PDC (`ac_craft_inputs` JSON list of kind/id/amount/revision).
+Read `CraftProvenance` from item PDC (`ac_craft_inputs` JSON list of kind/id/amount/revision), which lists the deposited inputs.
 
-Map `ingredient.*` inputs to live `Ingredient.getPath()` x stamped amount. Map `alloy.*` inputs by decomposing each alloy's forge recipe (base + catalyst ingredient paths) x stamped amount. Use **live** yaml definitions when resolving (revision sync like AC stat refresh).
+Map `ingredient.*` inputs to live `Ingredient.getPath()` x stamped amount. Map `alloy.*` inputs by decomposing each alloy's forge recipe (base + catalyst ingredient paths) x stamped amount.
 
 Raw AC ingredients/alloys (`ac_ingredient_id` / `ac_alloy_id`) are not provenance-backed - handle via config recipes or a future AC rule.
 
 ### AdvancedCrafting (alloy scrap)
 
-A failed alloy forge tags its scrap with the base ingredient id (`ac_scrap_base`, AdvancedCrafting 2.2.0+). `AlloyScrapProvider` reads it with `ScrapProvenance.readBaseId` and returns one live `Ingredient.getPath()` per scrap, scaled by `scrap_return_rate`. Output rounds down per deposit, so a single scrap at `0.5` is a zero-yield deposit; players stack scrap first. Scrap forged before 2.2.0 has no tag and is not handled. Scrap from different base metals does not stack.
+A failed alloy forge tags its scrap with the base ingredient id (`ac_scrap_base`, AdvancedCrafting 2.2.0+). `AlloyScrapProvider` reads it with `ScrapProvenance.readBaseId` and returns one live `Ingredient.getPath()` per scrap, scaled by `alloy_scrap`. Output rounds down per deposit, so a single scrap at `0.5` is a zero-yield deposit; players stack scrap first. Scrap forged before 2.2.0 has no tag and is not handled. Scrap from different base metals does not stack.
+
+### Magic (mage weapons)
+
+Magic 0.4.7+ stamps the materials a craft actually charged on the weapon (`magic:gear_craft_inputs`, JSON item path to amount; empty for staff bypass crafts) and carries it through socket rewrites and refreshes. `MagicGearProvider` reads it with `GearProvenance.readInputs`. Broken weapons, weapons with socketed runes, and weapons without the stamp are not handled.
 
 ### GunsAndGadgets (guns)
 
-Read stamped part list from gun PDC (`gg_craft_parts`), sum each `GunPart.getCost()` from live `parts.yml` via `GunsAndGadgetsProvider`. Broken guns and guns with missing stamped ids are not handled by this provider.
+GunsAndGadgets 2.0.6+ stamps the materials a craft actually took on the gun (`gunsandgadgets:gg_craft_inputs`; empty for staff bypass or when inputs are not required) and keeps it through stat refreshes. `GunsAndGadgetsProvider` reads it with `GunCraftInputs.readFrom`. Broken guns and guns without the stamp are not handled.
 
 ### Goldsmithing (GemInfusion jewelry)
 
-Match the item to exactly one live jewelry project with `TLibs ItemChecker` against that project's output path. Return each recipe material's live item path and amount. The infused gem is not returned. Pieces with socketed gems, and items that match more than one project, are not handled by this provider.
+A bench slot accepts any material of its type, so the project recipe is not always what went in. GemInfusion 2.2.5+ stamps the deposited materials on the finished piece (`geminfusion:goldsmith_inputs`); `GoldsmithProvider` reads it with `GoldsmithProvenance.read`. The infused gem is not returned. Pieces with socketed gems and pieces without the stamp are not handled.
 
 ### Config fallback (`recipes/*.yml`)
 
@@ -86,7 +91,7 @@ recipes:
 
 Each output line is `path amount` or `path(amount)`. Legacy map-style outputs under a path key are still supported.
 
-Matched via `TLibs ItemChecker`. Durability scaling applies automatically.
+Matched via `TLibs ItemChecker`. The listed amounts are scaled by `return_rates.recipes` and durability.
 
 ## Confirm flow
 
@@ -127,4 +132,4 @@ Rejected deposits use `station.blocked` and the input-reject sound.
 
 `RecycleCompleteEvent` fires after a successful confirm (player, input clone, provider id, scaled outputs, station location). Other plugins (e.g. Professions) may listen for perks or logging.
 
-`professions.recycler_1/2/3` currently unlock crafting recipes (raw gold/iron/diamonds). Perks that bump `max_return_rate` or gate station access are not implemented in Recycler itself.
+`professions.recycler_1/2/3` currently unlock crafting recipes (raw gold/iron/diamonds). Perks that bump the return rates or gate station access are not implemented in Recycler itself.
