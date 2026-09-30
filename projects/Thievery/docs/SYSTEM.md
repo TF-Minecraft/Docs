@@ -41,7 +41,16 @@ Honor `min-lock-strength-ratio` against that display strength.
 
 Reuse `LockState` (`PRIVATE` / `GUILD` / `FACTION` / `PUBLIC`) and the same access rules as `ContainerData.canAccess` (owner, same guild, same faction, public, `thievery.admin` bypass). `FACTION` is every guild in the owner's faction. Vassals are not included. Chest lockpick sessions scale budget, risk, critical chance, and break chance from `lockpicking.lock-types`.
 
-Shift left-click is the toggle (same titles/sound as chests). Only the owner rotates state. Shift left-click **never** breaks a lockable display.
+Shift left-click is the toggle (same titles/sound as chests). The owner rotates state; staff with `thievery.admin` can also rotate a lock another player owns, and the placer stays the owner. Shift left-click **never** breaks a lockable display.
+
+### Lock change logging
+
+Each rotation on a container, display or furniture lock is logged to CoreProtect through `CoreProtectAPI.logLockChange` (`LockStateLog`). Lookups and the block inspector show the entry under the player's own name with the new state, for example "Steve set chest lock to Private.", and add "(staff override)" when staff changed a lock another player owns. Lock changes are never rolled back.
+
+- A double chest is logged once, on the half that was clicked.
+- CoreProtect drops interactions on air, so display and furniture changes are logged on the block holding the display: the block an item frame hangs on, or the block below other displays. The entry names that block rather than the display.
+- Claiming an unowned display on the first toggle is not logged.
+- Logging needs CoreProtect API 14 (CoreProtect 25.1.0) or later. Older versions, or servers without CoreProtect, skip logging.
 
 If the player cannot access a locked display, cancel:
 
