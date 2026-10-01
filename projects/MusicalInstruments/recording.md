@@ -6,7 +6,52 @@ triggers and their timing. Playback reuses the existing sounds from the server's
 resource pack; a new song does not need a new audio file or pack update. Players
 must have the samples installed to hear custom instruments.
 
-## Record a song
+## Record through the studio interface
+
+Sneak-right-click an empty jukebox to open the 54-slot recording studio. If you
+have no project, the studio creates an **Untitled** project automatically. You
+can also look at an empty jukebox within five blocks and use `/music studio`.
+Stay near that jukebox while using its controls.
+
+1. Click **Song settings** or the song title. Enter a title, adjust the tempo
+   slider, choose whether to use the private metronome, and click **Save**.
+2. Put an instrument in your off-hand and click a **Track** card. The inventory
+   closes so you can play with keys 1-8. Wait for the count-in; recording time
+   and the note count then appear above your hotbar.
+3. Open the same station again and click **Stop**. Click **Listen to new take**
+   to audition it with the other saved tracks, then **Keep take** or **Discard
+   take**. Your previous saved take stays intact until you accept its replacement.
+4. Repeat for the other tracks. The saved, audible tracks play privately as
+   backing while you record; the track being replaced is excluded. Every track
+   starts at the same song time, so wait before playing for a later entrance.
+5. Use the controls directly below each track to mix it: left-click **Volume**
+   to add 25%, right-click to subtract 25%, or shift-click to reset to 100%.
+   Volume ranges from 0% to 200%. Click **Audible / Muted** to toggle silence.
+   **Listen to saved mix** auditions your changes; **Stop** ends the preview.
+6. Put an ordinary music disc in your inventory and click **Prepare a blank
+   disc**, then **Publish song**. These controls find discs in your storage
+   inventory; you can keep the instrument in your off-hand. If using a stack,
+   leave a free inventory slot for the resulting disc. Publication requires
+   at least one audible note and no pending take.
+7. Insert the published disc into an empty jukebox with an ordinary right-click
+   to hear the layered song. To copy it, hold that recorded disc in your off-hand,
+   put a blank disc in your inventory, and click **Copy a recorded disc**.
+
+The track cards show saved instruments, duration and note count. Their colors
+distinguish empty, saved, recording and pending states. The title card shows
+current activity, and the open menu updates as recording and playback progress.
+Separate buttons control the saved mix and the pending take. **Tempo** has
+quick +/-5 BPM clicks; shift-click opens the settings form. **Metronome** toggles
+the recording click. **New song** opens a confirmation before clearing your
+editable tracks and pending take; published discs remain valid.
+
+The settings form uses Minecraft's title field, slider and checkbox. It accepts
+one response from the player who opened it, expires after two minutes, and checks
+the station and project again before saving. Closing a menu does not stop a
+recording or preview. The studio prevents item transfers, number-key swaps,
+double-click collection and dragging while its inventory is open.
+
+## Record with commands
 
 1. Create your editable project with `/music new Tavern Song`.
 2. Hold a configured instrument in your off-hand and run `/music record 1`.
@@ -29,12 +74,6 @@ An empty take leaves the previous track intact. A take automatically finishes at
 the duration or note limit. Re-recording replaces a whole track after acceptance.
 One player owns one editable project. `/music reset confirm` explicitly clears
 the editable project, including pending work; published discs remain valid.
-
-Sneak-right-click an empty jukebox, or look at one within five blocks and use
-`/music studio`, to open the station menu. Click a track to record it; shift-click
-to toggle its mute. The menu also provides stop, preview, keep, discard, prepare
-blank disc and publish controls. Shift-click Preview auditions the pending take.
-Hold the appropriate disc in the main hand before using a disc control.
 
 ## Commands and permissions
 
@@ -71,8 +110,11 @@ not require playback permission. Existing `/instruments` permissions are preserv
 Publishing requires at least one audible sample and no pending take. Each
 publication receives a new UUID and freezes its title, author, tracks, gain and
 mute state. Editing or resetting the project does not change existing discs.
-Copies reference the same edition and consume a physical blank disc. Conversion,
-publication and copying replace the item in hand, so a full inventory is safe.
+Copies reference the same edition and consume a physical blank disc. The command
+controls replace a single disc held in the main hand. The menu controls use one
+disc from the storage inventory, replacing it in place when it is a single item
+or splitting a stack into a free slot. A full inventory can still use a single
+disc, and an unsplittable stack is rejected before any edition is written.
 Publication writes the edition successfully before replacing the blank.
 
 Right-click an empty jukebox with the recorded disc in either hand. The plugin
@@ -149,6 +191,9 @@ Run `mvn clean verify` from MusicalInstruments. Automated tests exercise note
 overlap, replacement/acceptance, immutable editions, YAML recovery, checkpoints,
 duration bounds, item preservation on storage errors, nearby playback, jukebox
 snapshot updates, cancellation, permissions and vanilla interaction preservation.
+Menu tests cover deferred clicks, mixing, settings, blocked item transfers, station
+distance and permission rechecks. Form edits preserve the latest notes and pending
+take; inventory publication preserves items when storage fails or space is missing.
 These tests use mocked Bukkit objects and do not verify audible output on a client.
 
 Before deployment, on a Paper 1.21.10 test server with the instrument resource pack:
@@ -168,6 +213,10 @@ Before deployment, on a Paper 1.21.10 test server with the instrument resource p
    files, vanilla discs and hopper insertion/extraction.
 8. Verify ActivityTF only counts performed notes, including recording, and never
    advances from private previews or jukebox playback.
+9. Complete a song using only the inventory controls. Check the title form and
+   tempo slider on a client, automatic status updates, inventory-based publication,
+   full inventories, and the new-song confirmation. Try item drags, number keys,
+   bottom-inventory shift-clicks and moving away before using a form response.
 
 This procedure describes required runtime checks, not evidence that a release
 has passed them.
