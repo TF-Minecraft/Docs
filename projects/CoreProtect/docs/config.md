@@ -51,6 +51,18 @@ Create the configured database first with a database engine that provides persis
 
 Multiple active CoreProtect installations may share one ClickHouse database and prefix when `database-lock` is disabled. Configure every installation to use the same CoreProtect version, direct endpoint to the same physical ClickHouse server, and prefix, with a separate CoreProtect data directory; do not use a load balancer across independent nodes. Keep their system clocks synchronized; events recorded by different installations in the same second have an unspecified relative order. A shared prefix is one logical namespace: use globally unique world names unless same-named worlds are intentionally the same world, because their coordinate history is combined. Player attribution assumes that a username is not reassigned to a different account within that namespace and that a UUID-bearing login precedes UUID-less activity under a changed name. UUID-bearing observations preserve an account ID through ordinary username changes, but simultaneous username changes and username reuse are outside the base shared-writer contract. A server may continue displaying a peer's previously cached username until it observes that player locally or CoreProtect reloads. ClickHouse has no cross-server maintenance fence without Keeper, so every purge is rejected while `database-lock` is disabled. To purge a shared namespace, stop every installation sharing it, enable `database-lock` on the one installation that will run the purge, and restart or reload that installation before purging. Follow the same stop-all rule before a database migration; the migration command updates only the installation that runs it, so update the other configurations before restarting them. Replicated and distributed tables remain unsupported.
 
+## Player Position Pings
+
+`player-pings` logs where each online player is at a fixed interval, in seconds:
+
+```yaml
+player-pings: 60
+```
+
+Each ping is stored in the session table alongside logins and logouts, with the player's world and block coordinates. A player's first ping comes one interval after they join. Set the value to `0` to disable pings; a per-world config can disable them in one world. Changes take effect after `/co reload`.
+
+Search pings with `/co lookup u:<player> a:ping`; `a:session` lists only logins and logouts. Purges remove old pings with the rest of the session history. One row per online player per minute is small: about 0.5 GB a year in SQLite for an average of 15 players online.
+
 ## Per-World Configuration
 
 If you'd like to modify the logging settings for a specific world, simply do the following:

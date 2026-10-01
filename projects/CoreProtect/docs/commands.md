@@ -198,6 +198,7 @@ ___
 | `a:session` | player logins/logouts |
 | `a:+session` | player logins |
 | `a:-session` | player logouts |
+| `a:ping` | where online players were, logged once a minute (see `player-pings`) |
 | `a:sign` | messages written on signs |
 | `a:username` | username changes |
 
@@ -282,8 +283,10 @@ Lookup commands are generally the same as rollback commands. The primary differe
   *(lookup inventory transactions by Notch in the last 3 days)*
 * `/co lookup u:Notch a:login`  
   *(lookup all logins ever done by Notch)*
-* `/co lookup u:Notch a:login`  
-  *(lookup all logins ever done by Notch)*
+* `/co lookup u:Notch t:2h a:ping`  
+  *(lookup where Notch was each minute over the last 2 hours)*
+* `/co lookup u:Notch t:1d a:session,ping`  
+  *(lookup Notch's logins, logouts and positions over the last day)*
 * `/co lookup u:Notch a:username`  
   *(lookup previous usernames used by Notch)*
 

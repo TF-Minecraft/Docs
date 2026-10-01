@@ -80,7 +80,7 @@ The following permissions can be used to restrict functionality within the plugi
   Can be optionally used as a negative permission to prevent lookups via the near command.  
   &nbsp;
 * **coreprotect.lookup.session** *(default: op)*  
-  Can be optionally used as a negative permission to prevent session lookups.  
+  Can be optionally used as a negative permission to prevent session lookups, including position pings (`a:ping`).  
   &nbsp;
 * **coreprotect.lookup.sign** *(default: op)*  
   Can be optionally used as a negative permission to prevent sign lookups.  
