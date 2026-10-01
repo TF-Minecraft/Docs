@@ -29,6 +29,12 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 | G10 | A failed grid does not start the multi-day access cooldown; a solved grid does |
 | G11 | `minigame.enabled: false` opens the probe menu straight away |
 | G12 | Vanilla client without the resource pack sees the grid correctly |
+| G13 | First probe never hits a seized pin; it and its neighbours show counts |
+| G14 | Empty probed slots show the count by colour and stack size; item slots show it in the first lore line |
+| G15 | Right-click marks and unmarks a hidden slot; a marked slot cannot be probed; the title `Seized:` count drops per mark |
+| G16 | Probing a seized pin snaps one lockpick, shows every seized pin, and stops probing; revealed items can still be taken |
+| G17 | Two wrong grid cells add two seized pins to the chest |
+| G18 | High Dexterity or a strong pick on a small chest leaves few or no seized pins |
 
 ## Lock toggle and access
 

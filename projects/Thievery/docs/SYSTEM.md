@@ -9,7 +9,7 @@ See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist.
 | Target | Lock model | Robbery | Fail |
 |--------|------------|---------|------|
 | Doors | Key + strength (`DoorData`) | Title **bar** | 60s on that door |
-| Chests / barrels / etc. | Owner + `LockState` | **Pin grid**, then hidden **GUI** probe | Grid: 60s on that chest (`fail-cooldown-ms`). Probe: access-map cooldown |
+| Chests / barrels / etc. | Owner + `LockState` | **Pin grid**, then hidden **GUI** probe with seized pins | Grid: 60s on that chest (`fail-cooldown-ms`). Probe: access-map cooldown |
 | IF furniture, armor stands, item frames | Owner + `LockState` (chest model) | Same **bar** as doors | Same 60s as doors (`fail-cooldown-ms`) |
 
 ## Chest hopper automation
@@ -34,6 +34,18 @@ Failing means `mistakes-to-fail` wrong cells, the recall timer running out, or c
 - `fail-break-chance` rolls whether one lockpick from the main-hand stack snaps.
 
 The grid cancels every click and drag. A player in a grid counts as already picking that chest. A broken chest, a disconnect seen on the tick, a reload or a shutdown ends the grid without a penalty. Chest access, nearby pings and the multi-day access cooldown are recorded only when the probe menu opens. `lockpicking.chest.minigame.enabled: false` skips the grid.
+
+## Chest probe: seized pins
+
+The probe menu is a minesweeper-style puzzle instead of a random break roll. `SeizedPins` hides seized pins among the menu's chest slots, using the menu's nine-column grid for adjacency.
+
+- Pins are placed on the first probe. That slot and, when there is room, its eight neighbours stay clear, so the first probe always reveals something.
+- Each safe probe shows how many of the eight surrounding slots hide a seized pin. An empty slot becomes a glass pane whose colour and stack size give the count (white 0, light blue 1, lime 2, yellow 3, orange 4, magenta 5 or more). An item slot gets the count as its first lore line.
+- Right-clicking a hidden slot marks it as a suspected seized pin (red pane). Marked slots cannot be probed until right-clicked again. The title's `Seized: N` counts pins not yet marked.
+- Probing a seized pin snaps one lockpick, reveals every seized pin (iron bars) and stops probing. Slots already revealed can still be taken, as before.
+- Items under seized pins cannot be reached in that session.
+
+Pin count = chest slots x `lockpicking.chest.seized-density` (0.3) x break chance x the lock type's `break-chance-multiplier`, rounded, plus `seized-per-grid-mistake` (1) for each wrong cell on the pin grid. Break chance is `1 - success chance`, from `base-success-chance`, Dexterity (`dex-map`) and pick strength, capped by `max-success-chance`. With an iron pick (0.35), a 27-slot chest at Dexterity 0 hides 5 pins, and a 54-slot double chest hides 11. At Dexterity 40 the chest hides none before grid mistakes. Risk gain per probe and clue drops are unchanged.
 
 ## Bar engine
 
