@@ -35,6 +35,11 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 | G16 | Probing a seized pin snaps one lockpick, shows every seized pin, and stops probing; revealed items can still be taken |
 | G17 | Two wrong grid cells add two seized pins to the chest |
 | G18 | High Dexterity or a strong pick on a small chest leaves few or no seized pins |
+| D1 | Over several attempts, roughly half the chests open the dial instead of the grid |
+| D2 | Dial: hovering the menu and pressing the shown key while the pick is in the cyan zone sets a tumbler; four tumblers open the probe menu |
+| D3 | Dial: too soon, too late, the wrong key, or a full sweep without a press each add a red slip; three slips fail with the grid's penalties |
+| D4 | Dial: presses with 100-200 ms ping still land where the pick looked; keys 5-9 and mouse clicks do nothing |
+| D5 | Dial: slips add seized pins to the probe menu like wrong grid cells |
 
 ## Lock toggle and access
 

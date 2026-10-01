@@ -9,7 +9,7 @@ See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist.
 | Target | Lock model | Robbery | Fail |
 |--------|------------|---------|------|
 | Doors | Key + strength (`DoorData`) | Title **bar** | 60s on that door |
-| Chests / barrels / etc. | Owner + `LockState` | **Pin grid**, then hidden **GUI** probe with seized pins | Grid: 60s on that chest (`fail-cooldown-ms`). Probe: access-map cooldown |
+| Chests / barrels / etc. | Owner + `LockState` | **Pin grid** or **dial**, then hidden **GUI** probe with seized pins | Grid: 60s on that chest (`fail-cooldown-ms`). Probe: access-map cooldown |
 | IF furniture, armor stands, item frames | Owner + `LockState` (chest model) | Same **bar** as doors | Same 60s as doors (`fail-cooldown-ms`) |
 
 ## Chest hopper automation
@@ -20,16 +20,27 @@ Displays do not use the chest GUI. Doors and displays share one engine.
 
 ## Chest pin grid
 
-Right-clicking a chest with a lockpick runs every existing chest check (trait, access, owner online, clues, already picking, held lockpick, access-map cooldown), then opens `PinGridManager`'s pin grid instead of the probe menu. The grid is a chest menu of `rows` rows with `columns` cells centred in each row. The puzzle state lives in `PinGrid`.
+Right-clicking a chest with a lockpick runs every existing chest check (trait, access, owner online, clues, already picking, held lockpick, access-map cooldown), then `LockMinigameManager` opens a lock minigame instead of the probe menu: the lockpick dial for `minigame.dial-chance` (50%) of attempts, otherwise the pin grid. Both are `LockMinigame` subclasses (`PinGridGame`, `DialGame`) and share the menu, boss bar, end display, failure rules and cooldown below. The grid is a chest menu of `rows` rows with `columns` cells centred in each row. The puzzle state lives in `PinGrid`.
 
 1. Prepare (`prepare-seconds`): all cells grey.
 2. Memorise (`memorise-seconds`): the `pins` cells turn lime.
 3. Recall (`recall-seconds` + `recall-seconds-per-dexterity` x Dexterity): cells hide. A pin clicked turns lime and a wrong cell turns red. A boss bar shows the time left and turns red with a tick for the last 3 seconds.
 4. Solved: every pin set. After a short display, `ContainerManager.openLockpickSession` checks again that the block is still a container and that the thief still holds a lockpick, then opens the probe menu as before.
 
-Failing means `mistakes-to-fail` wrong cells, the recall timer running out, or closing the grid before it is solved (which includes logging out). On failure:
+### Lockpick dial
 
-- The missed pins show yellow.
+Modelled on the NoPixel lockpick minigame. A six-row menu shows a ring of 12 slots with a pick (tripwire hook) sweeping clockwise once from twelve o'clock, a cyan zone of `dial.zone-steps` (2) slots between four and eight o'clock, and the key to press (1-4) as gold nuggets in the middle. The thief hovers any slot in the menu and presses that number key while the pick is in the zone.
+
+- Each sweep picks a new zone, key and speed: `dial.min-step-ticks` to `dial.max-step-ticks` (2-4) ticks per slot, plus `dial.step-ticks-per-dexterity` (0.025) per Dexterity level.
+- A press is judged where the pick was `ping / 50ms` ticks earlier (up to `dial.max-lag-ticks`, 6), which is what the thief saw.
+- A hit sets a tumbler (lime, right edge). Too soon, too late, the wrong key, or letting the pick go all the way round is a slip (red, left edge). The zone flashes lime or red, then a new sweep starts after half a second.
+- Setting `dial.tumblers` (4) solves the lock. `mistakes-to-fail` slips fail it. Slips count as mistakes for seized pins, the same as wrong grid cells.
+
+### Failure
+
+Failing means `mistakes-to-fail` wrong cells or slips, the grid's recall timer running out, or closing either minigame before it is solved (which includes logging out). On failure:
+
+- On the grid, the missed pins show yellow.
 - `LockPickManager.applyCooldown` puts the chest's target id `chest:<world>:<x>:<y>:<z>` on `fail-cooldown-ms`. A new attempt is refused until it expires, and `/thievery` cooldown resets clear it.
 - `fail-break-chance` rolls whether one lockpick from the main-hand stack snaps.
 
@@ -45,7 +56,7 @@ The probe menu is a minesweeper-style puzzle instead of a random break roll. `Se
 - Probing a seized pin snaps one lockpick, reveals every seized pin (iron bars) and stops probing. Slots already revealed can still be taken, as before.
 - Items under seized pins cannot be reached in that session.
 
-Pin count = chest slots x `lockpicking.chest.seized-density` (0.3) x break chance x the lock type's `break-chance-multiplier`, rounded, plus `seized-per-grid-mistake` (1) for each wrong cell on the pin grid. Break chance is `1 - success chance`, from `base-success-chance`, Dexterity (`dex-map`) and pick strength, capped by `max-success-chance`. With an iron pick (0.35), a 27-slot chest at Dexterity 0 hides 5 pins, and a 54-slot double chest hides 11. At Dexterity 40 the chest hides none before grid mistakes. Risk gain per probe and clue drops are unchanged.
+Pin count = chest slots x `lockpicking.chest.seized-density` (0.3) x break chance x the lock type's `break-chance-multiplier`, rounded, plus `seized-per-grid-mistake` (1) for each wrong cell on the pin grid or slip on the dial. Break chance is `1 - success chance`, from `base-success-chance`, Dexterity (`dex-map`) and pick strength, capped by `max-success-chance`. With an iron pick (0.35), a 27-slot chest at Dexterity 0 hides 5 pins, and a 54-slot double chest hides 11. At Dexterity 40 the chest hides none before grid mistakes. Risk gain per probe and clue drops are unchanged.
 
 ## Bar engine
 
