@@ -9,7 +9,7 @@ See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist.
 | Target | Lock model | Robbery | Fail |
 |--------|------------|---------|------|
 | Doors | Key + strength (`DoorData`) | Title **bar** | 60s on that door |
-| Chests / barrels / etc. | Owner + `LockState` | Hidden **GUI** probe | Access-map cooldown |
+| Chests / barrels / etc. | Owner + `LockState` | **Pin grid**, then hidden **GUI** probe | Grid: 60s on that chest (`fail-cooldown-ms`). Probe: access-map cooldown |
 | IF furniture, armor stands, item frames | Owner + `LockState` (chest model) | Same **bar** as doors | Same 60s as doors (`fail-cooldown-ms`) |
 
 ## Chest hopper automation
@@ -17,6 +17,23 @@ See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist.
 When a **block hopper** moves items (`InventoryMoveItemEvent`), allow pull/deposit only if the hopper and every involved block container (chest, barrel, hopper, etc.) share the same **non-null owner UUID**. Guild/PUBLIC player access does not apply to hoppers — only owner equality. Unowned containers block automation; hopper minecarts are not covered. Droppers and other initiators are unchanged.
 
 Displays do not use the chest GUI. Doors and displays share one engine.
+
+## Chest pin grid
+
+Right-clicking a chest with a lockpick runs every existing chest check (trait, access, owner online, clues, already picking, held lockpick, access-map cooldown), then opens `PinGridManager`'s pin grid instead of the probe menu. The grid is a chest menu of `rows` rows with `columns` cells centred in each row. The puzzle state lives in `PinGrid`.
+
+1. Prepare (`prepare-seconds`): all cells grey.
+2. Memorise (`memorise-seconds`): the `pins` cells turn lime.
+3. Recall (`recall-seconds` + `recall-seconds-per-dexterity` x Dexterity): cells hide. A pin clicked turns lime and a wrong cell turns red. A boss bar shows the time left and turns red with a tick for the last 3 seconds.
+4. Solved: every pin set. After a short display, `ContainerManager.openLockpickSession` checks again that the block is still a container and that the thief still holds a lockpick, then opens the probe menu as before.
+
+Failing means `mistakes-to-fail` wrong cells, the recall timer running out, or closing the grid before it is solved (which includes logging out). On failure:
+
+- The missed pins show yellow.
+- `LockPickManager.applyCooldown` puts the chest's target id `chest:<world>:<x>:<y>:<z>` on `fail-cooldown-ms`. A new attempt is refused until it expires, and `/thievery` cooldown resets clear it.
+- `fail-break-chance` rolls whether one lockpick from the main-hand stack snaps.
+
+The grid cancels every click and drag. A player in a grid counts as already picking that chest. A broken chest, a disconnect seen on the tick, a reload or a shutdown ends the grid without a penalty. Chest access, nearby pings and the multi-day access cooldown are recorded only when the probe menu opens. `lockpicking.chest.minigame.enabled: false` skips the grid.
 
 ## Bar engine
 

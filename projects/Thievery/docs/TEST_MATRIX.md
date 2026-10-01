@@ -11,7 +11,24 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 | R1 | Door lockpick bar still runs; success opens door |
 | R2 | Door fail/break applies 60s on that door only |
 | R3 | Walking away cancels door pick |
-| R4 | Chest GUI lockpick unchanged |
+| R4 | Chest GUI lockpick unchanged once the pin grid is solved |
+
+## Chest pin grid
+
+| # | Check |
+|---|--------|
+| G1 | Lockpick right-click on a chest opens the 6x6 grid; pins light for 4s, then hide |
+| G2 | Setting every pin opens the hidden probe menu; probing, breaks, clues and taking behave as before |
+| G3 | Three wrong cells: missed pins show yellow, grid closes, the chest refuses another attempt for 60s |
+| G4 | Timer runs out: same as G3; the boss bar turns red with ticks for the last 3 seconds |
+| G5 | Closing the grid early counts as a failure; logging out mid-grid does too |
+| G6 | Failure snaps one lockpick about half the time (`fail-break-chance`); a stack loses one |
+| G7 | A higher-Dexterity character gets more recall time |
+| G8 | A second thief cannot start on a chest whose grid is running ("Someone is already picking this lock!") |
+| G9 | Shift-click, number keys, drag and offhand swap in the grid move no items |
+| G10 | A failed grid does not start the multi-day access cooldown; a solved grid does |
+| G11 | `minigame.enabled: false` opens the probe menu straight away |
+| G12 | Vanilla client without the resource pack sees the grid correctly |
 
 ## Lock toggle and access
 
