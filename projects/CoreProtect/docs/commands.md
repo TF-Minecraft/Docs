@@ -200,7 +200,14 @@ ___
 | `a:-session` | player logouts |
 | `a:ping` | where online players were, logged once a minute (see `player-pings`) |
 | `a:sign` | messages written on signs |
+| `a:skill` | skills used, and where they teleported the player |
 | `a:username` | username changes |
+
+#### Skills
+
+With MythicLib installed, CoreProtect logs each skill a player activates, such as MMOCore class skills and MMOItems abilities, at the player's position. If the skill teleports the player within 5 seconds, a second entry records where they went, at the destination, for example `[skill] Arcane Blink (ARCANE_BLINK) teleported from 0 -60 1 to 0 -59 6`. Automatic skills, such as timers and on-hit effects, are not logged.
+
+Skill entries are stored with commands, so `a:command` also lists them and both need the `coreprotect.lookup.command` permission. Use `a:skill` to see only skills, and add `f:<name>` to narrow them to one skill, for example `/co lookup u:Steve t:1d a:skill f:arcane`. A radius lookup such as `/co lookup r:20 a:skill` finds players who teleported into an area. Set `player-skills: false` in `config.yml` to stop logging skills.
 
 ---
 
