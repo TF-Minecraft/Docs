@@ -25,10 +25,10 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 | G6 | Escape does not close the grid; "Give up" does, and counts as a failed attempt |
 | G7 | Clicking pins as fast as possible sets every one; none are dropped while the dialog redraws |
 | D1 | The other half of picks float the lockpick ring in front of the thief; nobody else nearby sees it |
-| D2 | The pick is the thief's own lockpick, glowing, and glides smoothly round the ring at the client's frame rate |
+| D2 | A white needle with a dark edge crosses the dots, stays sharp at every angle, and glides smoothly round the ring at the client's frame rate |
 | D3 | The middle shows the thief's own key: W/A/S/D on QWERTY, Z/Q/S/D on AZERTY, rebound keys if rebound; pressing it in the green sets a tumbler pin |
 | D4 | The hotbar never changes; the thief cannot walk or jump, the field of view does not change, but they can look around |
-| D5 | Too soon, too late, the wrong key, two keys at once, or a full pass without a press each add a slip; three slips fail with the grid's penalties |
+| D5 | Too soon, too late, the wrong key, two keys at once, or a full pass without a press is a slip, and one slip fails with the grid's penalties |
 | D6 | Each tumbler narrows the zone and reverses the sweep; notch clicks rise inside the zone |
 | D7 | Picking while looking at a chest or wall up close, looking down at a chest on the ground from 1-4 blocks, or looking up at a raised chest floats the whole ring in front of it, never partly inside it |
 | D8 | Sneak gives up; taking damage fails; being teleported away ends the pick without a penalty |
