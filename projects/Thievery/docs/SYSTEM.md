@@ -9,7 +9,7 @@ See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist.
 | Target | Lock model | Robbery | Fail |
 |--------|------------|---------|------|
 | Doors | Key + strength (`DoorData`) | Title **bar** | 60s on that door |
-| Chests / barrels / etc. | Owner + `LockState` | **Pin grid** or **dial**, then hidden **GUI** probe with seized pins | Grid: 60s on that chest (`fail-cooldown-ms`). Probe: access-map cooldown |
+| Chests / barrels / etc. | Owner + `LockState` | **Pin grid** dialog or floating **lockpick ring**, then hidden **GUI** probe with seized pins | Grid: 60s on that chest (`fail-cooldown-ms`). Probe: access-map cooldown |
 | IF furniture, armor stands, item frames | Owner + `LockState` (chest model) | Same **bar** as doors | Same 60s as doors (`fail-cooldown-ms`) |
 
 ## Chest hopper automation
@@ -18,33 +18,45 @@ When a **block hopper** moves items (`InventoryMoveItemEvent`), allow pull/depos
 
 Displays do not use the chest GUI. Doors and displays share one engine.
 
-## Chest pin grid
+## Chest lock minigames
 
-Right-clicking a chest with a lockpick runs every existing chest check (trait, access, owner online, clues, already picking, held lockpick, access-map cooldown), then `LockMinigameManager` opens a lock minigame instead of the probe menu: the lockpick dial for `minigame.dial-chance` (50%) of attempts, otherwise the pin grid. Both are `LockMinigame` subclasses (`PinGridGame`, `DialGame`) and share the menu, boss bar, end display, failure rules and cooldown below. The grid is a chest menu of `rows` rows with `columns` cells centred in each row. The puzzle state lives in `PinGrid`.
+Right-clicking a chest with a lockpick runs every existing chest check (trait, access, owner online, clues, already picking, held lockpick, access-map cooldown), then `LockMinigameManager` opens a lock minigame instead of the probe menu: the floating lockpick ring for `minigame.dial-chance` (50%) of attempts, otherwise the pin grid dialog. Both are `LockMinigame` subclasses (`PinGridGame`, `RingDialGame`) and share the boss bar, the end-of-game pause, the failure rules and the cooldown below. Staff can force either with `/thievery testpick [grid|dial]` while looking at a container and holding a lockpick; it skips the trait, clue, ownership and access checks.
 
-1. Prepare (`prepare-seconds`): all cells grey.
-2. Memorise (`memorise-seconds`): the `pins` cells turn lime.
-3. Recall (`recall-seconds` + `recall-seconds-per-dexterity` x Dexterity): cells hide. A pin clicked turns lime and a wrong cell turns red. A boss bar shows the time left and turns red with a tick for the last 3 seconds.
-4. Solved: every pin set. After a short display, `ContainerManager.openLockpickSession` checks again that the block is still a container and that the thief still holds a lockpick, then opens the probe menu as before.
+### Pin grid (dialog)
 
-### Lockpick dial
+Modelled on the NoPixel thermite minigame and shown as a vanilla dialog (`GridDialogs`), so it works on unmodded clients. Each cell is a button showing a block texture: an unlit redstone lamp, a lit lamp while memorising, a sea lantern once set, a redstone block for a wrong cell and a gold block for a pin missed on a fail. `minigame.grid.sprites: false` draws coloured squares instead. The puzzle state lives in `PinGrid`; `GridScreen` is one frame of the dialog.
 
-Modelled on the NoPixel lockpick minigame. A six-row menu shows a ring of 12 slots with a pick (tripwire hook) sweeping clockwise once from twelve o'clock, a cyan zone of `dial.zone-steps` (2) slots between four and eight o'clock, and the key to press (1-4) as gold nuggets in the middle. The thief hovers any slot in the menu and presses that number key while the pick is in the zone.
+1. Prepare (`prepare-seconds`): every lamp unlit.
+2. Scan: the pins light row by row, two ticks a row, with a rising tick.
+3. Memorise (`memorise-seconds`): every pin lit.
+4. Recall (`recall-seconds` + `recall-seconds-per-dexterity` x Dexterity): the lamps go dark and the thief clicks the pins. Each correct pin plays the next note of a pentatonic scale; a wrong cell plays a bass note. The boss bar is the timer and ticks red for the last 3 seconds.
 
-- Each sweep picks a new zone, key and speed: `dial.min-step-ticks` to `dial.max-step-ticks` (2-4) ticks per slot, plus `dial.step-ticks-per-dexterity` (0.025) per Dexterity level.
-- A press is judged where the pick was `ping / 50ms` ticks earlier (up to `dial.max-lag-ticks`, 6), which is what the thief saw.
-- A hit sets a tumbler (lime, right edge). Too soon, too late, the wrong key, or letting the pick go all the way round is a slip (red, left edge). The zone flashes lime or red, then a new sweep starts after half a second.
+The dialog cannot be closed with Escape; "Give up" is the way out and counts as a failed attempt. The dialog is redrawn only when something changes. A quick thief often clicks again before the redrawn frame arrives, so a cell click counts whichever frame it came from; a cell is the same cell on every frame, and clicking a cell twice does nothing. Buttons from an old dialog stop working once that game ends, is cancelled or is replaced by a new one.
+
+A dialog button whose label is only a texture draws nothing on 1.21.10 clients, so each label is a one-pixel dot in the button's face colour (no shadow) followed by the texture, tinted white.
+
+### Lockpick ring (display entities)
+
+Modelled on the NoPixel lockpick minigame. `RingView` floats a ring of 24 dots in front of the thief, made of display entities that only the thief can see: the tumbler pins and slip marks above it, the key to press in the middle, and the thief's own lockpick (a copy of the held item, glowing gold) as the pick. The server sends the pick's position two ticks ahead and lets the client interpolate, so it moves at the player's own frame rate rather than in 20-a-second steps.
+
+- Keys are the movement keys, read from the player input packet (`PlayerInputEvent`), so the thief's hotbar never changes. The middle shows a keybind component, so each player sees their own key for forward, left, back or right (Z/Q/S/D on AZERTY, or their rebinding). Sneak gives up.
+- The thief is held still while picking (`LockFreeze`): walk speed 0, which also keeps the field of view unchanged, a transient jump modifier, and flight switched off and restored afterwards. Movement events hold the thief's horizontal position against knockback, water or a nudge, but allow looking around and falling, so a thief who started mid-jump lands rather than hovering until the server kicks them for flying. Hotbar scrolling, dropping, swapping hands, inventory clicks and mounting a horse or boat are cancelled, so the lockpick stays in hand. The original walk speed is stored on the player, so a crash mid-pick is undone on their next join.
+- Each pass (`Sweep`) takes `dial.min-lap-seconds` to `dial.max-lap-seconds`, plus `dial.lap-seconds-per-dexterity` per Dexterity level, with a zone of `dial.zone-width` of the ring somewhere after the first third. Each set tumbler narrows the zone by `dial.zone-shrink-per-tumbler` (never below 40%) and, with `dial.alternate-direction`, reverses the sweep like a combination lock.
+- Quiet clicks mark each notch the pick passes; they rise in pitch inside the zone.
+- A press is judged where the pick was `ping / 50ms` ticks earlier (up to `dial.max-lag-ticks`), which is what the thief saw. A hit pops a pin and a green burst; too soon, too late, the wrong key, two keys at once (fumbled) or a full pass without a press is a slip, with a red flash and smoke. Particles are sent to the thief only.
+- The ring floats at `dial.distance` blocks, or at most 60% of the way to the block being looked at, scaled so it looks the same size, and slightly above the crosshair to clear the action bar.
 - Setting `dial.tumblers` (4) solves the lock. `mistakes-to-fail` slips fail it. Slips count as mistakes for seized pins, the same as wrong grid cells.
+- You cannot start the ring while riding or gliding.
 
-### Failure
+### Failure and interruptions
 
-Failing means `mistakes-to-fail` wrong cells or slips, the grid's recall timer running out, or closing either minigame before it is solved (which includes logging out). On failure:
+Failing means `mistakes-to-fail` wrong cells or slips, the grid's recall timer running out, giving up (the dialog button or sneak), being hurt, or logging out mid-pick. On failure:
 
-- On the grid, the missed pins show yellow.
+- On the grid, the missed pins show as gold.
 - `LockPickManager.applyCooldown` puts the chest's target id `chest:<world>:<x>:<y>:<z>` on `fail-cooldown-ms`. A new attempt is refused until it expires, and `/thievery` cooldown resets clear it.
 - `fail-break-chance` rolls whether one lockpick from the main-hand stack snaps.
 
-The grid cancels every click and drag. A player in a grid counts as already picking that chest. A broken chest, a disconnect seen on the tick, a reload or a shutdown ends the grid without a penalty. Chest access, nearby pings and the multi-day access cooldown are recorded only when the probe menu opens. `lockpicking.chest.minigame.enabled: false` skips the grid.
+Ending without a penalty: being teleported away (another world, or more than a block), the chest being broken, a reload or a shutdown. Logging out after solving gives no reward. A thief already in a minigame is told "You're already working a lock." and cannot start another; a player in a minigame counts as already picking that chest. Chest access, nearby pings and the multi-day access cooldown are recorded only when the probe menu opens. `lockpicking.chest.minigame.enabled: false` skips the minigame.
 
 ## Chest probe: seized pins
 
