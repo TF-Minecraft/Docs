@@ -30,7 +30,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 | D4 | The hotbar never changes; the thief cannot walk or jump, the field of view does not change, but they can look around |
 | D5 | Too soon, too late, the wrong key, two keys at once, or a full pass without a press each add a slip; three slips fail with the grid's penalties |
 | D6 | Each tumbler narrows the zone and reverses the sweep; notch clicks rise inside the zone |
-| D7 | Picking while looking at a chest or wall up close floats the ring in front of it, smaller, never inside it |
+| D7 | Picking while looking at a chest or wall up close, looking down at a chest on the ground from 1-4 blocks, or looking up at a raised chest floats the whole ring in front of it, never partly inside it |
 | D8 | Sneak gives up; taking damage fails; being teleported away ends the pick without a penalty |
 | D9 | Logging out mid-ring fails the attempt and the next join walks and jumps normally; a crash mid-ring is undone on the next join |
 | D10 | Riding a mount or gliding refuses to start the ring; a flying staff member is set down and can fly again afterwards |
