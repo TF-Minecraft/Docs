@@ -20,27 +20,30 @@ Spline (JSON, always loaded or loaded per world)
   samples     motion + bake source
   segments    health / broken (bombs write here)
   visuals     ItemDisplay entities, chunk-local
-Consist       ordered cars + splineId + arc length s
+Consist       ordered cars + splineId + arc length s + body orientation + occupied junctions
 ```
 
 - **Anything that touches the rail** (explosion, break, admin repair) updates **segment flags** on the spline. Displays are rebuilt from that, or hidden if the chunk is unloaded.
 - A missing or unloaded display **must not** change the path. Motion advances loaded vehicles using this data.
-- Cars **do not** physics-ride the mesh. Each car is a point at arc length `s - spacing` with rotation from the sample tangent. At a turnout, cars stay on the stem until they reach the frog (they are not copied onto the loco’s spline).
+- Cars **do not** physics-ride the mesh. Their positions follow coupler spacing along the selected route. Each car changes spline when it reaches the frog; coupled cars can span multiple junctions.
 
 ### Motion (1D)
 
-- Locomotive: `s +=` signed panel speed (throttle already signed; reverse is negative). `travelSign` is `+1` / `-1` from that speed for junctions and car rewind. No `travelSign * speed`.
-- Car `i`: `s_i` is coupler spacing **behind** the parent along stem + optional branch, not always `s_loco` on one spline.
-- Branch spillover in `rewind` only when forward travel spans the frog; reverse on the stem keeps all cars on the stem.
-- Each car's `rewind` uses its **parent's** `travelSign` (loco for the first car); branch cars use `+1` along the branch arc.
-- Position: teleport the armor stand **XYZ** only. Heading is the **+s** sample tangent (`ConvertedAngle.fromDirection`), not the teleport delta and not `travelSign` (reverse does not spin the loco). Bone yaw is inverted; pitch is the sample pitch.
-- **Circuit:** if `loop` is true, `advance` wraps past the start/end join. Ends within `tracks.join-distance` persist `loop: true` (extend, JSON load, or `closeLoop`).
-- **Junctions:** captain holds **A** or **D** within `junction-arm-distance` (default 16) along `s` of the next frog to arm that side. The arm latches until the frog. Matching turnout `side` diverges, otherwise through. Chat tells you if you armed, if the frog is too far, and through vs diverge with why. Backing on the branch to `s = 0` rejoins the stem. Reverse clears the arm.
-- **Broken segment:** stop (or clamp `s` before the break). Stay on the spline.
+- Signed movement along a spline is panel speed × body `orientation`. Orientation is +1 when the nose faces +s and −1 when it faces −s; it is independent of forward/reverse throttle. `travelSign` follows actual motion, including braking and coasting.
+- `TrainRoute` walks connections in the body's frame and preserves leftover movement across a junction. Crossing between a stem and branch multiplies orientation by the junction's `facing` sign.
+- Each carriage follows its parent's rear coupler. Wheel and bogie offsets use that car's body orientation, so reversing never swaps the carriage order or spins a model.
+- Position: teleport the armor stand **XYZ** only. Heading follows the rail tangent in the saved body orientation; the body bone supplies yaw and pitch.
+- **Circuit:** loop tracks wrap at their seam. A real branch tip remains an open end.
+- **Junctions:** captain holds **A** or **D** within `junction-arm-distance` (default 16) of the leading wheels. Left/right are viewed towards actual travel. Matching the turnout side selects the branch; the other key selects through. Reverse works too. At rest, nonzero throttle chooses the approach direction; otherwise the last direction is retained.
+- **Whole-train route:** choose before the first wheels enter. The switch is locked while occupied, including when the rear carriage leads. Each occupied junction keeps its own decision until the whole consist clears, so reversing midway retraces the same route. Leaving a branch follows its connection back to the stem.
+- **Broken segment:** stop or clamp before the break; remain bound to the track.
 
-#### Reverse consist placement
+#### Reverse example
 
-Trailing cars rewind behind the parent using signed arc length. On loops, `stemLoop` must match the bound spline so cars wrap instead of clamping at the seam. On branches, rewind respects reverse travel (`parentS + gap`). On the stem, branch spillover applies only when forward travel spans the frog; reverse keeps cars on the stem. Multi-car consists pass each parent's `travelSign` into the next `rewind()` call.
+For an engine with three carriages backing into a siding, carriage 3 enters first,
+then 2, then 1, then the engine. Select the siding before carriage 3's leading
+wheels reach the junction. The switch stays locked until the engine clears.
+Stopping halfway and pulling forward again follows the same rails.
 
 ### Spacing
 
@@ -65,14 +68,14 @@ Track items, lay rules, and train debug logging live in [`trains.yml`](https://g
 One spline per track (no stored sections). A **stroke** is one lay with the configured layer item (`item-layer`, default `m.utils.train_track_layer`):
 
 - Left-click: **start location** (block or existing track). Click an existing end to join that track.
-- Right-click: **end location**. New track is a straight line in XZ from start to end (player look is ignored). Click within `join-distance` of an existing **end** to join: same track extends, or **two tracks link into one** if start is on one end and end is on another. Join curves from the **track** heading. Crossing the middle of a track still refuses (use the junction item for a turnout). Joins keep the direction (`+s`) of any track a train is on, because trains face `+s`: closing a loop never reverses the track, and linking two tracks reverses at most one track that has no train and is not a branch. Linking two occupied tracks start to start, or end to end, is refused. Trains saved in unloaded chunks count as occupying their track.
+- Right-click: **end location**. New track is a straight line in XZ from start to end (player look is ignored). Click within `join-distance` of an existing **end** to join: same track extends, or **two tracks link into one** if start is on one end and end is on another. Join curves from the **track** heading. Crossing the middle of a track still refuses (use the junction item for a turnout). Joins keep the direction (`+s`) of any track a train is on, so each train keeps its saved orientation: closing a loop never reverses the track, and linking two tracks reverses at most one track that has no train and is not a branch. Linking two occupied tracks start to start, or end to end, is refused. Trains saved in unloaded chunks count as occupying their track.
 - **Creative / spectator:** the spline is saved, then displays rebake in one step. One place sound + particles at the last sample (`build` in `trains.yml`).
 - **Survival / adventure:** same save, but displays grow along the new stroke one sample every `build.interval-ticks` (default 4, five per second). Prefix rebakes so collinear runs become medium then large. Each step plays `build.sound` and particles at the new sample, and swings the main hand if `build.swing` is true. Set `build.interval-ticks` to `0` to always place instantly. Connecting two tracks or closing a loop is still instant plus one burst.
 - Remover item (`item-remover`, default `m.utils.train_track_remover`): left-click **digs** a sample (interior dig **splits** into two tracks). On a branch, digging any part of the **initial turnout lay** (stored as `turnoutS` on the junction) removes the whole turnout (junction, switch, and that stub). Digging past that initial lay uses normal dig/split rules; a longer branch extension is kept as plain track. The through stem stays. The remover refuses to dig track that a bound consist occupies, measured from each car out to its couplers. That includes a branch turnout the dig would drop because its frog ends up on a piece shorter than `min-lay-distance`. When a dig or lay rebuilds a spline, trains on it keep their world position on the new spline or pieces. A train in an unloaded chunk checks its saved spline and `s` against where it respawns, and re-finds the track under it (or unbinds if the track is gone).
 - Junction item (`item-junction`, default `m.utils.train_track_junction`): right-click **existing track** (interior allowed) to start a junction (nothing is saved yet). Then layer **right-click** lays **one** turnout from that frog. The junction is saved only if that branch lays. Through stays the original spline. Layer **left-click** while a junction is pending cancels it and marks a normal start. The stem must be at least `min-lay-distance` (default 8) long; loops are exempt. After a split, a junction rehomed onto a piece shorter than that is dropped with its branch.
 - `min-junction-spacing` (default 16) along stem arc `s` (loop wrap). One branch per junction (no 3-way). Joining a branch tip into another track is not shipped.
 - `max-junction-length` (default 32): the turnout from frog to click cannot be longer than that (straight-line or along the laid curve).
-- `junction-arm-distance` (default 16): press A/D this far before the frog (facing approach only) to throw the switch. A = LEFT, D = RIGHT vs the stored lay-time side: matching side throws diverge, the other key throws through. The lever stays until thrown again. Every train follows `thrown` (including unmanned). Tape is throttle only.
+- `junction-arm-distance` (default 16): press A/D this far before the leading wheels reach the frog (a facing approach in either forward or reverse). A = LEFT, D = RIGHT viewed towards travel. Matching the turnout side throws diverge; the other key throws through. Occupied points refuse changes. Every train, including unmanned trains, takes the switch position when its leading wheels arrive and retains that choice until clear. Tape controls throttle only.
 - `item-switch` (default `ia.tfmc:railroad_switch`) plus `switch.offset-along` / `offset-out` / `offset-y` / `yaw-inward` / `throw-degrees` / `throw-degrees-per-second` place and animate the ItemDisplay on the through side of the frog. Chunk load respawns it at the saved pose; the entity is not persistent.
 - A junction branch still needs a 3-wide by 3-tall corridor of passable blocks. It may cross existing track (including the stem); overlapping tracks do not refuse a turnout.
 - `max-turn-degrees` (default 35) and `min-lay-distance` (default 8): refuse if the stroke is too short, or if a **join** turn (heading change from the existing end) is too sharp.
@@ -107,24 +110,26 @@ On save, write at least:
 
 - `splineId`, `s` (loco origin along the path)
 - `child` UUID (and `parent` on trailing cars)
-- On the loco, optional `junction` and `diverge` when the consist is mid-turnout
+- `orientation` when −1; absent means +1. Legacy `travelSign = -1` remains last movement direction, not body facing.
+- `junctions`: occupied junction IDs mapped to branch/through decisions. The locomotive also writes legacy `junction` and `diverge` fields.
 
 On load, cars use the normal vehicle spawning path. When both ends of a link exist in memory, `setChild` / `setParent` again. If the child chunk loads first, the car waits; it does not need a special global spawn.
 
-Do **not** require spawning the whole consist when one chunk loads. Accept temporary split until the other chunks load.
+Do **not** require spawning the whole consist when one chunk loads. Accept temporary split until the other chunks load; retain occupied routes until missing links resolve. Old saves remain readable. Before downgrading to a plugin without body orientation, restore matching vehicle-data backups: an older reader cannot place a train saved facing −s correctly.
 
 ## Cargo, recorder and tickets
 
 - container `allow-items` (TLibs paths).
 - loco YAML `fuel-cars` (vehicle ids). Each engine slow-tick, the loco drains one matching fuel item from containers on the car directly behind if that car's id is on the list. Empty list = no auto-drain. Cargo GUIs share one inventory so every viewer sees the take.
-- recorder item (`tracks.item-recorder`) stores throttle vs spline `s`, travel sign, and **hold ticks** at a stop (engine off still counts). Circuits only: recording runs until one full lap of the **origin** loop (or you cancel). Time on a siding is recorded but does not finish the lap. Samples may include `splineId` and `junction`. Playback ramps throttle one step per tick (autopilot). Captain seat is manual (A/D still choose the frog); leaving resumes the tape from current `s`. Without a captain, a tape that recorded that junction diverges; legacy tapes stay through. Loaded consist. Not a second path.
+- recorder item (`tracks.item-recorder`) stores throttle vs spline `s`, travel sign, and **hold ticks** at a stop (engine off still counts). Circuits only: recording runs until one full lap of the **origin** loop (or you cancel). Time on a siding is recorded but does not finish the lap. Samples may include `splineId`, `junction`, and body `orientation` (legacy default +1). Playback converts each sample from its recorded body orientation to the current train orientation; braking throttle can have the opposite sign to actual travel. Playback ramps throttle one step per tick (autopilot). Captain seat is manual (A/D still choose the frog); leaving resumes the tape from current `s`. Junction choice follows the physical switch and the consist’s occupied-route decisions; the tape does not throw switches.
 - Same-spline collision: if a locomotive dummy hitbox overlaps another train piece that is not on the same consist, those **two** vehicles explode. The rest of each consist stays and uncouples. Through vs branch at the frog does **not** explode (no frog AABB). Railroad switches use the configured `item-switch` ItemDisplay at each frog.
 - generic vehicle tickets (planes too). Owner toggles in the ownership GUI. Passenger seats need a matching ticket; captain, gunner, mechanic, owner, and whitelist skip. Consist uses the loco ticket id. On coupled trains, whitelist and ticket settings use the locomotive (`ticketSource`); a loco ticket opens passenger seats on any connected car. Tickets are not consumed.
 
 ## Validation
 
 Check lay/join/dig/split, loop seams, broken segments, forward and reverse
-consists, both turnout directions, chunk unload/reload, persistence, rail resync,
+consists, both turnout directions, three-carriage reverse entry/exit, reversal midway,
+adjacent occupied junctions, chunk unload/reload, persistence, rail resync,
 recorder stops, coal transfer and passenger ticket access against the current
 source and configuration. Record the tested commit and results with the run.
 
@@ -134,4 +139,4 @@ source and configuration. Record the tested commit and results with the run.
 - Movement entry: [`VehicleMovementController`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/vehicles/controller/VehicleMovementController.java) `v.isTrain()` -> `splineTick`
 - Vehicle persist: [`VehiclePersistence`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/database/VehiclePersistence.java) (`saveLive`)
 - Chunk spawn: [`SpawnManager`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/managers/SpawnManager.java)
-- Junctions: [`TrackJunction`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/tracks/TrackJunction.java), [`TrackRegistry`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/tracks/TrackRegistry.java), [`TrackJunctionTravel`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/tracks/TrackJunctionTravel.java)
+- Junctions: [`TrackJunction`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/tracks/TrackJunction.java), [`TrackRegistry`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/tracks/TrackRegistry.java), [`TrainRoute`](https://github.com/TF-Minecraft/VehicleFramework/blob/main/src/main/java/net/tfminecraft/vehicleframework/tracks/TrainRoute.java)
