@@ -1,5 +1,7 @@
 # Recycler - Architecture
 
+[Recycler](../README.md) · [All projects](../../../README.md)
+
 Recycler resolves item provenance through its provider chain and persists deposited items in escrow before recycling.
 
 ## Package map
@@ -61,7 +63,7 @@ Specialized providers run before the config fallback:
 | Priority | Provider | When active |
 |----------|----------|-------------|
 | 10 | `AdvancedCraftingProvider` | AdvancedCrafting plugin present |
-| 11 | `AlloyScrapProvider` | AdvancedCrafting present; scrap tagged with its base metal |
+| 11 | `AlloyScrapProvider` | AdvancedCrafting present; scrap tagged with its base ingredient |
 | 15 | `MagicGearProvider` | Magic present; weapon has `gear_craft_inputs` (Magic 0.4.7+) |
 | 20 | `GunsAndGadgetsProvider` | GunsAndGadgets present; gun has `gg_craft_inputs` (2.0.6+) |
 | 25 | `GoldsmithProvider` | GemInfusion present; piece has `goldsmith_inputs` (2.2.5+) |
@@ -72,7 +74,7 @@ Resolution flow:
 1. `canHandle(item)` on each provider in order.
 2. `resolveBaseOutputs(item)` returns base material amounts.
 3. `RecycleContext` applies the provider's `returnRate()` (its `return_rates` entry: 0.5 by default, 1.0 for config recipes) and durability factor.
-4. `floor(base * rate * durability * stackSize)` per output line.
+4. `floor(base * rate * durability * stackSize)` per output line. Alloy scrap lines carry a per-unit chance instead; `RecycleResult.roll()` rolls them only on confirmation.
 
 ## Escrow (crash safety)
 
@@ -89,7 +91,7 @@ The GUI is **not** the source of truth for the input item.
 - **Required:** TLibs, ItemsAdder (station block + icons)
 - **Soft:** AdvancedCrafting, Magic, GunsAndGadgets, GemInfusion, MMOItems
 
-AdvancedCrafting, Magic, and GunsAndGadgets providers require stamped provenance from those plugins. The alloy scrap provider needs AdvancedCrafting 2.2.0 or newer (`ScrapProvenance`). Magic, GunsAndGadgets and goldsmithing need the craft-input stamps from Magic 0.4.7, GunsAndGadgets 2.0.6 and GemInfusion 2.2.5. Admin escrow tooling: `/recycler escrow list|return`.
+AdvancedCrafting, Magic, and GunsAndGadgets providers require stamped provenance from those plugins. The alloy scrap provider needs AdvancedCrafting 2.2.5 or newer (`ScrapProvenance.readInputs`). Magic, GunsAndGadgets and goldsmithing need the craft-input stamps from Magic 0.4.7, GunsAndGadgets 2.0.6 and GemInfusion 2.2.5. Admin escrow tooling: `/recycler escrow list|return`.
 
 ## What not to add yet
 

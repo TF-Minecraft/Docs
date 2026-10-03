@@ -1,5 +1,7 @@
 # Recycler - System design
 
+[Recycler](../README.md) · [All projects](../../../README.md)
+
 Player-facing recycling station at ItemsAdder furniture `iaf(tfmc:recycling_station)`.
 
 ## Station interaction
@@ -25,7 +27,7 @@ Reference: `util/GridLayout.java`.
 
 ## Return math
 
-Every provider uses the same formula with its own rate:
+Every provider except alloy scrap uses the same formula with its own rate:
 
 ```
 final_amount = floor(base_amount * return_rate * durability_factor * stack_amount)
@@ -36,7 +38,7 @@ final_amount = floor(base_amount * return_rate * durability_factor * stack_amoun
 | Key | Provider | Default |
 |-----|----------|---------|
 | `advanced_crafting` | `AdvancedCraftingProvider` | `0.5` |
-| `alloy_scrap` | `AlloyScrapProvider` | `0.5` (1 base metal per 2 scrap) |
+| `alloy_scrap` | `AlloyScrapProvider` | `0.5` (chance per recorded base unit; see [alloy scrap](#advancedcrafting-alloy-scrap)) |
 | `magic_gear` | `MagicGearProvider` | `0.5` |
 | `guns` | `GunsAndGadgetsProvider` | `0.5` |
 | `goldsmith_jewelry` | `GoldsmithProvider` | `0.5` |
@@ -47,6 +49,7 @@ final_amount = floor(base_amount * return_rate * durability_factor * stack_amoun
 - `durability_factor`: `0.0` when broken, `1.0` when full (`1.0` for items without durability). MMOItems custom durability (`MMOITEMS_DURABILITY` / `MMOITEMS_MAX_DURABILITY`, used by AdvancedCrafting gear) wins when present; a missing `MMOITEMS_DURABILITY` means never damaged. Otherwise the vanilla damage against the item's `max_damage` component (MMOItems `max-item-damage`, e.g. mage weapons), or the material's default maximum. Before Recycler 0.3.1 this factor was always `1.0` for our gear.
 - `stack_amount`: full stack placed in station (one stack per deposit).
 - Use `floor`; zero yield blocks confirm when `block_confirm_when_zero_yield` is true.
+- Alloy scrap rolls a chance per material unit instead; see [alloy scrap](#advancedcrafting-alloy-scrap).
 
 ## Provider inputs
 
@@ -62,7 +65,34 @@ Raw AC ingredients/alloys (`ac_ingredient_id` / `ac_alloy_id`) are not provenanc
 
 ### AdvancedCrafting (alloy scrap)
 
-A failed alloy forge tags its scrap with the base ingredient id (`ac_scrap_base`, AdvancedCrafting 2.2.0+). `AlloyScrapProvider` reads it with `ScrapProvenance.readBaseId` and returns one live `Ingredient.getPath()` per scrap, scaled by `alloy_scrap`. Output rounds down per deposit, so a single scrap at `0.5` is a zero-yield deposit; players stack scrap first. Scrap forged before 2.2.0 has no tag and is not handled. Scrap from different base metals does not stack.
+Scrap recovery requires AdvancedCrafting 2.2.5 or newer. A failed alloy forge tags its scrap with the base ingredient id (`ac_scrap_base`) and records the quantity of every ingredient it consumed, base and catalysts (`ac_scrap_inputs`). `AlloyScrapProvider` handles any scrap with a base tag and reads the inputs with `ScrapProvenance.readInputs`. Scrap with only a base tag (forged before the inputs were recorded) returns only its recorded base, since its catalysts were never saved. Scrap with no base tag is not handled. Scrap with different recorded inputs does not stack.
+
+Each recorded input maps to its live `Ingredient.getPath()`; ingredients missing from AdvancedCrafting are skipped with a console warning. Every recorded unit in each stacked scrap rolls once, independently, on confirmation:
+
+- **Base:** the chance is `return_rates.alloy_scrap`. The base always uses this rate and bypasses the catalyst whitelist.
+- **Catalysts:** only paths matching `scrap_catalyst_return_rates.whitelist_paths` can return. Each uses the rate for its live AdvancedCrafting ingredient tier.
+
+A failed roll still consumes the scrap. The preview lists every possible quantity with a "Recovery chance" lore line and does not roll. Lines with a `0` chance are omitted, so scrap whose lines all have a zero chance is a zero-yield deposit. Durability does not affect scrap.
+
+```yaml
+scrap_catalyst_return_rates:
+  whitelist_paths:
+    - m.gemstones.*
+  default: 0.01
+  tiers:
+    '1': 0.01
+    '2': 0.25
+    '3': 0.5
+    '4': 0.75
+```
+
+| Key | Default | Effect |
+|-----|---------|--------|
+| `whitelist_paths` | `[m.gemstones.*]` | Catalyst item paths that may return: case-insensitive exact paths, or prefixes ending in `*`. Every other catalyst is excluded; `[]` excludes all catalysts. |
+| `tiers.<tier>` | `1`: `0.01`, `2`: `0.25`, `3`: `0.5`, `4`: `0.75` | Chance per catalyst unit by AdvancedCrafting ingredient tier. Tiers 1-4 keep their defaults unless overridden; other tier keys may be added. |
+| `default` | `0.01` | Chance for tiers not listed under `tiers`. |
+
+Rates use `0.0`-`1.0`: out-of-range values are clamped and non-finite values reset to the default, with a console warning. When `scrap_catalyst_return_rates` is absent, the legacy `scrap_gem_return_rates` section supplies `tiers` and `default`, and the whitelist stays at its gem-only default.
 
 ### Magic (mage weapons)
 
