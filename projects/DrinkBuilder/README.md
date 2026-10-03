@@ -18,10 +18,11 @@ Run `mvn clean verify` to build and run the available tests; use `mvn clean inst
 
 ## Runtime and configuration
 
-Startup loads `config.yml`, `ingredients.yml`, `effects-blacklist.yml`, `categories.yml` and `permission-groups.yml`, then uploads the catalog and texture assets and starts pack polling. `/drinkbuilder` requires `drinkbuilder.admin` (op by default). TLibs and TFMCWeb are required; ItemsAdder is declared optional and supplies the custom pack integration. See the drinks workflow for service configuration.
+Startup loads `config.yml`, `ingredients.yml`, `effects-blacklist.yml`, `categories.yml` and `permission-groups.yml`, then uploads the catalog and texture assets and starts pack polling. `/drinkbuilder` requires `drinkbuilder.admin` (op by default). TLibs and TFMCWeb are required; ItemsAdder and BreweryX are declared optional. ItemsAdder supplies the custom pack integration and BreweryX receives the drink recipes. See the drinks workflow for service configuration.
 
 ## Guides
 
+- [Failure recovery and troubleshooting](troubleshooting.md)
 - [Drink texture assets](https://github.com/TF-Minecraft/DrinkBuilder/tree/main/src/main/resources/assets) (`potion_overlay.png`, `glass_bottle.png`)
 - [Drinks workflow and integration](../ProvinceSystem/docs/cosmetics/drinks.md)
 
