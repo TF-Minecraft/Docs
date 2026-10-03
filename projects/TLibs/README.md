@@ -33,6 +33,13 @@ with the matching consumers before deployment.
 
 See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, dependency selection and rollback.
 
+TLibs releases follow that process: a `v*` tag supplies the version, and the
+release workflow verifies the build and uploads the runtime JAR, `SHA256SUMS` and
+`build.json` to a draft release for review. TLibs' own workflows run the
+`setup-plugins` action from the checkout being built, whereas consumers pin it to
+a reviewed TLibs commit SHA. Build and release runs also upload the JaCoCo
+coverage report.
+
 Consumers use `me.plugins:tlibs` with Maven `provided` scope. The
 [shared installer](https://github.com/TF-Minecraft/TLibs/blob/main/DEPENDENCIES.md)
 verifies plugin release hashes and installs exact coordinates without recursively
