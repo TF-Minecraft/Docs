@@ -4,6 +4,14 @@ Run the checklist for the source and dependency versions being released. Player-
 
 Run these checks on Minecraft **1.21.10** with the intended plugin dependencies and JVM from the [shared platform baseline](../../../PLATFORM.md). Record the source revision, server build, JVM and results; the checklist alone is not evidence of a passing release.
 
+## Automated tests
+
+`mvn clean verify` runs the JUnit suite (MockBukkit and Mockito) and writes JaCoCo reports to `target/site/jacoco/`. JaCoCo measures every production class with no exclusions; open `target/site/jacoco/index.html` to inspect uncovered behaviour. Coverage data is replaced on each run, so use the full suite when assessing repository-wide coverage.
+
+Game scenarios drive public callbacks through complete Poker, Draw and Blackjack rounds across the real table, deck and money implementations, and assert game rules, money conservation or player-visible effects. Tests should protect supported behaviour, not create impossible internal states merely to execute a branch. Where no real caller can reach a branch, remove the branch rather than force it.
+
+Packet tests verify ProtocolLib requests through mocked boundaries only. Packet encoding and client rendering are covered by the manual checks below.
+
 ---
 
 ## Build and startup
