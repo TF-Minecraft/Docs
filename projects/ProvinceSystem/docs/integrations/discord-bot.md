@@ -13,6 +13,7 @@
 | Link | `/linkdiscord <code>` completes MC ↔ Discord bind |
 | Moderation | Ban/warn DMs, **Banned** role add/clear, guild leave/join for 1h grace |
 | Precedent | `/case-log` (staff) logs a case, `/precedent <info>` (staff+helper) searches precedent — see [precedent.md](precedent.md) |
+| Patreon | `patreon` cog - supporter link/status/unlink, role outbox, DMs, staff lookup and sync tools — see [patreon.md](patreon.md) |
 
 The bot does **not** execute in-game bans (Essentials owns MC bans).
 

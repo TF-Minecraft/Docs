@@ -10,7 +10,23 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 The entrypoint is `net.tfminecraft.tfmcweb.TFMCWeb`. TLibs is a required plugin and Essentials an optional one, declared in `src/main/resources/plugin.yml`. RPCharacters depends on TFMCWeb; TFMCWeb resolves its Discord gate API at runtime. Without RPCharacters, the Discord Survival gate is disabled while linking and HTTP remain active.
 
-`ProvinceSystemGateway` provides the shared web transport. The plugin loads `config.yml`, maintains a link cache, starts the notice poller, and registers `/linkdiscord`, `/unlinkdiscord`, `/web`, `/token` and `/warning`. Configure the API URL, plugin key and realm using the identity guide below; permission defaults and exact command syntax live in `plugin.yml`.
+`ProvinceSystemGateway` provides the shared web transport. The plugin loads `config.yml`, maintains a link cache, starts the notice poller, and registers `/linkdiscord`, `/unlinkdiscord`, `/web`, `/token`, `/warning` and `/patreon`. `/patreon` shows supporter status, starts Patreon authorization when unlinked, and supports `/patreon unlink`. Configure the API URL, plugin key and realm using the identity guide below; permission defaults and exact command syntax live in `plugin.yml`.
+
+The `patreon:` config block enables supporter status and maps tier keys to LuckPerms groups:
+
+```yaml
+patreon:
+  enabled: false
+  apply-ranks: false
+  poll-seconds: 60
+  reconcile-minutes: 30
+  groups:
+    noble: noble
+    gilded: gilded
+    ascended: ascended
+```
+
+LuckPerms storage is shared, so set `apply-ranks: true` on exactly one server; leave it false elsewhere. See the [Patreon integration guide](../ProvinceSystem/docs/integrations/patreon.md) for the writer setup and operations.
 
 ## Build and dependencies
 
@@ -25,6 +41,7 @@ Run `mvn clean verify` to build and run the available tests; use `mvn clean inst
 ## Related integration guides
 
 - [Identity and web transport](../ProvinceSystem/docs/identity/tfmcweb.md)
+- [Patreon integration and one-writer setup](../ProvinceSystem/docs/integrations/patreon.md)
 - [Authentication and security](../ProvinceSystem/docs/identity/auth-security.md)
 
 ## Builds and releases

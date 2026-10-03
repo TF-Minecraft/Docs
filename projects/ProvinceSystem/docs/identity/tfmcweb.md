@@ -4,7 +4,7 @@
 
 **Repos:** `tfmcweb/` (Bukkit plugin; depends on TLibs, soft-depends on Essentials) · `ProvinceSystem` · `tfmc_bot` · consumers `rpcharacters`, `armourshop`, `drinkbuilder` (depend) and `simplefactions` (soft-depend)
 
-Companion: [integrations/discord-bot.md](../integrations/discord-bot.md) · [cosmetics/skins.md](../cosmetics/skins.md)
+Companion: [integrations/discord-bot.md](../integrations/discord-bot.md) · [integrations/patreon.md](../integrations/patreon.md) · [cosmetics/skins.md](../cosmetics/skins.md)
 
 ## Why
 
@@ -24,6 +24,7 @@ Companion: [integrations/discord-bot.md](../integrations/discord-bot.md) · [cos
 | Freeze | **RPCharacters** freeze reason `DISCORD_REQUIRED`; do not touch characters |
 | Bans | Essentials `/tempban` / `/ban`; TFMCWeb mirrors to Discord bot |
 | Warnings | `/warning` (TFMCWeb) → player chat + web store + bot DM |
+| Patreon linking and status | `/patreon` (TFMCWeb) starts a link for an unlinked player, displays status, and `/patreon unlink` disconnects the link; backend-owned entitlement and rank application are documented in [Patreon integration](../integrations/patreon.md) |
 
 ## Ownership matrix
 
@@ -38,6 +39,7 @@ Companion: [integrations/discord-bot.md](../integrations/discord-bot.md) · [cos
 | Character ingest / roster | RPCharacters (HTTP via TFMCWeb gateway) |
 | Essentials ban/unban | Essentials executes; TFMCWeb mirrors |
 | Discord DMs / banned role / leave events | `tfmc_bot` |
+| Patreon LuckPerms groups | TFMCWeb rank writer on exactly one configured server; [Patreon integration](../integrations/patreon.md) |
 
 Domain plugins **depend on TFMCWeb** for network/identity. They do not open raw HTTP to ProvinceSystem.
 
@@ -148,6 +150,8 @@ Bot does **not** execute MC bans.
 | `/unlinkdiscord` | Explicit unlink |
 | `/token create skin\|drink\|profile` | Scoped code |
 | `/token resetcooldowns <player>` | Clear shared skin+drink mint cooldown |
+| `/patreon` | Show Patreon status; if unlinked, start account authorization |
+| `/patreon unlink` | Unlink the Patreon account |
 
 ### Staff
 
@@ -158,6 +162,24 @@ Bot does **not** execute MC bans.
 | `/web lookup <player>` | UUID ↔ Discord / grace |
 | `/web unlink <player>` | Force unlink |
 | `/warning <player> <reason>` | Warn + mirror |
+
+### Patreon rank writer
+
+TFMCWeb reads the `patreon:` block in `config.yml`:
+
+```yaml
+patreon:
+  enabled: false
+  apply-ranks: false
+  poll-seconds: 60
+  reconcile-minutes: 30
+  groups:
+    noble: noble
+    gilded: gilded
+    ascended: ascended
+```
+
+Set `apply-ranks: true` on exactly one server because LuckPerms storage is shared. Other servers keep it false. `/patreon` remains available wherever `enabled` is true. See [the Patreon integration guide](../integrations/patreon.md) for operations.
 
 ## Realm gateway
 

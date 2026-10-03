@@ -175,6 +175,7 @@ No website passwords. Codes are **not shareable by design**: cosmetics are grant
 | Map SF ↔ API ↔ web | [integrations/simplefactions.md](integrations/simplefactions.md) |
 | ArmourShop + `tfmc_submissions` | [integrations/armourshop.md](integrations/armourshop.md) |
 | tfmc_bot skins + ban role | [integrations/discord-bot.md](integrations/discord-bot.md) |
+| Patreon supporter roles + ranks | [integrations/patreon.md](integrations/patreon.md) |
 | Full journeys | [flows/journeys.md](flows/journeys.md) |
 | Naming | [cosmetics/naming.md](cosmetics/naming.md) |
 | TFMCWeb identity | [identity/tfmcweb.md](identity/tfmcweb.md) |

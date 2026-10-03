@@ -15,6 +15,7 @@ This section is the product and technical reference for **ProvinceSystem**. Tech
    - [cosmetics/drinks.md](cosmetics/drinks.md) - BreweryX drink builder
    - [characters/creator.md](characters/creator.md) - web character creator
    - [identity/tfmcweb.md](identity/tfmcweb.md) - Discord link, tokens, gate
+   - [integrations/patreon.md](integrations/patreon.md) - Patreon supporter linking, entitlement and operations
 3. [flows/journeys.md](flows/journeys.md) - end-to-end player and staff journeys
 4. [ops/local-dev.md](ops/local-dev.md) - run the site locally
 5. [ops/sheet-render.md](ops/sheet-render.md) - 3D review-sheet renderer (prod deploy + smoke)
@@ -27,13 +28,13 @@ Schema assets: [assets/map-export-schema.json](assets/map-export-schema.json) (S
 | Component | Path | Role | Docs |
 |-----------|------|------|------|
 | **ProvinceSystem** | `ProvinceSystem/` | Website + FastAPI: maps, skins, drinks, characters, identity | This folder |
-| **TFMCWeb** | `tfmcweb/` | MC ↔ web gate: Discord link, scoped tokens, Survival Discord freeze, warn/ban mirror | [identity/tfmcweb.md](identity/tfmcweb.md) |
+| **TFMCWeb** | `tfmcweb/` | MC ↔ web gate: Discord link, scoped tokens, Survival Discord freeze, warn/ban mirror, Patreon rank writer | [identity/tfmcweb.md](identity/tfmcweb.md), [integrations/patreon.md](integrations/patreon.md) |
 | **SimpleFactions** | `simplefactions/` | Map bridge: nation JSON upload, queue, regen, province lookup | [integrations/simplefactions.md](integrations/simplefactions.md) |
 | **ArmourShop** | `armourshop/` | Skins pack writer + apply | [integrations/armourshop.md](integrations/armourshop.md) |
 | **DrinkBuilder** | `drinkbuilder/` | Donator BreweryX drinks + `tfmc_drinks` IA | [cosmetics/drinks.md](cosmetics/drinks.md) |
 | **RPCharacters** | `rpcharacters/` | Characters + freeze loop; Discord gate via freeze reason | [characters/creator.md](characters/creator.md) |
 | **ItemsAdder** | Server `plugins/ItemsAdder/` | Resource packs: `tfmc_submissions`, `tfmc_armorshop`, `tfmc_drinks` | [integrations/armourshop.md](integrations/armourshop.md) |
-| **tfmc_bot** | `tfmc_bot/` | Red-DiscordBot: skins/drinks review, link, ban/warn DMs | [integrations/discord-bot.md](integrations/discord-bot.md) |
+| **tfmc_bot** | `tfmc_bot/` | Red-DiscordBot: skins/drinks review, link, ban/warn DMs, Patreon supporter roles | [integrations/discord-bot.md](integrations/discord-bot.md), [integrations/patreon.md](integrations/patreon.md) |
 
 ## Locked platform decisions
 
