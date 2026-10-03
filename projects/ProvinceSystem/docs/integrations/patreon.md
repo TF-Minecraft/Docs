@@ -30,7 +30,7 @@ Supporters can start the same Patreon OAuth consent flow from Discord, Minecraft
 
 Role changes arrive through bot polling and roster reconciliation; supporters do not need to leave and rejoin Discord to receive updates.
 
-OAuth state is single-use and expires after 10 minutes. Consent links the Patreon identity even if it has no mapped paid tier; the result is `not_a_member` and no perks are granted. A Patreon identity already owned by another person returns `already_linked`. Reclaiming a previously linked Patreon identity is refused for 30 days unless staff force the link. A Patreon account, Discord ID and Minecraft UUID can each belong to at most one link.
+OAuth state is single-use and expires after 10 minutes. Patreon consent does not create the link by itself: the supporter lands on `/patreon/linked`, which names the Patreon account and the Discord or Minecraft account about to be linked, and the link is created only when they press Confirm. This stops someone sending their own link to a supporter to collect that supporter's tier. A confirmed link is stored even if the Patreon account has no mapped paid tier; the result is `not_a_member` and no perks are granted. A Patreon identity already owned by another person returns `already_linked`. Reclaiming a previously linked Patreon identity is refused for 30 days unless staff force the link. A Patreon account, Discord ID and Minecraft UUID can each belong to at most one link.
 
 ## Entitlement rules
 
@@ -98,7 +98,8 @@ All routes are under `/patreon`. Routes also require `PATREON_ENABLED=1`.
 | Route | Auth | Use |
 |-------|------|-----|
 | `POST /link/start` | Staff key + Discord ID, plugin key + player UUID, or profile Bearer session | Start OAuth for one account. |
-| `GET /oauth/callback` | Public, single-use OAuth state | Finish consent; redirects to the public site with status and tier key only. |
+| `GET /oauth/callback` | Public, single-use OAuth state | Finish consent and store a pending link; redirects to the public site with a one-time confirm token in the URL fragment, or a failure status. |
+| `POST /link/pending`, `POST /link/confirm`, `POST /link/cancel` | Public, one-time confirm token in the body | Show the two accounts, then create or discard the pending link. |
 | `POST /link/unlink`, `GET /status` | Same three caller options | Unlink or read the caller’s link and effective tier. |
 | `POST /webhook` | Patreon HMAC signature | Record a known member event and refresh that member in background. Unknown events are accepted and ignored. |
 | `GET /staff/role-changes`, `POST /staff/role-changes/ack`, `GET /staff/roster` | Staff key | Discord role outbox, acknowledgement and reconciliation roster for the bot. |
