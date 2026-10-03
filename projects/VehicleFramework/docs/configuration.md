@@ -128,7 +128,7 @@ The component key is the type. A vehicle has one of each type. `steering` is not
 
 Shared component fields: `health`, `repair-time` (ticks), `damage-chance` (0 to 1), `alias`, `fatal`, `vfx`, `armor`, `role`, and an optional `damage` overlay. Damage numbers are multipliers for a hit type. With `armor` or `role` set, those templates merge and a local `damage` map overrides them. Without templates, `damage` is a list of `type(amount)` entries.
 
-Engine fields: `max` and `min` throttle (negative `min` is reverse), `speed` at full throttle, `turn-rate`, `requires-start`, `fuel`, `fuel-capacity`, `fuel-burn-rate`, and `refuel-states`. Sounds and particles on the engine play while it runs. `particle-bones` is a list of `bone.bone` vectors.
+Engine fields: `max` and `min` throttle (negative `min` is reverse), `speed` at 100% throttle (scaled linearly with throttle), `turn-rate`, `requires-start`, `fuel`, `fuel-capacity`, `fuel-burn-rate`, and `refuel-states`. Sounds and particles on the engine play while it runs. `particle-bones` is a list of `bone.bone` vectors.
 
 A geared engine uses a `gears` list. Each gear has `name`, `max`, `min`, `speed`, and `acceleration`. `start-gear` picks the initial gear.
 

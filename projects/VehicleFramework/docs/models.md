@@ -2,7 +2,7 @@
 
 Vehicles are ModelEngine models. The plugin moves specific bones itself, so those bones must not be animated in Blockbench. Looping clips such as a spinning propeller or a moving track should be set to loop.
 
-Bone names in the model and in the vehicle YAML have to match. A skin can use a different `.bbmodel`, but every bone the config names has to exist on that model too.
+Bone names in the model and in the vehicle YAML have to match. A skin can use a different `.bbmodel`, but every bone the config names has to exist on that model too. Train bogie bones are the exception: a skin without them places the car rigid.
 
 ## Body
 
@@ -29,6 +29,8 @@ A `fixed: true` weapon does not use body and head bones. Fixed vehicles such as 
 ## Trains and tow points
 
 `behaviour.train.front-connector` and `back-connector` are bones at the couplers. The distance between a car's coupler and the next car's coupler is the spacing along the track.
+
+`behaviour.train.wheel-bones` are the frontmost and rearmost axle pivots; their positions along the model, times its scale, set where the car loses rail support. `behaviour.train.bogies` names two bogie bones, each pivoting at its bogie's centre, with the body rotator pivoting at the model's origin. Wheel animations for `wheel-diameter` are mirrored `forward` and `backward` loops of one wheel turn. See [Trains](using-trains.md#marking-a-vehicle-as-a-train).
 
 `towing.bone` is the hitch bone on the vehicle that pulls.
 
