@@ -2,6 +2,17 @@
 
 Put technical manuals in `projects/<repository>/`, using the canonical PascalCase repository name (for example, `ActivityTF`, `VehicleFramework`, or `ServerAssets`). Keep source repository READMEs short and link to the matching project index here.
 
+Source READMEs use this layout, in order:
+
+1. `# <Project>`, a one-line `>` tagline, and a short introduction for players and staff.
+2. `## Features`: bullets in the form `- **Feature** — description.`
+3. Optional short narrative sections, such as related projects, credits or project background.
+4. `## Documentation`: a link to the project index here, followed by `Technical documentation is maintained in [TF-Minecraft/Docs](https://github.com/TF-Minecraft/Docs).` Links to individual guides may follow.
+5. `## Tests` or `## Tests and coverage`, for repositories with test suites: how to run them, the tools used, report locations, any enforced coverage gate, and what the tests do not cover.
+6. `## License`, last, containing only the licence statement.
+
+Configuration keys and examples, command references, upgrade or installation order, troubleshooting, persistence internals and release notes belong in the project guides here, not in source READMEs. When a feature PR changes behaviour, update the guide rather than adding a README section. Keep other technical Markdown files out of source repository roots; `CONTRIBUTING.md` for upstream projects and TLibs `DEPENDENCIES.md` are the exceptions.
+
 When changing behavior, update the relevant guide in a docs PR and link it from the implementation PR. Use relative links for other guides and GitHub source links for code. Commands and filesystem paths refer to the source checkout unless a guide says otherwise.
 
 Use [PLATFORM.md](PLATFORM.md) as the shared **Java 21 / Minecraft 1.21.10** baseline. Every project index links to it. Keep runtime versions separate from Maven API dependencies, Java compiler targets and plugin loader metadata; document any deviation from the baseline. When source build settings change, update the matrix and build instructions.
