@@ -14,9 +14,13 @@ All paths under `plugins/Games/` on the server.
 | `config.yml` | `debug`, stack visual max, card scale, interpolation ticks, table Y offset |
 | `messages.yml` | Player-facing chat strings |
 | `cards.yml` | Card catalog and named sets (`french_54`, `french_52`). |
-| `games.yml` | Per-game rules, layout, blackjack min/max / auto-dealer defaults. Live auto/mint/shuffle live on the table ([GUILD_TABLES.md](GUILD_TABLES.md)) |
+| `games.yml` | Per-game rules, layout, blackjack min/max / auto-dealer defaults, [hand card limits](#hand-card-limits). Live auto/mint/shuffle live on the table ([GUILD_TABLES.md](GUILD_TABLES.md)) |
 | `help.yml` | The rule books `/games help` opens, one section per book, pages written by hand |
 | `Data/tables/` | Gson for placed tables |
+
+### Hand card limits
+
+`hand-card-limit` under a game in `games.yml` caps how many cards one player can hold at that game's tables. The count includes cards still being dealt and every Blackjack split group. The bundled file sets 2 for `poker` and 5 for `draw`; `blackjack` and `freeplay` omit it. An omitted, zero or negative value leaves the hand unrestricted. Games copies `games.yml` only when it is missing, so an existing server must add the key to its own file.
 
 ItemsAdder pack lives in the repo at `games/ItemsAdder/tfmc_games/`. Namespace: `tfmc_games`.
 
@@ -97,7 +101,8 @@ Ace file and IA id is `_1` or `1`, not 14. Ace-high ranking is a poker flag, not
 | `/games help [game]` | `games.help` (default true) | Opens a rule book from `help.yml`. No game id opens the index |
 | `/games reload` | `games.admin.reload` | Reload configuration |
 | `/games place` | `games.admin` | Place a table without a deck item |
-| `/games bet ...` | `games.bet` | Blackjack betting |
+| `/games bet ...` | `games.bet` | Blackjack betting; `check`, `call`, `fold`, `raise` and `allin` for poker |
+| `/games poker ...` | `games.bet` | Poker [tournament](HOLDEM.md#tournaments) settings and actions |
 
 ## Dependencies
 
