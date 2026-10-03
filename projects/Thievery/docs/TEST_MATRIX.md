@@ -21,7 +21,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 | G2 | Every grid cell shows its texture (unlit lamp, lit lamp, sea lantern, redstone block, gold block); no stray dots are visible, hovered or not |
 | G3 | Clicking the pins plays a rising scale; a wrong cell plays a bass note and shows a redstone block; the status line counts pins and slips |
 | G4 | Setting every pin opens the probe menu; probing, breaks, clues and taking behave as before |
-| G5 | Three wrong cells or the timer running out shows missed pins in gold, applies the 60s cooldown and may snap the pick; the boss bar ticks red for the last 3 seconds |
+| G5 | Three wrong cells or the timer running out shows missed pins in gold, applies the 60s cooldown and may snap the pick; the title's countdown (and the pack's strip) turns red and ticks for the last 3 seconds; no boss bar shows |
 | G6 | Escape does not close the grid; "Give up" does, and counts as a failed attempt |
 | G7 | Clicking pins as fast as possible sets every one; none are dropped while the dialog redraws |
 | D1 | The other half of picks float the lockpick ring in front of the thief; nobody else nearby sees it |
