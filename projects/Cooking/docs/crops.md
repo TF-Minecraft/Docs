@@ -1,5 +1,7 @@
 # Cooking — Crop quality and growth
 
+[Cooking](../README.md) · [All projects](../../../README.md)
+
 Crop stars and **growth cancel** live inside **Cooking**. CustomCrops is the plant/harvest engine for custom crops. SimpleFactions owns **province fertility** (0–100 lookup only). Seeds stay dumb IA/vanilla items: no `food_quality`, no planted_crops SQL, no plant→harvest lineage.
 
 Keep this guide aligned with the implementation and configuration on `main`.
@@ -44,6 +46,30 @@ growth-gate.enabled and SimpleFactions map active
 ```
 
 Unlisted blocks/ids are not gated. `growth-gate.enabled: false` or map off: all ticks allowed.
+
+## Open-sky planting
+
+Food crops need an open column above them. Cave ceilings and building roofs stop players planting vanilla and CustomCrops crops, and stop hoe-harvest replanting. Glass greenhouses are allowed by default. Nether wart, mushrooms and the CustomCrops `yeast` crop can be planted indoors by default.
+
+The check runs only when a crop is planted (`CropPlantingRule`):
+
+- **Vanilla:** `CropPlantingListener` cancels `BlockPlaceEvent` for wheat, potatoes, carrots, beetroots, melon and pumpkin stems, sugar cane, cactus, cocoa, sweet berry bushes, torchflower and pitcher crops, nether wart, and brown and red mushrooms, unless the block type is in `exempt-vanilla`.
+- **CustomCrops:** `CropCustomCropsListener` cancels `CropPlantEvent` for every crop id not in `exempt-custom` (case-insensitive).
+- **Hoe replant:** `FarmHarvestService` fires a `BlockPlaceEvent` for the delayed replant. When the rule cancels it, the block is restored and the reserved seed drops instead.
+
+A column is open when every block from the one above the crop to the world's maximum height is air, a glass block or pane (clear, stained or tinted, while `allow-glass-roofs` is true) or a material in `allowed-cover`. Players see "Crops must be planted outdoors with open sky above them." Adding a roof after planting does not remove existing crops or change their growth rules.
+
+The `planting` section of [`crops.yml`](https://github.com/TF-Minecraft/Cooking/blob/main/src/main/resources/crops.yml):
+
+| Key | Default | Effect |
+|-----|---------|--------|
+| `require-open-sky` | `true` | `false` turns the rule off for every crop. |
+| `allow-glass-roofs` | `true` | Treat materials whose names end in `GLASS` or `GLASS_PANE` as open sky. |
+| `allowed-cover` | `[]` | Extra Bukkit block materials allowed anywhere above the crop. |
+| `exempt-vanilla` | `[NETHER_WART, BROWN_MUSHROOM, RED_MUSHROOM]` | Vanilla crop blocks that may be planted under cover. Only the types listed above are checked, so this list can exempt them but cannot add new ones. |
+| `exempt-custom` | `[yeast]` | CustomCrops crop ids that may be planted under cover. |
+
+Lists replace their defaults, so an empty exemption list requires open sky for those crops too. Invalid or non-block material names are skipped with a console warning. A config without a `planting` section, or a `crops.yml` that fails to load, uses the defaults. `/cooking reload` applies changes.
 
 ## Roller (`CropHarvestQuality`)
 

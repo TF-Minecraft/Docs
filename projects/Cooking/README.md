@@ -20,7 +20,7 @@ The plugin registers food item paths with TLibs and integrates furniture station
 
 ## Guides
 
-- [docs/crops.md](docs/crops.md)
+- [docs/crops.md](docs/crops.md) — crop quality, growth gate and open-sky planting
 - [docs/husbandry.md](docs/husbandry.md)
 
 ## Builds and releases
