@@ -4,7 +4,7 @@
 
 ## Files
 
-The plugin stores pets and shelter ownership in `plugins/CompanionPets/pets.yml`.
+The plugin stores pets and Pet House ownership in `plugins/CompanionPets/pets.yml`.
 It saves immediately after important changes, every five minutes, and when the
 plugin stops. Each save writes a temporary file and replaces the main file;
 `pets.yml.bak` holds the previous valid save. All files below are in
@@ -12,7 +12,7 @@ plugin stops. Each save writes a temporary file and replaces the main file;
 
 | File | Purpose |
 | --- | --- |
-| `pets.yml` | Current pets and shelter ownership. |
+| `pets.yml` | Current pets and Pet House ownership. |
 | `pets.yml.bak` | The previous valid save. Never activated automatically. |
 | `pet-deletions.log` | Durable journal of terminal deletions. |
 | `pets-recovery-required` | Marker present while the plugin runs; removed after a successful final save. |
@@ -51,5 +51,11 @@ Pets left outside retain their last position and identity across restarts. When
 their chunk's entities have loaded, the plugin reconnects to the tagged body or
 recreates it at the saved position if it is missing. Missing or unloaded bodies
 do not delete pet records; care pauses until the body is available. Actual
-deaths still remove the pet normally. Calling an outside pet from its shelter
+deaths still remove the pet normally. Calling an outside pet from its Pet House
 also loads its saved chunk and attempts to recover its body.
+
+Restarting or reconnecting does not teleport distant pets with a saved Follow
+order to their owner. They wait at their position until the owner approaches,
+asks them to follow, or calls them from the Pet House. Pets already following
+during the current session keep their usual catch-up teleport when the owner
+moves too far away.
