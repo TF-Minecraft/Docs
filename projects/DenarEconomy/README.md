@@ -16,7 +16,9 @@ Build with JDK 21. Install the matching TLibs Maven release and populate `libs/`
 
 Required plugins declared by the manifest: MMOItems, MythicLib, TLibs.
 
-Startup loads `coins.yml`, `drops.yml` and `messages.yml`, registers money/player listeners and starts the player manager. `/deco` and `/pouch` are the entry commands; config reload uses `denareconomy.reload` (op by default). Preserve the plugin data directory, including `Data` and `PlayerData`, when changing builds. Consumers should use the existing money/player manager API rather than maintain a second balance store.
+Startup loads `coins.yml`, `drops.yml` and `messages.yml`, registers money/player listeners and starts the player manager. `/deco` and `/pouch` are the entry commands; config reload uses `denareconomy.reload` and `/deco give` uses `denareconomy.give` (both op by default). Preserve the plugin data directory, including `Data` and `PlayerData`, when changing builds.
+
+- [Commands, permissions, and account storage](operations.md) — the full command reference, `/deco give` name resolution, save durability and what to do when saves fail. Consumers should use the existing money/player manager API rather than maintain a second balance store.
 
 ## Builds and releases
 
