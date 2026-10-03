@@ -24,9 +24,15 @@ Stations are JSON files under `data/stations`; alloy state is under `data/alloys
 alloy recipes are under `data/alloy-recipes`. `data/revisions.json` tracks item
 configuration revisions. `data/forged-alloys/<player-uuid>.json` tracks each
 player's discovered/forged alloys. Crafted items also retain tags and provenance
-in their persistent data containers. Scrap from a failed alloy forge carries the
-base ingredient id (`ac_scrap_base`, read with `objects.data.ScrapProvenance`) so
-Recycler can return that base metal.
+in their persistent data containers.
+
+A failed alloy forge drops one scrap item that records what the forge consumed,
+for [Recycler](../Recycler/docs/SYSTEM.md#advancedcrafting-alloy-scrap) recovery.
+`objects.data.ScrapProvenance` writes the base ingredient id (`ac_scrap_base`)
+and the quantity of each consumed ingredient, base and catalysts, keyed by
+ingredient id (`ac_scrap_inputs`). `readInputs` returns those quantities. Scrap
+forged before the quantities were recorded has only the base tag, so `readInputs`
+returns one unit of its base; its catalyst history cannot be recovered.
 
 On disable the plugin flushes revisions, clears saved station files, and rewrites
 stations from the in-memory manager. Use a clean stop for backups and restores;
