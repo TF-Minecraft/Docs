@@ -15,6 +15,7 @@ Install the shared Maven plugin dependencies selected by the POM, then supply th
 Optional runtime integrations are declared as `softdepend` in `src/main/resources/plugin.yml`; those declarations do not remove their compile-time JAR requirements. `ActivityPlugin` registers hooks for installed plugins, `ActivityManager` owns task progress and rewards, and `/activity` opens the GUI or runs permitted admin actions.
 
 - [Reward pools and operator checks](REWARD-POOLS.md)
+- [Activity descriptions, placeholders and config updates](ACTIVITY-LORE.md)
 
 ## Builds and releases
 
