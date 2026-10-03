@@ -32,8 +32,8 @@ This follows [Maven's recommended POM section order](https://maven.apache.org/de
 with TFMC's existing four-space indentation and multiline project header.
 
 Put `maven.compiler.release` first and `project.build.sourceEncoding` second in
-properties, followed by the remaining properties alphabetically. Set them to
-`21` and `UTF-8`, respectively. Use `release` as the single Java target setting;
+properties, then `maven.compiler.proc` when present, followed by the remaining
+properties alphabetically. Set the first two to `21` and `UTF-8`, respectively. Use `release` as the single Java target setting;
 do not also declare redundant `source` and `target` values.
 
 Keep dependency, repository, resource, plugin, and execution lists in their
