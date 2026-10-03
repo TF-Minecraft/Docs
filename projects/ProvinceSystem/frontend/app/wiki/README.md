@@ -82,6 +82,8 @@ Recipes registered on a section join `allRecipes`, which supplies station pages 
 
 Place referenced assets under `frontend/public/wiki`. Ingredient and station links depend on exact names, so reuse the registered names.
 
+Source artwork that the site does not serve stays outside `public/`. The ammunition sprite source is `frontend/assets/wiki/ammo_sheet.png`; the wiki serves the cut 16×16 icons from `frontend/public/wiki/textures/ammunition/`. The grindstone station page renders `models/vanilla/grindstone.json` with the vanilla `grindstone_*` textures under `textures/vanilla/`. The `models/stations/grindstone.json` model and `textures/stations/grindstone/` textures are kept in the repository but are not referenced by the wiki data.
+
 ## Validation
 
 Run the existing route, registry, shared-component, and relevant feature tests. Run `npx tsc --noEmit --pretty false` and the guarded production build. Check every `SeeAlso` target, every top-level wiki route, dynamic detail routes, referenced assets, visible command filtering, and a rendered-output scan for prohibited player-facing copy. Verify the desktop sidebar has its own bounded vertical scroll and that smaller layouts retain normal page flow.

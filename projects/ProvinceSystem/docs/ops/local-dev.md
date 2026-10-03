@@ -83,7 +83,21 @@ Open `http://localhost:3000`. Prefer this while editing React/CSS.
 
 Without `output/{map}/maps/…` and region PNGs, the UI has nothing to show.
 
-Trigger a full regen the same way production does (hashed key from [`auth.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/scripts/util/auth.py) - local secret is fine for demo):
+`backend/src/output/` holds local runtime output and is not versioned. Keep authored map inputs in `backend/src/input/{map}/` and definitions in `backend/src/defines/{map}/`; Docker Compose mounts the same three directories into the backend container.
+
+To populate a fresh checkout, install `backend/requirements.txt`, then run from `backend/` for each map you serve (for example, `main` and `dev`) before starting the backend:
+
+```bash
+python -m src.scripts.tools.run_regen --map main --type fullregen
+python -m src.scripts.mapgen.mapmodes.terrain_mapmode --map main
+python -m src.scripts.mapgen.mapmodes.fertility_mapmode --map main
+```
+
+[`run_regen`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/scripts/tools/run_regen.py) compiles nation data (and trade data when `input/{map}/guilds.json` exists) into `defines/{map}/`, then renders the parchment base, the map modes, zone-of-control and infestation overlays, and the province id grid artifacts. `--type` also accepts `fullregen:<mode>`, `queued`, `queued:<mode>` and `textonly` (compile data without rendering maps); `--queue-all [MODE ...]` queues every region for those modes first (nation when no mode is given). The terrain and fertility overlays are separate scripts that regeneration does not run.
+
+Preserve runtime history and other server data: regeneration replaces rendered map assets and compiled definitions, and does not reconstruct historical records.
+
+With the backend already running, you can instead trigger a full regen the same way production does (hashed key from [`auth.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/scripts/util/auth.py) - local secret is fine for demo):
 
 ```text
 GET http://localhost:8000/{map}/{hashed_key}/api/regenerate/fullregen
