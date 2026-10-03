@@ -82,7 +82,7 @@ mapped. Set a mapping to `""` to disable an optional clip.
 | `shake` | Begins when the native wolf shake clock starts, alongside its vanilla sound. Play once. |
 | `pet` | Normal petting reaction. Does not interrupt a belly moment or another gesture. |
 | `jump`, `fall`, `swim` | Optional air/water motions. Jump plays once and holds until landing or the fall pose; swim loops. Missing clips use normal movement/idle fallbacks. |
-| `beg`, `attack`, `hurt`, `eat`, `speak`, `spawn` | Automatically used when present for their corresponding behaviour. Missing clips do not prevent the behaviour. |
+| `attack`, `hurt`, `eat`, `speak`, `spawn` | Automatically used when present for their corresponding behaviour. Missing clips do not prevent the behaviour. |
 | `lie_back`, `belly_up`, `get_up` | The optional [belly rub moment](gameplay.md#belly-rub-moment). |
 
 No clip is required. Missing `idle`/`walk` logs a warning about a potentially
@@ -96,8 +96,7 @@ Zero-length `head_tilt` is held briefly rather than vanishing. Head tracking
 belongs to the model's head bone behaviour, not a look animation.
 
 Without `jump`/`swim`, dogs and cats use `idle` in the air and `walk` in water;
-jumping and falling remain physical movements. `beg` remains a learned command
-using its vanilla sitting/attention behaviour when no `beg` clip is present.
+jumping and falling remain physical movements.
 `pet1`, `pet2`, and `despawn` have no automatic hooks. Map `pet: pet1` to use
 an older petting clip. [Custom tricks](configuration.md#custom-tricks) may also
 refer to arbitrary model clips.
@@ -113,7 +112,9 @@ with vanilla pets and their existing visual approximations.
 
 Modelled wolves emit water splash particles throughout their native shake clock,
 alongside the `shake` animation and vanilla sound. Vanilla fallback wolves
-retain their original particles.
+retain their original particles. Fetching postpones both the native and the
+modelled shake until the pet finishes the race or returns the toy. Shaking never
+holds navigation, and movement interrupts the modelled gesture.
 
 ## TFMC models
 

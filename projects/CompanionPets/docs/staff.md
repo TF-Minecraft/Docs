@@ -11,8 +11,8 @@ root aliases. Running `/companionpets` shows help and examples.
 | `moment <affection/bark/mischief/dig/belly>` | Trigger a moment while looking at your pet; normal care and animation conditions apply. |
 | `testpet <type> [name...]` | Spawn a normal pet with every compatible trick learned. No special marker, pause state or cleanup category. |
 | `list <player> [pet name...]` | Open that player's pets or a selected pet's read-only profile. Console gets readable names. |
-| `find <player> [pet name...]` | Show shelter, current or last-known location, and missing or duplicate bodies for that player's pets, without loading chunks. |
-| `create <player> type=<type> name=<name...> [option=value ...]` | Create a new saved replacement in the owner's shelter. |
+| `find <player> [pet name...]` | Show Pet House, current or last-known location, and missing or duplicate bodies for that player's pets, without loading chunks. |
+| `create <player> type=<type> name=<name...> [option=value ...]` | Create a new saved replacement in the owner's Pet House. |
 | `egg <type/all> [online-player] [1..64]` | Give configured eggs; omit the recipient in game to receive them yourself. |
 
 ```text
@@ -34,7 +34,7 @@ inventory: select the owner using command completion.
 
 The selected pet's staff inventory shares the normal pet profile: species,
 name, sex, age, needs, bond, personality, favourite toy and learned tricks. It
-is read-only, including its trick inventory; renaming, calling, shelter and
+is read-only, including its trick inventory; renaming, calling, Pet House and
 release actions are omitted. No UUIDs or audit snapshots are required or shown
 in command help, completion or pet cards. Menu layout and navigation are
 described in the [gameplay guide](gameplay.md#menus).
@@ -57,8 +57,8 @@ male, new age, generated personality.
 
 An explicitly supplied owner UUID is still accepted for reconstruction of an
 unknown or offline player; ordinary browsing and completion use player names.
-Creation validates options before writing and checks shelter capacity. The owner
-takes the created pet out through their shelter menu.
+Creation validates options before writing and checks Pet House capacity. The owner
+takes the created pet out through their Pet House menu.
 
 ## Test pets and moments
 

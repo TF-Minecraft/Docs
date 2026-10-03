@@ -112,12 +112,29 @@ works with vanilla material selectors; those material/model combinations also
 accept provider-created eggs for compatibility. Explicit provider IDs take
 priority. Confirmation rechecks the held item before consuming it.
 
-## Shelters
+## Pet Houses
 
-Shelter placement stays global: `items.kennel` selects the consumed held item;
+Pet House placement stays global: `items.kennel` selects the consumed held item;
 `items.kennel-block` selects the actual vanilla block (`BARREL` for custom
-tokens). This places an ordinary shelter, not ItemsAdder furniture. Plant and
-block settings continue to use vanilla materials.
+tokens). Without `items.kennel-furniture`, this places a regular Pet House.
+
+For ItemsAdder furniture, configure the held item and the matching placed
+furniture ID. Only simple furniture is supported: complex furniture events do
+not expose the player needed to record ownership and enforce owner-only access.
+
+```yaml
+items:
+  kennel: "itemsadder:tfmc:pet_house"
+  kennel-furniture: "tfmc:pet_house"
+  kennel-block: BARREL
+```
+
+ItemsAdder handles normal placement, protection checks, consumption and drops.
+CompanionPets records the owner after successful placement. Right-clicking opens
+the owner's Pet House menu; other players cannot open it. Breaking the furniture
+removes its ownership record without deleting pets. Registered barrel Pet Houses
+remain usable, and vanilla-only configurations keep sneak and right-click
+placement. Plant and block settings continue to use vanilla materials.
 
 ## Learnable tricks per pet type
 
@@ -130,7 +147,7 @@ tricks: [follow, stay, speak, jump]
 ```
 
 Available IDs: `sit`, `follow`, `come`, `stay`, `speak`, `jump`, `lay`, `paw`,
-`beg`, plus IDs defined under `custom-tricks`. Names are case-insensitive and
+plus IDs defined under `custom-tricks`. Names are case-insensitive and
 duplicates are ignored. Omitting `tricks` enables all compatible base and custom
 tricks. `tricks: []` disables additional tricks; configured default tricks are
 always enabled. Unknown IDs are skipped with a warning. A malformed list
@@ -173,7 +190,9 @@ Come, preserving its progress; other Follow words retain their bindings.
 
 ### Legacy trick IDs
 
-`lay` replaces the former Rest trick (`sleep` ID) and uses the `sleep` animation.
+`lay` replaces the former Rest trick (`sleep` ID). The pet lies down awake, uses
+the `lie` pose and does not show the Sleeping label; only automatic sleep uses
+the sleep state and label.
 Legacy `sleep` entries in configuration and saved words or progress are accepted
 as `lay`; subsequent saves use `LAY`. Existing spoken words remain bound, and the
 highest progress is retained if both old and new IDs are present. Spin has been
@@ -232,3 +251,16 @@ and the model clips it needs in [Pet types and ModelEngine](models.md#animation-
 - `orders.hearing-radius` (default 12 blocks) limits which pets hear named orders.
 - `roaming.name-attention-seconds` (default 10 seconds) sets how long a called
   pet waits after arriving.
+- `care.health-regen-per-minute` (default 20) sets natural health recovery; see
+  the [gameplay guide](gameplay.md#care).
+
+### Relaxed care preset
+
+For a server where pets need less frequent care, the optional
+[relaxed care preset](https://github.com/TF-Minecraft/CompanionPets/blob/main/config-presets/relaxed-care.yml)
+records the values used on TF Dev. It is a partial preset: copy its values into
+the matching sections of your existing config and keep your pet types, models
+and item selectors. Set each existing food entry's `hunger` to 45, as the preset
+indicates. With these settings, a fully cared-for pet walking near its owner for
+four hours keeps about 62 hunger, 75 mood, 62 energy, 80 cleanliness and full
+health. Its belly-up chance is 25%.

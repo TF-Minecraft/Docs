@@ -6,11 +6,11 @@ CompanionPets keeps one record per pet: name, sex, personality, needs, bond,
 tricks, and a rolled favourite toy. The Minecraft entity is only the body that
 is currently in the world.
 
-## Hatching and shelters
+## Hatching and Pet Houses
 
 - Use a configured egg, name the pet in chat, and confirm. The egg is spent
   only after the name is confirmed and there is room in the outside quota.
-- Sneak and right-click with a barrel to place a shelter. Right-click it to
+- Sneak and right-click with a barrel to place a Pet House. Right-click it to
   open the list. Click a pet to open its sheet, the same one as
   sneak-right-clicking it in the world. From the sheet you bring it out, call
   it, store it, let it go, or look up the tricks it has learned.
@@ -26,14 +26,27 @@ spoken pet orders remain roleplay chat.
   it when it is fine. If the owner is far away or offline, it whines that it
   misses them.
 - Food, a brush, and medicine act immediately. Anyone nearby can feed, clean,
-  and heal. Play and tricks belong to the owner. Food past a full stomach makes
+  and heal. Playing directly with a pet and tricks belong to the owner; thrown
+  toys can attract anyone's pets. Food past a full stomach makes
   the pet feel worse. A hit makes it yelp and flinch.
 - Pets only sit through the trained Sit trick. A worn-out pet lies down on its
   own when exhausted, and the learned Lay trick puts it to rest sooner.
 
-Needs stay still in the shelter and while the owner is offline. Outside, they
+Needs stay still in the Pet House and while the owner is offline. Outside, they
 fall at the normal rate when the owner is nearby and at the away rate when the
 owner is online but far.
+
+Missing health regenerates naturally, including when the pet has no illness and
+when health is zero. Recovery needs hunger and cleanliness of at least 25, and
+energy of at least 25 or a resting pet. Low mood does not block recovery or drain
+the health of an otherwise cared-for pet. The default rate is 20 health points
+per minute (`care.health-regen-per-minute`); care in the Pet House or while the
+owner is offline stays frozen. Feeding and brushing also restore health equal to
+25% of the hunger or cleanliness points actually restored, capped at 100.
+Overfeeding still hurts, and brushing an already clean pet grants no extra
+health. Medicine gives an immediate boost (`care.medicine-health-bump`) but is
+not needed for regeneration. Sick or weakened pets resume play once fully
+recovered; healthy pets with missing health can play once health is above zero.
 
 Sitting, lying from weakness or exhaustion, and sleeping all recover energy at
 the `care.sleep-minutes-to-full` rate, without idle energy loss. Away recovery
@@ -54,10 +67,16 @@ energy; an explicit Lay order continues until another order changes it.
   words on the Tricks page. Say `follow` while looking or `<name> follow`.
   Come is a separate trick; saved Come words and progress stay with Come.
   Existing custom word bindings are never overwritten.
-- Sit, Stay (standing) and Lay (sleeping) remain in place until following is
-  resumed, and survive restarts. Lay stays asleep even at full energy. Automatic
+- Sit, Stay (standing) and Lay (lying awake) remain in place until following is
+  resumed, and survive restarts. Lay remains in place at full energy. Automatic
   exhaustion sleep can still end when recovered. Needs and illness can prevent a
-  pet from moving even after release.
+  pet from moving even after release. Sitting and lying pets can look at nearby
+  players and animals without walking.
+- In water, land pets float and seek a nearby dry bank, even when hungry,
+  weakened, sitting or sleeping, and resume their saved order on land. This does
+  not apply to aquatic bodies such as fish, axolotls, tadpoles or turtles.
+  Fetching, calls and active following keep their destinations while swimming
+  rather than turning back toward the nearest bank.
 
 Follow is continuous following. Come gets the pet up, walks to the owner's
 current position and restores its earlier Sit, Stay or Lay posture on arrival.
@@ -71,7 +90,8 @@ current position. Sit, Stay and Lay cancel the call and clear both pathfinding
 and native travel inputs immediately, preserving vertical physics. Their holds
 also apply during model animations, so a posture cannot slide along an old
 movement route. Stay uses the standing idle pose, independently of stale
-vanilla sitting flags. Native entity teleports are cancelled while a pet has a
+vanilla sitting flags. Native entity teleports are cancelled while a pet is fetching, returning from a
+lost fetch race, or has a
 hold order, including the tameable mob's built-in teleport to its owner. Follow
 and temporary Come movement remain permitted; an explicit profile Call switches
 to Follow before teleporting.
@@ -81,8 +101,8 @@ the [configuration guide](configuration.md#learnable-tricks-per-pet-type).
 
 ## Play and social behaviour
 
-- Right-click the air with a listed toy to throw it. The summoned pet fetches
-  that item and drops it in front of the owner.
+- Right-click the air with a listed toy to throw it, even if nearby pets are
+  unwell or no pets are nearby. See [Fetch races](#fetch-races).
 - Say a following pet's exact name in chat to call it close. It then waits
   quietly for `roaming.name-attention-seconds` (10 seconds), counted after
   arrival. Calling a pet that is already sitting, staying or sleeping does not
@@ -97,6 +117,24 @@ the [configuration guide](configuration.md#learnable-tricks-per-pet-type).
   Right-click a barking pet three times with an empty hand to calm it. Each
   vanilla species keeps its own hunting and combat behaviour. A vanilla animal
   targeting a player can also be calmed with repeated right-clicks.
+
+## Fetch races
+
+All nearby, available pets that accept a thrown toy can chase it, regardless of
+ownership. Sick, weakened, hungry, exhausted, sleeping or training pets stay out,
+and only pets with the Follow order join; pets ordered to Sit, Stay or Lay stay
+in place. Every participant navigates to the shared toy on its own. The first pet
+to reach it collects it and returns it to the player who threw it; the others run
+back to their own owners without teleporting, and their return continues after
+the winner delivers the toy.
+
+Each pet keeps the same speed for chasing and returning, including when it loses
+the race or swims. Fetch movement is 30% faster than normal movement; bond,
+cleanliness, illness and favourite-toy differences still apply between pets.
+Each later throw gives chasing pets a 35% chance to switch targets; pets already
+carrying a toy finish their return. Each throw is a separate physical toy.
+Unclaimed toys can be picked up normally, and ground toys become pickable after
+a minute if no pet can reach them.
 
 ## Belly rub moment
 
@@ -116,12 +154,12 @@ order. Damage, water, orders, illness, leaving or storage interrupt the moment.
 ## Menus
 
 Trick menus show learned tricks, then tricks in practice, then unknown tricks.
-Within each group the order is Follow, Come, Sit, Stay, Lay, Paw, Speak, Beg,
-Jump, followed by custom tricks in configuration order. Trick inventories have
+Within each group the order is Follow, Come, Sit, Stay, Lay, Paw, Speak, Jump, followed by custom tricks in configuration order. Trick inventories have
 three rows, with 18 entries per page from slot 0. All nine slots in the third
 row are reserved for navigation; the nineteenth trick starts on the next page.
 Follow is available as a learned trick rather than a separate profile button.
-The Tricks button occupies the middle of the profile's bottom row. Sex uses
+Direct pet profiles centre Call, Tricks, Store and Release across the bottom row;
+a stored pet shows an inactive storage icon in the same position. Sex uses
 white dye for both sexes, with neutral text and no sex symbols.
 
 Pet lists hold 45 entries per page and fill rows from left to right, top to
@@ -133,7 +171,7 @@ on the arrow. At either boundary it plays a private denial sound and keeps the
 same inventory. Empty slots use light grey glass.
 
 Back uses an item frame in the bottom left corner and always returns to the
-parent menu, independently of the current page. Pet lists and the shelter have
+parent menu, independently of the current page. Pet lists and the Pet House have
 no Back button. Profiles opened directly from the animal have no Back button;
-profiles reached from the shelter return there, and keep that parent when
+profiles reached from the Pet House return there, and keep that parent when
 browsing their tricks.
