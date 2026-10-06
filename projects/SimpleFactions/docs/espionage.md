@@ -20,7 +20,7 @@ exports and staff administration commands are not masked.
 A faction without an eligible, living Spymaster reveals exact information to everyone,
 including its guild menus, complete rosters, ledgers and wealth rankings. No daily estimates
 are generated about an unguarded faction. This takes effect when menus are reopened,
-including after removal, permanent character death or a solo leader becoming ineligible.
+including after permanent character death or while the office waits for the leader's character.
 Appointing an eligible Spymaster restores the usual intelligence checks, even if their
 aptitude is 0. Public viewing does not grant management authority or access to private
 sabotage settings.
@@ -66,15 +66,28 @@ Open **Special Positions** in the faction menu or use `/faction positions`, then
 **Spymaster**. The menu is an office directory, ready for additional positions.
 
 - `/faction spymaster <player>` appoints a member.
-- `/faction spymaster remove` leaves the office vacant.
+- `/faction spymaster remove` dismisses the appointee and returns the office to the leader.
 - `/faction espionage` opens the holder's private settings, or the office menu for other
   members.
 
 Only the faction leader can appoint or remove the Spymaster. The appointee must be an online
-member with an active RPCharacters character. The faction leader is ineligible unless the
-faction has only one member across all its guilds; a solo leader uses 25% of their permanent
-aptitude, rounded down. If another member joins, the leader's office becomes vacant when it
-is next checked. Missing or ineligible Spymasters have aptitude 0.
+member with an active RPCharacters character. Missing or ineligible Spymasters have aptitude 0.
+
+### The leader as default holder
+
+The faction leader holds every special position that has no appointee, whatever the size of
+the faction. An office falls back to the leader on founding, when its appointee is dismissed,
+dies or leaves, and when the leadership changes: a default holding moves to the new leader,
+while a deliberate appointment stays with its appointee. The office waits for the leader's
+next live active character and is filled the next time it is checked (for example when a
+faction menu opens). Until then it counts as vacant. Dismissing the leader's own default
+holding is refused.
+
+Holding several offices costs aptitude. For each office beyond their first, a character
+loses `espionage.aptitude.extra-position-penalty` (default 25%) of their permanent aptitude
+in all of them, rounded down and never below 0: one office 100%, two 75%, three 50%, five or
+more 0%. With a single office the leader keeps full aptitude. Only the Spymaster exists so
+far, so the penalty matters once more offices are added.
 
 Only the appointee receives the roleplay appointment letter and their aptitude in chat.
 Member and candidate entries use character names and guild affiliations. Appointment
@@ -84,8 +97,8 @@ character names require the account name.
 
 ### Founding offices and appointment costs
 
-A new faction automatically assigns its founder to the office, subject to the solo-leader
-aptitude penalty. This automatic assignment does not count as the first deliberate
+A new faction automatically assigns its founder to the office. This automatic assignment,
+like any later default holding by the leader, does not count as the first deliberate
 appointment. The first deliberate appointment is free and causes no unrest. Every later
 appointment costs **250d** from the faction treasury and causes **−10 stability points**,
 fading linearly over **7 real days**. Removing an office holder does not reset the history.
@@ -301,7 +314,7 @@ removed from `config.yml`.
 | `espionage.aptitude.base` | `50.0` | Starting score before attribute weights. |
 | `espionage.aptitude.attribute-center` / `attribute-cap` | `6` / `16` | Attribute centring and cap. |
 | `espionage.aptitude.random-spread` | `20` | Random ± added to the aptitude roll. |
-| `espionage.aptitude.solo-leader-multiplier` | `0.25` | Aptitude kept by a solo leader. |
+| `espionage.aptitude.extra-position-penalty` | `0.25` | Aptitude lost per office held beyond the first. |
 | `espionage.aptitude.attribute-weights.*` | see above | Attribute weights. |
 | `espionage.checks.aptitude-multiplier` | `1.25` | Aptitude multiplier in the daily roll. |
 | `espionage.checks.luck-spread` / `luck-draws` | `75` / `3` | Luck range and number of averaged draws. |
@@ -362,7 +375,7 @@ initialisation pending, so a later lookup can retry without consuming an appoint
 
 Automated tests run with `mvn clean verify` (Java 21) and cover attribute weights and
 extremes, daily luck, estimate bounds, caching, character aptitude persistence and
-migration, leader eligibility, solo penalties, sampled rosters, rank privacy and
+migration, the leader's default holding, extra-office penalties, sampled rosters, rank privacy and
 permissions.
 
 On a test server, use `/faction menu`, then compare reports from two members, test prestige
