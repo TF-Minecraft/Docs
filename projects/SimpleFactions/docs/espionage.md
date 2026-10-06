@@ -95,27 +95,42 @@ commands and invitations accept either full character names (including spaces) o
 account names; only online players match, matching is exact and ignores case, and duplicate
 character names require the account name.
 
-### Founding offices and appointment costs
+### Founding offices and appointments
 
-A new faction automatically assigns its founder to the office. This automatic assignment,
-like any later default holding by the leader, does not count as the first deliberate
-appointment. The first deliberate appointment is free and causes no unrest. Every later
-appointment costs **250d** from the faction treasury and causes **−10 stability points**,
-fading linearly over **7 real days**. Removing an office holder does not reset the history.
-Unrest persists across restarts, progresses during downtime, and repeated replacements stack
-their own decaying penalties. Saves from before appointment counting was recorded treat an
-existing deliberate holder, or a stored legacy aptitude roll, as having used the first
-appointment.
+Appointments never cost the treasury. A new faction automatically assigns its founder to the
+office. This automatic assignment, like any later default holding by the leader, does not
+count as the first deliberate appointment. The first deliberate appointment causes no unrest.
+Every later appointment causes **−10 stability points**, fading linearly over **7 real
+days**. Removing an office holder does not reset the history. Unrest persists across
+restarts, progresses during downtime, and repeated replacements stack their own decaying
+penalties. Saves from before appointment counting was recorded treat an existing deliberate
+holder, or a stored legacy aptitude roll, as having used the first appointment.
+
+A newly appointed Spymaster has to build their network. They start at **25%** of their
+aptitude and rise linearly to their full aptitude over **7 real days**. The build-up applies
+to the daily rolls, the office menus and foreign reports of their aptitude. The extra-position
+penalty applies on top. Founders, the leader's default holding and offices saved before the
+build-up existed hold full aptitude at once.
+
+After a deliberate appointment the leader must wait **2 real days** before appointing another
+Spymaster. Dismissing the appointee is allowed at any time but does not reset the wait. If
+the appointee's character dies, the wait is waived. An appointee who leaves the faction does
+not waive it. The office menu shows the build-up progress and when the next appointment is
+possible.
 
 ```yaml
 espionage:
   appointments:
-    repeat-cost: 250.0
     stability-penalty: 10.0
     penalty-days: 7.0
+    build-up-days: 7.0
+    starting-aptitude: 0.25
+    change-cooldown-days: 2.0
 ```
 
-Zero disables the corresponding cost or penalty.
+Zero disables the unrest, the build-up (`build-up-days`) or the wait (`change-cooldown-days`).
+`starting-aptitude` is the share of aptitude (0–1) a new Spymaster starts with. The retired
+`repeat-cost` key is removed from existing files on load.
 
 An empty or ineligible office also applies a persistent **Vacant Spymaster** stability
 penalty until it is filled, including offices never deliberately assigned and holders who
@@ -125,7 +140,7 @@ it. This is independent of the replacement unrest.
 ### Character death
 
 Permanent RPCharacters character death removes that character's Spymaster office and keeps
-the paid appointment history. Ordinary Minecraft respawns and cancelled character deaths do
+the appointment history, and waives the wait before the next appointment. Ordinary Minecraft respawns and cancelled character deaths do
 not remove the office. Removal is confirmed after the death event commits, and loaded
 assignments for dead characters are rejected when checked.
 
@@ -301,7 +316,7 @@ rolls and reports remain unchanged.
 All office and espionage settings live in `plugins/SimpleFactions/special-positions.yml`.
 Missing settings are populated from the bundled defaults on startup or reload; existing
 values always win. If the file does not exist but `config.yml` still has an `espionage`
-section, those values (custom weights, costs and permission nodes) are copied across,
+section, those values (custom weights, appointment settings and permission nodes) are copied across,
 `config.yml` is backed up to `config.yml.before-special-positions`, and the section is
 removed from `config.yml`.
 
@@ -310,7 +325,9 @@ removed from `config.yml`.
 | `positions.spymaster.vacancy-stability-penalty` | `10.0` | Stability lost while the office is vacant or ineligible. |
 | `espionage.bypass-permission` | `simplefactions.espionage.bypass` | Exact-view permission for staff. |
 | `espionage.reload-permission` | `simplefactions.espionage.reload` | Permission for `/faction reloadespionage`. |
-| `espionage.appointments.*` | `250.0`, `10.0`, `7.0` | Repeat cost, unrest points and unrest days. |
+| `espionage.appointments.stability-penalty` / `penalty-days` | `10.0` / `7.0` | Replacement unrest points and days. |
+| `espionage.appointments.build-up-days` / `starting-aptitude` | `7.0` / `0.25` | Days for a new Spymaster to reach full aptitude, and the share they start with. |
+| `espionage.appointments.change-cooldown-days` | `2.0` | Days after an appointment before the next one. |
 | `espionage.aptitude.base` | `50.0` | Starting score before attribute weights. |
 | `espionage.aptitude.attribute-center` / `attribute-cap` | `6` / `16` | Attribute centring and cap. |
 | `espionage.aptitude.random-spread` | `20` | Random ± added to the aptitude roll. |
@@ -349,7 +366,7 @@ offence and defence rolls and reports, then immediately rebuilds all foreign rep
 works in game and from the console, requires the reload permission (default false), and
 deliberately overrides the once-per-day rule for testing. Reopen menus afterwards to see
 the refreshed reports. It preserves permanent aptitude, office holders, sabotage
-preferences, appointment counts, treasury and unrest.
+preferences, appointment counts and times, build-up progress and unrest.
 
 `/faction reloadconfigs` (admin) reloads settings, including `special-positions.yml`,
 without regenerating reports.
