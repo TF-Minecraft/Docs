@@ -312,6 +312,24 @@ Only the office holder can see or change these controls. Preferences persist thr
 restarts and reset on a new appointment. Selecting 0 disables that side again. Existing daily
 rolls and reports remain unchanged.
 
+Each level has its own roleplay name, description and chat message. Offensive sabotage
+weakens the faction's own spying abroad; defensive sabotage lets rival spies learn more:
+
+| Reduction | Offensive | Defensive |
+| --- | --- | --- |
+| 0 | Faithful service | Vigilant watch |
+| 25 | Stray dispatches | Loose lips |
+| 50 | Idle informants | Unguarded doors |
+| 75 | Doctored reports | Foreign silver |
+| 100 | Blinding your masters | Opening the vaults |
+
+The text lives in `special-positions.yml` under `espionage.sabotage`: a `title` and `lore`
+per side, `levels.<0|25|50|75|100>` with `name`, `lore` and `message`, plus the shared
+`footer` (cycle hint) and `note` (sent after each change; blank turns it off). `&` colour
+codes, `#rrggbb` hex colours and `{reduction}` work in all of them. Missing keys use the
+bundled text, and existing files gain the section on the next load. Changes apply after
+`/faction reloadconfigs`.
+
 ## Overlords and vassals
 
 ### Overlord advantage
@@ -377,6 +395,7 @@ removed from `config.yml`.
 | `espionage.vassalage.overlord-offense-bonus` | `25` | Margin an overlord gains spying on its vassals. |
 | `espionage.vassalage.overlord-defense-bonus` | `25` | Margin a vassal loses spying on its overlords. |
 | `espionage.vassalage.allow-sharing` | `true` | Lets Spymasters share with their overlord and vassals. |
+| `espionage.sabotage.*` | see file | Roleplay names, lore and chat messages for each sabotage level. |
 | `espionage.intelligence.tiers.<tier>.*` | see file | Margin thresholds, uncertainty, roster fractions and useful range widths. |
 | `espionage.intelligence.maximum-roster-size` | `23` | Maximum sampled roster names. |
 | `espionage.intelligence.minimum-tiers.*` | see below | Minimum tier for each field. |
