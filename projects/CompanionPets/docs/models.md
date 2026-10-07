@@ -67,7 +67,7 @@ mapped. Set a mapping to `""` to disable an optional clip.
 | `crouch` | A cat moving while sneaking, and the `cat` profile's stalk before pouncing on a thrown toy. Falls back to `walk` when moving and `idle` while stalking. |
 | `paw` | Giving a paw. Plays once while navigation pauses. |
 | `head_tilt` | Brief head-only gesture for an unknown training word or a failed learning attempt, at most once every three seconds. Layers over the current standing/sitting pose. Author only head bones, and use a distinct clip name. Vanilla wolves use their interested state. |
-| `shake` | A WOLF body's native two-second water shake. The clip's speed is fitted to the native time remaining. |
+| `shake` | A WOLF body's native water shake. Plays once at the clip's own speed; its length sets how long the shake and its droplets last. |
 | `pet` | Normal petting reaction. Does not interrupt a belly moment or another gesture. |
 | `jump`, `swim` | Optional air/water motions. ModelEngine plays `jump` for any jump, including the `cat` profile's pounce; `swim` loops. Missing clips use `idle` in the air and `walk` in water. |
 | `attack`, `hurt`, `eat`, `speak`, `spawn` | Automatically used when present for their corresponding behaviour. Missing clips do not prevent the behaviour. |
@@ -100,9 +100,10 @@ with vanilla pets and their existing visual approximations.
 
 Minecraft decides when a wet wolf shakes: it gets wet in water or rain, does not
 shake while it is still raining on it, starts only once it stands on the ground,
-and the shake lasts two seconds. Modelled wolves play `shake` over that whole
-shake, including while walking, and emit splash particles only during it.
-Water, lying down, sleeping or the end of the native shake stop both. If another
+and the native shake lasts two seconds. When it starts, modelled wolves play
+`shake` once at the clip's own speed, including while walking, and emit splash
+particles for as long as the clip plays. To make the shake longer or shorter,
+change the clip's length in Blockbench. Water, lying down or sleeping stop both. If another
 gesture is playing when a shake begins, that shake is not animated rather than
 starting late. Fetching, greetings, toy focus and pet meetings postpone the shake;
 the pet then ends dry instead of shaking again afterwards. Vanilla fallback wolves
