@@ -15,6 +15,12 @@ is currently in the world.
   sneak-right-clicking it in the world. From the sheet you bring it out, call
   it, store it, let it go, or look up the tricks it has learned.
 - Several pets can be outside at once.
+- A pet brought out of the Pet House appears behind or beside you, never inside
+  the Pet House, on a block-centred spot with solid ground and room for its whole
+  scaled body. Calls and teleports to the owner use the same check. For three
+  seconds after appearing, a pet takes no suffocation damage and is moved to the
+  nearest free space if it ends up inside a block. If there is no room, the
+  pet stays in the Pet House and you are told why.
 
 Plugin replies and egg, rename and release dialogue inputs are private. Ordinary
 spoken pet orders remain roleplay chat.
@@ -101,6 +107,13 @@ the [configuration guide](configuration.md#learnable-tricks-per-pet-type).
 
 ## Play and social behaviour
 
+How a pet expresses itself depends on its
+[behavior profile](configuration.md#behavior-profiles). Dogs are exuberant: they
+wag, jump, circle you and shuffle eagerly in front of a held toy. Cats are
+restrained: no tail wagging or happy jumps, a calmer greeting with more sounds,
+and a stalk before pouncing on a thrown toy. Both dig up gifts and make mischief.
+`basic` pets show emotion only with small hops and sounds.
+
 - Right-click the air with a listed toy to throw it, even if nearby pets are
   unwell or no pets are nearby. See [Fetch races](#fetch-races).
 - Say a following pet's exact name in chat to call it close. It then waits
@@ -135,6 +148,13 @@ Each later throw gives chasing pets a 35% chance to switch targets; pets already
 carrying a toy finish their return. Each throw is a separate physical toy.
 Unclaimed toys can be picked up normally, and ground toys become pickable after
 a minute if no pet can reach them.
+
+A pet with the `cat` profile stalks a toy that nobody contests: about two blocks
+away it stops and watches the toy for roughly 1.5 seconds, crouched if its model
+has a `crouch` clip, then pounces on it and carries it back. If another pet is
+chasing the same toy within four blocks of it, or is closer than the cat, the cat
+runs straight for the toy instead, and an ongoing stalk ends as soon as such a
+competitor appears.
 
 ## Belly rub moment
 
