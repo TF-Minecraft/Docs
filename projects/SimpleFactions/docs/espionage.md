@@ -240,7 +240,8 @@ views).
 ### Estimates
 
 Ranges are rounded, asymmetric snapshots containing the true value when generated. They
-never collapse to an exact number, including zero. Reports cover members, wealth,
+never collapse to an exact number, including zero; only fields an overlord or vassal
+[shares](#sharing-with-overlord-and-vassals) are exact. Reports cover members, wealth,
 prosperity, daily net income, professional army, levies, mercenaries, installations,
 stability and administrative power. Professional army counts filled professional soldier
 slots, excluding equipment and mercenaries. Guild wealth, member count, net income and trade
@@ -311,6 +312,44 @@ Only the office holder can see or change these controls. Preferences persist thr
 restarts and reset on a new appointment. Selecting 0 disables that side again. Existing daily
 rolls and reports remain unchanged.
 
+## Overlords and vassals
+
+### Overlord advantage
+
+An overlord's network is better at watching its vassals. When an overlord gathers a report
+on any vassal below it, direct or further down the chain, its margin gains
+`espionage.vassalage.overlord-offense-bonus` (default 25). When a vassal spies on any
+overlord above it, its margin loses `espionage.vassalage.overlord-defense-bonus` (default
+25). The bonus applies when the daily report is generated: a new vassalage takes effect with
+the next day's reports or `/faction reloadespionage`.
+
+### Sharing with overlord and vassals
+
+Spymasters can open their faction's information to their direct overlord and to their
+direct vassals. Each direction has its own setting, chosen by tier: nothing, Rumours, Broad,
+Reliable or Detailed. One choice covers all of a faction's vassals. Every field whose
+[disclosure gate](#disclosure-gates) is at the shared tier or lower reaches that partner
+**exactly**: single values instead of ranges, the full roster (up to the roster cap), and
+office holders and aptitude when their gates are shared. Fields above the shared tier keep
+the partner's rolled quality. For example, sharing Rumours always shows members, roster,
+wealth and guild members exactly.
+
+Only the Spymaster can change sharing, in the Private Conduct menu (**Share with your
+overlord** and **Share with your vassals**, click to cycle) or with:
+
+```
+/faction spymaster share <overlord|vassals> <none|rumours|broad|reliable|detailed>
+```
+
+Sharing belongs to the faction, so it stays in place when the Spymaster changes. A change
+drops the partners' cached report on this faction, so their next menu rebuilds it under the
+same daily rolls. Partners see "Their Spymaster shares everything up to *tier* exactly." in
+the report header. When a vassalage ends, both factions lose that day's reports on each
+other, so nothing shared stays visible.
+
+`espionage.vassalage.allow-sharing: false` turns sharing off server-wide, hides the menu
+buttons, and hides shared values in reports already cached that day.
+
 ## Configuration reference
 
 All office and espionage settings live in `plugins/SimpleFactions/special-positions.yml`.
@@ -335,6 +374,9 @@ removed from `config.yml`.
 | `espionage.aptitude.attribute-weights.*` | see above | Attribute weights. |
 | `espionage.checks.aptitude-multiplier` | `1.25` | Aptitude multiplier in the daily roll. |
 | `espionage.checks.luck-spread` / `luck-draws` | `75` / `3` | Luck range and number of averaged draws. |
+| `espionage.vassalage.overlord-offense-bonus` | `25` | Margin an overlord gains spying on its vassals. |
+| `espionage.vassalage.overlord-defense-bonus` | `25` | Margin a vassal loses spying on its overlords. |
+| `espionage.vassalage.allow-sharing` | `true` | Lets Spymasters share with their overlord and vassals. |
 | `espionage.intelligence.tiers.<tier>.*` | see file | Margin thresholds, uncertainty, roster fractions and useful range widths. |
 | `espionage.intelligence.maximum-roster-size` | `23` | Maximum sampled roster names. |
 | `espionage.intelligence.minimum-tiers.*` | see below | Minimum tier for each field. |
@@ -392,8 +434,8 @@ initialisation pending, so a later lookup can retry without consuming an appoint
 
 Automated tests run with `mvn clean verify` (Java 21) and cover attribute weights and
 extremes, daily luck, estimate bounds, caching, character aptitude persistence and
-migration, the leader's default holding, extra-office penalties, sampled rosters, rank privacy and
-permissions.
+migration, the leader's default holding, extra-office penalties, sampled rosters, rank privacy,
+overlord bonuses, sharing with overlords and vassals, and permissions.
 
 On a test server, use `/faction menu`, then compare reports from two members, test prestige
 and wealth sorting, browse foreign guilds and inspect private conduct. Use
