@@ -15,12 +15,13 @@ is currently in the world.
   sneak-right-clicking it in the world. From the sheet you bring it out, call
   it, store it, let it go, or look up the tricks it has learned.
 - Several pets can be outside at once.
-- A pet brought out of the Pet House appears behind or beside you, never inside
-  the Pet House, on a block-centred spot with solid ground and room for its whole
-  scaled body. Calls and teleports to the owner use the same check. For three
-  seconds after appearing, a pet takes no suffocation damage and is moved to the
-  nearest free space if it ends up inside a block. If there is no room, the
-  pet stays in the Pet House and you are told why.
+- A pet brought out of the Pet House appears behind or beside you, at least two
+  blocks from the Pet House, on a block-centred spot where its whole scaled body
+  fits and its feet rest on solid ground. Slabs, paths and carpets count as
+  ground; furniture collisions, liquids, fire and cobwebs do not. The real body,
+  including its model, is checked again before the pet first appears. If there is
+  no room, the pet stays in the Pet House and you are told why. Calling a pet uses
+  the same check; a pet catching up on its own uses Minecraft's teleport check.
 
 Plugin replies and egg, rename and release dialogue inputs are private. Ordinary
 spoken pet orders remain roleplay chat.
