@@ -6,50 +6,39 @@
 
 [`config.yml`](https://github.com/TF-Minecraft/CompanionPets/blob/main/src/main/resources/config.yml)
 defines pet types under `pets`. The key is the saved type ID and the name shown
-in menus: `wolf` and `beagle` are distinct pets. `entity` selects the Minecraft
-body and AI, so both can use `WOLF`. `appearance.type` selects `vanilla` (the
-default) or `modelengine`. Vanilla pets need no ModelEngine installation and
-keep their existing behaviour. `mythic-mob` can supply the body instead of
-`entity`; CompanionPets should own the appearance and animations of a body using
-this integration.
+in menus: `wolf` and `beagle` are distinct pets. Species, bodies, behavior
+profiles and voices are described in the
+[configuration guide](configuration.md#species-and-pets). The body (`entity`,
+WOLF or CAT) supplies navigation and native AI; the appearance only changes what
+players see. Vanilla pets need no ModelEngine installation. `mythic-mob` can
+supply the body with a declared WOLF or CAT `entity`; CompanionPets should own
+the appearance and animations of a body using this integration.
 
 ```yaml
 pets:
   wolf:
-    entity: WOLF
-    appearance:
-      type: vanilla
+    species: dog
     egg: WOLF_SPAWN_EGG
-    sex: random
-    # Inherits the global interaction lists.
   beagle:
-    entity: WOLF
-    egg: WOLF_SPAWN_EGG
-    egg-custom-model-data: 12001
-    appearance:
-      type: modelengine
-      model: beagle
-      scale: 1.0
-      animations:
-        idle: idle
-        walk: walk
-        sit: sit
-        death: death
-        lie: sleep
-        sleep: sleep
-        head_tilt: head_tilt
-        shake: shake
-        paw: {name: paw, speed: 1.0, blend: 0.15}
-    sex: random
-    # Inherits the global interaction lists.
+    species: dog
+    model: beagle                  # ModelEngine at scale 1
+    egg: "mmoitems:PETS:PET_BEAGLE_EGG"
+  husky:
+    species: dog
+    appearance: {type: modelengine, model: husky, scale: 0.9}
+    animations:
+      paw: {name: paw, speed: 1.0, blend: 0.15}
+    egg: "mmoitems:PETS:PET_HUSKY_EGG"
 ```
 
-The plain vanilla spawn egg selects `wolf`; an egg of the same material with
-CustomModelData `12001` selects `beagle`. The custom egg must be supplied by
-your item provider or a command. For this legacy example, each type needs a
-unique combination of egg material and optional custom model data. The plugin
-checks the egg again when the player confirms the name. Provider item IDs for
-eggs are described in the [configuration guide](configuration.md#eggs).
+`model: <id>` selects ModelEngine at scale 1. Use `appearance` for other settings;
+explicit appearance fields override the shortcut, and `appearance.type: vanilla`
+disables a model. Top-level `animations` is a shortcut for
+`appearance.animations`; explicit appearance mappings win for the same action.
+Each type needs a unique egg; provider item IDs and the legacy
+`egg-custom-model-data` are described in the
+[configuration guide](configuration.md#eggs). The plugin checks the egg again
+when the player confirms the name.
 
 Changing a pet's underlying entity type takes effect when that pet is summoned
 again.
@@ -75,13 +64,12 @@ mapped. Set a mapping to `""` to disable an optional clip.
 | --- | --- |
 | `lie`, `sleep` | Exhaustion/weakness and sleeping, including sleep caused by care needs. Loop until the pet recovers or wakes. Missing `sleep` falls back to `lie`, then `sit`. |
 | `fly`, `hover` | Airborne flying bodies, moving/stationary. Fall back to `walk`/`idle`. |
-| `run` | Falls back to `walk` at 1.5 times its configured speed. `run-speed` defaults to 0.22 blocks/tick, with hysteresis. |
-| `crouch` | A cat moving while sneaking; falls back to `walk`. |
+| `crouch` | A cat moving while sneaking, and the `cat` profile's stalk before pouncing on a thrown toy. Falls back to `walk` when moving and `idle` while stalking. |
 | `paw` | Giving a paw. Plays once while navigation pauses. |
 | `head_tilt` | Brief head-only gesture for an unknown training word or a failed learning attempt, at most once every three seconds. Layers over the current standing/sitting pose. Author only head bones, and use a distinct clip name. Vanilla wolves use their interested state. |
-| `shake` | Begins when the native wolf shake clock starts, alongside its vanilla sound. Play once. |
+| `shake` | A WOLF body's native two-second water shake. The clip's speed is fitted to the native time remaining. |
 | `pet` | Normal petting reaction. Does not interrupt a belly moment or another gesture. |
-| `jump`, `fall`, `swim` | Optional air/water motions. Jump plays once and holds until landing or the fall pose; swim loops. Missing clips use normal movement/idle fallbacks. |
+| `jump`, `swim` | Optional air/water motions. ModelEngine plays `jump` for any jump, including the `cat` profile's pounce; `swim` loops. Missing clips use `idle` in the air and `walk` in water. |
 | `attack`, `hurt`, `eat`, `speak`, `spawn` | Automatically used when present for their corresponding behaviour. Missing clips do not prevent the behaviour. |
 | `lie_back`, `belly_up`, `get_up` | The optional [belly rub moment](gameplay.md#belly-rub-moment). |
 
@@ -110,19 +98,32 @@ previous gesture; sleep, lying down, water and falling can also interrupt it.
 Sickness continues to use care particles and sounds. All tricks still work
 with vanilla pets and their existing visual approximations.
 
-Modelled wolves emit water splash particles throughout their native shake clock,
-alongside the `shake` animation and vanilla sound. Vanilla fallback wolves
-retain their original particles. Fetching postpones both the native and the
-modelled shake until the pet finishes the race or returns the toy. Shaking never
-holds navigation, and movement interrupts the modelled gesture.
+Minecraft decides when a wet wolf shakes: it gets wet in water or rain, does not
+shake while it is still raining on it, starts only once it stands on the ground,
+and the shake lasts two seconds. Modelled wolves play `shake` over that whole
+shake, including while walking, and emit splash particles only during it.
+Water, lying down, sleeping or the end of the native shake stop both. If another
+gesture is playing when a shake begins, that shake is not animated rather than
+starting late. Fetching, greetings, toy focus and pet meetings postpone the shake;
+the pet then ends dry instead of shaking again afterwards. Vanilla fallback wolves
+keep Minecraft's own shake and droplets.
+
+The plugin disables tail gestures for a model without a `tail`, `tail_…` or
+`tail1…` bone, and belly rubs if `lie_back`, `belly_up` or `get_up` is missing or
+disabled. Models are checked again until ModelEngine has registered them, so the
+initial registration needs no reload; reload CompanionPets after regenerating a
+blueprint that was already loaded.
 
 ## TFMC models
 
-The `beagle`, `chihuahua`, `corgi`, `golden`, `catblack`, `catfunny`,
-`catorange` and `fox` models use `idle`, `walk`, `death`, `sit`, `sleep`, `paw`,
-`head_tilt`, `lie_back`, `belly_up` and `get_up`. They need no `lay`, `jump` or
-`swim` clip. Dogs and the fox also have `shake`; the fox's `pet2` can be enabled
-with `pet: pet2`. `paw` plays once even when the authored clip is marked as a loop.
+The `beagle`, `chihuahua`, `corgi`, `golden`, `husky`, `catblack`, `catfunny`,
+`catorange`, `mainecoon` and `fox` models use `idle`, `walk`, `death`, `sit`,
+`sleep`, `paw`, `head_tilt`, `lie_back`, `belly_up` and `get_up`. They need no
+`lay` or `swim` clip. Dogs and the fox also have `shake`; the fox's `pet2` can be
+enabled with `pet: pet2`. `paw` plays once even when the authored clip is marked
+as a loop (the cats' `paw` clips are). The cats and the fox use the `cat` profile
+but have no `crouch` or `jump` clip yet: their stalk waits in `idle` and the
+pounce moves the body unanimated until those clips are added.
 
 The frog retains `idle`, `walk`, `jump`, `swim`, `lay`, `croak` and `tongue`.
 It uses its `jump` and `swim` clips without overrides to keep its
@@ -152,9 +153,8 @@ An unavailable model leaves the pet visible as its vanilla body and logs the
 reason. Failed attachments retry every 30 seconds; vanilla servers remain usable
 without ModelEngine. Models are reapplied on chunk loads and on configuration
 reload, removed when pets are stored or released, and detached when
-CompanionPets stops. The old top-level `model` key is accepted with a migration
-warning; old `animations` and `trick-animations` mappings must move to
-`appearance.animations`.
+CompanionPets stops. The old `trick-animations` mapping must move to
+`animations` or `appearance.animations`.
 
 The integration uses the
 [ModelEngine 4 animation API](https://ticxo.github.io/Model-Engine-4.0-JavaDocs/com/ticxo/modelengine/api/animation/handler/AnimationHandler.html)
