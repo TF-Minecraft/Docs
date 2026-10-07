@@ -11,6 +11,101 @@ sections, such as `moments.belly-up`, manually when you want to tune them. Use
 `/companionpets reload` to apply edits without restarting the server; see
 [Staff commands](staff.md#reloading-configuration).
 
+## Species and pets
+
+A new pet usually needs only a species, a model and an egg:
+
+```yaml
+pets:
+  beagle:
+    species: dog
+    model: beagle
+    egg: "mmoitems:PETS:PET_BEAGLE_EGG"
+```
+
+The `pets` key is the saved type ID and the name shown in menus; keep it stable
+once pets exist. Two species are built in: `dog` (WOLF body) and `cat` (CAT body).
+Each supplies its body, native voice, the eight built-in tricks and its behavior
+profile. Only WOLF and CAT bodies are supported, because they provide native
+following; types with other entities are skipped and their saved pets kept.
+
+Define other animals, or adjust the built-ins, under `species`. A species accepts
+the same shared fields as a pet: `entity`, `behavior`, `voice`/`sounds`, `tricks`,
+`default-tricks`, `animations`, appearance settings, `items`, `sex` and
+`native-combat`. A pet overrides any inherited field. Mappings merge by key,
+ordinary lists replace the inherited list, and a species cannot inherit another
+species. Unknown species are logged and the pet is skipped.
+
+```yaml
+species:
+  frog:
+    entity: WOLF          # body: navigation and native AI only
+    behavior: basic       # character, independent of the body
+    voice: frog           # sounds, independent of the body
+    tricks: [follow, come, stay, jump, lay, tongue, croak]
+    animations: {lie: lay, sleep: lay}
+pets:
+  frog:
+    species: frog
+    model: frog
+    egg: "mmoitems:PETS:PET_FROG_EGG"
+```
+
+`model: <id>` is a shortcut for a ModelEngine appearance at scale 1, and top-level
+`animations` is a shortcut for `appearance.animations`; see
+[Pet types and ModelEngine](models.md). Pets without `species` still load with
+their own `entity` and the profile of that body.
+
+## Behavior profiles
+
+Spontaneous behavior is not configured action by action. Each species or pet
+chooses `behavior: dog`, `cat` or `basic`; without it, the body decides
+(WOLF → `dog`, CAT → `cat`). An unknown profile logs a warning listing the three
+choices and uses the body's profile. Old `behaviors` lists are ignored with a
+single warning.
+
+Every pet comes over to welcome its owner, gets excited about toys and fetches,
+greets and sniffs other pets and makes friends, reacts to petting and remembers
+who cares for it. The profiles differ in how emotion is shown:
+
+| Profile | Character | For | How it shows emotion | On its own |
+| --- | --- | --- | --- | --- |
+| `dog` | Exuberant | Dogs and dog-like animals | Wags its tail, jumps, circles the owner and shuffles eagerly in front of a held toy. Chases and protests at other pets; rolls over for belly rubs. | Digs up gifts and makes mischief, such as pulling up plants. |
+| `cat` | Restrained | Cats and cat-like animals | No tail wagging or happy jumps. A calmer, chattier greeting. Stalks an uncontested thrown toy and pounces on it. Chases and protests at other pets; rolls over for belly rubs. | Digs up gifts and makes mischief. |
+| `basic` | Neutral | Any other animal: frogs, rabbits, birds… | Small hops and excited sounds only. No circling, tail, stalking, chasing or belly rubs. | Nothing. |
+
+Choose `basic` for an animal that is neither dog-like nor cat-like. Sounds come
+from the pet's voice, so a fox with the `cat` profile greets with fox sounds at
+the cat's rhythm. Gestures the model cannot animate are disabled automatically:
+tail gestures need a tail bone, and belly rubs need their three clips. See
+[Pet types and ModelEngine](models.md#animation-clips).
+
+## Voices
+
+Without `voice` or `sounds`, a pet keeps its body's native audio. `voice: <preset>`
+replaces it with a profile and silences the body. The presets `wolf`, `cat`,
+`fox`, `frog` and `parrot` include specialised cues (purr, whine, hiss…); any other
+vanilla entity ID, such as `voice: rabbit`, builds a voice from that entity's
+ambient, hurt and death sounds. `none` starts empty and `voice: false` silences
+the pet.
+
+```yaml
+voice:
+  preset: fox
+  pitch: 1.3                     # multiplies every event's pitch (0.1–2)
+  ambient-interval-seconds: 25   # randomised ±20%; 0 disables idle sounds
+  greeting: {sounds: [ENTITY_FOX_AMBIENT, "tfmc:pet.hello"], volume: 0.6, pitch: 1.1}
+  toy: false
+```
+
+Events are `ambient`, `happy`, `happy-quiet`, `sad`, `hurt`, `death`, `greeting`,
+`toy`, `social`, `protest` and `eat`. Each accepts a sound name, a list,
+`false`/`[]`, or `{sounds, volume, pitch, min-interval-seconds}`. Use Bukkit sound
+names or namespaced resource-pack keys; `minecraft:` keys must exist on the server,
+and missing generated sounds fall back to the ambient sound or are disabled with
+a warning. Omitted events inherit the preset. A pitch-only mapping keeps the
+species or body voice. The older `sounds` key accepts the same settings.
+
 ## Interaction item IDs
 
 Item IDs use the same notation and optional provider APIs as Archaeo:
@@ -41,43 +136,39 @@ The five global categories are under `items`. All species share these defaults:
 
 ```yaml
 items:
-  treats:
-    - "mmoitems:PETS:MEAT_TREAT"
-    - "mmoitems:PETS:FISH_TREAT"
+  treats: [mmoitems:PETS:FISH_SNACK, mmoitems:PETS:BISCUIT_TREAT]
   foods:
-    - {item: "mmoitems:PETS:UNIVERSAL_FEED", hunger: 35}
-  medicines:
-    - "mmoitems:PETS:GREEN_CONCOCTION"
-    - "mmoitems:PETS:RED_CONCOCTION"
-  brushes:
-    - "mmoitems:PETS:CARING_ITEM"
-  toys:
-    - STICK
+    - {item: mmoitems:PETS:MEAT_TREAT, hunger: 35}
+    - {item: mmoitems:PETS:FISH_TREAT, hunger: 35}
+  medicines: [mmoitems:PETS:PET_MEDICINE]
+  brushes: [mmoitems:PETS:PET_BRUSH]
+  toys: [STICK, mmoitems:PETS:PET_BALL, mmoitems:PETS:PET_CHEW_BONE, mmoitems:PETS:PET_TUG_ROPE, mmoitems:PETS:PET_MOUSE_PLUSH, mmoitems:PETS:PET_TEDDY_PLUSH]
 ```
 
 The default custom IDs must be registered in MMOItems. Servers using only
 vanilla items can replace the global lists with vanilla IDs.
 
-Both treats train and reward every species. Players may switch accepted treats
-without ending a training session. Treat rewards consume one treat and use the
-training settings. As with the former favourite food, hungry pets may eat a
-treat for 30 hunger points and the `care.favorite-food-mood` bonus. Regular food
-uses each entry's `hunger` value. Both medicines consume one item to treat
-sickness and apply `care.medicine-health-bump`; they do not grant MCPets
-experience. The glove cleans without being consumed. Toys retain their full
-metadata through throwing, fetching, returns and saved carried items.
+All accepted treats train and reward every species. Players may switch accepted
+treats without ending a training session. Treat rewards consume one treat and use
+the training settings. Hungry pets may eat a treat for 30 hunger points and the
+`care.favorite-food-mood` bonus. Regular food (Meat Meal `MEAT_TREAT` and Fish
+Meal `FISH_TREAT`; the IDs are kept for existing items) uses each entry's
+`hunger` value. Pet Medicine consumes one item to treat sickness and applies
+`care.medicine-health-bump`. The Pet Brush cleans without being consumed. Toys
+retain their full metadata through throwing, fetching, returns and saved carried
+items.
 
 ## Per-pet overrides
 
-For a species-specific replacement, use the same fields under `pets.<id>.items`:
+For a replacement in one species or pet, use the same fields under `species.<id>.items` or `pets.<id>.items`:
 
 ```yaml
 pets:
   cat:
-    entity: CAT
+    species: cat
     egg: CAT_SPAWN_EGG
     items:
-      treats: ["mmoitems:PETS:FISH_TREAT"]
+      treats: ["mmoitems:PETS:FISH_SNACK"]
       foods: [{item: SALMON, hunger: 55}]
       medicines: []
       # brushes and toys are omitted, so they remain global.
@@ -87,8 +178,7 @@ A present category **replaces the entire corresponding global list**. It never
 appends to that list. An omitted category inherits; `[]` disables that category.
 `items: {}` inherits everything. Malformed or invalid override entries are logged
 and skipped without falling back to the global category. The shipped pet types
-have no active overrides; `config.yml` includes a commented example for each
-category.
+have no active overrides.
 
 ### Legacy item settings
 
@@ -138,20 +228,23 @@ placement. Plant and block settings continue to use vanilla materials.
 
 ## Learnable tricks per pet type
 
-`pets.<id>.tricks` optionally selects which existing tricks a type can learn
-and perform, for both vanilla and ModelEngine appearances:
+`tricks` in a species or pet selects which tricks a type can learn and perform,
+for both vanilla and ModelEngine appearances:
 
-```yaml
-# Inside a frog pet definition:
-tricks: [follow, stay, speak, jump]
-```
+| Form | Result |
+| --- | --- |
+| Omitted | Inherit the species, or the eight built-in tricks |
+| `{add: [id], remove: [id]}` | Edit the inherited set; removal wins if an ID is in both |
+| `[id, id]` | Replace the inherited set |
+| `[]` | No tricks beyond the default tricks |
 
-Available IDs: `sit`, `follow`, `come`, `stay`, `speak`, `jump`, `lay`, `paw`,
-plus IDs defined under `custom-tricks`. Names are case-insensitive and
-duplicates are ignored. Omitting `tricks` enables all compatible base and custom
-tricks. `tricks: []` disables additional tricks; configured default tricks are
-always enabled. Unknown IDs are skipped with a warning. A malformed list
-disables additional tricks, but the pet still loads.
+Built-in IDs: `sit`, `follow`, `come`, `stay`, `speak`, `jump`, `lay`, `paw`.
+Custom tricks are opt-in: defining one under `custom-tricks` does not grant it to
+every pet. Name it in a species or pet list, or use `tricks: {add: [salute]}`.
+Names are case-insensitive and duplicates are ignored. Species adjustments apply
+first, then the pet's. Configured default tricks are always enabled. Unknown IDs
+are skipped with a warning; a malformed value disables additional tricks, but the
+pet still loads.
 
 The selection filters learning and learned menus, word suggestions, binding,
 training rewards, and spoken or command-driven trick execution. Disabled tricks
@@ -169,9 +262,9 @@ training:
   default-tricks: [follow]
 pets:
   wolf:
-    entity: WOLF
+    species: dog
     egg: WOLF_SPAWN_EGG
-    # Omit default-tricks to inherit the global list.
+    # Omit default-tricks to inherit the species or global list.
     # default-tricks: [follow, sit, lay]
     # default-tricks: [] # No initial learning for this type.
 ```
@@ -212,6 +305,11 @@ custom-tricks:
   roll:
     display-name: "Rodar"
     animation: roll
+  croak:
+    display-name: Croak
+    animation: croak
+    sound: ENTITY_FROG_AMBIENT
+    at: [0.54, 2.33, 2.67]
 ```
 
 Custom tricks share the normal word binding, training, progress and rewards.
@@ -223,6 +321,12 @@ cannot be redefined. Menus paginate when there are more than nine choices.
 `duration` defaults to two seconds and controls text and zero-length animation
 poses; moving clips play once at their own length. Definitions may be removed
 and restored without losing stored words or progress.
+
+`sound` is optional and uses the same names, lists or `{sounds, volume, pitch}`
+mapping as [voice events](#voices). `at` gives the seconds from the start of the
+trick at which it plays, as a number or a list (default `0`), so it can follow
+the clip. The sound also plays with fallback text, and a new command cancels
+cues still pending from the previous trick.
 
 ## Belly rub moment
 
