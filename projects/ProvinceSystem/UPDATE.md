@@ -11,7 +11,7 @@ ProvinceSystem on the live box uses **production ports** only:
 
 Plugins, Red bot, and MC servers on the same host talk to the API at **`http://127.0.0.1:8000`** (not 18001).
 
-**Staging** (optional, separate clone) uses **18001** / **13001** via `docker-compose.staging.yml` — see [STAGING.md](STAGING.md) and section 5 below. Do **not** use staging scripts for production deploy.
+**Staging** (`dev.tfminecraft.net`) uses **18001** / **13001** via `docker-compose.staging.yml`; see [STAGING.md](STAGING.md). Do **not** use staging scripts for production deploy.
 
 ---
 
@@ -83,25 +83,9 @@ Ensure `backend/src/data`, `input`, `output`, and `defines` exist and contain th
 
 ## 2. Production deploy / redeploy
 
-SSH in, then from **`~/ProvinceSystem`**:
-
-```bash
-cd ~/ProvinceSystem
-git fetch origin
-git checkout main
-git reset --hard origin/main
-docker compose down
-docker compose build --no-cache
-docker compose up -d
-```
-
-```bash
-docker compose logs -f backend --since 1m
-```
-
-**Do not** run `./scripts/staging-*.sh` for production. Those only apply to `docker-compose.staging.yml` (ports 18001/13001).
-
-If `docker compose build` fails, fix the error and rebuild. Do not run `up` expecting a new frontend image until the build succeeds.
+Deploy www from GitHub: **Actions → Deploy → Run workflow** with site `www`. It backs up the database, rebuilds only
+what changed, health-checks the site and puts the previous code back if it does not come up. To deploy by hand, use
+the same script on the host (`~/bin/site-deploy deploy www <full sha>`). See [DEPLOY.md](DEPLOY.md).
 
 Smoke checks on the host:
 
@@ -170,19 +154,10 @@ TFMCWeb and SimpleFactions must use **loopback** API URLs on the game host, not 
 
 ---
 
-## 5. Staging stack (optional, later)
+## 5. Staging stack
 
-Only for a **separate** test clone (`~/tfmc-staging`), not the live `~/ProvinceSystem` deploy:
-
-```bash
-cd ~/tfmc-staging
-git fetch origin && git checkout main && git reset --hard origin/main
-./scripts/staging-down.sh
-./scripts/staging-up.sh
-curl -s http://127.0.0.1:18001/ping
-```
-
-Full checklist: [STAGING.md](STAGING.md).
+`dev.tfminecraft.net` (ports 18001/13001) deploys automatically from `main`; see [DEPLOY.md](DEPLOY.md) and
+[STAGING.md](STAGING.md).
 
 ---
 
