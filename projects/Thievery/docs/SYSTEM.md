@@ -66,6 +66,18 @@ Being teleported away (another world, or more than a block) ends the pick. A tel
 
 Ending without a penalty: being teleported away by someone else, the chest being broken, `/thievery reload` or a shutdown. Logging out after solving gives no reward. A thief already in a minigame is told "You're already working a lock." and cannot start another; a player in a minigame counts as already picking that chest. Chest access, nearby pings and the multi-day access cooldown are recorded only when the probe menu opens. `lockpicking.chest.minigame.enabled: false` skips the minigame.
 
+## Pickpocket ring
+
+`/pickpocket start` then right-clicking a player runs the pickpocket checks (trait, range, guild access cooldown), then `LockMinigameManager.startPickpocket` floats the pickpocket ring before the pocket opens. It is modelled on level 2 of the NoPixel lockpick: a gauge that drains while the thief mashes a key to fill it. It is the only pickpocket minigame. `PickpocketGame` is a `LockMinigame` with no chest, so it shares the lockpick ring's hold-still rules, landing wait, blocked hands and interruptions above.
+
+- `RingView.openGauge` floats a band of 40 touching dots where the lockpick ring would float, but also short of the mark's body, so a mark standing closer than `dial.distance` cannot hide it. It has a pip above it for each phase, a hint above that, and in the middle the phase name, the percentage and the key to mash. Only the dots that change are sent.
+- The key is jump, read from the player input packet; the middle shows each player's own binding. The real game's mash key, E, opens the inventory, which the client never tells the server. Sneak gives up.
+- Two phases, cyan then orange. Each press adds 2.05% (give or take 15%) and the ring drains 3.52% a second on a slow wave of about 3%: level 2's base drain with the original's random surges smoothed into the same average. The first phase is half length, so it fills and drains twice as fast. A filled phase pops its pip green and the next starts empty half a second later. At about seven presses a second the ring fills in roughly 15 seconds.
+- A 1-second "Steady..." pause comes first. Then the boss bar counts down `pickpocket.minigame.time-limit-seconds` (30, at least 5) across both phases.
+- Filling both phases opens the pocket. It checks again that the mark is online, within `pickpocket.max-distance` and not taken by a guildmate meanwhile; the guild access cooldown is recorded only then.
+
+Failing means the time running out, giving up, being hurt, logging out or teleporting yourself away mid-pick. It alerts the mark with `pickpocket.alert-subtitle` and puts that mark on `lockpicking.fail-cooldown-ms` for the thief (target id `pocket:<victim uuid>`); `/thievery` cooldown resets clear it. Nothing breaks. The mark going offline or out of `pickpocket.max-distance` ends the attempt without a penalty. A thief already in a minigame cannot start one. `pickpocket.minigame.enabled: false` opens the pocket straight away. Staff can play the ring with no mark using `/thievery testpick pocket`; it applies the cooldown to `pocket:test` and alerts no one.
+
 ## Chest probe: seized pins
 
 The probe menu is a minesweeper-style puzzle instead of a random break roll. `SeizedPins` hides seized pins among the menu's chest slots, using the menu's nine-column grid for adjacency.
