@@ -7,6 +7,7 @@ Technical documentation is maintained here. Run commands from the source checkou
 TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
 
 - [Overview](overview.md)
+- [Character controls, classes and combat](docs/character-controls.md)
 - [Graves](docs/graves-system/SYSTEM.md)
 - [Injuries, healing and prosthetics](docs/injuries-system/README.md)
 - [Persona, identity and chat](docs/persona-system/SYSTEM.md)

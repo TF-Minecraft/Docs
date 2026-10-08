@@ -10,6 +10,12 @@ guides live here.
 
 TFMC runs **Minecraft 1.21.10 on Java 21**. The [shared platform and build baseline](PLATFORM.md) defines common runtime, toolchain and validation conventions, with the current build declarations for each plugin.
 
+## Features
+
+- **Project guides** — Setup, gameplay, configuration, architecture, and operations for each active project.
+- **Shared conventions** — Platform targets, build pipelines, and documentation rules maintained in one place.
+- **Link validation** — Automated checks for local links, section anchors, and project navigation.
+
 ## Start here
 
 | Looking for… | Go to… |
@@ -97,6 +103,23 @@ Technical documentation is maintained in [TF-Minecraft/Docs](https://github.com/
 This repository is public. Private source repositories and licensed binaries
 retain their existing access restrictions. Licenses, contribution policies, and
 code/API comments remain with their source projects.
+
+## Tests
+
+Run the same checks as CI with Python 3.10 and the pinned documentation dependencies:
+
+```sh
+python -m pip install -r requirements.txt
+python -m unittest discover -s scripts -p 'test_*.py'
+python scripts/check-indexes.py
+python -m mkdocs build --strict --config-file projects/CoreProtect/mkdocs.yml --site-dir /tmp/tfmc-coreprotect-site
+```
+
+The unittest suite exercises the Markdown link checker; the index check validates
+local links and project navigation across the documentation. Results are printed
+to the terminal, and the MkDocs output goes to `/tmp/tfmc-coreprotect-site`.
+There is no coverage gate. These checks do not verify remote URLs, source-code
+behavior, or live Minecraft servers.
 
 ## License
 

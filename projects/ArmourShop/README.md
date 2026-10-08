@@ -20,7 +20,7 @@ Run `mvn clean verify` to build and run the available tests; use `mvn clean inst
 
 Required plugins declared by the manifest: TLibs, ItemsAdder, TFMCWeb.
 
-Startup loads `config.yml`, `categories.yml`, `base-sets.yml`, `permission-groups.yml` and `Categories/`, then starts pack pulling and catalog sync. `/armourshop` provides the shop and admin subcommands. `armourshop.admin` defaults to false, so grant it explicitly to administrators. Follow the integration guides below for the gateway, approval and ItemsAdder pack workflow.
+Startup loads `config.yml`, `categories.yml`, `base-sets.yml`, `permission-groups.yml` and `Categories/`, then starts pack pulling and catalog sync. `/armourshop` provides the shop and admin subcommands. `armourshop.admin` defaults to operators; grant it explicitly to other administrators. Follow the integration guides below for the gateway, approval and ItemsAdder pack workflow.
 
 ## Guides
 

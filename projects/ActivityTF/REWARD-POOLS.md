@@ -1,6 +1,11 @@
 # Named reward pools
 
-Configuration changes can be applied with `/activity reload`.
+Configuration reloads stage reward changes for the next weekly reset. The current
+week keeps the reward selection recorded in `reward-lock.yml`; `/activity rewards`
+shows the locked week and whether an update is pending. The lock includes reward
+pools, multipliers, milestone drops, `bar.milestones` and daily reward groups.
+To deliberately replace the current week's rewards, run `/activity rewards apply`.
+These commands require `activity.admin` (operators by default).
 
 Example (replace the sample rewards with your own):
 
@@ -42,8 +47,8 @@ Whitelist only material pools, such as `pool_prologue`, and leave skin/scroll
 pools out. At multiplier 2, this gives two independent material draws per
 material milestone while a `pool_skin` milestone still awards one scroll.
 Existing configurations must add the whitelist before extra pool draws apply;
-`/activity reload` picks up changes. Fixed-item rewards retain their existing
-amount multiplier.
+`/activity reload` stages those reward changes for the next week unless staff
+apply them immediately. Fixed-item rewards retain their existing amount multiplier.
 `drop_N` selects the Nth configured milestone, so only define drops that exist.
 
 Named pools use the `pool_` prefix and are case-insensitive. Lists directly under

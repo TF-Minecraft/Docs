@@ -16,7 +16,7 @@ Startup loads `config.yml`, initializes APIs, registers armour and furniture lis
 
 ## Build and validation
 
-The POM targets **Java 21** (`maven.compiler.release=21`) and the Minecraft **1.21.10** API. Build with JDK 21 and the matching rebuilt TFMC dependency releases.
+The POM targets **Java 21** (`maven.compiler.release=21`) and the Minecraft **1.21.10** API. The plugin descriptor retains `api-version: 1.21.4`; this loader metadata is separate from the runtime and build baseline. Build with JDK 21 and the matching TFMC dependency releases.
 
 Use the private dependency preparation script and checksum file in the source
 repository to populate `libs/`. GunsAndGadgets and Cooking resolve as provided

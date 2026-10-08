@@ -4,14 +4,20 @@
 
 ## Automated evidence
 
-The source contains no unit tests. `mvn clean verify` checks source
-compilation and packaging; a successful build must not be described as gameplay
-coverage. CI uses Java 21 and publishes test reports if tests are added later.
+With Java 21 and the [build dependencies](setup.md#build-from-source) prepared,
+run `mvn clean verify`. JUnit 5, MockBukkit and Mockito exercise crafting, alloys,
+commands, persistence and plugin boundaries. JaCoCo checks every production class
+and requires 100% instruction, branch and line coverage without exclusions.
+Surefire reports are in `target/surefire-reports/`; coverage HTML, XML and CSV
+are in `target/site/jacoco/`. Build CI uploads test and coverage reports; release
+CI uploads coverage reports. Available reports are uploaded after failures too.
+These tests do not start a live Paper server or the external plugin set.
 
-Release checks verify that the tag matches Maven, the JAR has a plugin descriptor,
-and the release checksum matches its bytes. The descriptor receives the same
-version as the JAR through Maven resource filtering. Compile ActivityTF, TFMCCore, Thievery and Recycler and run their available
-tests against the matching API version.
+Release CI sets Maven's version from the tag, checks the packaged plugin descriptor
+against that version, and verifies the release checksum against the JAR bytes.
+The descriptor receives the same version as the JAR through Maven resource
+filtering. Compile ActivityTF, TFMCCore, Thievery and Recycler and run their
+available tests against the matching API version.
 
 ## Server smoke checklist
 

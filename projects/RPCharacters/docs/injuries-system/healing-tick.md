@@ -1,40 +1,26 @@
 # Healing tick
 
-## Purpose
+Healing duration elapses in real time, including while a player is offline or a
+character is inactive. The saved expiry controls the remaining time; the task
+removes expired injuries and refreshes effects on active characters.
 
-Decrement healing duration while player is online with the injury on the active character.
+## Runtime behavior
 
-## `InjuryHealingService`
+[`InjuryHealingService`](https://github.com/TF-Minecraft/RPCharacters/blob/main/src/main/java/net/tfminecraft/rpcharacters/injuries/InjuryHealingService.java)
+runs at `healing-tick-interval` in `injuries.yml` (default `1m`). It visits online
+players with an active character, skipping dead players and pending permadeath
+respawns. Traits missing duration state receive their full configured duration.
+Expired traits are removed through `TraitChangeService`, with the lost-trait
+message; remaining traits have their scaled effects refreshed.
 
-- Runs at the interval configured in `injuries.yml`
-- For each online player with active character:
-  - For each owned trait with `duration` in YAML:
-    - Subtract elapsed ms from `duration-remaining-ms`
-    - If `<= 0`: remove trait, lost message, update integrator, clear state
-    - Else: `character.update()` if progress crossed int threshold (optional optimization: only on minute boundaries)
+The task does not subtract a fixed interval from saved time.
+[`TraitInstanceState`](https://github.com/TF-Minecraft/RPCharacters/blob/main/src/main/java/net/tfminecraft/rpcharacters/objects/TraitInstanceState.java)
+computes remaining duration from `expires-at-ms`. Inactive characters lose expired
+traits when loaded from storage. See [trait persistence](trait-state-persistence.md).
 
-## Tick rules
+## Verification
 
-- **Only** when character is active (`character.isActive()`)
-- **Only** while player online
-- Inactive characters or offline: duration frozen
-
-## Configuration (`injuries.yml`)
-
-```yaml
-healing-tick-interval: 1m
-```
-
-Default 1 minute if omitted.
-
-## Acceptance
-
-- [ ] Active character heals over time; inactive does not
-- [ ] Fully healed injury removed with lost message
-- [ ] Attribute penalties decrease as duration decreases
-
-## Implementation
-
-- `healing-tick-interval: 1m` in `injuries.yml`, read by `InjuryPoolLoader`
-- `InjuryHealingService` repeating task: decrements `duration-remaining-ms`, removes healed traits with lost message, refreshes integrator on active characters
-- Started from `PlayerManager.start()`
+- Check that remaining time decreases for active, inactive and offline characters.
+- Reload an inactive character after expiry and confirm the expired trait is absent.
+- Confirm active-character completion removes the injury, updates effects and sends the lost message.
+- Confirm penalties fade with the remaining fraction of the configured duration.

@@ -5,7 +5,8 @@
 When a stamped part revision is behind the live `parts.yml` revision:
 
 - `GunStatRefresher.refresh()` rebuilds the gun from stamped part ids via `InventoryManager.rebuildFromParts()`.
-- Preserves runtime identity: `gun_id`, `accuracy_salt`, loaded ammo (`bullets_loaded`, `ammo_loaded`), mid-reload state (`reload_ammo`, `reload_amount`), and `last_fire`.
+- Preserves runtime identity: `gun_id`, `accuracy_salt`, loaded ammo (`bullets_loaded`, `ammo_loaded`), selected ammo (`ammo_selected`), mid-reload state (`reload_ammo`, `reload_amount`), and `last_fire`.
+- Preserves the recorded crafting inputs used by recycling.
 - Syncs provenance revisions and re-applies `gg_craft_parts` / `gg_parts_revision`.
 - Does **not** refresh broken guns (`GunBrokenMarker.isBroken`) or guns with missing stamped ids (failed refresh; `GunManager` still marks broken on use).
 
@@ -16,6 +17,9 @@ When a stamped part revision is behind the live `parts.yml` revision:
 - Hotbar slot change (`PlayerItemHeldEvent`)
 - Inventory click (clicked slot + cursor)
 - Item drop (`PlayerDropItemEvent`)
+- Player join (carried inventory and ender chest)
+- Opening world storage (block inventories, double chests, and storage entities;
+  plugin menus and player-owned menus are excluded)
 
 Managed = has `gun_id` PDC and readable `gg_craft_parts`.
 
@@ -49,6 +53,10 @@ When `InventoryManager.createOutputItem(..., gui=false)` completes a real craft:
 
 Revisions come from `GunPart.getRevision()` assigned by `RevisionTracker` on load.
 
+`CraftingManager` separately records the materials actually consumed in
+`gg_craft_inputs`. Staff-given weapons record an empty set of inputs; see
+[staff gun commands](../operations.md#staff-gun-commands).
+
 ## Provenance and revisions
 
 ### RevisionTracker
@@ -79,9 +87,11 @@ Crafted guns use these runtime keys plus provenance when crafted:
 | `stat_value_*` / `stat_index_*` | Aggregated stat totals + lore indices |
 | `gg_craft_parts` | Stamped part list (craft only) |
 | `gg_parts_revision` | Max stamped part revision |
+| `gg_craft_inputs` | Actual consumed materials; empty for staff-given guns |
 | `gg_majority_tier` | Majority part tier (preview and craft) |
 | `gg_tier_lore_start` | Lore index of the `Tier II` line |
 | `bullets_loaded` / `ammo_loaded` | Runtime ammo (preserved on refresh) |
+| `ammo_selected` | Preferred ammunition for the next reload |
 | `reload_ammo` / `reload_amount` | Mid-reload cancel state |
 | `last_fire` | Last fire timestamp |
 
@@ -130,7 +140,10 @@ Wired on gun use and hotbar switch (next tick).
 
 ### Why not only `skin_id`?
 
-`SkinResolver` picks a skin from weighted votes across parts. Multiple part combinations can share a skin. Recycling must use **actual part costs** from `GunPart.getCost()`, not skin heuristics.
+`SkinResolver` picks a skin from weighted votes across parts. Multiple part
+combinations can share a skin. Recycler reads the actual consumed materials from
+`GunCraftInputs`; it does not infer costs from a skin or today's part definitions.
+Guns without recorded inputs are not handled by that provider.
 
 ## Source files
 

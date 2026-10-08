@@ -32,7 +32,9 @@ Use `m.utils.arcane_fuel` for fuel. Matching MMOItems UTILS definitions, item ty
 
 ## Build
 
-Use JDK 21 and Maven from the source checkout. Prepare the pinned private jars
+Use JDK 21 and Maven from the source checkout. The POM uses Paper API
+`1.21.10-R0.1-SNAPSHOT`; `plugin.yml` retains `api-version: 1.21.4`, which is
+loader metadata rather than the supported runtime baseline. Prepare the pinned private jars
 with `.github/scripts/prepare-release.sh`, verify `.github/dependencies.sha256`,
 and install the matching TLibs and CoreProtect Maven dependencies using their
 source builds or the shared installer in pinned mode. Then run
@@ -42,6 +44,13 @@ the version declared in `pom.xml`.
 The ModelEngine input is the supplied `ModelEngine-R4.1.1.jar` runtime. Its newer-server adapters may contain newer
 bytecode; the Minecraft 1.21.10 adapter and API compile on Java 21. Keep the exact
 checksum-matching jar instead of substituting an older binary by filename.
+
+## Metrics and coverage
+
+bStats is bundled from the upstream `bstats-bukkit:3.1.0` Maven artifact and
+relocated into the plugin namespace. Third-party dependency bytecode is outside
+the production-source coverage denominator; metrics configuration and lifecycle
+integration are included in the Java tests.
 
 ## Builds and releases
 

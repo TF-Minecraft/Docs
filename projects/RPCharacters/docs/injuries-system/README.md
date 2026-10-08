@@ -1,6 +1,6 @@
 # Injuries, healing and prosthetics
 
-Healing injuries carry remaining duration; permanent injuries can have configured
+Healing injuries carry a real-time expiry that continues while offline or inactive; permanent injuries can have configured
 prosthetic replacements. State belongs to the character. Death-zone handling
 rolls permadeath first, then converts healing injuries or selects a new injury.
 Prosthetics are excluded from the injury risk count.
@@ -13,7 +13,7 @@ The maintained references describe the current source on `main`:
 | [Trait persistence](trait-state-persistence.md) | Duration, fuel and saved identifiers |
 | [Trait effects](trait-runtime-effects.md) | Scaling and powered/depowered variants |
 | [Permadeath](permadeath-flow.md) | Death order, progression and risk |
-| [Healing](healing-tick.md) | Active-character duration and completion |
+| [Healing](healing-tick.md) | Real-time expiry and active-character completion |
 | [Surgery](remedies.md) | Healing injuries are treated by Surgery |
 | [Prosthetic installation](prosthetics-install.md) | Install, swap and confirmation |
 | [Prosthetic fuel](prosthetic-fuel.md) | Burn, refuel and effects |

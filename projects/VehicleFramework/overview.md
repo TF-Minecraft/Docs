@@ -360,7 +360,7 @@ Spline tracks persist samples and segment health separately from displays. Consi
 | Key | Default | Purpose |
 |-----|---------|---------|
 | `aim-mode` | `manual` | `manual` uses WASD aim keybinds; `cursor` slews the turret toward the gunner's crosshair each tick while controlled |
-| `aim-vector` | first `bones` entry | `base.align` bone pair defining barrel aim direction in world space (logs a warning when falling back) |
+| `aim-vector` | first `bones` entry | `base.align` bone pair defining barrel aim direction in world space (cursor-aim weapons warn when falling back; manual and fixed weapons do not) |
 | `cursor-range` | `80` | Fallback distance along the look ray when no block or entity is hit |
 | `turn-rate` | `0.5` | Follow speed in both modes; scales down with weapon health |
 

@@ -21,7 +21,7 @@ Manual test matrix and rollback.
 | # | Action | Expected |
 |---|--------|----------|
 | 6 | Active online 48h duration | Remaining decreases |
-| 7 | Switch character / offline | Remaining frozen |
+| 7 | Switch character / offline | Remaining time keeps decreasing; expired injuries disappear when processed or loaded |
 | 8 | Duration hits 0 | Trait removed, lost message |
 | 9 | Successful surgery on a healing injury | Injury removed, lost message |
 | 10 | Surgery offer with only permanent injuries | Refused |

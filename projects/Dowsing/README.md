@@ -10,10 +10,12 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 Dowsing builds with Java **21** against
 `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT`. Install the pinned TLibs
-`2.0.0`, SimpleFactions `3.0.1`, and Magic `0.2.0` release artifacts with
-the shared dependency installer. The build also prepares checksum-verified
+`2.0.0`, SimpleFactions `3.0.1`, DenarEconomy `0.2.4`, and Magic `0.2.0` release
+artifacts with the shared dependency installer. The build also prepares checksum-verified
 ItemsAdder, MMOItems, MythicLib, and json-simple inputs from the private
 ServerAssets repository.
+
+DenarEconomy supplies API types exposed by SimpleFactions bank signatures.
 
 At runtime, `plugin.yml` requires TLibs, SimpleFactions, MMOItems, MythicLib,
 and ItemsAdder. Magic is optional; configured Magic artifact paths are only

@@ -2,7 +2,9 @@
 
 TFMC plugins target **Java 21 / Minecraft 1.21.10**, using
 `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT` with `provided` scope.
-Plugin descriptors declare API 1.21.10.
+Plugin descriptors declare API 1.21.10 except TLibs and VehicleFramework, which
+retain `api-version: '1.21.4'` loader metadata. Both still compile against Paper
+1.21.10 with Java 21; their descriptor values do not change the TFMC runtime target.
 
 ## Runtime and toolchain
 

@@ -4,9 +4,10 @@ Compare `fullregen` output and timings between labelled snapshots.
 
 ## Layout
 
+Generated artifacts live under `backend/benchmarks/regen/` in the ProvinceSystem checkout:
+
 ```
 regen/
-  README.md           # this file
   snapshots/          # gitignored — full PNG trees per label
     {label}/
   timings/            # gitignored — JSON from _RegenTimings
@@ -18,7 +19,7 @@ regen/
 ## Commands
 
 ```bash
-cd ProvinceSystem/backend/src
+cd backend/src
 export PYTHONIOENCODING=utf-8
 
 # Snapshot only — use when output/{map}/ is already fresh

@@ -17,8 +17,23 @@ mode. Prepare the private inputs in `libs/` with
 The POM uses the Paper 1.21.10 API and writes the JAR under `target/` using
 its declared version. Validate server behavior against the intended dependencies.
 
-The plugin manifest requires TLibs; resolve the exact runtime integration
-versions with the shared baseline.
+For a local Bash session, the following prompts for the ServerAssets token and
+builds only after both dependency steps succeed:
+
+```bash
+python3 path/to/TLibs/tools/install-plugins.py --pom pom.xml --mode pinned &&
+  (read -rsp 'ServerAssets token: ' GH_TOKEN && echo && export GH_TOKEN &&
+    bash .github/scripts/prepare-release.sh) &&
+  mvn clean verify
+```
+
+Use a separate [TLibs checkout](https://github.com/TF-Minecraft/TLibs) for
+`path/to/TLibs`. The token needs Contents read access to TF-Minecraft/ServerAssets;
+the prompt keeps it out of shell history and the subshell limits its lifetime.
+CI supplies the token from `DEPS_TOKEN`.
+
+The plugin manifest requires TLibs and optionally integrates with WorldGuard.
+Resolve the exact runtime integration versions with the shared baseline.
 
 ## Configuration and operations
 

@@ -148,4 +148,4 @@ Update Patreon app client credentials and webhook secret in the backend secret e
 - Do not change legacy/VIP groups or any role/group outside the mapped supporter tiers.
 - Use shadow mode first when introducing a new mapping or deployment. Turn on backend apply only after the computed changes have been reviewed.
 
-See the [TFMCWeb identity guide](../identity/tfmcweb.md), [Discord bot integration](discord-bot.md), and the backend handoff in `ProvinceSystem/backend/src/patreon/README.md` for implementation details.
+See the [TFMCWeb identity guide](../identity/tfmcweb.md), [Discord bot integration](discord-bot.md), and the [backend protocol reference](patreon-backend.md) for implementation details.

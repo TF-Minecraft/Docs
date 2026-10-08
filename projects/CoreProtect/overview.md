@@ -110,6 +110,19 @@ The fork is not published to a Maven repository. Consumers pin `coreprotect.vers
 * WorldEdit changes and supported FAWE clipboard pastes.
 * *...and more!*
 
+## Custom item and mob labels
+
+Item and container lookups show saved MMOItems names, types, and IDs. Kill lookups
+show recorded mob names and, for deaths recorded with the MythicMobs integration,
+the internal mob ID. Ordinary named items are marked as renamed; a display name
+alone does not establish MMOItems or MythicMobs identity.
+
+Historical records receive these labels when the required metadata was saved.
+MythicLib and MythicMobs are optional integrations, with vanilla types as the
+fallback. Material filters, aggregate counts, and rollback payloads retain their
+existing meaning. Custom-ID filtering and restoration of custom mob identities
+are not supported.
+
 ## How to use the inspector
 
 Once you have the inspector enabled with `/core inspect` or `/co i`, you can do the following:

@@ -35,7 +35,7 @@ Creator stages use `one_handed`, `one_legged`, and `blind` (filter: permanent-on
 ## `zones.yml` tutorial
 
 - Death in zone may permakill or add a healing injury
-- Healing injuries recover while active online, or become permanent on another zone death
+- Healing injuries recover in real time, including offline and inactive characters, or become permanent on another zone death
 - Surgery treats healing injuries only
 - Prosthetics replace some permanent injuries
 - More injuries raise permakill chance

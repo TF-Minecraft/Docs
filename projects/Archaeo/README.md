@@ -17,8 +17,7 @@ From the source checkout, run `mvn clean verify`. The JAR is written to
 - [Gameplay guide and default tools](docs/gameplay.md)
 - [Custom-pack player guide](docs/pack-gameplay.md)
 - [Lore catalog editing](docs/lore-catalogs.md)
-- [Original design reference (Spanish)](docs/concepto.md) — includes proposals;
-  it does not establish implemented behavior.
+- [Tests, coverage and optional API contracts](docs/testing.md)
 
 Technical guides live here. Plugin code, bundled YAML defaults, and optional
 pack assets stay in [Archaeo](https://github.com/TF-Minecraft/Archaeo). TFMC-specific
@@ -27,4 +26,4 @@ settings and lore catalogs live in private
 
 ## Builds and releases
 
-See the [shared pipeline guide](../../PIPELINES.md). Pull requests and pushes to `main` build dated development JARs; matching numeric `v*` tags create draft releases with checksums.
+See the [shared pipeline guide](../../PIPELINES.md). Pull requests and pushes to `main` verify the source; only pull requests publish dated development JARs. Numeric `v*` tags supply the release version and create draft releases with checksums.

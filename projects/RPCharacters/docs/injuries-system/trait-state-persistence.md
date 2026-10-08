@@ -31,7 +31,7 @@ Map<String, TraitInstanceState> traitState; // keyed by trait id (lowercase)
 
 | Field | Type | Used by |
 |-------|------|---------|
-| `durationRemainingMs` | long | Healing injuries |
+| `expiresAtMs` | long | Healing injury expiry in epoch milliseconds |
 | `fuel` | double | Fueled prosthetics |
 
 ## Database (`Database.java`)
@@ -40,32 +40,35 @@ Map<String, TraitInstanceState> traitState; // keyed by trait id (lowercase)
 
 ```json
 "trait-state": {
-  "broken_arm": { "duration-remaining-ms": 172800000 },
+  "broken_arm": { "expires-at-ms": 1791633600000, "duration-remaining-ms": 172800000 },
   "arcane_prosthetic_arm": { "fuel": 42.5 }
 }
 ```
 
+`duration-remaining-ms` is also written as a compatibility snapshot; `expires-at-ms` is authoritative for current readers.
+
 **Load:**
 1. Parse `trait-state` or default `{}`
-2. For each trait on character, apply defaults (see below)
-3. No trait id migration in Database
+2. Prefer `expires-at-ms`; legacy `duration-remaining-ms` starts a new expiry from load time.
+3. Apply missing-state defaults, and remove expired duration traits on inactive characters.
+4. No trait id migration in Database.
 
 ## Defaults on load
 
 | Trait type | Missing state |
 |------------|---------------|
-| Healing (`duration` in YAML) | `duration-remaining-ms` = full duration from trait def |
+| Healing (`duration` in YAML) | Expiry = current time + full duration from trait definition |
 | Fueled prosthetic | `fuel` = `fuel-capacity` from trait def |
 | Other | no state entry required |
 
 ## API on `RPCharacter`
 
-- `getTraitState(traitId)`, `setDurationRemainingMs`, `setFuel`, `removeTraitState`
+- `getTraitState(traitId)`, `setDurationRemainingMs`, `setDurationExpiresAtMs`, `setFuel`, `removeTraitState`
 - `initializeTraitState` on `addTrait`, clear on `removeTrait`
 - `ensureTraitStateDefaults()` after load
 
 ## Acceptance
 
 - [ ] Old characters without `trait-state` load cleanly
-- [ ] Round trip save/load preserves duration and fuel
+- [ ] Round trip save/load preserves expiry and fuel; remaining time continues to decrease
 - [ ] Saved `one_handed` / `one_legged` ids resolve without JSON rewrite

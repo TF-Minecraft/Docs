@@ -24,9 +24,24 @@ Gameplay validation remains separate from compilation; follow the
 
 ## Runtime and configuration
 
-Required plugins declared by the manifest: TLibs, MMOItems, MythicLib.
+Required plugins declared by the manifest: TLibs, MMOItems, MythicLib. MMOCore
+is declared optional.
 
-`InfusionMain` loads `config.yml`, `goldsmithing.yml` and the `goldsmithing/` definitions for hits, materials, tiers, qualities and projects. It loads persisted stations, flushes them periodically and on shutdown, and registers socket/unsocket listeners. `/geminfusion reload` reloads definitions and stations; `/geminfusion select <projectId>` selects a project. Admin access uses `geminfusion.admin`; goldsmithing gameplay uses `professions.goldsmith` (false by default).
+`InfusionMain` loads `config.yml`, `goldsmithing.yml` and the `goldsmithing/`
+definitions for hits, materials, tiers, qualities and projects. It loads
+persisted stations, flushes them periodically and on shutdown, and registers
+socket/unsocket listeners.
+
+`/geminfusion reload` reloads definitions and stations.
+`/geminfusion select <projectId>` selects a project on an empty table the player
+is looking at within six blocks. Both commands require `geminfusion.admin`. Goldsmithing gameplay uses
+the permission configured in `goldsmithing.yml`, defaulting to
+`professions.goldsmith` (false by default); administrators bypass that gameplay
+check.
+
+## Guides
+
+- [Goldsmithing and finishing rules](goldsmithing.md)
 
 ## Builds and releases
 

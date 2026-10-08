@@ -19,6 +19,12 @@ resolves its result, and then consumes `start_item.amount` from the hand used.
 If the rolled output is disabled or its result cannot be resolved, nothing is
 consumed. Other players get an "in use" message; the owner reopens the menu.
 
+Lecterns without an active project retain vanilla book handling: players can
+place a written book or book and quill, or open a book already on the lectern.
+A book in the other hand also works when the interacting hand is empty. Remove
+an existing book before starting research; an active project takes precedence
+over book interactions.
+
 **Experimenting.** Clicking an item in the player's inventory moves one of it
 into the experiment slot, and clicking the slot returns it. Only items listed in
 an aspect's `primary_items` or `secondary_items` are accepted, and each item path
