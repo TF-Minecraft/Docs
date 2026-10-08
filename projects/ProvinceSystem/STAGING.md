@@ -11,18 +11,11 @@ Data lives only under this clone (`backend/src/data`, etc.).
 - Docker + Docker Compose on the host
 - Git access to this repo
 
-## Update staging clone (every pull)
+## Updating staging
 
-Staging boxes should track the remote branch **exactly**. Do **not** keep local edits - they make `git pull` fail with "local changes would be overwritten".
-
-Use your staging path (`~/ProvinceSystem` or `~/tfmc-staging`). Checkout the branch you run on staging (**`main`**).
-
-```bash
-cd ~/ProvinceSystem
-git fetch origin
-git checkout main
-git reset --hard origin/main
-```
+The TF server's staging clone serves `dev.tfminecraft.net` and deploys automatically whenever `main` changes; see
+[DEPLOY.md](DEPLOY.md). It keeps intentional local edits, so do not `git reset --hard` it. To deploy by hand, run
+`~/bin/site-deploy deploy dev <full sha>` on the host.
 
 ## Start (SSH)
 
@@ -39,7 +32,7 @@ curl -s http://127.0.0.1:18001/ping
 
 `staging-down.sh` clears a failed partial up before `staging-up.sh`.
 
-After later updates: use **Update staging clone** above, then:
+On a separate test clone, update with `git fetch origin && git reset --hard origin/main`, then restart:
 
 ```bash
 ./scripts/staging-down.sh
