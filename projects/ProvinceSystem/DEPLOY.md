@@ -13,8 +13,10 @@ Paths below are on the TF server as `ryan` unless stated.
 
 ## Branch previews
 
-Pushing a branch builds its backend and frontend images on GitHub and pushes them to
-`ghcr.io/tf-minecraft/provincesystem-preview-{backend,frontend}:<slug>` (public packages). The workflow then runs
+Pushing a branch builds its backend and frontend images on GitHub, in parallel, and pushes them to
+`ghcr.io/tf-minecraft/provincesystem-preview-{backend,frontend}:<slug>` (public packages). Pushes to `main` build
+the same images without deploying them and keep a registry build cache (`:buildcache`) that every branch starts
+from, so a new branch reaches its preview in about three minutes. The workflow then runs
 `up <slug> <sha>` over SSH as `psdeploy`, whose key is pinned to the host administrator's `ps-preview-ssh`.
 `/usr/local/sbin/ps-preview` (runs as `tfmc`) starts compose project `pv-<slug>` on the `ps-previews` network;
 the `ps-preview-router` Caddy container (`127.0.0.1:8090`, behind the `*.tfminecraft.net` tunnel rule) routes
