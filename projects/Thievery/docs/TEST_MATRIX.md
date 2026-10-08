@@ -53,6 +53,19 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 | G17 | Two wrong grid cells or ring slips add two seized pins to the chest |
 | G18 | High Dexterity or a strong pick on a small chest leaves few or no seized pins |
 
+## Pickpocket ring
+
+| # | Check |
+|---|--------|
+| P1 | `/pickpocket start` and right-clicking a player within reach floats the gauge in front of the thief; nobody else sees it, and the mark sees nothing |
+| P2 | The middle shows the thief's own jump key; mashing it fills the band clockwise from the top in cyan, and it drains when they stop |
+| P3 | Filling the first phase pops its pip green; the second phase starts empty in orange and needs about twice as many presses |
+| P4 | Filling both says "Got it" and opens the hidden pocket menu; budget, clues and taking items work as before |
+| P5 | Letting the boss bar run out, sneaking or taking damage says "Noticed", shows the mark the alert subtitle and refuses that mark for 60s with "Your mark is still on guard" |
+| P6 | The mark walking out of reach or logging out ends the ring with "Your mark is out of reach." and no alert |
+| P7 | The thief cannot walk or jump during the ring, the hotbar does not change, and they move normally afterwards |
+| P8 | `/thievery testpick pocket` plays the ring for staff with no mark and says "Pocket picked." when filled |
+
 ## Lock toggle and access
 
 | # | Check |
