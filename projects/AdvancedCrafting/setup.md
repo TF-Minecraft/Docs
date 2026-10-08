@@ -13,8 +13,8 @@ For a new server, while stopped, create `plugins/AdvancedCrafting/` and copy the
 `recipes/`, `colour-schemes/`, `model-schemes/` and `naming-schemes/` directories
 from the source's `src/main/resources/` into it. Adapt the examples to the server's
 MMOItems templates and item paths. The current bootstrap loads these directories
-but does not extract their contents automatically; it also does not create the
-model-schemes directory. Top-level default YAML files are copied only when missing.
+and creates them when missing, but does not extract their contents automatically.
+Top-level default YAML files are copied only when missing.
 Do not overwrite existing production configuration or data during this step.
 
 Place one AdvancedCrafting release JAR in `plugins/`, start the server, and check
@@ -28,9 +28,9 @@ ServerAssets. Build from `main`. Clone TLibs `main` next to
 the source checkout as `../tlibs`:
 
 ```sh
-python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned
-GH_TOKEN="$(gh auth token)" bash .github/scripts/prepare-release.sh
-mvn clean verify
+python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned &&
+  GH_TOKEN="$(gh auth token)" bash .github/scripts/prepare-release.sh &&
+  mvn clean verify
 ```
 
 Pinned mode installs the versions declared in the POM. The
@@ -42,9 +42,10 @@ in the private preparation script. Licensed JARs are not bundled with the releas
 
 ## Releases
 
-PR and main builds verify the source and upload a `DEV-YYYYMMDD-HHmm` JAR plus
-exact shared dependency metadata. Numeric tags must match the
-committed Maven version. The tag workflow creates a draft release with the JAR,
-`SHA256SUMS`, and `build.json` containing source and resolved dependency provenance.
+PRs and pushes to `main` verify the source. PRs upload a `DEV-YYYYMMDD-HHmm` JAR
+plus exact shared dependency metadata; main builds do not publish development JARs.
+The release workflow sets Maven's version from the numeric tag and creates a draft
+release with the JAR, `SHA256SUMS`, and `build.json` containing source and resolved
+dependency provenance.
 Inspect the draft before publication. Use a new version for corrections; never
 replace an existing published version's bytes.

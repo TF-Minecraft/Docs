@@ -13,13 +13,14 @@ VFBuilders adds configurable vehicle-building stations and blueprints to
 
 Use JDK 21 and Maven from `main`. The POM resolves Paper API
 **1.21.10-R0.1-SNAPSHOT** with `provided` scope and targets Java 21. Install
-the declared TLibs and VehicleFramework versions with the
+the declared TLibs, VehicleFramework and CoreProtect versions with the
 [shared installer](../TLibs/README.md) in pinned mode.
 
 Prepare the authorized private dependencies with
 `.github/scripts/prepare-release.sh` and verify `.github/dependencies.sha256`.
-The remaining local inputs in `libs/` are `ItemsAdder-4.0.18.jar`,
-`json-simple-1.1.1.jar` and `gson-2.14.0.jar`.
+The private inputs in `libs/` are `ItemsAdder-4.0.18.jar`,
+`json-simple-1.1.1.jar`, `gson-2.14.0.jar`, `ModelEngine-R4.1.1.jar` and
+`NBTAPI-2.16.1.jar`. ModelEngine and NBTAPI are test dependencies.
 
 ```sh
 mvn clean verify
@@ -38,10 +39,10 @@ loads `config.yml`, `stations.yml`, `categories.yml` and files under
 `plugins/VFBuilders/blueprints/`, then starts the station manager. It creates a
 `data/` directory under the plugin's data folder.
 
-Only `config.yml` and `plugin.yml` are present in the reviewed source resource
-directory. The entrypoint attempts to copy missing station/category defaults
-from the jar, so a fresh install needs those configurations supplied and checked;
-the source checkout alone does not establish a complete first-start setup.
+The JAR bundles `config.yml` plus empty `stations.yml` and `categories.yml`
+defaults, and copies them when missing. Existing files are preserved. The
+`blueprints/` directory starts empty: configure stations, categories and
+blueprints before players can begin construction.
 
 `/vfbuilders reload` reloads configuration and rebinds stations. It requires
 `vfbuilders.reload`, granted to operators by default.

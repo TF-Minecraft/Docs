@@ -20,6 +20,7 @@ for runtime, build, and validation conventions.
 - [Staff commands](docs/staff.md) — commands, permissions, and audit
 - [Saved data and recovery](docs/saved-data.md) — persistence files, backups, and
   recovery after a failed save
+- [Testing](docs/testing.md) — automated coverage and the dev-only Paper helper
 - [Default configuration](https://github.com/TF-Minecraft/CompanionPets/blob/main/src/main/resources/config.yml)
 - [Plugin commands and permissions](https://github.com/TF-Minecraft/CompanionPets/blob/main/src/main/resources/plugin.yml)
 
@@ -28,7 +29,7 @@ for runtime, build, and validation conventions.
 Build the source repository with Java **21** and Maven:
 
 ```sh
-mvn -Pcoverage clean install -DskipTests=false -Dmaven.test.skip=false
+mvn clean verify
 python3 .github/scripts/plugin-artifact.py --jar target/companionpets-main-SNAPSHOT.jar --version main-SNAPSHOT
 ```
 
@@ -43,27 +44,18 @@ and models (`integration/`), and MMOItems and ItemsAdder supply interaction item
 and eggs (`item/ItemBridge.java`). MythicLib is only a load-order dependency.
 CompanionPets has no runtime dependency on Archaeo, Cooking, or MCPets.
 
-The build command runs the unit tests under `src/test/java`; the `coverage`
-profile writes a JaCoCo report to `target/site/jacoco/`.
+The build command runs the tests under `src/test/java` and enforces 100%
+production line coverage. Surefire reports are in `target/surefire-reports/` and
+JaCoCo reports are in `target/site/jacoco/`. Coverage runs in every normal
+verification; the `coverage` profile is only a compatibility alias.
 
 ## Testing on a Paper server
 
 The source repository includes a dev-only
-[integration helper](https://github.com/TF-Minecraft/CompanionPets/blob/main/integration-tests/README.md)
+[integration helper](docs/testing.md#paper-integration-helper)
 that runs once against a real Paper server with the configured providers and
 reports `COMPANIONPETS_INTEGRATION PASS` or `FAIL` in the log. It does not
 establish correct rendering in a Minecraft client.
-
-## Design notes
-
-The original design notes are preserved in Spanish. They predate the
-implementation and do not establish current behaviour:
-
-- [Pet identity, entities, and movement](docs/design/nucleo-mascota.md)
-- [Care and needs](docs/design/cuidado.md)
-- [Training and tricks](docs/design/entrenamiento.md)
-- [Play and toys](docs/design/juego.md)
-- [Hatching, ownership, and management](docs/design/gestion.md)
 
 ## Builds and releases
 

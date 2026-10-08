@@ -1,6 +1,6 @@
 # ProvinceSystem documentation
 
-**tfminecraft.net** is the TFMC web hub: interactive political maps, donator cosmetics (skins and drinks), character creation, and identity services backed by a FastAPI backend and Next.js frontend.
+**tfminecraft.net** is the TFMC web hub: interactive political maps, donator cosmetics (skins and drinks), character creation, Discord accounts, and staff tools backed by a FastAPI backend and Next.js frontend.
 
 The game integration target is Minecraft **1.21.10**; see the [shared platform baseline](../../../PLATFORM.md). ProvinceSystem itself uses the web runtimes described in [architecture.md](architecture.md).
 
@@ -16,6 +16,10 @@ This section is the product and technical reference for **ProvinceSystem**. Tech
    - [characters/creator.md](characters/creator.md) - web character creator
    - [identity/tfmcweb.md](identity/tfmcweb.md) - Discord link, tokens, gate
    - [integrations/patreon.md](integrations/patreon.md) - Patreon supporter linking, entitlement and operations
+   - [identity/auth-security.md](identity/auth-security.md) - Discord sign-in, feature codes and staff access
+   - [integrations/coreprotect.md](integrations/coreprotect.md) - staff player activity and movement
+   - [integrations/rail.md](integrations/rail.md) - staff rail network
+   - [integrations/luckperms.md](integrations/luckperms.md) - staff permission policy and plugin protocol
 3. [flows/journeys.md](flows/journeys.md) - end-to-end player and staff journeys
 4. [ops/local-dev.md](ops/local-dev.md) - run the site locally
 5. [ops/sheet-render.md](ops/sheet-render.md) - 3D review-sheet renderer (prod deploy + smoke)
@@ -28,7 +32,7 @@ Schema assets: [assets/map-export-schema.json](assets/map-export-schema.json) (S
 | Component | Path | Role | Docs |
 |-----------|------|------|------|
 | **ProvinceSystem** | `ProvinceSystem/` | Website + FastAPI: maps, skins, drinks, characters, identity | This folder |
-| **TFMCWeb** | `tfmcweb/` | MC ↔ web gate: Discord link, scoped tokens, Survival Discord freeze, warn/ban mirror, Patreon rank writer | [identity/tfmcweb.md](identity/tfmcweb.md), [integrations/patreon.md](integrations/patreon.md) |
+| **TFMCWeb** | `tfmcweb/` | MC ↔ web gate: Discord link, scoped tokens, Survival Discord freeze, warn/ban mirror, Patreon ranks, staff LuckPerms bridge | [identity/tfmcweb.md](identity/tfmcweb.md), [integrations/patreon.md](integrations/patreon.md) |
 | **SimpleFactions** | `simplefactions/` | Map bridge: nation JSON upload, queue, regen, province lookup | [integrations/simplefactions.md](integrations/simplefactions.md) |
 | **ArmourShop** | `armourshop/` | Skins pack writer + apply | [integrations/armourshop.md](integrations/armourshop.md) |
 | **DrinkBuilder** | `drinkbuilder/` | Donator BreweryX drinks + `tfmc_drinks` IA | [cosmetics/drinks.md](cosmetics/drinks.md) |
@@ -36,10 +40,10 @@ Schema assets: [assets/map-export-schema.json](assets/map-export-schema.json) (S
 | **ItemsAdder** | Server `plugins/ItemsAdder/` | Resource packs: `tfmc_submissions`, `tfmc_armorshop`, `tfmc_drinks` | [integrations/armourshop.md](integrations/armourshop.md) |
 | **tfmc_bot** | `tfmc_bot/` | Red-DiscordBot: skins/drinks review, link, ban/warn DMs, Patreon supporter roles | [integrations/discord-bot.md](integrations/discord-bot.md), [integrations/patreon.md](integrations/patreon.md) |
 
-## Locked platform decisions
+## Shared platform behavior
 
 - **Name:** TFMC = TF Minecraft. "TF" has no expansion.
-- **No site logins** - skins, drinks, and characters use TFMCWeb-issued UUID-bound codes; redeem → API session (8h default; character Remember me = 30d).
+- **Website sign-in** - Discord OAuth powers account and staff pages. Skins, drinks, and characters also use TFMCWeb-issued UUID-bound codes; redeem → feature API session (8h default; character Remember me = 30d).
 - **Shared cosmetic mint cooldown** - skin + drink share one clock on **TFMCWeb** (not ProvinceSystem).
 - **Discord link** - in-game `/linkdiscord` + Discord `/linkdiscord <code>`; required before upload.
 - **SQLite + disk** for skins/drinks metadata and pending files on the API.
@@ -48,4 +52,5 @@ Schema assets: [assets/map-export-schema.json](assets/map-export-schema.json) (S
 ## Ops references
 
 - Deployment and QA checklists: [STAGING.md](../STAGING.md)
-- Production deploy guide: [UPDATE.md](../UPDATE.md)
+- Preview and deployment workflow: [DEPLOY.md](../DEPLOY.md)
+- Update reference: [UPDATE.md](../UPDATE.md)

@@ -34,12 +34,34 @@ They are excluded from meditation and artifact care/muffle handling.
    above the player's resonance band requires confirmation.
 4. Hit the station's good orbs and avoid bad ones. The charge is consumed when
    the run begins; the captured result is written when the run ends.
-5. Sneak-right-click with an empty hand to eject the weapon. Ejection is blocked
+5. Right-click with an empty hand to eject the weapon. Ejection is blocked
    while a run is active.
+
+To recharge an existing mage weapon, right-click an empty station while holding
+it without sneaking. One weapon moves from the hand onto the station and retains
+its state. Apply a charge as above, or take it back with an empty-hand click.
 
 The station does not need to be at a shrine. Difficulty uses the charge item's
 tier, not its displayed aura band. A disconnect or shutdown finishes with the
 captured result rather than refunding the charge.
+
+## Staff weapon commands
+
+`/magic weapon give <player> <staff|wand|sword> <element> <aura> <part> [part...]`
+
+Gives one completed mage weapon to an online player. Use part IDs from
+`gear/parts.yml` and an enabled attunement element from the loaded configuration.
+Supply exactly one part for each required category, respecting the core's part
+limit. Aura is a finite positive raw attunement amount and must reach a configured
+tier band. The command applies attunement, finalizes sockets, and records no
+material cost. It does not change the recipient's resonance. The recipient needs
+an empty inventory slot.
+
+`give-permission` in `config.yml` defaults to `magic.weapon.give` (operators).
+Set it to the chosen staff permission; a blank value disables giving. This
+permission is independent of `magic.admin`. Reload configuration with
+`/magic reload`. Tab completion suggests recipients, archetypes, elements, and
+enabled part IDs.
 
 ## Orb results and weapon state
 

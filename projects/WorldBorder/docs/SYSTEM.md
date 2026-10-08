@@ -1,6 +1,6 @@
 # WorldBorder - System design
 
-Punish players who cross the configured square world border on the X/Z plane. Admins set real border coordinates per world on deploy; the jar ships a config template only.
+Punish players who cross the configured rectangular world border on the X/Z plane. Admins set real border coordinates per world on deploy; the jar ships a config template only.
 
 See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist.
 

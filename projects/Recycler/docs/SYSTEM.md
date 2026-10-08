@@ -43,6 +43,7 @@ final_amount = floor(base_amount * return_rate * durability_factor * stack_amoun
 | `guns` | `GunsAndGadgetsProvider` | `0.5` |
 | `goldsmith_jewelry` | `GoldsmithProvider` | `0.5` |
 | `recipes` | `ConfigProvider` | `1.0` (the amounts written in `recipes/*.yml`) |
+| `artifacts` | `ArtifactProvider` | `1.0` (the rarity amounts in `artifact_returns`) |
 
 - Rates are clamped to `0.0`-`1.0` with a console warning; non-finite values use the default.
 - A missing key falls back to the pre-0.3.0 keys when present: `max_return_rate` for the four crafted-item providers, `scrap_return_rate` for alloy scrap.
@@ -53,7 +54,11 @@ final_amount = floor(base_amount * return_rate * durability_factor * stack_amoun
 
 ## Provider inputs
 
-Every provider returns what actually went into the item, never the recipe as it reads today. Items crafted before their plugin recorded this are not handled (the station says they cannot be recycled).
+Crafted equipment providers read recorded inputs. AdvancedCrafting ingredient
+paths and alloy recipes are resolved from current definitions, as described
+below. Items without the required crafting record are skipped by those
+providers; an explicit config recipe may still handle them. Artifact and config
+providers use configured outputs instead of crafting records.
 
 ### AdvancedCrafting (crafted items)
 
@@ -61,7 +66,7 @@ Read `CraftProvenance` from item PDC (`ac_craft_inputs` JSON list of kind/id/amo
 
 Map `ingredient.*` inputs to live `Ingredient.getPath()` x stamped amount. Map `alloy.*` inputs by decomposing each alloy's forge recipe (base + catalyst ingredient paths) x stamped amount.
 
-Raw AC ingredients/alloys (`ac_ingredient_id` / `ac_alloy_id`) are not provenance-backed - handle via config recipes or a future AC rule.
+Raw AC ingredients/alloys (`ac_ingredient_id` / `ac_alloy_id`) are not provenance-backed; use config recipes to recycle them.
 
 ### AdvancedCrafting (alloy scrap)
 
@@ -97,6 +102,35 @@ Rates use `0.0`-`1.0`: out-of-range values are clamped and non-finite values res
 ### Magic (mage weapons)
 
 Magic 0.4.7+ stamps the materials a craft actually charged on the weapon (`magic:gear_craft_inputs`, JSON item path to amount; empty for staff bypass crafts) and carries it through socket rewrites and refreshes. `MagicGearProvider` reads it with `GearProvenance.readInputs`. Broken weapons, weapons with socketed runes, and weapons without the stamp are not handled.
+
+### Magic (artifacts)
+
+`ArtifactProvider` returns the configured item by the artifact's recorded
+rarity. Artifacts are found rather than crafted, so they do not need a crafting
+record. Stored aura is lost.
+
+```yaml
+artifact_returns:
+  min_muffle: 0.0
+  item: m.currency.enchanted_dust
+  rarities:
+    common: 4
+    uncommon: 8
+    rare: 12
+    epic: 16
+    legendary: 28
+  default: 4
+```
+
+The default `min_muffle: 0.0` accepts any artifact; `1.0` requires it to be fully
+muffled. Missing or unrecognised stored rarities use `default`. Omitted standard
+rarity keys retain their shipped defaults; set a rarity to `0` to refuse it.
+Artifacts below the muffle requirement or with no configured output are refused
+before recipe fallback, so a matching config recipe cannot bypass these rules.
+
+`return_rates.artifacts` multiplies these amounts using the normal return math.
+The shipped rarity table is tuned so recycling the artifacts from a Dowsing
+Artifact Mine node yields roughly half the enchanted dust of a Dust Mine node.
 
 ### GunsAndGadgets (guns)
 

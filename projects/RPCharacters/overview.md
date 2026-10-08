@@ -4,7 +4,7 @@ Roleplay characters, identity, progression and character state. Build and run wi
 
 ## Dependencies
 
-TLibs and SimpleFactions resolve as Maven plugin artifacts at the versions declared in `pom.xml`. The shared `setup-plugins` action installs those versions. For a local build, check out TLibs `main` alongside the source and run `python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned`. The installer verifies release checksums; see [TLibs dependency setup](../TLibs/README.md). Runtime optional integrations can still be mandatory compile dependencies.
+TLibs, SimpleFactions and VehicleFramework resolve as Maven plugin artifacts at the versions declared in `pom.xml`. The shared `setup-plugins` action installs those versions. For a local build, check out TLibs `main` alongside the source and run `python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned`. The installer verifies release checksums; see [TLibs dependency setup](../TLibs/README.md). Runtime optional integrations can still be mandatory compile dependencies.
 
 The remaining private reference jars are ItemsAdder 4.0.18, MMOCore 1.13.1, MMOItems, MythicLib, ProtocolLib and MythicMobs. `.github/scripts/prepare-release.sh` downloads the pinned files listed in `.github/dependencies.sha256` from private `TF-Minecraft/ServerAssets` into the ignored `libs/` directory, then runs `install-local-dependencies.sh`, which verifies the checksums and installs each jar into the local Maven repository. It requires `GH_TOKEN` with read access; CI supplies the `DEPS_TOKEN` secret. Keep licensed jars private.
 

@@ -10,7 +10,7 @@ Everything under `/wiki` is a public player manual. Write for someone joining th
 - Include every ordinary player command supported by the evidence. Omit commands that require an operator or an unconfirmed external grant.
 - Keep real gameplay cautions, costs, cooldowns, item consumption, death effects, and irreversible choices.
 - Do not use em dash characters or em dash HTML or JavaScript escapes. Use a comma, colon, parentheses, or a full stop. Use `N/A` or `None` for an empty table value.
-- Display research dates through `WikiPage` as `Last modified`. The compatibility prop remains named `lastVerified`.
+- `WikiPage` displays an `Updated` date. Use the optional `lastModified` prop for a page-specific revision; otherwise the maintained `WIKI_LAST_MODIFIED` date is used.
 - Cards and callouts use a uniform neutral border. Do not add a coloured left border.
 - Use `SeeAlso` only with registered, existing player pages.
 
@@ -38,7 +38,7 @@ import { Callout, DataTable, SeeAlso, StatGrid, WikiPage, WikiSectionHeading } f
 
 export default function BeekeepingPage() {
   return (
-    <WikiPage title="Beekeeping" intro="Raise bees and collect honey." lastVerified="2026-09-11">
+    <WikiPage title="Beekeeping" intro="Raise bees and collect honey." lastModified="2026-09-11">
       <WikiSectionHeading id="start" intro="What you need before your first hive.">Getting started</WikiSectionHeading>
       {/* Concrete steps and reference data */}
       <SeeAlso hrefs={["/wiki/materials"]} />
@@ -66,7 +66,7 @@ export const beekeepingCommands: WikiCommandSet = {
 };
 ```
 
-Register `commands: []` when the feature has no player command and interaction happens through blocks, items, or menus. Never invent a command.
+Set the `WikiCommandSet.commands` array to `[]` when the feature has no player command and interaction happens through blocks, items, or menus. Never invent a command.
 
 ## Recipes and assets
 
@@ -86,4 +86,4 @@ Source artwork that the site does not serve stays outside `public/`. The ammunit
 
 ## Validation
 
-Run the existing route, registry, shared-component, and relevant feature tests. Run `npx tsc --noEmit --pretty false` and the guarded production build. Check every `SeeAlso` target, every top-level wiki route, dynamic detail routes, referenced assets, visible command filtering, and a rendered-output scan for prohibited player-facing copy. Verify the desktop sidebar has its own bounded vertical scroll and that smaller layouts retain normal page flow.
+From `frontend/`, run `npm test` and `npx tsc --noEmit --pretty false`, then the guarded production build with `PS_PRODUCTION=1 NEXT_PUBLIC_API_URL=http://127.0.0.1:8000 npm run build`. Check every `SeeAlso` target, every top-level wiki route, dynamic detail routes, referenced assets, visible command filtering, and a rendered-output scan for prohibited player-facing copy. Verify the desktop sidebar has its own bounded vertical scroll and that smaller layouts retain normal page flow.

@@ -36,6 +36,8 @@ tfminecraft.net/
   /skins         Redeem code + upload + status
   /drinks        Brew form + status
   /character     Character creator, kits, wardrobe
+  /account       Discord sign-in and connected accounts
+  /admin         Staff player, activity, rail and permission tools
   /map/editor    Staff map title editor (?map= required)
 ```
 
@@ -160,6 +162,7 @@ Map assets remain under `backend/src/output/{map}/…`. **Why not store PNGs in 
 
 | Surface | Mechanism |
 |---------|-----------|
+| Account and staff panel | Discord OAuth and HttpOnly browser session; website staff roles |
 | Map plugin regen / queue | Shared secret in path (prefer env) |
 | Skins/drinks/character player actions | Redeem **code** → short-lived Bearer session tied to issuer UUID |
 | Skins staff (Discord) | Server-side staff API key; never `NEXT_PUBLIC_*` |
@@ -183,7 +186,6 @@ No website passwords. Codes are **not shareable by design**: cosmetics are grant
 ## Non-goals
 
 - Rewriting mapgen in another language
-- User accounts / OAuth on the site
 - Putting Discord or Java plugins inside ProvinceSystem git (document contracts only)
 - Manual `tfmc_pack` CMD overrides for new submissions
 - Bot executing in-game bans

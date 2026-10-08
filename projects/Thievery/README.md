@@ -6,8 +6,9 @@ Technical documentation is maintained here. Run commands from the source checkou
 
 TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
 
-- [docs/SYSTEM.md](docs/SYSTEM.md)
-- [docs/TEST_MATRIX.md](docs/TEST_MATRIX.md)
+- [Locks and theft systems](docs/SYSTEM.md)
+- [Automated tests and coverage](docs/testing.md)
+- [Manual test matrix](docs/TEST_MATRIX.md)
 
 ## Builds and releases
 

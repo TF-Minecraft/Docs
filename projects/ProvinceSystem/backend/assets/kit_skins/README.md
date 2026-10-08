@@ -1,6 +1,6 @@
 # Kit default skins
 
-Default editable-kit PNGs live here as `{skin_png}.png` (for example `knife_skin.png`).
+Default editable-kit PNGs live in `backend/assets/kit_skins/` in the ProvinceSystem checkout as `{skin_png}.png` (for example `knife_skin.png`).
 
 **Production:** RPCharacters uploads these on creation-catalog sync via
 `PUT /characters/plugin/kit-skins/{name}` from `plugins/RPCharacters/assets/`.

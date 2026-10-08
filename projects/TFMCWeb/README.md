@@ -8,7 +8,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 ## Runtime and ownership
 
-The entrypoint is `net.tfminecraft.tfmcweb.TFMCWeb`. TLibs is a required plugin and Essentials an optional one, declared in `src/main/resources/plugin.yml`. RPCharacters depends on TFMCWeb; TFMCWeb resolves its Discord gate API at runtime. Without RPCharacters, the Discord Survival gate is disabled while linking and HTTP remain active.
+The entrypoint is `net.tfminecraft.tfmcweb.TFMCWeb`. TLibs is a required plugin; Essentials and LuckPerms are optional integrations, declared in `src/main/resources/plugin.yml`. RPCharacters depends on TFMCWeb; TFMCWeb resolves its Discord gate API at runtime. Without RPCharacters, the Discord Survival gate is disabled while linking and HTTP remain active.
 
 `ProvinceSystemGateway` provides the shared web transport. The plugin loads `config.yml`, maintains a link cache, starts the notice poller, and registers `/linkdiscord`, `/unlinkdiscord`, `/web`, `/token`, `/warning` and `/patreon`. `/patreon` shows supporter status, starts Patreon authorization when unlinked, and supports `/patreon unlink`. Configure the API URL, plugin key and realm using the identity guide below; permission defaults and exact command syntax live in `plugin.yml`.
 
@@ -40,6 +40,7 @@ Run `mvn clean verify` to build and run the available tests; use `mvn clean inst
 
 ## Related integration guides
 
+- [LuckPerms staff-panel bridge](luckperms-bridge.md)
 - [Identity and web transport](../ProvinceSystem/docs/identity/tfmcweb.md)
 - [Patreon integration and one-writer setup](../ProvinceSystem/docs/integrations/patreon.md)
 - [Authentication and security](../ProvinceSystem/docs/identity/auth-security.md)

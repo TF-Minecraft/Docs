@@ -10,6 +10,27 @@ Public map data is low sensitivity. Still validate uploads, hash codes, and keep
 
 Cosmetics and identity are higher sensitivity: UUID-bound codes, opaque Bearer sessions, and server-side staff keys.
 
+## Discord website sign-in
+
+The website supports Discord OAuth sign-in for account pages and the staff panel,
+separately from the UUID-bound feature codes below. Enable it with
+`DISCORD_AUTH_ENABLED=1`; configure `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`,
+`DISCORD_GUILD_ID` and `SITE_PUBLIC_URL`. `DISCORD_REDIRECT_URI` defaults to the
+site URL plus `/api/auth/discord/callback` and must return to that site.
+
+[`auth_routes.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/api/auth_routes.py)
+starts sign-in at `/auth/discord/start`, checks the OAuth state against a browser
+cookie, and sets an HttpOnly, SameSite=Lax session cookie. HTTPS uses the Secure
+`__Host-tfmc_session` cookie; plain HTTP local development uses `tfmc_session`.
+Cookie-authenticated writes enforce an origin check. `/account` exposes the
+signed-in account and supports Minecraft linking and Patreon authorization.
+
+Website roles (`mod`, `admin`, `root`) control staff capabilities independently
+of feature-code scopes. See [CoreProtect data](../integrations/coreprotect.md),
+[rail data](../integrations/rail.md), and [LuckPerms policy](../integrations/luckperms.md)
+for the individual staff panels. Configuration validation is in
+[`auth/config.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/config.py).
+
 ## Opaque Bearer sessions
 
 | Surface | Mechanism |

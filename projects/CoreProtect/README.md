@@ -8,11 +8,12 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 ## TFMC build
 
-Use JDK 21 and `mvn clean verify` from the source checkout. The POM compiles against Paper API `1.21.10-R0.1-SNAPSHOT` with compiler release 21; the loader API is `1.21.10`. Output is `target/coreprotect-<version>.jar`. Dependencies resolve from the POM repositories.
+Use JDK 21 and `mvn clean verify` from the source checkout's `master` branch. The POM compiles against Paper API `1.21.10-R0.1-SNAPSHOT` with compiler release 21; the loader API is `1.21.10`. Output is `target/coreprotect-<version>.jar`. Dependencies resolve from the POM repositories.
 
 ## Guides
 
 - [Project overview](overview.md)
+- [Custom item and mob labels](overview.md#custom-item-and-mob-labels)
 - [docs/api/index.md](docs/api/index.md)
 - [docs/api/networking.md](docs/api/networking.md)
 - [docs/api/version/v12.md](docs/api/version/v12.md)

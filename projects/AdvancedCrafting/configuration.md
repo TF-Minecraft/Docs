@@ -33,12 +33,34 @@ Recipe/profession permissions use the configured `permission-prefix` and namespa
 | `/ac sync recipes` | Inspect stored alloy recipe synchronisation |
 | `/ac sync recipes repair` | Repair stored alloy recipe synchronisation; back up data first |
 | `/ac give alloy <id> [player]` | Give an alloy item |
+| `/ac give equipment <recipe> <ingredient.id\|alloy.id> [player] [quality]` | Give finished equipment using the separate staff permission described below |
 | `/ac alloy info <id>` | Show alloy information |
 | `/ac craft <percent>` | Arm the player's next station craft for 30 seconds, clamping quality to 0–100 |
 | `/alloy name <name>` | Name an alloy through the existing player workflow |
 
-All `/ac` actions above require the admin permission. `/alloy name` follows its
-own alloy manager checks. Consult
+All `/ac` actions above except `give equipment` require the admin permission.
+`give equipment` uses its configured permission; `/alloy name` follows its own
+alloy manager checks. Consult
 [CommandManager](https://github.com/TF-Minecraft/AdvancedCrafting/blob/main/src/main/java/net/tfminecraft/advancedcrafting/managers/CommandManager.java)
 for parsing and player/console restrictions. Use a restart when changing plugin
 JARs; configuration reload does not replace loaded classes.
+
+## Staff equipment grants
+
+`/ac give equipment <recipe> <ingredient.id|alloy.id> [player] [quality]`
+gives one finished item using a configured recipe and compatible main material.
+For example, `/ac give equipment heavy_chestplate ingredient.steel_ingot Alex 100`.
+Tab completion lists loaded recipes, compatible ingredients/alloys and online players.
+Omit the player to give to yourself; console must specify an online player.
+Quality defaults to 100 and accepts finite values from 0 to 100 (specify the player
+before quality). Alloy IDs are the loaded discovery IDs, not display names.
+
+Secondary recipe ingredients use the lowest configured tier, then ingredient ID
+alphabetically to break ties. Their stats and appearance participate normally.
+The item retains normal stats, quality sockets, appearance, tier and crafting
+provenance; no materials are consumed and no XP or activity rewards are granted.
+Full inventories drop the item at the recipient's location.
+
+Set `give-equipment-permission` in `config.yml` and run `/ac reload` to change
+access. Missing or blank settings default to `advancedcrafting.admin` (operators).
+Grant a custom permission only to staff; it does not grant other admin commands.
