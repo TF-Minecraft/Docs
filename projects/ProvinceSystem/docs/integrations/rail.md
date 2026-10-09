@@ -24,6 +24,24 @@ mid-save is skipped and counted, so the page can say so.
   last stop along its longest track; one with no stops is an "Unnamed line".
 - Tracks are simplified (Douglas-Peucker, 0.35 blocks) before they are sent.
 
+## Tube map
+
+The tab's **Map** and **Tube map** buttons switch between the live map and an
+Underground-style diagram (`/admin/rail?view=tube`), drawn in the browser by
+`frontend/lib/admin/railSchematic.ts`:
+
+- Stops, junctions and track ends are the diagram's nodes. Each axis is
+  stretched separately, halfway between real distance and the nodes' order, so
+  crowded stops get room and every stop keeps its compass order.
+- Nodes snap to a 25-unit grid. Each piece of track between nodes becomes one
+  or two runs at 0, 45 or 90 degrees, bending on the side nearer the real
+  track. Bends larger than 4% of the network's size are kept as extra points.
+- A stop within 120 blocks of a track end is drawn at the end.
+- Stops are ticks, faction capitals are white rings, and line colours follow
+  the Underground's (red, green, light blue, and so on). Broken track is black
+  dashes; damaged track has a white centre line. Picking a stop, line or break
+  in the lists frames it on the diagram too.
+
 ## Settings
 
 | Variable | Meaning |
