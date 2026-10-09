@@ -132,6 +132,38 @@ The whole train stops before a checked wheel runs past an open track end, in eit
 
 A broken segment also stops the train. The train stays on the spline.
 
+### Collision warnings
+
+A locomotive that runs into another train explodes, along with the car it hits. A car on its own with no locomotive explodes the same way when anything runs into it. Coupled cars without their locomotive pass through each other. Everyone seated on a train heading for a collision is warned at least 30 seconds before it would happen, as long as speeds stay as they are. The first warning flashes a **Collision warning** title, at most once every 10 seconds. A red boss bar then counts down, for example "Oncoming train: collision in 24 s", while an alarm rings. The alarm rings twice as often in the last 10 seconds.
+
+| Warning | Meaning |
+| --- | --- |
+| Oncoming train | A train is coming the other way on the same line |
+| Stopped train ahead | A standing or parked train is on the line ahead |
+| Train ahead | You are catching up a slower train, or one joining the line |
+| Train closing from behind | A faster train is catching you up |
+| Train approaching | Shown to riders of a standing train that another train is heading for |
+
+The forecast assumes switches stay as they are now, including one armed with `A` or `D`. A train whose throttle rose since the last check is assumed to keep opening it at the full rate, a point a tick, up to its throttle limit; any other train keeps its current speed. Opening the throttle therefore brings a warning at the next check (half a second by default) once a collision comes within the look-ahead, but if it is by then less than 30 seconds away, that is the time the warning shows. The limit is 100, or 120 for a healthy locomotive going forwards that is not cooling down from overdrive; a damaged engine is held to its health. A train ahead that is accelerating is also checked at its current speed, in case it stops accelerating. Accelerating therefore shortens the countdown at once, and it lengthens again when the throttle is held steady. The forecast follows the track through junctions and stops at track ends and broken rail.
+
+Cars that have not spawned count where they were last saved: those in unloaded chunks, and those in loaded chunks with no player near enough to spawn them. If digging has since moved or renamed the track under a parked car, the car is found again on the track nearest where it stood. Each such car counts as able to explode, because one that spawns before its locomotive behaves as a car on its own.
+
+A collision counts from when the locomotive comes within `margin` blocks of the other train, a little before it explodes, so the countdown runs slightly short. Creeping right up to a standing car therefore gives a warning. When pushing cars into a loaded train, the warning is for the locomotive reaching its cars, or the pushed cars reaching its locomotive.
+
+The bar clears 2 seconds after the danger has passed, for example once you stop, reverse or change the switch. Until then it stays up without the alarm, so a forecast near the limit does not flicker. Riders of a standing train keep their "Train approaching" warning until the other train stops or turns away. Players standing on a walkable deck are not warned; only seated riders are.
+
+Settings are under `collision-warning` in `trains.yml`:
+
+| Key | Default | Meaning |
+| --- | --- | --- |
+| `enabled` | `true` | Turns the warning on |
+| `seconds` | `30` | How long before a collision the warning starts |
+| `check-ticks` | `10` | Ticks between checks |
+| `margin` | `2` | Blocks kept between trains |
+| `parked-car-half-length` | `5` | Blocks either side of an unloaded car's saved centre that it covers |
+| `sound`, `sound-volume`, `sound-pitch` | `minecraft:block.bell.use`, `1.0`, `1.5` | The alarm |
+| `sound-interval-ticks` | `40` | Ticks between alarms, halved in the last 10 seconds |
+
 ## Locomotive overdrive
 
 A vehicle with `locomotive: true` leads its train as a locomotive:
