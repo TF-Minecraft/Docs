@@ -10,6 +10,48 @@ its settings live in
 
 ## What players see
 
+### Military-only protection (default)
+
+With `espionage.intelligence.military-only: true` (the default), a Spymaster guards only a
+faction's regiments and owned vehicles. Foreign viewers see the same exact menus as for an
+unguarded faction, except for these, which come from the daily intelligence report described
+below:
+
+- The **Military** item and the **Military View**: total army size (professional soldiers,
+  levies and mercenaries together), the split between them, each regiment and the training
+  queue. The masked Military View shows the "Foreign intelligence" header with the report
+  quality and date.
+- **Faction Vehicles** (Military View): the faction's own vehicles, meaning its pool plus
+  everything berthed at its installations, in total and per vehicle category, and at Detailed
+  which vehicle types are in the pool. Players' personal vehicles are never counted.
+- **Berthed vehicles** in an installation's details: how many are berthed there and, at
+  Detailed, which types. The installations themselves (list, kinds, levels, locations and
+  construction) are public.
+- The **ledger**: military upkeep, vehicle upkeep, vehicle taxes & fees and mercenary payments
+  show the report's ranges, or Unknown below the `cashflow` tier. Totals still include them.
+
+Every report quality reveals something:
+
+| Quality | You learn |
+| --- | --- |
+| Rumours | Rough army size and rough vehicle total |
+| Broad | Professional army, levies and mercenaries separately; vehicles per category |
+| Reliable | Each regiment, the training queue, vehicles berthed per installation, the military ledger lines |
+| Detailed | Which vehicle types they own; the narrowest ranges |
+
+Everything else is exact for everyone: government, stability, legitimacy, council, laws,
+taxes, the rest of the ledgers, wealth and its rankings, members and rosters, guilds,
+upgrades, loans, mercenary companies, diplomacy and special offices. Only the military
+[disclosure gates](#disclosure-gates) still apply.
+
+Reports cached by an older plugin version are rebuilt on the next GUI command that day,
+under the same daily rolls, so they gain new fields without changing their quality.
+
+Setting `military-only: false` restores full protection, where the rest of this section
+applies to every faction and guild menu.
+
+### Full protection
+
 Foreign faction and guild menus show public identity and flavour details: faction leaders'
 character names when available, government, rank, tier, titles, settlements, culture,
 religion, guild types, allies and subjects. Prestige is public and its ranking uses exact
@@ -241,7 +283,7 @@ views).
 
 Ranges are rounded, asymmetric snapshots containing the true value when generated. They
 never collapse to an exact number, including zero; only fields an overlord or vassal
-[shares](#sharing-with-overlord-and-vassals) are exact. Reports cover members, wealth,
+[shares](#sharing-with-overlord-vassals-and-allies) are exact. Reports cover members, wealth,
 prosperity, daily net income, professional army, levies, mercenaries, installations,
 stability and administrative power. Professional army counts filled professional soldier
 slots, excluding equipment and mercenaries. Guild wealth, member count, net income and trade
@@ -265,6 +307,9 @@ entries appear alphabetically after ranked known entries and have no numeric ran
 income leaderboards use the same policy.
 
 ## Foreign menus
+
+This section describes full protection. With military-only protection, only the Military
+entry below still applies.
 
 Foreign tooltips keep the same colours, spacing and field order as own entries, and foreign
 faction and guild views keep their familiar slot layouts, inventory sizes, template icons
@@ -341,11 +386,14 @@ overlord above it, its margin loses `espionage.vassalage.overlord-defense-bonus`
 25). The bonus applies when the daily report is generated: a new vassalage takes effect with
 the next day's reports or `/faction reloadespionage`.
 
-### Sharing with overlord and vassals
+### Sharing with overlord, vassals and allies
 
-Spymasters can open their faction's information to their direct overlord and to their
-direct vassals. Each direction has its own setting, chosen by tier: nothing, Rumours, Broad,
-Reliable or Detailed. One choice covers all of a faction's vassals. Every field whose
+Spymasters can open their faction's information to their direct overlord, their direct
+vassals and their allies. Each has its own setting, chosen by tier: nothing, Rumours, Broad,
+Reliable or Detailed. One choice covers all of a faction's vassals, and one all of its allies.
+An ally is a faction this faction has the `ally` relation with; an overlord or vassal setting
+takes precedence over the ally one. As with any report, the partner needs an eligible
+Spymaster of its own to receive it. Every field whose
 [disclosure gate](#disclosure-gates) is at the shared tier or lower reaches that partner
 **exactly**: single values instead of ranges, the full roster (up to the roster cap), and
 office holders and aptitude when their gates are shared. Fields above the shared tier keep
@@ -353,17 +401,17 @@ the partner's rolled quality. For example, sharing Rumours always shows members,
 wealth and guild members exactly.
 
 Only the Spymaster can change sharing, in the Private Conduct menu (**Share with your
-overlord** and **Share with your vassals**, click to cycle) or with:
+overlord**, **Share with your allies** and **Share with your vassals**, click to cycle) or with:
 
 ```
-/faction spymaster share <overlord|vassals> <none|rumours|broad|reliable|detailed>
+/faction spymaster share <overlord|vassals|allies> <none|rumours|broad|reliable|detailed>
 ```
 
 Sharing belongs to the faction, so it stays in place when the Spymaster changes. A change
 drops the partners' cached report on this faction, so their next menu rebuilds it under the
 same daily rolls. Partners see "Their Spymaster shares everything up to *tier* exactly." in
-the report header. When a vassalage ends, both factions lose that day's reports on each
-other, so nothing shared stays visible.
+the report header. When a vassalage or alliance ends, both factions lose that day's reports
+on each other, so nothing shared stays visible.
 
 `espionage.vassalage.allow-sharing: false` turns sharing off server-wide, hides the menu
 buttons, and hides shared values in reports already cached that day.
@@ -394,8 +442,9 @@ removed from `config.yml`.
 | `espionage.checks.luck-spread` / `luck-draws` | `75` / `3` | Luck range and number of averaged draws. |
 | `espionage.vassalage.overlord-offense-bonus` | `25` | Margin an overlord gains spying on its vassals. |
 | `espionage.vassalage.overlord-defense-bonus` | `25` | Margin a vassal loses spying on its overlords. |
-| `espionage.vassalage.allow-sharing` | `true` | Lets Spymasters share with their overlord and vassals. |
+| `espionage.vassalage.allow-sharing` | `true` | Lets Spymasters share with their overlord, vassals and allies. |
 | `espionage.sabotage.*` | see file | Roleplay names, lore and chat messages for each sabotage level. |
+| `espionage.intelligence.military-only` | `true` | Spymaster guards only regiments and vehicles; `false` guards all faction and guild information. |
 | `espionage.intelligence.tiers.<tier>.*` | see file | Margin thresholds, uncertainty, roster fractions and useful range widths. |
 | `espionage.intelligence.maximum-roster-size` | `23` | Maximum sampled roster names. |
 | `espionage.intelligence.minimum-tiers.*` | see below | Minimum tier for each field. |
@@ -407,13 +456,20 @@ Out-of-range values fall back to their defaults.
 `espionage.intelligence.minimum-tiers` sets the lowest tier at which each field is shown.
 Lower tiers show broader ranges when useful. By default:
 
-- **Rumours:** members, roster, wealth and guild members.
-- **Broad:** prosperity, stability, levies, installations, net income, trade power, ledger
-  totals and guild buildings.
-- **Reliable:** professional army, mercenaries, administrative power, individual cashflows,
-  dividends, office holders, guild leaders, training, upgrades, taxes, laws, government and
+- **Rumours:** army (total soldiers), vehicles (total owned), members, roster, wealth and
+  guild members.
+- **Broad:** professional army, levies, mercenaries, vehicle categories, prosperity,
+  stability, installations, net income, trade power, ledger totals and guild buildings.
+- **Reliable:** berthed vehicles, training, administrative power, individual cashflows,
+  dividends, office holders, guild leaders, upgrades, taxes, laws, government and
   installation details.
-- **Detailed:** office aptitude.
+- **Detailed:** vehicle types and office aptitude.
+
+With military-only protection, only `army`, `vehicles`, `professional-army`, `levies`,
+`mercenaries`, `vehicle-categories`, `training`, `berthed-vehicles`, `vehicle-types` and
+`cashflow` (for the four military ledger lines) are used. Existing `special-positions.yml`
+files keep their old values for keys they already have, such as `professional-army` and
+`mercenaries` at `reliable`; edit them to match these defaults.
 
 A value of `unknown` disables that field. Invalid or unconfigured fields fail closed.
 `cashflows` accepts per-category overrides by enum name, such as `TRADE: broad`. The gates
