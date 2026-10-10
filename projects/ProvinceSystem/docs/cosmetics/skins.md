@@ -208,9 +208,13 @@ A refusal is a 409 whose `detail` is `{ "reason", "next_at" }`. An unused,
 unexpired code of the same scope and realm is reused, whether Profile or
 `/token create` made it. Otherwise the start records a new code with no plaintext
 and `codes.minted_via = 'site'`, which starts the shared cooldown. A site code that
-expires without a submission stops counting, so leaving the uploader costs
-nothing once the code lapses. Codes from `/token create` count whether used or
+expires without a submission stops counting once no session from it can still
+upload, so leaving the uploader costs nothing once the code lapses. Codes from `/token create` count whether used or
 not, as before. Source: [`codes.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/codes.py).
+
+Sessions started here are marked `from_profile` in the browser. Profile's Log out
+and signing out or unlinking on `/account` revoke them; sessions from codes stay.
+On `/skins` they show **← Profile** in place of the code-session controls.
 
 **Use a code** above the grid opens a one-line form for a `/token create skin`
 code; staff use it for `skin_staff` codes. `/skins` itself sends a visitor who can
