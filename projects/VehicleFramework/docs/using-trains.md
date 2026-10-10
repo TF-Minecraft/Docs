@@ -134,7 +134,7 @@ A broken segment also stops the train. The train stays on the spline.
 
 ### Collision warnings
 
-A locomotive that runs into another train explodes, along with the car it hits. A car on its own with no locomotive explodes the same way when anything runs into it. Coupled cars without their locomotive pass through each other. Everyone seated on a train heading for a collision is warned at least 30 seconds before it would happen, as long as speeds stay as they are. The first warning flashes a **Collision warning** title, at most once every 10 seconds. A red boss bar then counts down, for example "Oncoming train: collision in 24 s", while an alarm rings. The alarm rings twice as often in the last 10 seconds.
+A locomotive that runs into another train at speed explodes, along with the car it hits. A car on its own with no locomotive explodes the same way when anything runs into it. Trains that meet slower than 3 blocks a second between them, about a fifth of a locomotive's full throttle, bump and stop instead. The anvil sound plays, the captain is told, and the throttle of whichever train was moving into the other drops to 0. Reverse to pull away. Set the speed with `collision.explode-speed` in `trains.yml`; `0` explodes on any contact. Coupled cars without their locomotive pass through each other. Everyone seated on a train heading for a collision is warned at least 30 seconds before it would happen, as long as speeds stay as they are. The first warning flashes a **Collision warning** title, at most once every 10 seconds. A red boss bar then counts down, for example "Oncoming train: collision in 24 s", while an alarm rings. The alarm rings twice as often in the last 10 seconds.
 
 | Warning | Meaning |
 | --- | --- |
@@ -148,7 +148,7 @@ The forecast assumes switches stay as they are now, including one armed with `A`
 
 Cars that have not spawned count where they were last saved: those in unloaded chunks, and those in loaded chunks with no player near enough to spawn them. If digging has since moved or renamed the track under a parked car, the car is found again on the track nearest where it stood. Each such car counts as able to explode, because one that spawns before its locomotive behaves as a car on its own.
 
-A collision counts from when the locomotive comes within `margin` blocks of the other train, a little before it explodes, so the countdown runs slightly short. Creeping right up to a standing car therefore gives a warning. When pushing cars into a loaded train, the warning is for the locomotive reaching its cars, or the pushed cars reaching its locomotive.
+A collision counts from when the locomotive comes within `margin` blocks of the other train, a little before it touches, so the countdown runs slightly short. The warning comes at any speed, including for a slow approach that will only bump. Creeping right up to a standing car therefore gives a warning. When pushing cars into a loaded train, the warning is for the locomotive reaching its cars, or the pushed cars reaching its locomotive.
 
 The bar clears 2 seconds after the danger has passed, for example once you stop, reverse or change the switch. Until then it stays up without the alarm, so a forecast near the limit does not flicker. Riders of a standing train keep their "Train approaching" warning until the other train stops or turns away. Players standing on a walkable deck are not warned; only seated riders are.
 
