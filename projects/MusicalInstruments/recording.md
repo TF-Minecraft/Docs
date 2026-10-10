@@ -8,52 +8,58 @@ must have the samples installed to hear custom instruments.
 
 ## Record through the studio interface
 
-Sneak-right-click an empty jukebox to open the 54-slot recording studio. If you
-have no project, the studio creates an **Untitled** project automatically. You
-can also look at an empty jukebox within five blocks and use `/music studio`.
+Sneak-right-click an empty jukebox to open your song-project library. You can
+also look at an empty jukebox within five blocks and use `/music studio`.
+Click an existing song, or **Create a new song** to enter its title and open
+the new project's editor. Existing songs remain available in the library.
+Projects have independent saved tracks, pending takes, tempo and metronome.
+The library shows 28 projects per page and provides previous/next controls.
 Stay near that jukebox while using its controls.
 
-1. Click **Song settings** or the song title. Enter a title, adjust the tempo
+1. Click the song title or **Project actions**, then **Song settings**. Enter a title, adjust the tempo
    slider, choose whether to use the private metronome, and click **Save**.
-2. Put an instrument in your off-hand and click a **Track** card. The inventory
+2. Put an instrument in your off-hand and click **Record track** in its row. The inventory
    closes so you can play with keys 1-8. Wait for the count-in; recording time
    and the note count then appear above your hotbar.
-3. Open the same station again and click **Stop**. Click **Listen to new take**
-   to audition it with the other saved tracks, then **Keep take** or **Discard
+3. Open the same station again, select your current project, and click **Stop recording / preview**.
+   Click **Listen to take** in that track's row to audition it with the other saved tracks, then **Keep take** or **Discard
    take**. Your previous saved take stays intact until you accept its replacement.
 4. Repeat for the other tracks. The saved, audible tracks play privately as
    backing while you record; the track being replaced is excluded. Every track
    starts at the same song time, so wait before playing for a later entrance.
-5. Use the controls directly below each track to mix it: left-click **Volume**
+5. Use the controls in each track's row to mix it: left-click **Volume**
    to add 25%, right-click to subtract 25%, or shift-click to reset to 100%.
    Volume ranges from 0% to 200%. Click **Audible / Muted** to toggle silence.
-   **Listen to saved mix** auditions your changes; **Stop** ends the preview.
+   **Listen to track** auditions just that saved track. The bottom bar's
+   **Listen to full mix** auditions the complete song; **Stop recording / preview**
+   ends either preview.
 6. Put an ordinary music disc in your inventory and click **Prepare a blank
-   disc**, then **Publish song**. These controls find discs in your storage
+   disc** in **Project actions**, then **Publish full song**. These controls find discs in your storage
    inventory; you can keep the instrument in your off-hand. If using a stack,
    leave a free inventory slot for the resulting disc. Publication requires
    at least one audible note and no pending take.
 7. Insert the published disc into an empty jukebox with an ordinary right-click
    to hear the layered song. To copy it, hold that recorded disc in your off-hand,
-   put a blank disc in your inventory, and click **Copy a recorded disc**.
+   put a blank disc in your inventory, and click **Copy a recorded disc** in **Project actions**.
 
 The track cards show saved instruments, duration and note count. Their colors
 distinguish empty, saved, recording and pending states. The title card shows
 current activity, and the open menu updates as recording and playback progress.
-Separate buttons control the saved mix and the pending take. **Tempo** has
-quick +/-5 BPM clicks; shift-click opens the settings form. **Metronome** toggles
-the recording click. The bottom two rows form two aligned groups, separated by
-a center column and bordered with the same purple frame:
+The project editor is a six-row chest inventory, the maximum supported chest
+height. Its four middle rows each belong to one track. A row contains recording,
+volume and mute controls on the left, then saved-track listening and pending-take
+listening/keep/discard controls on the right. Take controls act only on that row's
+pending take and retain distinct icons with gray labels when unavailable.
+Projects with more than four tracks use another editor page.
 
-| Row | Left group | Right group |
-| --- | --- | --- |
-| Fifth | Listen to saved mix, Stop, How to record | Listen to new take, Keep take, Discard take |
-| Sixth | Song settings, Tempo, Metronome | Prepare a blank disc, Publish song, Copy a recorded disc |
-
-Take controls retain their distinct icons when no take is pending, with gray
-labels and a reminder to record first. **New song** is in the top-left corner,
-apart from the playback and disc controls. It opens a confirmation before clearing
-your editable tracks and pending take; published discs remain valid.
+The bottom bar contains only project-wide actions: recording guide, full-mix
+preview, stop, publication and **Project actions**. The top-left arrow returns
+to the project library. Settings and physical-disc actions occupy their own
+27-slot panel. **Tempo** has quick +/-5 BPM clicks; shift-click opens the settings
+form. **Metronome** toggles the recording click. **Clear this project** opens a
+confirmation before clearing the selected project's tracks and pending take;
+other projects and published discs are kept. **Create a new song** in the library
+creates a separate project and immediately opens its editor.
 
 The settings form uses Minecraft's title field, slider and checkbox. It accepts
 one response from the player who opened it, expires after two minutes, and checks
@@ -82,8 +88,13 @@ double-click collection and dragging while its inventory is open.
 
 An empty take leaves the previous track intact. A take automatically finishes at
 the duration or note limit. Re-recording replaces a whole track after acceptance.
-One player owns one editable project. `/music reset confirm` explicitly clears
-the editable project, including pending work; published discs remain valid.
+One player can own multiple editable projects. Commands operate on the selected
+project. `/music new <title>` creates and selects another project; `/music projects`
+lists titles and IDs, and `/music open <project-id>` selects one. Changing projects
+or creating another song while recording requires stopping the current take
+first. Reopening the current project during recording is allowed so the player
+can reach Stop. `/music reset confirm` clears only the selected project's editable
+tracks and pending work; other projects and published discs remain valid.
 
 ## Commands and permissions
 
@@ -91,9 +102,11 @@ All commands are player-only. `/recording` is an alias for `/music`.
 
 | Command | Behavior |
 | --- | --- |
-| `/music new <title>` | Create a project if none exists. |
+| `/music new <title>` | Create and select another project, preserving existing songs. |
+| `/music projects` | List this player's project titles and IDs. |
+| `/music open <project-id>` | Select one of this player's projects for commands. |
 | `/music title <title>` | Rename the editable project; maximum 64 ordinary characters. |
-| `/music studio` | Open the empty jukebox you are looking at. |
+| `/music studio` | Open the project library at the empty jukebox you are looking at. |
 | `/music status` | Show saved tracks, duration, tempo and pending take. |
 | `/music record <track>` | Begin a count-in and record a take. |
 | `/music stop` | End the current recording or stop the private preview. |
@@ -147,8 +160,12 @@ sample's audio file determines its duration. Recording voice, importing audio,
 sample trimming, time stretching and sustained note control are outside this
 sequencer's controls.
 
-Projects are stored in `plugins/MusicalInstruments/studio/projects/<player-uuid>.yml`;
-immutable editions are in `studio/songs/<edition-uuid>.yml`. Back up both with the
+Projects are stored in `plugins/MusicalInstruments/studio/projects/<player-uuid>/<project-uuid>.yml`.
+The original `studio/projects/<player-uuid>.yml` remains a snapshot of the selected
+project. Existing single-song files are read and archived before another project
+can replace that selection. The library includes the original song and its pending
+take. The selected project survives restarts; immutable editions stay in
+`studio/songs/<edition-uuid>.yml`. Back up these directories with the
 world/item data: a disc contains its edition ID, and its music remains in the
 server's song file. Keep published editions while discs referencing them exist.
 Unknown formats, corrupt files and missing editions are reported rather than
@@ -201,7 +218,8 @@ Run `mvn clean verify` from MusicalInstruments. Automated tests exercise note
 overlap, replacement/acceptance, immutable editions, YAML recovery, checkpoints,
 duration bounds, item preservation on storage errors, nearby playback, jukebox
 snapshot updates, cancellation, permissions and vanilla interaction preservation.
-Menu tests cover deferred clicks, mixing, settings, blocked item transfers, station
+Menu tests cover the project library, horizontal track controls, track pagination,
+separate project actions, stale selections, deferred clicks, mixing, settings, blocked item transfers, station
 distance and permission rechecks. Form edits preserve the latest notes and pending
 take; inventory publication preserves items when storage fails or space is missing.
 These tests use mocked Bukkit objects and do not verify audible output on a client.
@@ -223,9 +241,12 @@ Before deployment, on a Paper 1.21.10 test server with the instrument resource p
    files, vanilla discs and hopper insertion/extraction.
 8. Verify ActivityTF only counts performed notes, including recording, and never
    advances from private previews or jukebox playback.
-9. Complete a song using only the inventory controls. Check the title form and
+9. Create two projects from the library and complete songs using only the inventory controls.
+   Switch between projects, restart, and verify each song's tracks and pending take.
+   Check the title form and
    tempo slider on a client, automatic status updates, inventory-based publication,
-   full inventories, and the new-song confirmation. Try item drags, number keys,
+   full inventories, and the clear-project confirmation. Check track pages 5-8.
+   Try item drags, number keys,
    bottom-inventory shift-clicks and moving away before using a form response.
 
 This procedure describes required runtime checks, not evidence that a release
