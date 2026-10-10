@@ -175,11 +175,11 @@ Deploy and verify the headless renderer: [ops/sheet-render.md](../ops/sheet-rend
 | `POST /skins/submissions/{id}/approve` | Approve |
 | `POST /skins/submissions/{id}/deny` | Deny + purge |
 
-### Staff-only inspect
+### Staff code lookup
 
 | Method | Purpose |
 |--------|---------|
-| `POST /skins/codes/inspect` | Decode a redeem code (staff Bearer + `tfmc.map.staff`) |
+| `POST /skins/codes/inspect` | Decode a redeem code without using it. Staff panel Codes tab (`/admin/codes`): Discord session cookie, `mod` and up, site `Origin` |
 
 See [identity/auth-security.md](../identity/auth-security.md).
 

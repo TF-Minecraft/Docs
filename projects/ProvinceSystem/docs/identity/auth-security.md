@@ -130,8 +130,10 @@ has no sign-out of its own for these sessions. A visitor without a link still
 redeems an in-game code, and Profile shows Log out for that code session.
 
 Website roles (`mod`, `admin`, `root`) control staff capabilities independently
-of feature-code scopes. See [CoreProtect data](../integrations/coreprotect.md),
-[rail data](../integrations/rail.md), and [LuckPerms policy](../integrations/luckperms.md)
+of feature-code scopes. Staff panel tabs follow the role alone: a Profile session
+with `tfmc.map.staff` opens staff maps and the map editor, not the panel. See [CoreProtect data](../integrations/coreprotect.md),
+[rail data](../integrations/rail.md), [LuckPerms policy](../integrations/luckperms.md),
+[precedent](../integrations/precedent.md) and the [code lookup](../cosmetics/skins.md#staff-code-lookup)
 for the individual staff panels. Configuration validation is in
 [`auth/config.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/config.py).
 
@@ -181,7 +183,17 @@ Invalid or expired tokens return **401**. Wrong scope returns **403**.
 3. Requires `has_map_staff_access(…, "tfmc.map.staff")`.
 4. Returns **401** without token; **403** without permission.
 
-Used by **`POST /skins/codes/inspect`** so only staff can decode redeem codes from the website UI.
+Used by the patch notes staff routes. Staff panel tools use `require_staff_account`
+instead (below).
+
+### Staff panel tools outside `/admin`
+
+`require_staff_account(request, capability, write=False)` in
+`backend/src/api/staff_access.py` applies the staff panel's rule to routes served
+elsewhere: the Discord session cookie, a website role with the capability, and the
+site `Origin` on writes. It returns **401** when signed out and **403** without the
+capability. Used by `POST /skins/codes/inspect` (`inspect_codes`) and the precedent
+routes when no `X-Staff-Key` is sent (`use_precedent`).
 
 ### UI dev bypass (non-production only)
 

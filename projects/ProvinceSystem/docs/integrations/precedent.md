@@ -47,32 +47,33 @@ recipient never sees who sent it. Neither command's own behavior (DMs, log
 channel embeds, params) was changed — the precedent log call is a pure addition
 via `_log_precedent()` in `minecraftban.py`.
 
-## Web UI (`/precedent`, staff only)
+## Staff panel tab (`/admin/precedent`)
 
-Staff can browse and maintain the whole corpus at `/precedent` on the website — the
-Discord commands only ever surface three matches at a time, so a bad or duplicate
-entry was previously invisible and uncorrectable. The page lists every case, filters
-them client-side as you type (no API call, no cost), and offers Log / Edit / Delete.
-The semantic search sits in its own panel behind an explicit submit button, since each
-run costs a Voyage embed plus a Claude call.
+Staff browse and maintain the whole corpus in the staff panel's Precedent tab; the
+Discord commands only ever show three matches at a time. The tab lists every case,
+filters them in the browser as you type (no API call, no cost), and offers Log / Edit /
+Delete. The semantic search sits in its own panel behind an explicit submit button,
+since each run costs a Voyage embed plus a Claude call. `/precedent` redirects there.
 
-Gated on the same `tfmc.map.staff` permission flag as `/inspect` and the map editor,
-via `useSiteStaffAccess` client-side and `require_site_staff` server-side.
+Access follows the rest of the staff panel: the website role from the Discord sign-in,
+`mod` and up (capability `use_precedent`). Writes and searches also need the site's own
+`Origin`.
 
 **Editing re-embeds the case.** The stored vector is what search matches on, so saving
 edited text against the old vector would leave the row unfindable by the wording it now
 contains. `PUT /staff/case/{id}` always recomputes the embedding before writing.
 
-Implementation: `frontend/app/precedent/page.tsx`,
+Implementation: `frontend/app/admin/precedent/page.tsx`,
 `frontend/app/components/precedent/`, `frontend/lib/precedent/{api,filter}.ts`.
 
 ## API surface (staff)
 
 Two clients, two credentials. The Discord bot and plugins send the shared
-`X-Staff-Key`; the website must never ship that secret to a browser, so it sends
-`Authorization: Bearer <session_token>` and the server checks the caller's
-`tfmc.map.staff` flag. Every route below accepts either. A *wrong* `X-Staff-Key` is
-rejected outright rather than falling through to the session path.
+`X-Staff-Key`; the website must never ship that secret to a browser, so the staff panel
+sends the Discord session cookie and the server checks the account's role
+(`backend/src/api/staff_access.py`). Every route below except `/staff/ping` accepts
+either. A *wrong* `X-Staff-Key` is rejected outright rather than falling through to the
+cookie.
 
 | Route | Body | Returns |
 |-------|------|---------|
@@ -105,8 +106,9 @@ and widened the relevant/off-topic separation from 0.061 to 0.097.
 Because identical text now scores 0, the website's similarity percentage maps
 `[0, MAX_RELEVANT_DISTANCE]` to `[100%, 0%]` with a `^0.5` curve — 100% means genuinely
 exact, with no floor subtracted. The Discord cog still applies its own `^0.3` curve, so the
-two surfaces report different percentages for the same case. `/staff/search` is rate-limited to 10 requests/60s per client IP
-(same in-process limiter pattern as the `/skins/codes/inspect` route).
+two surfaces report different percentages for the same case. `/staff/search` is rate-limited to 10 requests/60s per staff
+account, or per client IP for the bot (same in-process limiter pattern as the
+`/skins/codes/inspect` route).
 
 Implementation: `backend/src/api/precedent_routes.py`, `backend/src/precedent/{db,embeddings,synthesis}.py`.
 
@@ -120,8 +122,8 @@ access, so staff cannot review or erase their own trail from the website.
 |--------|---------|
 | `case_id` | The case affected. Not a foreign key, so it survives the case being deleted |
 | `action` | `create`, `update` or `delete` |
-| `source` | `web` (site-staff Bearer session) or `bot` (shared `X-Staff-Key`) |
-| `actor` / `actor_uuid` | Verified player for `web`; caller-supplied and unverified for `bot` |
+| `source` | `web` (staff panel account) or `bot` (shared `X-Staff-Key`) |
+| `actor` / `actor_uuid` | For `web`, the staff account's linked Minecraft player, or its Discord username with no UUID when unlinked; caller-supplied and unverified for `bot` |
 | `before` / `after` | JSONB snapshots of the case content, embedding excluded |
 
 Two properties are deliberate:
