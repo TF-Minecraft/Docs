@@ -29,8 +29,11 @@ the `ps-preview-router` Caddy container (`127.0.0.1:8090`, behind the `*.tfminec
   `dependabot/**` branches are skipped.
 - **Data:** the first `up` copies the dev backend's data, input, defines and output folders, with sign-in sessions,
   OAuth states and link codes deleted. A redeploy of the same branch keeps its data.
-- **Environment:** only `SKINS_DEV=1`, `SITE_PUBLIC_URL` and random `STAFF_KEY`/`PLUGIN_KEY`. Discord sign-in, Patreon,
-  CoreProtect and patch notes are off, so signed-in and staff pages cannot be tried on a preview.
+- **Environment:** only `SKINS_DEV=1`, `SITE_PUBLIC_URL` and random `STAFF_KEY`/`PLUGIN_KEY`, plus
+  `SIGN_IN_SITE=https://dev.tfminecraft.net` built into the backend image. Patreon, CoreProtect and patch notes are off.
+- **Sign-in:** Discord sign-in goes through dev, which needs `PREVIEW_SIGN_IN_DOMAIN=tfminecraft.net`, and keeps the
+  dev account's role ([Branch previews](docs/identity/auth-security.md#branch-previews)). A player signed in on dev
+  usually skips Discord.
 - **Access:** public, with `X-Robots-Tag: noindex, nofollow`.
 - **Limits:** at most four previews at once (`up` exits 3); backend 2 GB / 1.5 CPU, frontend 1 GB / 1 CPU.
 - **Lifetime:** each `up` sets the expiry to 90 minutes later; `ps-preview-reap.timer` runs `reap` every minute.
