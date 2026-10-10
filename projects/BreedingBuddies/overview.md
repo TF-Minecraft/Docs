@@ -176,10 +176,9 @@ The bundle tier depends on how high and how even the animal's points are:
 - tier index = score ÷ (`maxFriendshipAndGenetics` ÷ number of tiers), using
   the order of tiers under `bundles` and capped at the last tier.
 
-The collector needs an empty inventory slot. Without one, the player gets
-`lacksSpace`, but the collection time is still recorded and no bundle is given.
-Empty armour and off-hand slots also count, so a bundle can be lost when only
-those are free.
+The collector needs an empty storage slot; armour and off-hand slots do not
+count. Without one, the player gets `lacksSpace`, no bundle is given and the
+cooldown does not start.
 
 Right-clicking with a bundle opens it: one bundle is used and one prize is
 picked from the tier's `prizes` by `weight`. Bundles are matched by their stored
@@ -218,8 +217,8 @@ animal itself is named from the item's display name.
 Mounts are horse-like entities (`AbstractHorse`: horses, donkeys, mules,
 llamas, camels and the undead horses). Health, speed and jump ranges come from
 the type's `mountStats` in `bundles.yaml`, then `defaultMountStats` in
-`config.yaml`. The lookup matches the entity's display name, so named mounts and
-multi-word types fall back to `defaultMountStats`.
+`config.yaml`. The lookup uses the entity type name, such as `HORSE` or
+`SKELETON_HORSE`, so a custom name does not change the range.
 
 - **Genetics:** the average of health, speed and jump, each scaled to its range,
   times `maxFriendshipAndGenetics`.
@@ -381,24 +380,17 @@ the save on disable are skipped while a daily change is running.
   `reload` straight after editing `config.yaml`, or the next change overwrites
   the edit.
 - Every stable chunk is loaded at startup; chunks in a missing world are
-  dropped.
-  Each daily change force-loads every stable chunk while it checks it, so large
+  dropped. Each daily change force-loads every stable chunk while it checks it, so large
   stable areas add chunk loading at that time.
-- The water check stops at the first chunk with water without restoring that
-  chunk's force-load setting, so it can stay force-loaded.
 - The scheduled and interaction-triggered passes read chunks and entities from
   an asynchronous task. A failure in one chunk is logged as
   `Error processing chunk <x>,<z>` and its animals are treated as outside a
   stable; a failure in the water or space check aborts the pass with
   `Error on DayChange` on standard output.
-- Catch-up counts days from `lastDayChangeDate` (UTC) to the server's local
-  time, so the count is exact only when the JVM's time zone is UTC.
 - Because of the 24-hour skip, `changeday` does not update animals already
   updated that day, but stabled animals that are not found still gain a day out
   and empty areas still gain an abandoned day. Repeated use can make animals
   escape and remove stable chunks.
-- Animals made with `spawnanimal` or `spawnmount` keep the name `???` after
-  taming.
 
 Back up the whole `plugins/BreedingBuddies/` directory before changing
 configuration or moving data, and stop the server cleanly before copying it.
