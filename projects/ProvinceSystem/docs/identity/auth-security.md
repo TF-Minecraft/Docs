@@ -25,6 +25,24 @@ cookie, and sets an HttpOnly, SameSite=Lax session cookie. HTTPS uses the Secure
 Cookie-authenticated writes enforce an origin check. `/account` exposes the
 signed-in account and supports Minecraft linking and Patreon authorization.
 
+## Microsoft link
+
+Signed-in players can link Minecraft by signing in with Microsoft instead of
+pasting a `/linkdiscord` code. This needs an Azure app for personal Microsoft
+accounts that Mojang has allow-listed for Minecraft services. Enable it with
+`MICROSOFT_LINK_ENABLED=1`, `MICROSOFT_CLIENT_ID` and `MICROSOFT_CLIENT_SECRET`.
+`MICROSOFT_REDIRECT_URI` defaults to the site URL plus
+`/api/auth/microsoft/callback`; register it as a Web redirect on the Azure app.
+
+`POST /account/minecraft/microsoft/start` needs the same fresh Discord guild
+check as code linking. It stores a single-use state and PKCE verifier tied to
+the site session, then returns the Microsoft sign-in URL. The callback exchanges
+the code, follows Xbox Live, XSTS and Minecraft services to the Java profile, and
+links that UUID through the same rules as a code. A link never replaces another
+link in either direction. Microsoft, Xbox and Minecraft tokens are discarded
+after the request. The callback returns to `/account?minecraft=<outcome>`.
+Source: [`microsoft.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/microsoft.py).
+
 Website roles (`mod`, `admin`, `root`) control staff capabilities independently
 of feature-code scopes. See [CoreProtect data](../integrations/coreprotect.md),
 [rail data](../integrations/rail.md), and [LuckPerms policy](../integrations/luckperms.md)
