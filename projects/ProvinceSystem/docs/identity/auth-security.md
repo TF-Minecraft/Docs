@@ -154,7 +154,17 @@ Invalid or expired tokens return **401**. Wrong scope returns **403**.
 3. Requires `has_map_staff_access(…, "tfmc.map.staff")`.
 4. Returns **401** without token; **403** without permission.
 
-Used by **`POST /skins/codes/inspect`** so only staff can decode redeem codes from the website UI.
+Used by the patch notes staff routes. Staff panel tools use `require_staff_account`
+instead (below).
+
+### Staff panel tools outside `/admin`
+
+`require_staff_account(request, capability, write=False)` in
+`backend/src/api/staff_access.py` applies the staff panel's rule to routes served
+elsewhere: the Discord session cookie, a website role with the capability, and the
+site `Origin` on writes. It returns **401** when signed out and **403** without the
+capability. Used by `POST /skins/codes/inspect` (`inspect_codes`) and the precedent
+routes when no `X-Staff-Key` is sent (`use_precedent`).
 
 ### UI dev bypass (non-production only)
 
