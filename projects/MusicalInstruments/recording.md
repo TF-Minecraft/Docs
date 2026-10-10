@@ -8,64 +8,70 @@ must have the samples installed to hear custom instruments.
 
 ## Record through the studio interface
 
-Sneak-right-click an empty jukebox to open your song-project library. You can
-also look at an empty jukebox within five blocks and use `/music studio`.
+Staff can open `/music studio` anywhere with `instruments.studio` (default: op),
+without looking at a jukebox. Player entry through a dedicated station is pending.
+The plugin no longer claims sneak-right-click on jukeboxes, leaving that gesture
+available to MMOItems. Ordinary jukebox right-click still inserts/ejects discs.
+There is no configurable station identifier or MMOItems station integration yet.
+
 Click an existing song, or **Create a new song** to enter its title and open
-the new project's editor. Existing songs remain available in the library.
-Projects have independent saved tracks, pending takes, tempo and metronome.
-The library shows 28 projects per page and provides previous/next controls.
-Stay near that jukebox while using its controls.
+its editor. Each project has independent saved tracks, pending take, tempo and
+metronome. The library fills its 36 gray slots from slot 9, left to right and
+top to bottom, with purple borders above and below. The 36-project limit also
+applies to `/music new`. When full, creation asks you to delete an old project.
+Right-click a song and confirm its deletion to free a slot. Deleting removes
+only that editable project; other songs and published discs remain valid.
 
-1. Click the song title or **Project actions**, then **Song settings**. Enter a title, adjust the tempo
-   slider, choose whether to use the private metronome, and click **Save**.
-2. Put an instrument in your off-hand and click **Record track** in its row. The inventory
-   closes so you can play with keys 1-8. Wait for the count-in; recording time
-   and the note count then appear above your hotbar.
-3. Open the same station again, select your current project, and click **Stop recording / preview**.
-   Click **Listen to take** in that track's row to audition it with the other saved tracks, then **Keep take** or **Discard
-   take**. Your previous saved take stays intact until you accept its replacement.
-4. Repeat for the other tracks. The saved, audible tracks play privately as
-   backing while you record; the track being replaced is excluded. Every track
-   starts at the same song time, so wait before playing for a later entrance.
-5. Use the controls in each track's row to mix it: left-click **Volume**
-   to add 25%, right-click to subtract 25%, or shift-click to reset to 100%.
-   Volume ranges from 0% to 200%. Click **Audible / Muted** to toggle silence.
-   **Listen to track** auditions just that saved track. The bottom bar's
-   **Listen to full mix** auditions the complete song; **Stop recording / preview**
-   ends either preview.
-6. Put an ordinary music disc in your inventory and click **Prepare a blank
-   disc** in **Project actions**, then **Publish full song**. These controls find discs in your storage
-   inventory; you can keep the instrument in your off-hand. If using a stack,
-   leave a free inventory slot for the resulting disc. Publication requires
-   at least one audible note and no pending take.
+1. Click **Project settings** or the song title to open a dedicated 27-slot
+   inventory. **Title** opens a text field for renaming. **Tempo** changes BPM
+   by +5 on left-click or -5 on right-click; shift-click changes it by 1.
+   **Metronome** toggles the recording click. Only the recording player hears it,
+   and clicks are never captured in the song. The count-in always plays.
+   BPM changes the click rhythm, without retiming existing notes.
+2. Put an instrument in your off-hand and click **Record track** in its row.
+   The inventory closes so you can play with keys 1-8. Wait for the count-in;
+   recording time and note count then appear above your hotbar.
+3. Reopen `/music studio`, select the current project and click **Stop recording /
+   preview**. Click **Listen to take** in that row to audition it with the other
+   saved tracks, then **Keep take** or **Discard take**. The previous saved take
+   stays intact until its replacement is accepted.
+4. Repeat for other tracks. Saved, audible tracks play privately as backing while
+   you record; the track being replaced is excluded. Every track starts at the
+   same song time, so wait before playing for a later entrance.
+5. Left-click **Volume** to add 25%, right-click to subtract 25%, or shift-click
+   to reset to 100%. Volume ranges from 0% to 200%. **Audible / Muted** toggles
+   silence; **Listen to track** auditions one saved track. **Listen to full mix**
+   auditions the complete song; **Stop recording / preview** ends either preview.
+6. Pick up exactly one music disc from your inventory and place it on **Publish
+   full song**. Ordinary, blank and already-recorded music discs are accepted.
+   No blank-disc preparation is required. A recorded disc needs a second click
+   within 10 seconds to confirm overwriting; changing the project or disc requires
+   a fresh confirmation. The same material and other item metadata are preserved,
+   while its title, lore and edition ID are replaced. The result returns to the
+   cursor. Keep or discard pending takes first; the mix must have audible notes.
 7. Insert the published disc into an empty jukebox with an ordinary right-click
-   to hear the layered song. To copy it, hold that recorded disc in your off-hand,
-   put a blank disc in your inventory, and click **Copy a recorded disc** in **Project actions**.
+   to hear the layered song. Copying remains available through `/music copy`, with
+   the recorded disc in the off-hand and one blank disc in the main hand.
 
-The track cards show saved instruments, duration and note count. Their colors
-distinguish empty, saved, recording and pending states. The title card shows
-current activity, and the open menu updates as recording and playback progress.
-The project editor is a six-row chest inventory, the maximum supported chest
-height. Its four middle rows each belong to one track. A row contains recording,
-volume and mute controls on the left, then saved-track listening and pending-take
-listening/keep/discard controls on the right. Take controls act only on that row's
-pending take and retain distinct icons with gray labels when unavailable.
-Projects with more than four tracks use another editor page.
+The editor has six chest rows. Each middle row belongs to one track; recording,
+volume and mute occupy columns 2-4, followed directly by saved-track listening
+and take listening/keep/discard in columns 5-8. Gray labels mark unavailable take
+controls. Projects with more than four tracks have another editor page.
+The bottom bar holds full-mix preview, stop, a centered recording guide,
+publication and **Project settings**. The top-left arrow returns to the library.
+**Clear this project** in settings confirms before clearing only the selected
+project's tracks and pending take. Settings contain no blank, publish or copy
+controls and no duplicate song-settings form.
 
-The bottom bar contains only project-wide actions: recording guide, full-mix
-preview, stop, publication and **Project actions**. The top-left arrow returns
-to the project library. Settings and physical-disc actions occupy their own
-27-slot panel. **Tempo** has quick +/-5 BPM clicks; shift-click opens the settings
-form. **Metronome** toggles the recording click. **Clear this project** opens a
-confirmation before clearing the selected project's tracks and pending take;
-other projects and published discs are kept. **Create a new song** in the library
-creates a separate project and immediately opens its editor.
-
-The settings form uses Minecraft's title field, slider and checkbox. It accepts
-one response from the player who opened it, expires after two minutes, and checks
-the station and project again before saving. Closing a menu does not stop a
-recording or preview. The studio prevents item transfers, number-key swaps,
-double-click collection and dragging while its inventory is open.
+Native title fields and deletion/reset confirmations accept one response from
+the opening player, expire after two minutes and recheck permissions and project
+identity before saving. Physical station sessions also recheck station distance.
+Closing a menu does not stop recording or preview. Normal clicks and drags within
+the player's inventory are allowed so a disc can be picked up. Menu item transfers,
+number-key swaps, double-click collection and bottom-inventory shift-clicks are
+blocked. Publication accepts a single-target deposit on its slot, cancels vanilla
+movement and writes the edition before replacing the cursor item. Changed cursors,
+closed menus, permission revocation and failed writes leave the physical disc intact.
 
 ## Record with commands
 
@@ -106,7 +112,7 @@ All commands are player-only. `/recording` is an alias for `/music`.
 | `/music projects` | List this player's project titles and IDs. |
 | `/music open <project-id>` | Select one of this player's projects for commands. |
 | `/music title <title>` | Rename the editable project; maximum 64 ordinary characters. |
-| `/music studio` | Open the project library at the empty jukebox you are looking at. |
+| `/music studio` | Staff: open the project library anywhere, without a physical station. |
 | `/music status` | Show saved tracks, duration, tempo and pending take. |
 | `/music record <track>` | Begin a count-in and record a take. |
 | `/music stop` | End the current recording or stop the private preview. |
@@ -123,8 +129,9 @@ All commands are player-only. `/recording` is an alias for `/music`.
 | `/music reset confirm` | Clear the editable project. |
 | `/music help` | Display the available commands. |
 
-`instruments.record` grants studio, recording, editing, blank and publication
-commands; `instruments.copy` grants copying; `instruments.play` grants insertion
+`instruments.studio` grants command access without a station and defaults to op.
+It also requires `instruments.record`. Dedicated player station access is pending.
+`instruments.record` grants recording, editing, blank and publication commands; `instruments.copy` grants copying; `instruments.play` grants insertion
 of recorded discs into jukeboxes. All three default to true. Removing a disc does
 not require playback permission. Existing `/instruments` permissions are preserved.
 
@@ -133,12 +140,12 @@ not require playback permission. Existing `/instruments` permissions are preserv
 Publishing requires at least one audible sample and no pending take. Each
 publication receives a new UUID and freezes its title, author, tracks, gain and
 mute state. Editing or resetting the project does not change existing discs.
-Copies reference the same edition and consume a physical blank disc. The command
-controls replace a single disc held in the main hand. The menu controls use one
-disc from the storage inventory, replacing it in place when it is a single item
-or splitting a stack into a free slot. A full inventory can still use a single
-disc, and an unsplittable stack is rejected before any edition is written.
-Publication writes the edition successfully before replacing the blank.
+Copies reference the same edition and consume a physical blank disc. Command
+controls replace a single blank disc in the main hand. The publish slot instead
+rewrites exactly one music disc on the cursor, preserving its material. Overwriting
+one recorded disc creates a new edition; other physical copies still reference
+the previous edition. Stacks are rejected before writing an edition. A failed
+publication never consumes the input disc.
 
 Right-click an empty jukebox with the recorded disc in either hand. The plugin
 inserts one disc, applies the jukebox block state, stops its base vanilla song,
@@ -196,6 +203,7 @@ reloads. Replacing sound assets in the resource pack can still change their timb
 | `sample-tail-seconds` | 3 | 0-10 seconds before a normal playback session closes |
 | `checkpoint-ticks` | 200 | 20-1200 ticks between background checkpoint attempts |
 
+The project library has a fixed 36-project limit, matching its gray slots.
 Settings outside their ranges are clamped. Persisted data also has hard bounds:
 8 tracks, 600 seconds and 12000 notes per song, finite gains of 0-2, captured
 volumes of 0-16, and pitches of 0.5-2. At most 32 notes per player per tick are
@@ -218,10 +226,11 @@ Run `mvn clean verify` from MusicalInstruments. Automated tests exercise note
 overlap, replacement/acceptance, immutable editions, YAML recovery, checkpoints,
 duration bounds, item preservation on storage errors, nearby playback, jukebox
 snapshot updates, cancellation, permissions and vanilla interaction preservation.
-Menu tests cover the project library, horizontal track controls, track pagination,
-separate project actions, stale selections, deferred clicks, mixing, settings, blocked item transfers, station
-distance and permission rechecks. Form edits preserve the latest notes and pending
-take; inventory publication preserves items when storage fails or space is missing.
+Menu tests cover library capacity/deletion, horizontal track controls, track
+pagination, inventory settings, staff access without a station, stale selections,
+deferred clicks, cursor publication/overwrite confirmation and item preservation
+when storage fails. They also check permissions, blocked menu transfers and
+station distance rechecks. Form edits preserve the latest notes and pending take.
 These tests use mocked Bukkit objects and do not verify audible output on a client.
 
 Before deployment, on a Paper 1.21.10 test server with the instrument resource pack:
@@ -243,9 +252,9 @@ Before deployment, on a Paper 1.21.10 test server with the instrument resource p
    advances from private previews or jukebox playback.
 9. Create two projects from the library and complete songs using only the inventory controls.
    Switch between projects, restart, and verify each song's tracks and pending take.
-   Check the title form and
-   tempo slider on a client, automatic status updates, inventory-based publication,
-   full inventories, and the clear-project confirmation. Check track pages 5-8.
+   Check the title form, tempo and metronome controls, automatic status updates,
+   cursor publication, overwriting a recorded disc, full inventories, the
+   36-project cap, delete confirmation and clear-project confirmation. Check track pages 5-8.
    Try item drags, number keys,
    bottom-inventory shift-clicks and moving away before using a form response.
 
