@@ -101,8 +101,10 @@ has no sign-out of its own for these sessions. A visitor without a link still
 redeems an in-game code, and Profile shows Log out for that code session.
 
 Website roles (`mod`, `admin`, `root`) control staff capabilities independently
-of feature-code scopes. See [CoreProtect data](../integrations/coreprotect.md),
-[rail data](../integrations/rail.md), and [LuckPerms policy](../integrations/luckperms.md)
+of feature-code scopes. Staff panel tabs follow the role alone: a Profile session
+with `tfmc.map.staff` opens staff maps and the map editor, not the panel. See [CoreProtect data](../integrations/coreprotect.md),
+[rail data](../integrations/rail.md), [LuckPerms policy](../integrations/luckperms.md),
+[precedent](../integrations/precedent.md) and the [code lookup](../cosmetics/skins.md#staff-code-lookup)
 for the individual staff panels. Configuration validation is in
 [`auth/config.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/config.py).
 
