@@ -148,10 +148,15 @@ the previous edition. Stacks are rejected before writing an edition. A failed
 publication never consumes the input disc.
 
 Right-click an empty jukebox with the recorded disc in either hand. The plugin
-inserts one disc, applies the jukebox block state, stops its base vanilla song,
-and plays all tracks from the jukebox's center in the `RECORDS` sound category.
+removes the vanilla `jukebox_playable` component from a detached single disc
+before insertion, applies the jukebox block state, and plays all tracks from the jukebox's center in the `RECORDS` sound category.
 Nearby players hear the same shared song clock. A player arriving mid-song hears
 future samples; already-started samples are not sought or reconstructed.
+New blank/published/copied discs also omit that vanilla component. Previously
+issued recording discs are upgraded on insertion without changing their edition,
+material or unrelated metadata; they do not need to be recorded again.
+Insertion and ejection send a stop event for that jukebox position to clear any
+stale vanilla client playback, including after the custom song has finished.
 
 Right-click to eject the disc. Removing the item, replacing or breaking the
 block, unloading its chunk/world, or disabling the plugin cancels future notes.
@@ -247,7 +252,10 @@ Before deployment, on a Paper 1.21.10 test server with the instrument resource p
 6. Stop recording by disconnecting and by orderly restart. Confirm recovery of
    the pending take and playback of previously published discs.
 7. Test protected blocks, denied permissions, full inventories, missing edition
-   files, vanilla discs and hopper insertion/extraction.
+   files, vanilla discs and hopper insertion/extraction. Publish onto several
+   vanilla disc types, insert an older recorded disc, and confirm no vanilla
+   song starts alongside the custom mix. Eject during and after playback;
+   verify the other jukebox remains audible.
 8. Verify ActivityTF only counts performed notes, including recording, and never
    advances from private previews or jukebox playback.
 9. Create two projects from the library and complete songs using only the inventory controls.
