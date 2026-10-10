@@ -43,6 +43,42 @@ link in either direction. Microsoft, Xbox and Minecraft tokens are discarded
 after the request. The callback returns to `/account?minecraft=<outcome>`.
 Source: [`microsoft.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/microsoft.py).
 
+## Account page
+
+`/account` is the hub for a signed-in player. Once Minecraft is linked it shows
+the player's skin face, rank, time on the server, Profile counts and one list of
+linked accounts with sign-out, unlink and Patreon controls. Before linking it
+offers Microsoft sign-in with the in-game code as a fallback. The Discord,
+Microsoft and Patreon buttons use each service's own artwork from
+`frontend/public/brand/`, so the page loads nothing from those services.
+
+| Route | Purpose |
+|-------|---------|
+| `GET /account/overview` | First and last sight on this site's server from `COREPROTECT_DB`, and the rank from the LuckPerms mirror. Each part is null when unreadable. |
+| `GET /account/minecraft/head` | The linked player's face as a 64×64 PNG, from Mojang's session server and `textures.minecraft.net`. It serves only your own player, so it is no open proxy, and caches each face in memory for six hours. |
+| `POST /account/profile-session` | Opens Profile for the linked player without an in-game code (below). |
+| `POST /account/patreon/unlink` | Disconnects Patreon from the signed-in Discord account. |
+
+`discord_links.link_method` records how a link was proved: `code` or
+`microsoft`. Links made before it was kept have no method, and the page shows
+only their date. Source: [`account_overview.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/account_overview.py).
+
+### Profile without a code
+
+A signed-in Discord account with a linked Minecraft account gets a `profile`
+Bearer session from `POST /account/profile-session`. It is the same 8-hour
+session a `/token create profile` code gives, so every Profile, character and
+Patreon route works unchanged. The route needs the site origin and a current
+link, and shares the link-attempt rate limit. It records a spent `profile` code
+with no plaintext, because sessions belong to a code. The realm comes from
+`PROFILE_REALM_ID`: `main` by default, and `dev` on the Dev site.
+
+The browser keeps that session in local storage marked as opened through
+Discord, and reuses it across tabs while more than five minutes remain.
+Signing out of Discord or unlinking Minecraft on `/account` revokes it. Signing
+out on Profile also signs out of Discord, so Profile does not reopen on the next
+visit. A visitor without a link still redeems an in-game code.
+
 Website roles (`mod`, `admin`, `root`) control staff capabilities independently
 of feature-code scopes. See [CoreProtect data](../integrations/coreprotect.md),
 [rail data](../integrations/rail.md), and [LuckPerms policy](../integrations/luckperms.md)
@@ -56,7 +92,7 @@ for the individual staff panels. Configuration validation is in
 | Player redeem (skins / drinks / profile) | `POST …/redeem` with code → short-lived **opaque** session token stored in SQLite; client sends `Authorization: Bearer <token>` |
 | Session scope | Encoded in DB row (`skin`, `skin_staff`, `drink`, `profile`) |
 | TTL | Default **8h** after redeem; profile Remember me **30d** |
-| Profile / map staff | `profile` scope session from `/profile` redeem; carries `player_uuid` and `realm_id` for permission checks |
+| Profile / map staff | `profile` scope session from `/profile` redeem or a linked Discord account ([Profile without a code](#profile-without-a-code)); carries `player_uuid` and `realm_id` for permission checks |
 | No website passwords | Codes are UUID-bound and not shareable by design |
 
 Codes are **hashed at rest** (SHA-256). Plaintext shown once in-game at mint.
