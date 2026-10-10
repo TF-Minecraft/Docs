@@ -90,15 +90,20 @@ the site session, then returns the Microsoft sign-in URL. The callback exchanges
 the code, follows Xbox Live, XSTS and Minecraft services to the Java profile, and
 links that UUID through the same rules as a code. A link never replaces another
 link in either direction. Microsoft, Xbox and Minecraft tokens are discarded
-after the request. The callback returns to `/account?minecraft=<outcome>`.
+after the request. The callback returns to `/account?minecraft=<outcome>`,
+which redirects to Profile's Linked accounts tab with the outcome.
 Source: [`microsoft.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/microsoft.py).
 
-## Account page
+## Profile page
 
-`/account` is the hub for a signed-in player. Once Minecraft is linked it shows
-the player's skin face, rank, time on the server, Profile counts and one list of
-linked accounts with sign-out, unlink and Patreon controls. Before linking it
-offers Microsoft sign-in with the in-game code as a fallback. The Discord,
+`/profile` is the one page for a signed-in player. Once Minecraft is linked it
+shows the player's skin face, rank and time on the server, then the tabs
+Characters, Skins, Drinks, Custom items and Linked accounts (`?tab=` picks one).
+Linked accounts lists Discord, Minecraft and Patreon with sign-out, unlink and
+Patreon controls. Before linking it is the only section, and offers Microsoft
+sign-in with the in-game code as a fallback. `/account` redirects to
+`/profile?tab=accounts`, keeping the `signin` and `minecraft` notices, so Discord
+and Microsoft callbacks still land there. The Discord,
 Microsoft and Patreon buttons use each service's own artwork from
 `frontend/public/brand/`, so the page loads nothing from those services.
 
@@ -125,8 +130,8 @@ with no plaintext, because sessions belong to a code. The realm comes from
 
 The browser keeps that session in local storage marked as opened through
 Discord, and reuses it across tabs while more than five minutes remain.
-Signing out of Discord or unlinking Minecraft on `/account` revokes it; Profile
-has no sign-out of its own for these sessions. A visitor without a link still
+Signing out of Discord or unlinking Minecraft under Linked accounts revokes it;
+there is no separate Log out for these sessions. A visitor without a link still
 redeems an in-game code, and Profile shows Log out for that code session.
 
 Website roles (`mod`, `admin`, `root`) control staff capabilities independently

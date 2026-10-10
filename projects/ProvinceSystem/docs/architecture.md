@@ -33,11 +33,10 @@ Next.js  ◄── hub, /map, /profile, /skins, /drinks, /character
 tfminecraft.net/
   /              Hub (brand, nav, short intro, links into modules)
   /map/[mapId]   Interactive maps
-  /profile       Characters, skin and drink wardrobes, custom items
+  /profile       Characters, skin and drink wardrobes, custom items, linked accounts
   /skins         Upload (from Profile or a code) + status
   /drinks        Brew form (from Profile or a code) + status
   /character     Character creator, kits, wardrobe
-  /account       Discord sign-in and connected accounts
   /admin         Staff player, activity, rail and permission tools
   /map/editor    Staff map title editor (?map= required)
 ```

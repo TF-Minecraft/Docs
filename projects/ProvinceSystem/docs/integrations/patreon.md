@@ -15,7 +15,7 @@ The third-party PatreonPlugin used Patreon API v1, which Patreon retires on **7 
 | Patreon API v2, creator credentials, links, entitlement, grace, cooldown, removal brake, status, outboxes and alerts | ProvinceSystem backend |
 | Discord supporter roles, private DMs, role-change acknowledgements, Discord roster reconciliation and Discord linking commands | `tfmc_bot` `patreon` cog |
 | LuckPerms supporter groups, plugin outbox acknowledgements and Minecraft roster reconciliation | TFMCWeb on exactly one configured server |
-| Patreon authorization from the website | Website Supporter panel on `/profile`; link state and callback remain backend-owned |
+| Patreon authorization from the website | Patreon row under Profile → Linked accounts; link state and callback remain backend-owned |
 
 The bot and plugin never call Patreon. The backend never edits Discord roles or LuckPerms directly. Only the primary TFMCWeb `PLUGIN_KEY` can use the LuckPerms outbox. Shared LuckPerms storage means `patreon.apply-ranks: true` must be set on exactly one server; leave it false elsewhere. The command `/patreon` can be enabled on every server.
 
@@ -25,7 +25,7 @@ Supporters can start the same Patreon OAuth consent flow from Discord, Minecraft
 
 - **Discord:** `/patreon link` returns an ephemeral authorization button. After consent, the bot applies roles from the backend outbox.
 - **Minecraft:** `/patreon` reports status. If no Patreon account is linked, it starts a short-lived link request and displays the authorization link. `/patreon unlink` removes the link.
-- **Website:** use the Patreon row on `/account` with a Discord sign-in, or the Supporter panel on `/profile` with a profile session. Both return to the site after Patreon consent and can disconnect Patreon again.
+- **Website:** sign in with Discord and use the Patreon row under Profile → Linked accounts (`/profile?tab=accounts`). It returns to the site after Patreon consent and can disconnect Patreon again.
 - **Automatic Discord link:** during sync, an entitled Patreon member with a Discord connection is linked as `auto_discord` if no link row exists and that Discord ID is not already linked. An explicitly unlinked Patreon account is not auto-linked again.
 
 Role changes arrive through bot polling and roster reconciliation; supporters do not need to leave and rejoin Discord to receive updates.

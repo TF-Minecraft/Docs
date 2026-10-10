@@ -213,7 +213,7 @@ upload, so leaving the uploader costs nothing once the code lapses. Codes from `
 not, as before. Source: [`codes.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/codes.py).
 
 Sessions started here are marked `from_profile` in the browser. Profile's Log out
-and signing out or unlinking on `/account` revoke them; sessions from codes stay.
+and signing out or unlinking under Linked accounts revoke them; sessions from codes stay.
 On `/skins` they show **← Profile** in place of the code-session controls.
 
 **Use a code** above the grid opens a one-line form for a `/token create skin`
