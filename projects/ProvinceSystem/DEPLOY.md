@@ -33,7 +33,7 @@ the `ps-preview-router` Caddy container (`127.0.0.1:8090`, behind the `*.tfminec
   `SIGN_IN_SITE=https://dev.tfminecraft.net` built into the backend image. Patreon, CoreProtect and patch notes are off.
 - **Sign-in:** Discord sign-in goes through dev, which needs `PREVIEW_SIGN_IN_DOMAIN=tfminecraft.net`, and keeps the
   dev account's role ([Branch previews](docs/identity/auth-security.md#branch-previews)). A player signed in on dev
-  is signed in on a preview without seeing Discord.
+  usually skips Discord.
 - **Access:** public, with `X-Robots-Tag: noindex, nofollow`.
 - **Limits:** at most four previews at once (`up` exits 3); backend 2 GB / 1.5 CPU, frontend 1 GB / 1 CPU.
 - **Lifetime:** each `up` sets the expiry to 90 minutes later; `ps-preview-reap.timer` runs `reap` every minute.

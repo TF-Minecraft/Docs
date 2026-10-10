@@ -61,7 +61,9 @@ Dev sets `PREVIEW_SIGN_IN_DOMAIN=tfminecraft.net`.
    reserved. Without a dev session, it signs the player in with Discord and Discord's
    callback returns them to that route.
 3. Dev refreshes the session's guild check with the bot. If the bot cannot answer and
-   the check is over 15 minutes old, dev signs the player in with Discord again. It then
+   the check is over 15 minutes old, or the preview asked for a recheck because the
+   player was already signed in there ("I've joined, check again"), dev signs the
+   player in with Discord again. It then
    stores a hashed single-use ticket for that preview (120 seconds) and redirects to the
    preview's `/api/auth/preview/callback`. Access logs drop the query on both routes.
 4. The preview checks the state against its cookie, then posts the ticket and its
@@ -69,7 +71,8 @@ Dev sets `PREVIEW_SIGN_IN_DOMAIN=tfminecraft.net`.
    Discord identity, website role and guild check.
 5. The preview opens its own session with that role and check.
 
-A player already signed in on dev skips Discord. The preview never sees the dev session
+A player already signed in on dev skips Discord unless the bot cannot answer one of
+those checks. The preview never sees the dev session
 or the Discord secret, and its changes stay in its own copy of dev's data.
 
 ## Microsoft link
