@@ -58,7 +58,9 @@ Ending without a penalty: being teleported away by someone else, the chest being
 - A 1-second "Steady..." pause comes first. Then the boss bar counts down `pickpocket.minigame.time-limit-seconds` (30, at least 5) across both phases.
 - Filling both phases opens the pocket. It checks again that the mark is online, within `pickpocket.max-distance` and not taken by a guildmate meanwhile; the guild access cooldown is recorded only then.
 
-Failing means the time running out, giving up, being hurt, logging out or teleporting yourself away mid-pick. It alerts the mark with `pickpocket.alert-subtitle` and puts that mark on `lockpicking.fail-cooldown-ms` for the thief (target id `pocket:<victim uuid>`); `/thievery` cooldown resets clear it. Nothing breaks. The mark going offline or out of `pickpocket.max-distance` ends the attempt without a penalty. A thief already in a minigame cannot start one. `pickpocket.minigame.enabled: false` opens the pocket straight away. Staff can play the ring with no mark using `/thievery testpick pocket`; it applies the cooldown to `pocket:test` and alerts no one.
+Failing means the time running out, giving up, being hurt, logging out or teleporting yourself away mid-pick. It alerts the mark and puts that mark on `lockpicking.fail-cooldown-ms` for the thief (target id `pocket:<victim uuid>`); `/thievery` cooldown resets clear it. Nothing breaks. The mark going offline or out of `pickpocket.max-distance` ends the attempt without a penalty. A thief already in a minigame cannot start one. `pickpocket.minigame.enabled: false` opens the pocket straight away. Staff can play the ring with no mark using `/thievery testpick pocket`; it applies the cooldown to `pocket:test` and alerts no one.
+
+An alert plays a bag rummaging sound (`item.bundle.remove_one`) to the mark only, with no title. While the pocket is open, `PickpocketVictimAlerter` can also alert the mark at the thief's risk. A critical clue names the thief's character on the mark's action bar with `pickpocket.alert-critical`, once per target per `clues.critical-cooldown-hours`.
 
 ## Chest probe: seized pins
 

@@ -53,7 +53,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 | P2 | The middle shows the thief's own jump key; mashing it fills the band clockwise from the top in cyan, and it drains when they stop |
 | P3 | Filling the first phase pops its pip green; the second phase starts empty in orange and needs about twice as many presses |
 | P4 | Filling both says "Got it" and opens the hidden pocket menu; budget, clues and taking items work as before |
-| P5 | Letting the boss bar run out, sneaking or taking damage says "Noticed", shows the mark the alert subtitle and refuses that mark for 60s with "Your mark is still on guard" |
+| P5 | Letting the boss bar run out, sneaking or taking damage says "Noticed", plays the mark a bag rummaging sound with no title and refuses that mark for 60s with "Your mark is still on guard" |
 | P6 | The mark walking out of reach or logging out ends the ring with "Your mark is out of reach." and no alert |
 | P7 | The thief cannot walk or jump during the ring, the hotbar does not change, and they move normally afterwards |
 | P8 | `/thievery testpick pocket` plays the ring for staff with no mark and says "Pocket picked." when filled |
