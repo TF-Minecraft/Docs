@@ -46,6 +46,31 @@ Some answers pause every check:
 asked, and "I've joined, check again" falls back to a Discord sign-in.
 Source: [`guild_check.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/guild_check.py).
 
+### Branch previews
+
+Discord returns players only to registered callbacks, so a preview at
+`https://<slug>.tfminecraft.net` signs in through dev instead
+([`preview_sign_in.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/preview_sign_in.py)).
+Preview images set `SIGN_IN_SITE=https://dev.tfminecraft.net` and hold no Discord settings.
+Dev sets `PREVIEW_SIGN_IN_DOMAIN=tfminecraft.net`.
+
+1. The preview's `/auth/discord/start` stores a random state in its state cookie and
+   sends the browser to dev's `/api/auth/preview/start` with the state, the preview's
+   origin and the return path.
+2. Dev accepts only `https://<slug>.<PREVIEW_SIGN_IN_DOMAIN>` origins whose slug is not
+   reserved. Without a dev session, it signs the player in with Discord and Discord's
+   callback returns them to that route.
+3. Dev refreshes the session's guild check with the bot, stores a hashed single-use
+   ticket for that preview (120 seconds), and redirects to the preview's
+   `/api/auth/preview/callback`.
+4. The preview checks the state against its cookie, then posts the ticket and its
+   origin to dev's `/api/auth/preview/redeem`. Dev deletes the ticket and returns the
+   Discord identity, website role and guild check.
+5. The preview opens its own session with that role and check.
+
+A player already signed in on dev skips Discord. The preview never sees the dev session
+or the Discord secret, and its changes stay in its own copy of dev's data.
+
 ## Microsoft link
 
 Signed-in players can link Minecraft by signing in with Microsoft instead of
