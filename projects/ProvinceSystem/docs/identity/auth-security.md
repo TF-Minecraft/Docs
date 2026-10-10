@@ -25,6 +25,16 @@ cookie, and sets an HttpOnly, SameSite=Lax session cookie. HTTPS uses the Secure
 Cookie-authenticated writes enforce an origin check. `/account` exposes the
 signed-in account and supports Minecraft linking and Patreon authorization.
 
+Linking a Minecraft account needs TFMC server membership checked within the
+last 15 minutes. Sign-in checks it. After that, the backend asks Discord with
+`DISCORD_BOT_TOKEN` (`GET /guilds/{DISCORD_GUILD_ID}/members/{user}`) when an
+unlinked player loads `/account` or starts a link, so a signed-in player never
+has to sign in again just to link. "Unknown Member" or "Unknown User" means not
+a member. Any other answer keeps the old check, and the same session is not
+asked about again for a minute. Only without a bot answer does the page fall
+back to asking the player to sign in with Discord again.
+Source: [`guild_check.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/guild_check.py).
+
 ## Microsoft link
 
 Signed-in players can link Minecraft by signing in with Microsoft instead of
