@@ -42,8 +42,18 @@ distinguish empty, saved, recording and pending states. The title card shows
 current activity, and the open menu updates as recording and playback progress.
 Separate buttons control the saved mix and the pending take. **Tempo** has
 quick +/-5 BPM clicks; shift-click opens the settings form. **Metronome** toggles
-the recording click. **New song** opens a confirmation before clearing your
-editable tracks and pending take; published discs remain valid.
+the recording click. The bottom two rows form two aligned groups, separated by
+a center column and bordered with the same purple frame:
+
+| Row | Left group | Right group |
+| --- | --- | --- |
+| Fifth | Listen to saved mix, Stop, How to record | Listen to new take, Keep take, Discard take |
+| Sixth | Song settings, Tempo, Metronome | Prepare a blank disc, Publish song, Copy a recorded disc |
+
+Take controls retain their distinct icons when no take is pending, with gray
+labels and a reminder to record first. **New song** is in the top-left corner,
+apart from the playback and disc controls. It opens a confirmation before clearing
+your editable tracks and pending take; published discs remain valid.
 
 The settings form uses Minecraft's title field, slider and checkbox. It accepts
 one response from the player who opened it, expires after two minutes, and checks
