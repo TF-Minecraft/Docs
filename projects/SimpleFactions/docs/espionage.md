@@ -13,23 +13,39 @@ its settings live in
 ### Military-only protection (default)
 
 With `espionage.intelligence.military-only: true` (the default), a Spymaster guards only a
-faction's regiments and vehicles. Foreign viewers see the same exact menus as for an
-unguarded faction, except:
+faction's regiments and owned vehicles. Foreign viewers see the same exact menus as for an
+unguarded faction, except for these, which come from the daily intelligence report described
+below:
 
-- The **Military** item and the **Military View** (professional regiments, levies,
-  mercenary regiments, training queue and vehicle pool) use the daily intelligence report
-  described below. The masked Military View shows the "Foreign intelligence" header with the
-  report quality and date.
-- An **installation's details** show "Berthed vehicles: Unknown" instead of the vehicles
-  berthed there. The installations themselves (list, kinds, levels, locations and
+- The **Military** item and the **Military View**: total army size (professional soldiers,
+  levies and mercenaries together), the split between them, each regiment and the training
+  queue. The masked Military View shows the "Foreign intelligence" header with the report
+  quality and date.
+- **Faction Vehicles** (Military View): the faction's own vehicles, meaning its pool plus
+  everything berthed at its installations, in total and per vehicle category, and at Detailed
+  which vehicle types are in the pool. Players' personal vehicles are never counted.
+- **Berthed vehicles** in an installation's details: how many are berthed there and, at
+  Detailed, which types. The installations themselves (list, kinds, levels, locations and
   construction) are public.
+- The **ledger**: military upkeep, vehicle upkeep, vehicle taxes & fees and mercenary payments
+  show the report's ranges, or Unknown below the `cashflow` tier. Totals still include them.
+
+Every report quality reveals something:
+
+| Quality | You learn |
+| --- | --- |
+| Rumours | Rough army size and rough vehicle total |
+| Broad | Professional army, levies and mercenaries separately; vehicles per category |
+| Reliable | Each regiment, the training queue, vehicles berthed per installation, the military ledger lines |
+| Detailed | Which vehicle types they own; the narrowest ranges |
 
 Everything else is exact for everyone: government, stability, legitimacy, council, laws,
-taxes, ledgers, wealth and its rankings, members and rosters, guilds, upgrades, loans,
-mercenary companies, diplomacy and special offices. Of the disclosure gates below, only
-`professional-army`, `levies`, `mercenaries` and `training` still apply. In the public
-ledger, military upkeep, vehicle upkeep, vehicle taxes & fees and mercenary payments are
-replaced by "Unknown" lines so they cannot reveal army size; totals still include them.
+taxes, the rest of the ledgers, wealth and its rankings, members and rosters, guilds,
+upgrades, loans, mercenary companies, diplomacy and special offices. Only the military
+[disclosure gates](#disclosure-gates) still apply.
+
+Reports cached by an older plugin version are rebuilt on the next GUI command that day,
+under the same daily rolls, so they gain new fields without changing their quality.
 
 Setting `military-only: false` restores full protection, where the rest of this section
 applies to every faction and guild menu.
@@ -440,13 +456,20 @@ Out-of-range values fall back to their defaults.
 `espionage.intelligence.minimum-tiers` sets the lowest tier at which each field is shown.
 Lower tiers show broader ranges when useful. By default:
 
-- **Rumours:** members, roster, wealth and guild members.
-- **Broad:** prosperity, stability, levies, installations, net income, trade power, ledger
-  totals and guild buildings.
-- **Reliable:** professional army, mercenaries, administrative power, individual cashflows,
-  dividends, office holders, guild leaders, training, upgrades, taxes, laws, government and
+- **Rumours:** army (total soldiers), vehicles (total owned), members, roster, wealth and
+  guild members.
+- **Broad:** professional army, levies, mercenaries, vehicle categories, prosperity,
+  stability, installations, net income, trade power, ledger totals and guild buildings.
+- **Reliable:** berthed vehicles, training, administrative power, individual cashflows,
+  dividends, office holders, guild leaders, upgrades, taxes, laws, government and
   installation details.
-- **Detailed:** office aptitude.
+- **Detailed:** vehicle types and office aptitude.
+
+With military-only protection, only `army`, `vehicles`, `professional-army`, `levies`,
+`mercenaries`, `vehicle-categories`, `training`, `berthed-vehicles`, `vehicle-types` and
+`cashflow` (for the four military ledger lines) are used. Existing `special-positions.yml`
+files keep their old values for keys they already have, such as `professional-army` and
+`mercenaries` at `reliable`; edit them to match these defaults.
 
 A value of `unknown` disables that field. Invalid or unconfigured fields fail closed.
 `cashflows` accepts per-category overrides by enum name, such as `TRADE: broad`. The gates
