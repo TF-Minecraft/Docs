@@ -10,6 +10,31 @@ its settings live in
 
 ## What players see
 
+### Military-only protection (default)
+
+With `espionage.intelligence.military-only: true` (the default), a Spymaster guards only a
+faction's regiments and vehicles. Foreign viewers see the same exact menus as for an
+unguarded faction, except:
+
+- The **Military** item and the **Military View** (professional regiments, levies,
+  mercenary regiments, training queue and vehicle pool) use the daily intelligence report
+  described below. The masked Military View shows the "Foreign intelligence" header with the
+  report quality and date.
+- An **installation's details** show "Berthed vehicles: Unknown" instead of the vehicles
+  berthed there. The installations themselves (list, kinds, levels, locations and
+  construction) are public.
+
+Everything else is exact for everyone: government, stability, legitimacy, council, laws,
+taxes, ledgers, wealth and its rankings, members and rosters, guilds, upgrades, loans,
+mercenary companies, diplomacy and special offices. Of the disclosure gates below, only
+`professional-army`, `levies`, `mercenaries` and `training` still apply. The public guild
+ledger still lists military and vehicle upkeep and mercenary payments.
+
+Setting `military-only: false` restores full protection, where the rest of this section
+applies to every faction and guild menu.
+
+### Full protection
+
 Foreign faction and guild menus show public identity and flavour details: faction leaders'
 character names when available, government, rank, tier, titles, settlements, culture,
 religion, guild types, allies and subjects. Prestige is public and its ranking uses exact
@@ -266,6 +291,9 @@ income leaderboards use the same policy.
 
 ## Foreign menus
 
+This section describes full protection. With military-only protection, only the Military
+entry below still applies.
+
 Foreign tooltips keep the same colours, spacing and field order as own entries, and foreign
 faction and guild views keep their familiar slot layouts, inventory sizes, template icons
 and back routes. Foreign menus allow diplomacy and guild browsing, plus read-only masked
@@ -396,6 +424,7 @@ removed from `config.yml`.
 | `espionage.vassalage.overlord-defense-bonus` | `25` | Margin a vassal loses spying on its overlords. |
 | `espionage.vassalage.allow-sharing` | `true` | Lets Spymasters share with their overlord and vassals. |
 | `espionage.sabotage.*` | see file | Roleplay names, lore and chat messages for each sabotage level. |
+| `espionage.intelligence.military-only` | `true` | Spymaster guards only regiments and vehicles; `false` guards all faction and guild information. |
 | `espionage.intelligence.tiers.<tier>.*` | see file | Margin thresholds, uncertainty, roster fractions and useful range widths. |
 | `espionage.intelligence.maximum-roster-size` | `23` | Maximum sampled roster names. |
 | `espionage.intelligence.minimum-tiers.*` | see below | Minimum tier for each field. |
