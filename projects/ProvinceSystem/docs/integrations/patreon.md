@@ -25,7 +25,7 @@ Supporters can start the same Patreon OAuth consent flow from Discord, Minecraft
 
 - **Discord:** `/patreon link` returns an ephemeral authorization button. After consent, the bot applies roles from the backend outbox.
 - **Minecraft:** `/patreon` reports status. If no Patreon account is linked, it starts a short-lived link request and displays the authorization link. `/patreon unlink` removes the link.
-- **Website:** use the Supporter panel on `/profile`. It starts with the signed-in profile session and returns to the site after Patreon consent.
+- **Website:** use the Patreon row on `/account` with a Discord sign-in, or the Supporter panel on `/profile` with a profile session. Both return to the site after Patreon consent and can disconnect Patreon again.
 - **Automatic Discord link:** during sync, an entitled Patreon member with a Discord connection is linked as `auto_discord` if no link row exists and that Discord ID is not already linked. An explicitly unlinked Patreon account is not auto-linked again.
 
 Role changes arrive through bot polling and roster reconciliation; supporters do not need to leave and rejoin Discord to receive updates.
