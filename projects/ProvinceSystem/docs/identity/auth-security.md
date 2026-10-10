@@ -60,9 +60,10 @@ Dev sets `PREVIEW_SIGN_IN_DOMAIN=tfminecraft.net`.
 2. Dev accepts only `https://<slug>.<PREVIEW_SIGN_IN_DOMAIN>` origins whose slug is not
    reserved. Without a dev session, it signs the player in with Discord and Discord's
    callback returns them to that route.
-3. Dev refreshes the session's guild check with the bot, stores a hashed single-use
-   ticket for that preview (120 seconds), and redirects to the preview's
-   `/api/auth/preview/callback`.
+3. Dev refreshes the session's guild check with the bot. If the bot cannot answer and
+   the check is over 15 minutes old, dev signs the player in with Discord again. It then
+   stores a hashed single-use ticket for that preview (120 seconds) and redirects to the
+   preview's `/api/auth/preview/callback`. Access logs drop the query on both routes.
 4. The preview checks the state against its cookie, then posts the ticket and its
    origin to dev's `/api/auth/preview/redeem`. Dev deletes the ticket and returns the
    Discord identity, website role and guild check.
