@@ -130,7 +130,8 @@ fires it at once. Either way the change counts as one day, then:
 3. Escapes are processed, all data is saved, and `lastDayChangeDate` in
    `config.yaml` is set to the current time.
 
-The pass runs in an asynchronous task, and only one pass runs at a time. The
+The pass runs on the server thread on the next tick, and only one pass runs at
+a time. The
 scheduled change and `changeday` also remove abandoned chunk areas; catch-up
 passes do not.
 
@@ -141,7 +142,7 @@ catches up:
 
 - Right-clicking an owned animal first updates that animal for the missed days,
   then starts a full pass for the same number of days.
-- Using the farm report item runs the full pass on the main thread before the
+- Using the farm report item runs the full pass straight away before the
   report is shown.
 
 Friendship loss is multiplied by the number of missed days. Days out and
@@ -362,31 +363,27 @@ Animal entries store `uuid`, `name`, `ownersUuids`, `stableNeeded`,
 file, and loading merges them into one record.
 
 Data loads on enable, before the configuration. The plugin saves every
-10 minutes, after each daily change and on disable. Autosave, `savedata` and
-the save on disable are skipped while a daily change is running.
+10 minutes, after each daily change and on disable. Each save writes a file for
+every owner in memory, online or not. Autosave and `savedata` are skipped while
+a daily change is queued; the save on disable always runs.
 
 ### Operational caveats
 
 - The JSON paths are relative to the server's working directory, not the plugin
   data folder. They match only when the server runs from the directory that
   holds `plugins/`.
-- Player files are written only for players online at save time. Changes to an
-  offline owner's animals, including friendship loss, escapes and deaths, stay
-  in memory and are lost on restart unless that owner logs in before the next
-  save.
 - `loaddata` replaces in-memory records with the saved ones without clearing
   others, so unsaved changes are lost.
 - The daily change writes the in-memory `config.yaml` back to disk. Run
   `reload` straight after editing `config.yaml`, or the next change overwrites
   the edit.
 - Every stable chunk is loaded at startup; chunks in a missing world are
-  dropped. Each daily change force-loads every stable chunk while it checks it, so large
-  stable areas add chunk loading at that time.
-- The scheduled and interaction-triggered passes read chunks and entities from
-  an asynchronous task. A failure in one chunk is logged as
-  `Error processing chunk <x>,<z>` and its animals are treated as outside a
-  stable; a failure in the water or space check aborts the pass with
-  `Error on DayChange` on standard output.
+  dropped. Each daily change force-loads every stable chunk on the server thread
+  while it checks it, so large stable areas can cause a brief tick spike at
+  that time.
+- A failure in one chunk is logged as `Error processing chunk <x>,<z>` and its
+  animals are treated as outside a stable; a failure in the water or space check
+  aborts the pass with `Error on DayChange` on standard output.
 - Because of the 24-hour skip, `changeday` does not update animals already
   updated that day, but stabled animals that are not found still gain a day out
   and empty areas still gain an abandoned day. Repeated use can make animals
