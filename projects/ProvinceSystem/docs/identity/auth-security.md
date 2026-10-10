@@ -96,9 +96,9 @@ with no plaintext, because sessions belong to a code. The realm comes from
 
 The browser keeps that session in local storage marked as opened through
 Discord, and reuses it across tabs while more than five minutes remain.
-Signing out of Discord or unlinking Minecraft on `/account` revokes it. Signing
-out on Profile also signs out of Discord, so Profile does not reopen on the next
-visit. A visitor without a link still redeems an in-game code.
+Signing out of Discord or unlinking Minecraft on `/account` revokes it; Profile
+has no sign-out of its own for these sessions. A visitor without a link still
+redeems an in-game code, and Profile shows Log out for that code session.
 
 Website roles (`mod`, `admin`, `root`) control staff capabilities independently
 of feature-code scopes. See [CoreProtect data](../integrations/coreprotect.md),

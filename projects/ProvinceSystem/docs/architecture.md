@@ -20,7 +20,7 @@ SimpleFactions (plugin)
 FastAPI ── mapgen/regiongen ──► backend/src/output/{map}/…
         │  skins / drinks / characters / identity APIs
         ▼
-Next.js  ◄── hub, /map, /skins, /drinks, /character
+Next.js  ◄── hub, /map, /profile, /skins, /drinks, /character
 ```
 
 - Generators **do not** write into `frontend/public`.
@@ -33,8 +33,9 @@ Next.js  ◄── hub, /map, /skins, /drinks, /character
 tfminecraft.net/
   /              Hub (brand, nav, short intro, links into modules)
   /map/[mapId]   Interactive maps
-  /skins         Redeem code + upload + status
-  /drinks        Brew form + status
+  /profile       Characters, skin and drink wardrobes, custom items
+  /skins         Upload (from Profile or a code) + status
+  /drinks        Brew form (from Profile or a code) + status
   /character     Character creator, kits, wardrobe
   /account       Discord sign-in and connected accounts
   /admin         Staff player, activity, rail and permission tools

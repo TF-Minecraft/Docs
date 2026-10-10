@@ -7,7 +7,7 @@ End-to-end design for donator texture submissions on **ProvinceSystem** (store +
 ## Goals
 
 - Donators submit **armor sets** (2D, optional per-tier 3D helmet), **weapon/tool skins** (`handheld` / `large_handheld` / `bow` / `large_bow` / `crossbow`), **3D kinds** (`item_3d` / `shield` / `helmet_3d` / `mask`), **guns** (`gun`), and **books** (`book`; unsigned + signed covers).
-- No website logins; codes from TFMCWeb (`/token create skin` or **`/token create skin staff`**) bound to player UUID.
+- Players start a skin from the Profile wardrobe ([below](#profile-wardrobe)) or with a TFMCWeb code (`/token create skin` or **`/token create skin staff`**); either is bound to the player UUID.
 - **Player:** staff approve/deny in Discord; ArmourShop writes **`tfmc_submissions`** + `ps_*` + LP.
 - **Staff curated:** auto-approve (no bot); category + scroll on upload; writes **`tfmc_armorshop`** into real ArmourShop categories.
 - **Kit item customise** (character creator) also creates `submissions` rows via an internal `lore_upload` code per player — not a donator mint token. Staff review and ArmourShop apply use the same pipeline as `/skins` uploads.
@@ -72,7 +72,7 @@ sequenceDiagram
 | Storage | Hash of code (SHA-256); plaintext shown once in-game |
 | Lifetime | Code row expiry; **session 8h** after redeem |
 | Consumption | Code marked used **on successful submit**, not on redeem |
-| Mint cooldown | **Owned by TFMCWeb** (shared with drink) |
+| Mint cooldown | Shared with drink. TFMCWeb applies it to `/token create`; ProvinceSystem applies the same rule to Profile starts |
 | Allowed kinds | Per-rank additive `skin-kinds` whitelist |
 
 **Command gate:** TFMCWeb LP `tfmcweb.token.create`. **Staff (`skin_staff`):** bypasses mint cooldown and upload gates.
@@ -157,6 +157,8 @@ Deploy and verify the headless renderer: [ops/sheet-render.md](../ops/sheet-rend
 | Method | Purpose |
 |--------|---------|
 | `POST /skins/redeem` | `{ "code" }` → session |
+| `POST /profile/skins/start` | Profile Bearer → the same session, without a code ([below](#profile-wardrobe)) |
+| `GET /skins/submissions/{id}/thumbnail` | Owner's wardrobe picture |
 | `POST /skins/submissions` | Multipart upload |
 | `GET /skins/submissions/check` | Display name conflict check |
 | `GET /skins/submissions/{id}` | Status for owner session |
@@ -181,9 +183,46 @@ Deploy and verify the headless renderer: [ops/sheet-render.md](../ops/sheet-rend
 
 See [identity/auth-security.md](../identity/auth-security.md).
 
+## Profile wardrobe
+
+`/profile?tab=skins` shows the player's skins as cards: a picture, the name, the
+kind and the review state (In review, Live soon, Live, Denied with the reason, or
+Removed). The picture is the first 3D preview the review sheet already rendered
+(`preview_model`, `preview_body`, `preview_book_unsigned`, then `preview_hat`)
+with the render backdrop made transparent, else the flat texture, else a hanger.
+The route never starts a render. Source: [`thumbnail.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/thumbnail.py).
+
+The first card, **New skin**, calls `POST /profile/skins/start` and opens
+`/skins` with the returned session. `GET /profile` sends `can_start` for skins
+and drinks so the card can say why it is unavailable instead. The start follows
+the `/token create` rules:
+
+| Check | Refusal |
+|-------|---------|
+| Discord link in good standing | `discord` |
+| Rank perks synced from TFMCWeb (`rpc_player_meta`) | `join_server` |
+| `skin_token_cooldown_days` is not -1 | `rank` |
+| Last skin or drink code is older than the cooldown | `cooldown`, with `next_at` |
+
+A refusal is a 409 whose `detail` is `{ "reason", "next_at" }`. An unused,
+unexpired code of the same scope and realm is reused, whether Profile or
+`/token create` made it. Otherwise the start records a new code with no plaintext
+and `codes.minted_via = 'site'`, which starts the shared cooldown. A site code that
+expires without a submission stops counting once no session from it can still
+upload, so leaving the uploader costs nothing once the code lapses. Codes from `/token create` count whether used or
+not, as before. Source: [`codes.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/codes.py).
+
+Sessions started here are marked `from_profile` in the browser. Profile's Log out
+and signing out or unlinking on `/account` revoke them; sessions from codes stay.
+On `/skins` they show **← Profile** in place of the code-session controls.
+
+**Use a code** above the grid opens a one-line form for a `/token create skin`
+code; staff use it for `skin_staff` codes. `/skins` itself sends a visitor who can
+open Profile to the wardrobe and keeps the code form for everyone else.
+
 ## Frontend (`/skins`)
 
-1. Enter code → redeem  
+1. Start from Profile, or enter a code → redeem  
 2. Choose kind → fixed slots per kind  
 3. Armor: **Add tier** flow (1-6 tiers)  
 4. Enter **Item name**; colours / styles / live preview  
