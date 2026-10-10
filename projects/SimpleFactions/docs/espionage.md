@@ -27,8 +27,9 @@ unguarded faction, except:
 Everything else is exact for everyone: government, stability, legitimacy, council, laws,
 taxes, ledgers, wealth and its rankings, members and rosters, guilds, upgrades, loans,
 mercenary companies, diplomacy and special offices. Of the disclosure gates below, only
-`professional-army`, `levies`, `mercenaries` and `training` still apply. The public guild
-ledger still lists military and vehicle upkeep and mercenary payments.
+`professional-army`, `levies`, `mercenaries` and `training` still apply. In the public
+ledger, military upkeep, vehicle upkeep, vehicle taxes & fees and mercenary payments are
+replaced by "Unknown" lines so they cannot reveal army size; totals still include them.
 
 Setting `military-only: false` restores full protection, where the rest of this section
 applies to every faction and guild menu.
@@ -266,7 +267,7 @@ views).
 
 Ranges are rounded, asymmetric snapshots containing the true value when generated. They
 never collapse to an exact number, including zero; only fields an overlord or vassal
-[shares](#sharing-with-overlord-and-vassals) are exact. Reports cover members, wealth,
+[shares](#sharing-with-overlord-vassals-and-allies) are exact. Reports cover members, wealth,
 prosperity, daily net income, professional army, levies, mercenaries, installations,
 stability and administrative power. Professional army counts filled professional soldier
 slots, excluding equipment and mercenaries. Guild wealth, member count, net income and trade
@@ -369,11 +370,14 @@ overlord above it, its margin loses `espionage.vassalage.overlord-defense-bonus`
 25). The bonus applies when the daily report is generated: a new vassalage takes effect with
 the next day's reports or `/faction reloadespionage`.
 
-### Sharing with overlord and vassals
+### Sharing with overlord, vassals and allies
 
-Spymasters can open their faction's information to their direct overlord and to their
-direct vassals. Each direction has its own setting, chosen by tier: nothing, Rumours, Broad,
-Reliable or Detailed. One choice covers all of a faction's vassals. Every field whose
+Spymasters can open their faction's information to their direct overlord, their direct
+vassals and their allies. Each has its own setting, chosen by tier: nothing, Rumours, Broad,
+Reliable or Detailed. One choice covers all of a faction's vassals, and one all of its allies.
+An ally is a faction this faction has the `ally` relation with; an overlord or vassal setting
+takes precedence over the ally one. As with any report, the partner needs an eligible
+Spymaster of its own to receive it. Every field whose
 [disclosure gate](#disclosure-gates) is at the shared tier or lower reaches that partner
 **exactly**: single values instead of ranges, the full roster (up to the roster cap), and
 office holders and aptitude when their gates are shared. Fields above the shared tier keep
@@ -381,17 +385,17 @@ the partner's rolled quality. For example, sharing Rumours always shows members,
 wealth and guild members exactly.
 
 Only the Spymaster can change sharing, in the Private Conduct menu (**Share with your
-overlord** and **Share with your vassals**, click to cycle) or with:
+overlord**, **Share with your allies** and **Share with your vassals**, click to cycle) or with:
 
 ```
-/faction spymaster share <overlord|vassals> <none|rumours|broad|reliable|detailed>
+/faction spymaster share <overlord|vassals|allies> <none|rumours|broad|reliable|detailed>
 ```
 
 Sharing belongs to the faction, so it stays in place when the Spymaster changes. A change
 drops the partners' cached report on this faction, so their next menu rebuilds it under the
 same daily rolls. Partners see "Their Spymaster shares everything up to *tier* exactly." in
-the report header. When a vassalage ends, both factions lose that day's reports on each
-other, so nothing shared stays visible.
+the report header. When a vassalage or alliance ends, both factions lose that day's reports
+on each other, so nothing shared stays visible.
 
 `espionage.vassalage.allow-sharing: false` turns sharing off server-wide, hides the menu
 buttons, and hides shared values in reports already cached that day.
@@ -422,7 +426,7 @@ removed from `config.yml`.
 | `espionage.checks.luck-spread` / `luck-draws` | `75` / `3` | Luck range and number of averaged draws. |
 | `espionage.vassalage.overlord-offense-bonus` | `25` | Margin an overlord gains spying on its vassals. |
 | `espionage.vassalage.overlord-defense-bonus` | `25` | Margin a vassal loses spying on its overlords. |
-| `espionage.vassalage.allow-sharing` | `true` | Lets Spymasters share with their overlord and vassals. |
+| `espionage.vassalage.allow-sharing` | `true` | Lets Spymasters share with their overlord, vassals and allies. |
 | `espionage.sabotage.*` | see file | Roleplay names, lore and chat messages for each sabotage level. |
 | `espionage.intelligence.military-only` | `true` | Spymaster guards only regiments and vehicles; `false` guards all faction and guild information. |
 | `espionage.intelligence.tiers.<tier>.*` | see file | Margin thresholds, uncertainty, roster fractions and useful range widths. |
