@@ -30,13 +30,20 @@ last 15 minutes. Sign-in checks it. After that, the backend asks Discord with
 `DISCORD_BOT_TOKEN` (`GET /guilds/{DISCORD_GUILD_ID}/members/{user}`) when an
 unlinked player loads `/account` or starts a link, so a signed-in player never
 has to sign in again just to link. "Unknown Member" or "Unknown User" means not
-a member. One bot request runs at a time, so a request that arrives mid-check
-waits for that answer. A "not a member" answer is reused for 15 seconds. An
-unclear answer keeps the old check, and that session is not asked again for a
-minute. A rate limit pauses every check for Discord's `retry_after`, and a
-timeout or 5xx pauses them for 30 seconds. `/account` returns
-`guild.can_recheck`. When it is false, Discord could not be asked, and "I've
-joined, check again" falls back to a Discord sign-in.
+a member. One bot request runs at a time. A request that arrives mid-check
+waits up to 4 seconds for that answer, and gives up asking if it takes longer.
+A "not a member" answer is reused for 15 seconds without waiting. An unclear
+answer keeps the old check, and that session is not asked again for a minute.
+Some answers pause every check:
+
+| Answer | Pause |
+|--------|-------|
+| Rate limit | Discord's `retry_after` |
+| Timeout or 5xx | 30 seconds |
+| 401, 403 or 404 Unknown Guild (the bot itself is refused) | 10 minutes |
+
+`/account` returns `guild.can_recheck`. Unless it is true, Discord could not be
+asked, and "I've joined, check again" falls back to a Discord sign-in.
 Source: [`guild_check.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/guild_check.py).
 
 ## Microsoft link
