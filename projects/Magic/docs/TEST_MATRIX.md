@@ -59,7 +59,15 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 - [ ] Change cast mode, wait for equilibrium/resonance drift, relog: values restored
 - [ ] Switch character: each character keeps its own cast mode / equilibrium / resonance
 - [ ] Quit: profile file updated on disk
-- [ ] `/magic open` with no character: GUI works, no character file written
+- [ ] `/magic open` with no ready character: ephemeral layout preview works; no profile file is written
+- [ ] Switch Alice → Bob → Alice with an old GUI or delayed callback: the old token cannot alter the returned Alice session
+- [ ] Switch or permakill during meditation: old orbs disappear, no incoming Focus is spent and each profile retains its own resonance
+- [ ] End a character session with active station orbs: earned fill stays on the weapon, other players' runs continue
+- [ ] Cancel or fail a permanent sacrifice death: no sacrifice fill is granted
+- [ ] Successful sacrifice death ends the character synchronously and grants its vessel fill once
+- [ ] Stop the identity provider before Magic: remaining profile values still flush under their original UUIDs
+- [ ] Load a pre-existing uppercase UUID profile: values restore and save to that same file
+- [ ] Conflicting case-equivalent files with no canonical path: loading reports the conflict and preserves both files
 - [ ] `/magic reload`: online session values stay; new elements get default resonance on next load
 
 ## Spell modifier lore
