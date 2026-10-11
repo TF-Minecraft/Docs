@@ -28,7 +28,7 @@ The live Minecraft plugins are **not** required to view maps or develop the skin
 ## Prerequisites
 
 - Docker + Docker Compose  
-- Or: Python 3.10+ with `backend/requirements.txt`, and Node 22+ for frontend  
+- Or: Python 3.12+ with `backend/requirements.txt`, and Node 22+ for frontend  
 - Env: **`NEXT_PUBLIC_API_URL`** must point at the API the browser will call (e.g. `http://localhost:8000`)
 
 Note: Next bakes `NEXT_PUBLIC_*` at **build** time for the Docker frontend image. Set the build arg/env when building the frontend, or use a local `next dev` override for UI work.
