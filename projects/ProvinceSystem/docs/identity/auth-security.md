@@ -168,7 +168,8 @@ signed in to the site and has no staff role. Source:
 A view is view only. [`view_as_guard.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/api/view_as_guard.py)
 answers every `POST`, `PUT`, `PATCH` and `DELETE` sent with the view's session
 cookie with **403** `viewing_as_player`. Only leaving the view, signing out and
-opening or closing Profile get through. Profile opened during a view records its code
+opening or closing Profile get through, and Profile's Linked accounts card shows the
+player's accounts with its actions disabled. Profile opened during a view records its code
 with `minted_via = staff_view:<session id>`, ends with the view, and the guard
 refuses its Bearer writes the same way. The view has no staff rights even if
 the player's role changes, and dev will not hand it to a branch preview.
