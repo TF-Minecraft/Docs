@@ -53,6 +53,7 @@ Staff open reports at **Staff panel → Diagnostics** (`/admin/diagnostics?code=
 | Route | Access | Purpose |
 |-------|--------|---------|
 | `GET /diagnostic/status` | Public | Country, server ping, pack copy and game version; `no-store` |
+| `GET /diagnostic/server` | Public | Address, online state, player count and game version for the home page; skips the pack check; `no-store` |
 | `GET /diagnostic/speed` | Public, 20 per 10 min per IP | 8 MiB of random bytes; `no-store` |
 | `GET /diagnostic/pack/{sha1}.zip` | Public | The pack copy |
 | `POST /diagnostic/reports` | Public, same site, 5 per 10 min per IP, 64 KiB | Store a report; returns `{code}` |
