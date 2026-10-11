@@ -226,9 +226,11 @@ paths are in [`paths.ts`](https://github.com/TF-Minecraft/ProvinceSystem/blob/ma
 
 ### Signing in with a skin or drink code
 
-Signed out, Profile's code form takes a `/token create profile`, `skin` or `drink`
-code through `POST /profile/redeem`
-([`redeem_sign_in_code`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/codes.py)). Each code
+Profile's code form takes a `/token create profile`, `skin` or `drink` code through
+`POST /profile/redeem`
+([`redeem_sign_in_code`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/codes.py)).
+It shows to signed-out visitors, and under **Enter code** to a Discord account without a
+Minecraft link. Each code
 follows its own redeem rules: a profile code is spent on redeem; a skin or drink
 code stays usable until a submission consumes it. Redeeming mints nothing, so the
 shared cooldown and `minted_via` are unchanged.
