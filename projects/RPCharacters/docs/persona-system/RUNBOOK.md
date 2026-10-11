@@ -70,7 +70,7 @@ Check permissions against the current commands and configuration:
 ### Persona
 
 - [ ] `/rpcharacter alias`, `namecolour`, `gender`, `description`
-- [ ] `/rpcharacter tempalias <name>|clear` — session IC chat override (below mask); cleared on quit
+- [ ] `/rpcharacter tempalias <name>|clear` — session IC chat override (below mask); cleared on quit, character switch or permakill of the active character
 - [ ] `/rpcharacter sethidden <slug>` toggle; `/rpcharacter sethidden <slug> clear` to unhide; TAB uses `%rpcharacters_display_safe%`
 - [ ] Name colour: tier limits from `permission-groups.yml` (0 default, 1 noble, 2 gilded, 20 ascended); multi-hex gradient supported
 - [ ] Admin `/rpcharacter override ... namecolour` bypasses tier limits and persists through rank changes (`name-colour-staff`)
