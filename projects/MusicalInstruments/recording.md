@@ -8,16 +8,19 @@ must have the samples installed to hear custom instruments.
 
 ## Record through the studio interface
 
-Staff can open `/music studio` anywhere with `instruments.studio` (default: op),
-without looking at a jukebox. Player entry through a dedicated station is pending.
-The plugin no longer claims sneak-right-click on jukeboxes, leaving that gesture
-available to MMOItems. Ordinary jukebox right-click still inserts/ejects discs.
-There is no configurable station identifier or MMOItems station integration yet.
+Players with `instruments.record` open the studio by right-clicking the recording
+station configured as `station` in `studio.yml`: a vanilla block (`v.<material>`)
+or an ItemsAdder block or furniture (`ia.<namespace:id>`). They must stay within
+5 blocks of it to keep using its controls. Sneak-right-clicking the station with
+an item keeps vanilla behaviour, such as placing a block. Staff can open
+`/music studio` anywhere with `instruments.studio` (default: op). The plugin does
+not claim sneak-right-click on jukeboxes, leaving that gesture available to
+MMOItems. Ordinary jukebox right-click still inserts/ejects discs.
 
 Click an existing song, or **Create a new song** to enter its title and open
 its editor. Each project has independent saved tracks, pending take, tempo and
-metronome. The library fills its 36 gray slots from slot 9, left to right and
-top to bottom, with purple borders above and below. The 36-project limit also
+metronome. The library fills its 36 light gray slots from slot 9, left to right
+and top to bottom, with brown frames above and below. The 36-project limit also
 applies to `/music new`. When full, creation asks you to delete an old project.
 Right-click a song and confirm its deletion to free a slot. Deleting removes
 only that editable project; other songs and published discs remain valid.
@@ -28,11 +31,13 @@ only that editable project; other songs and published discs remain valid.
    **Metronome** toggles the recording click. Only the recording player hears it,
    and clicks are never captured in the song. The count-in always plays.
    BPM changes the click rhythm, without retiming existing notes.
-2. Put an instrument in your off-hand and click **Record track** in its row.
-   The inventory closes so you can play with keys 1-8. Wait for the count-in;
+2. Hold an instrument and click **Record track** in its row. The inventory
+   closes. An off-hand instrument plays with keys 1-8; right-click an instrument
+   held in the main hand for the on-screen keyboard. Wait for the count-in;
    recording time and note count then appear above your hotbar.
-3. Reopen `/music studio`, select the current project and click **Stop recording /
-   preview**. Click **Listen to take** in that row to audition it with the other
+3. Reopen the studio, select the current project and click **Stop recording /
+   preview**. The take saves in the background; wait for **Take saved** before
+   editing it. Click **Listen to take** in that row to audition it with the other
    saved tracks, then **Keep take** or **Discard take**. The previous saved take
    stays intact until its replacement is accepted.
 4. Repeat for other tracks. Saved, audible tracks play privately as backing while
@@ -42,6 +47,8 @@ only that editable project; other songs and published discs remain valid.
    to reset to 100%. Volume ranges from 0% to 200%. **Audible / Muted** toggles
    silence; **Listen to track** auditions one saved track. **Listen to full mix**
    auditions the complete song; **Stop recording / preview** ends either preview.
+   Changing a track's volume or mute also applies to its pending take, so
+   listening to or keeping the take uses the current mix.
 6. Pick up exactly one music disc from your inventory and place it on **Publish
    full song**. Ordinary, blank and already-recorded music discs are accepted.
    No blank-disc preparation is required. A recorded disc needs a second click
@@ -49,6 +56,7 @@ only that editable project; other songs and published discs remain valid.
    a fresh confirmation. The same material and other item metadata are preserved,
    while its title, lore and edition ID are replaced. The result returns to the
    cursor. Keep or discard pending takes first; the mix must have audible notes.
+   Each player waits `publish-cooldown-seconds` (default 30) between publications.
 7. Insert the published disc into an empty jukebox with an ordinary right-click
    to hear the layered song. Copying remains available through `/music copy`, with
    the recorded disc in the off-hand and one blank disc in the main hand.
@@ -130,22 +138,26 @@ All commands are player-only. `/recording` is an alias for `/music`.
 | `/music help` | Display the available commands. |
 
 `instruments.studio` grants command access without a station and defaults to op.
-It also requires `instruments.record`. Dedicated player station access is pending.
-`instruments.record` grants recording, editing, blank and publication commands; `instruments.copy` grants copying; `instruments.play` grants insertion
+It also requires `instruments.record`.
+`instruments.record` grants station use, recording, editing, blank and publication commands; `instruments.copy` grants copying; `instruments.play` grants insertion
 of recorded discs into jukeboxes. All three default to true. Removing a disc does
 not require playback permission. Existing `/instruments` permissions are preserved.
 
 ## Editions, playback and storage
 
-Publishing requires at least one audible sample and no pending take. Each
-publication receives a new UUID and freezes its title, author, tracks, gain and
-mute state. Editing or resetting the project does not change existing discs.
+Publishing requires at least one audible sample and no pending take. A
+publication freezes its title, author, tracks, gain and mute state. Its UUID is
+derived from that content, so publishing unchanged music again reuses the earlier
+edition instead of writing another file. Editing or resetting the project does
+not change existing discs. Each player must wait `publish-cooldown-seconds`
+between publications, because every edition with changed music is kept for as
+long as discs may reference it.
 Copies reference the same edition and consume a physical blank disc. Command
 controls replace a single blank disc in the main hand. The publish slot instead
-rewrites exactly one music disc on the cursor, preserving its material. Overwriting
-one recorded disc creates a new edition; other physical copies still reference
-the previous edition. Stacks are rejected before writing an edition. A failed
-publication never consumes the input disc.
+rewrites exactly one music disc on the cursor, preserving its material.
+Overwriting one recorded disc with changed music creates a new edition; other
+physical copies still reference the previous edition. Stacks are rejected before
+writing an edition. A failed publication never consumes the input disc.
 
 Right-click an empty jukebox with the recorded disc in either hand. The plugin
 removes the vanilla `jukebox_playable` component from a detached single disc
@@ -158,16 +170,23 @@ material or unrelated metadata; they do not need to be recorded again.
 Insertion and ejection send a stop event for that jukebox position to clear any
 stale vanilla client playback, including after the custom song has finished.
 
-Right-click to eject the disc. Removing the item, replacing or breaking the
-block, unloading its chunk/world, or disabling the plugin cancels future notes.
+Right-click to eject the disc. Ejecting, breaking the block, unloading its
+chunk/world, or disabling the plugin cancels future notes immediately. If the
+block or its record is changed another way, such as by another plugin, playback
+stops on the next tick for a changed block and within one second for a changed
+record.
 After normal completion the disc remains inside and can be ejected and
 reinserted. Sessions do not automatically resume after a reload. Ordinary discs
 retain their vanilla interactions. Automated hopper insertion of recording and
 blank discs is blocked; hopper extraction is allowed.
 
-Sample tails finish naturally when playback or monitoring stops. The plugin
-does not issue broad sound-stop packets that could cut off another instrument
-or nearby jukebox using the same sound key. Gain affects new triggers, and each
+Private previews, backing tracks and the recording metronome use Minecraft's
+**Players** sound category and slider. Live instruments and jukeboxes use
+**Jukebox/Note Blocks** (`RECORDS`). Stopping a preview or recording, or starting
+another, stops the private samples already sent to that player, per sound key and
+only in the Players category, so nearby jukeboxes and live performances using
+the same sounds keep playing. Jukebox sample tails finish naturally when
+playback stops. Gain affects new triggers, and each
 sample's audio file determines its duration. Recording voice, importing audio,
 sample trimming, time stretching and sustained note control are outside this
 sequencer's controls.
@@ -182,12 +201,28 @@ world/item data: a disc contains its edition ID, and its music remains in the
 server's song file. Keep published editions while discs referencing them exist.
 Unknown formats, corrupt files and missing editions are reported rather than
 silently overwritten or substituted. Error details appear in the server log.
+Studio files are limited to 32 MB and checked before they replace the previous
+file, so a saved project can always be read back.
+
+Each player directory also holds `library.index`, a cache of the title, track
+count, length and pending-take slot of each project file, keyed by the file's
+size and modification time. The library, `/music projects`, the 36-project limit
+and deletion read it instead of loading every project. Saves update it, and
+listing rebuilds missing, stale or damaged entries from the project files. It
+can be deleted safely; the next listing recreates it. The delete confirmation
+refuses to delete a project whose title, track count, length or pending take
+changed after it opened.
 
 Projects save after each edit. Active takes produce immutable background
-checkpoints and save completely on stop, disconnect and orderly plugin shutdown.
-A hard crash can lose work since the last completed checkpoint. Writes use a
-temporary file and atomic replacement where supported; final writes wait for
-older checkpoints to avoid overwriting accepted work with an earlier take.
+checkpoints. Stopping a take saves it on the background writer after any older
+checkpoint, so the server thread never waits for the disk. The take stays in
+memory while it saves, and edits, project changes and new takes are refused
+until **Take saved** appears. If the write fails, the take stays in memory for
+another attempt: `/music keep` retries it, and disconnect and orderly shutdown
+retry it automatically. Disconnect and shutdown write only such unsaved takes;
+other projects already match their files. A hard crash can lose work since the
+last completed checkpoint. Writes use a temporary file and atomic replacement
+where supported; startup removes `studio-*.tmp` files left by an interrupted write.
 
 ## Configuration and timing
 
@@ -207,6 +242,8 @@ reloads. Replacing sound assets in the resource pack can still change their timb
 | `count-in-seconds` | 3 | 1-10 |
 | `sample-tail-seconds` | 3 | 0-10 seconds before a normal playback session closes |
 | `checkpoint-ticks` | 200 | 20-1200 ticks between background checkpoint attempts |
+| `publish-cooldown-seconds` | 30 | 0-3600 seconds between one player's publications; 0 disables |
+| `station` | `ia.tfmc:music_station` | `v.<material>`, `ia.<namespace:id>`, or empty for staff command access only |
 
 The project library has a fixed 36-project limit, matching its gray slots.
 Settings outside their ranges are clamped. Persisted data also has hard bounds:
@@ -265,6 +302,11 @@ Before deployment, on a Paper 1.21.10 test server with the instrument resource p
    36-project cap, delete confirmation and clear-project confirmation. Check track pages 5-8.
    Try item drags, number keys,
    bottom-inventory shift-clicks and moving away before using a form response.
+10. Start a preview with a long sample, then stop it and start recording; the
+    earlier samples must stop while a nearby jukebox using the same sound keeps
+    playing. Lower the Players slider and confirm it controls previews, backing
+    and the metronome. Publish the same mix twice, waiting out the cooldown: both
+    discs must show the same edition, and publishing within the cooldown is refused.
 
 This procedure describes required runtime checks, not evidence that a release
 has passed them.
