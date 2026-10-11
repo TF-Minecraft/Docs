@@ -51,7 +51,7 @@ Use the public barrel at `@/app/components/wiki` for `Callout`, `CommandTable`, 
 
 ## Commands
 
-Store command rows in the section data and pass the same rows to `CommandTable`. The command index derives its rows from the registry. `CommandTable` displays only rows whose `access` is omitted or is `player`; permission-gated rows and `excludedStaffCommands` remain internal data and never render.
+Store command rows in the section data and pass the same rows to `CommandTable`. The command index derives its rows from the registry. `CommandTable` displays only rows whose `access` is omitted or is `player`; permission-gated rows remain internal data and never render.
 
 ```ts
 export const beekeepingCommands: WikiCommandSet = {
