@@ -10,7 +10,9 @@ SQLite database: who has played, their sessions, and their recent actions.
 `character_roster`; the routes are `GET /admin/players`,
 `/admin/players/{uuid}`, `/sessions` and `/activity` (`view_players`, mod and
 above). Movement, `GET /admin/players/{uuid}/movement` and `/admin/movement`
-for everyone, is for admins and the owner (`view_player_movement`).
+for everyone, is for admins and the owner (`view_player_movement`). Admins can
+also [view the site as a player](../identity/auth-security.md#viewing-as-a-player)
+from that player's page.
 
 ## Settings
 
