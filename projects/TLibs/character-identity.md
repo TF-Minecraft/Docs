@@ -9,9 +9,10 @@ TLibs only defines it. A character plugin provides it by registering a
 loaded. No released plugin registers it yet; RPCharacters will, as part of
 [RPCharacters#89](https://github.com/TF-Minecraft/RPCharacters/issues/89).
 
-Every method, event and `CharacterSessionMap` call is main thread only and throws
-`IllegalStateException` from any other thread. Returned values are immutable
-snapshots, so they can be handed to background work.
+Service and `CharacterSessionMap` calls run on the main thread; the facade and map
+throw `IllegalStateException` from any other thread. Providers fire the synchronous
+events on that thread too. Returned values are immutable snapshots, so they can be
+handed to background work.
 
 ## Values
 
@@ -90,9 +91,16 @@ that stored it, and `get(player)` does the same for the player's current session
 `onEnd`.
 
 When a session ends, the map calls `onEnd` with the stored value and then removes
-it, even if `onEnd` throws. It listens at `MONITOR` priority, so a plugin's own end
-listeners run first. `close()` stops listening and drops every value without calling
-`onEnd`; flush anything that needs saving before closing.
+it, even if `onEnd` throws. It listens at `MONITOR` priority, after lower-priority
+end listeners. Providers must finish dispatching the end event before starting
+another session; nested transitions would interrupt outgoing cleanup.
+
+`close()` stops listening and flushes every remaining value through `onEnd`. Call
+it on disable: consumers may stop before the provider can fire `SHUTDOWN`. It also
+works after the provider unregisters. A failed callback does not prevent the other
+values from flushing; failures are reported together as suppressed exceptions on
+an `IllegalStateException`. Closing again or closing from an end callback does not
+flush the same entry twice, and writes are rejected once closing begins.
 
 Use the map for state that lives only while the character is played, such as a
 loaded cache that `onEnd` flushes. Debts, refunds, character cooldowns and anything
