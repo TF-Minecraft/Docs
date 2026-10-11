@@ -36,3 +36,35 @@ reloads use the first compatible ammunition carried.
 The action bar confirms the selection and carried amount, or reports that no
 compatible ammunition is available. Selection is blocked while the gun is
 reloading.
+
+
+## Character sessions and reload cleanup
+
+The build pins TLibs 2.3.0. GunsAndGadgets listens directly for shared
+`CharacterSessionEndEvent` events and no longer has a compile dependency or
+`softdepend` on RPCharacters. RPCharacters 2.16.0 supplies these events when
+installed; ordinary gun use remains available without a character provider. With
+a provider present, gun use waits until the character has a ready session.
+
+A reload reserves the exact ammunition stacks it consumes and captures the current
+session. Its timer checks that session before progressing; a stale session or a
+provider appearing during account fallback cancels it. Switching character,
+permanent death, quit and provider shutdown cancel the reload while the outgoing
+inventory is still loaded, before it is saved or replaced. Cancellation restores
+the reserved items, drops only overflow and clears the reload marker. Duplicate
+end/quit notifications and late reload timers cannot refund twice or cancel a
+newer reload. GunsAndGadgets also refunds active reloads on its own disable,
+covering either plugin shutdown order. Its quit listener remains available when
+there is no identity provider.
+
+The deferred held-slot validation captures the current session. It stops if that
+session ends, even when the player switches away and back to the same character.
+It also stops on disconnect, pending character readiness, or a provider appearing
+between scheduling and completion.
+
+For runtime validation, start a reload and exercise each session-end reason.
+Confirm ammunition returns to the outgoing inventory before its save, the next
+character receives no old reload completion, and clean shutdown preserves exact
+item metadata and quantities. Repeat without RPCharacters to check quit cleanup.
+See the [shared identity API](../TLibs/character-identity.md) and
+[RPCharacters provider](../RPCharacters/docs/character-identity.md).
