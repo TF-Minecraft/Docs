@@ -169,7 +169,6 @@ TFMCWeb and SimpleFactions must use **loopback** API URLs on the game host, not 
 | Chrome asks to use apps on device | Frontend built with `NEXT_PUBLIC_API_URL=http://127.0.0.1:8000` — fix `frontend/.env` or rebuild with compose build arg |
 | `env_file` / missing keys | Create `backend/.env` with `PLUGIN_KEY` and `STAFF_KEY` |
 | API 401 from bot / TFMCWeb | Keys in `backend/.env` do not match plugin/bot configs |
-| Noble+ player gets `web_creator_allowed: false` | Creation catalog (RPCharacters `web-creator.yml`) or `donator_tier` (TFMCWeb player meta) not synced; restart the MC server or have the player relog |
 
 ---
 
