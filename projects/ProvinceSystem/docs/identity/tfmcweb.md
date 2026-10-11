@@ -125,6 +125,7 @@ Rules:
 - **Shared mint cooldown (`skin` + `drink`):** owned by **TFMCWeb** only. Profile is not in the shared family.
 - **Command gate:** LP `tfmcweb.token.create`; staff perm `tfmcweb.token.create.staff`.
 - Skin and drink **upload** entitlements: TFMCWeb `player-meta.*` → `PUT /characters/plugin/rpc-player-meta`.
+- TFMCWeb sends player meta on join, on config reload and with `/web syncmeta [player]`. It also sends it about a second after LuckPerms recalculates an online player's permissions, so a rank granted while they play (Patreon, staff panel or `/lp`) reaches the website without a rejoin. Those LuckPerms-triggered sends are skipped when nothing changed, because LuckPerms recalculates every online player on each `sync-minutes` storage sync.
 
 ## Discord gate + RPCharacters freeze
 
