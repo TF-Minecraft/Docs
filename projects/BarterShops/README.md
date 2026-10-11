@@ -42,7 +42,7 @@ Only the shop's owner, or staff with `bartershops.admin` (default: op), can brea
 
 When physics or an explosion would destroy a shop sign, the plugin blocks it and the sign stays where it is, even with nothing left holding it up. That covers blocks that give way later, such as a cactus under a sign, fire burning a wooden support, and pistons moving a support away. Commands that replace blocks, such as `/setblock` with `destroy`, still remove the sign and leave its shop record behind. A shop record is removed when the owner or staff breaks the sign, or when a sign their break was expected to bring down falls within the next minute. A sign that has not fallen by then stays up and keeps its shop.
 
-A shop can only use a storage chest its owner is allowed to open when setting it up, so nobody else can link a chest that Thievery or another plugin stops them opening. Linking a chest as a shop's storage gives it no protection, but a chest that a shop sign is fixed to is protected as that sign's support.
+During setup, BarterShops rejects chest clicks already denied by Thievery or another protection listener. Public and otherwise permitted shared chests can still be linked. Existing links are not revalidated when chest access changes. Linking a chest as a shop's storage gives it no protection, but a chest that a shop sign is fixed to is protected as that sign's support.
 
 ## Builds and releases
 
