@@ -38,7 +38,8 @@ safe for TAB when hidden characters are enabled. No-character rendering follows
 
 Character identity and birthday belong to character data. Switch cooldowns use a
 wall-clock timestamp on the player; current rank settings determine eligibility.
-Temporary aliases are session state. Name colours use TLibs formatting.
+Temporary aliases last until the player logs out or their active character changes,
+including by permakill. Name colours use TLibs formatting.
 
 ## Commands and integration
 
