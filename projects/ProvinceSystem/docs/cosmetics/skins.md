@@ -225,9 +225,7 @@ under Profile's header and tabs, with **← Skins** back to it
 ([`ProfileItems.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/profile/ProfileItems.tsx)).
 Opening one adds a history entry, so the browser's Back returns to the grid; a submit
 replaces the editor's entry with the new skin. Drinks work the same with `&drink=`.
-Addresses are in [`paths.ts`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/lib/profile/paths.ts);
-the old `/profile/skins/*`, `/profile/drinks/*`, `/skins/<id>` and `/drinks/<id>`
-addresses redirect there (`next.config.ts`).
+Addresses are in [`paths.ts`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/lib/profile/paths.ts).
 
 ### Signing in with a skin or drink code
 
@@ -266,10 +264,8 @@ drink code sessions (`endCodeUploads` in
 4. Enter **Item name**; colours / styles / live preview  
 5. Submit → the new skin in the tab (`&skin=<id>`), with its review sheet  
 
-Going back to `/profile/skins/new` after submitting shows that skin instead.
-The next skin starts from Profile's **New skin** tile. `/skins` redirects to
-`/profile?tab=skins` and `/skins/<id>` to `/profile/skins/<id>`
-([`next.config.ts`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/next.config.ts)).
+Going back to `?skin=new` after submitting shows that skin instead.
+The next skin starts from Profile's **New skin** tile.
 
 ## Security (skins-specific)
 

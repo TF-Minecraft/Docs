@@ -114,7 +114,7 @@ Rules:
 | `/token create profile` | `profile` | Profile sign-in |
 | `/token create skin staff` | `skin_staff` | As `skin` (auto-approve) |
 
-The `/skins` and `/drinks` addresses in TFMCWeb's chat text redirect to those Profile tabs.
+TFMCWeb's drink code message names the website's `/drinks` page, which redirects to Profile's Drinks tab.
 
 Rules:
 

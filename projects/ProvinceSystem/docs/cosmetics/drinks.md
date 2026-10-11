@@ -83,7 +83,7 @@ sequenceDiagram
 ## Website
 
 - Profile Drinks tab: cards with the potion in the drink's colour, review state and New drink
-- `/profile/drinks/new` brew editor + `/profile/drinks/[id]` status; `/drinks` redirects to the Drinks tab and `/drinks/<id>` to `/profile/drinks/<id>`
+- Brew editor at `/profile?tab=drinks&drink=new` and status at `&drink=<id>`, inside the Drinks tab; `/drinks` redirects to the tab for the in-game code message
 - Session key `tfmc_drinks_session`; gate texture UI on `allow_drink_texture`
 - Recipe fields: name, ingredients, cooking/distill, lore, effects, message/title, glint, color **xor** PNG/reuse
 - PNG: 16×16 potion icon
