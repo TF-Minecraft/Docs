@@ -74,6 +74,17 @@ A create that fails is rejected, and the Profile shows the reason on the rejecte
 Gender and name colours are not checked when applying. ProvinceSystem checks name uniqueness on submit,
 and RPCharacters trims name colours to the rank's limit at login.
 
+ProvinceSystem runs the same name, race age, trait and clue checks on `POST /characters`
+([creation_rules.py](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/characters/creation_rules.py)),
+so the wizard shows the problem instead of the create being rejected later. Pending creates count
+towards the slot limit, and the create page says so when every slot is taken. In the wizard, a trait
+whose requirement is missing cannot be picked, and picks are dropped when their stage closes or their
+requirement goes, for example evil archetypes once the personality that unlocks them is removed.
+
+When a create has wardrobe skins, the wizard sends it with `hold: true`, uploads the skins, then calls
+`POST /characters/creates/{id}/release`. RPCharacters does not see a held create until it is released
+or 10 minutes pass, so a closed tab still delivers the character, without the missing skins.
+
 ### Product / UI
 
 | Decision | Choice |
