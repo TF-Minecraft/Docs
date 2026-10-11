@@ -43,7 +43,7 @@ Schema assets: [assets/map-export-schema.json](assets/map-export-schema.json) (S
 ## Shared platform behavior
 
 - **Name:** TFMC = TF Minecraft. "TF" has no expansion.
-- **Website sign-in** - Discord OAuth powers account and staff pages. Skins, drinks, and characters also use TFMCWeb-issued UUID-bound codes; redeem → feature API session (8h default; character Remember me = 30d).
+- **Website sign-in** - Discord OAuth powers account and staff pages. Skins, drinks, and characters also use TFMCWeb-issued UUID-bound codes; redeem → feature API session (8h).
 - **Shared cosmetic mint cooldown** - skin + drink share one clock on **TFMCWeb** (not ProvinceSystem).
 - **Discord link** - in-game `/linkdiscord` + Discord `/linkdiscord <code>`; required before upload.
 - **SQLite + disk** for skins/drinks metadata and pending files on the API.

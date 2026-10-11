@@ -18,8 +18,8 @@ Donators (and later all players) create and manage RP characters on the website 
 |----------|--------|
 | Proof of account | In-game `/token create profile` (UUID-bound, Discord-eligible); redeem at `/profile` |
 | Code lifetime | Consumed **on redeem** |
-| After redeem | API **session** Bearer - default **8h**; Remember me **30d** |
-| Storage | sessionStorage if not remembered; localStorage if Remember me |
+| After redeem | API **session** Bearer - **8h** (the site offers no Remember me) |
+| Storage | sessionStorage |
 | Website accounts | **None** |
 
 ### Attribute point-buy

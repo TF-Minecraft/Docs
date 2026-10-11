@@ -188,7 +188,7 @@ their views and their Profile sessions; the role change or revocation is the aud
 |---------|-----------|
 | Player redeem (skins / drinks / profile) | `POST …/redeem` with code → short-lived **opaque** session token stored in SQLite; client sends `Authorization: Bearer <token>` |
 | Session scope | Encoded in DB row (`skin`, `skin_staff`, `drink`, `profile`) |
-| TTL | Default **8h** after redeem; profile Remember me **30d** |
+| TTL | **8h** after redeem. The API still accepts `remember_me` (30 days) for profile, but the site never sends it |
 | Profile / map staff | `profile` scope session from `/profile` redeem or a linked Discord account ([Profile without a code](#profile-without-a-code)); carries `player_uuid` and `realm_id` for permission checks |
 | No website passwords | Codes are UUID-bound and not shareable by design |
 

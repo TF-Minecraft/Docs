@@ -118,7 +118,7 @@ Rules:
 
 - Must be Discord-linked and not past grace (Survival players).
 - Codes bound to UUID.
-- Session TTL: default **8h** after redeem; Remember me **30d** for profile.
+- Session TTL: **8h** after redeem.
 - Codes consumed on submit (skin/drink) or redeem (profile).
 - **Shared mint cooldown (`skin` + `drink`):** owned by **TFMCWeb** only. Profile is not in the shared family.
 - **Command gate:** LP `tfmcweb.token.create`; staff perm `tfmcweb.token.create.staff`.

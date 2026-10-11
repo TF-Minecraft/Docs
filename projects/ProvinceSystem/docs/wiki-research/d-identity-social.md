@@ -528,7 +528,7 @@ TFMCWeb is the bridge between the Minecraft server and the ProvinceSystem websit
 
 1. Type `/linkdiscord` in game. The plugin asks the website API for a code and prints a **click-to-copy** code in chat, plus "In Discord, run `/linkdiscord <code>` with that code" and a relative expiry line.
 2. Run `/linkdiscord <code>` in the Discord server. Within **~1 second** the in-game plugin picks up the `link_success` notice and chats "Discord linked successfully with `<discord name>`", and the Survival Discord gate is lifted through RPCharacters.
-3. Type `/token create profile` to get a profile code; redeem it on the website `/profile` page ("optional Remember me keeps you signed in **30 days**").
+3. Type `/token create profile` to get a profile code; redeem it on the website `/profile` page. The session lasts **8 hours**.
 4. Type `/token create skin` or `/token create drink` to get a cosmetic upload code; redeem on the skins website or the website `/drinks` page. **Both draw from one shared mint cooldown**, so using one blocks the other. The plugin replies "Token cooldown: try again in 3d 4h" if you are still waiting.
 5. `/unlinkdiscord` removes the link and **re-applies the Survival gate**.
 6. On every join the plugin silently pushes your rank tier, name-colour stops, max alive characters, wardrobe skin slots, allowed skin kinds and drink permissions to the website, so what you can do on the site matches your in-game rank.
@@ -564,7 +564,7 @@ TFMCWeb is the bridge between the Minecraft server and the ProvinceSystem websit
 
 - **Notice poll interval: 1 second** — this is how fast a Discord link appears in game (`managers\PluginNoticePoller.java`).
 - **Shared skin+drink mint cooldown by rank** (`TFMCWeb\config.yml`, `token-cooldowns`): default **−1 = cannot mint**; `rpchar.group.noble` **28 days**, `gilded` **21 days**, `ascended` **14 days**, `legacy` **7 days**. Highest matching permission wins. Remaining time is displayed rounded to `Xd Yh`, minimum "1h".
-- **Website "Remember me" session: 30 days.**
+- **Website code session: 8 hours.**
 - **RPCharacters entitlements** (`player-meta.rpc`): max alive characters **3** default → noble 3, gilded **4**, ascended/legacy **5**; wardrobe skin slots **1** default → gilded 2, ascended/legacy 3; name-colour stops **0** default → noble 1, gilded 2, ascended/legacy **20**.
 - **Skin entitlements** (`player-meta.skins`): max 3D pair size **30720 bytes (30 KB)**; skin kinds unlocked by tier — noble: handheld / large_handheld / bow / large_bow / crossbow / book; gilded: armor_set; ascended: item_3d / shield / helmet_3d / gun. `allow-armor-3d-helmet` from ascended up.
 - **Drink entitlements** (`player-meta.drinks`): drink textures from gilded up; custom drink messages from ascended up; name-colour stops 0/1/2/8/8 by tier.
