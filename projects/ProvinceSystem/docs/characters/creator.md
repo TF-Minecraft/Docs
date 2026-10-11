@@ -35,6 +35,10 @@ Donators (and later all players) create and manage RP characters on the website 
 
 Personality / physical / celestial / story traits stay **selection** stages.
 
+The attribute sheet shows purchased ranks, the combined race/trait modifier, and
+the resulting total (with a minimum of zero). Only purchased ranks consume the
+point-buy pool and are sent in the create request.
+
 ### Creation catalog sync
 
 RPCharacters on enable/reload **PUT**s a full-replace snapshot to ProvinceSystem (stage order, options, validation rules, slot limits, attribute formula). Web **GET**s snapshot for the wizard.
@@ -94,6 +98,17 @@ or 10 minutes pass, so a closed tab still delivers the character, without the mi
 | Create | Multi-step wizard from synced stages |
 | Slots | Enforce synced limits (default 3; Gilded 4; Ascended/Legacy 5; hard cap 10) |
 | Dual path | In-game `/rpcharacter create` remains; RPCharacters checks web creates against the in-game rules before applying them |
+
+The wizard summary includes gender, birthday, name colours, wardrobe selections
+(slot, chosen name or filename, and arm model), and attribute totals including
+race/trait modifiers. A masked skin generated from the base is identified as such.
+Each Edit link opens the corresponding step. Displayed and submitted birthdays use
+the calendar settings from the catalogue.
+
+Before submission, the wizard rechecks all currently available steps. Invalid
+steps have Review links and block creation until corrected; this includes an age
+that exceeds the maximum after changing race. Hidden stages, including an already
+answered 18+ question, do not block submission.
 
 ## kits (summary)
 

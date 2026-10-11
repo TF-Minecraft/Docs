@@ -22,6 +22,13 @@ apostrophes, hyphens or full stops, within the `persona.yml` display-name length
 In-game creation capitalises each word. Web creates are checked against the same
 rule before they are applied.
 
+The in-game 18+ question is marked answered only after a valid Yes/No reply. The
+answer and completion marker are saved together before the roster is synced, even
+if the player cancels before the next prompt. Other `repeat: false` creation stages
+are marked complete when the character is successfully created; cancelling or
+disconnecting partway leaves those instructions available next time. Staff stage
+previews do not save an age answer or completion marker.
+
 Use `%rpcharacters_display_safe%` for TAB. A real active-character display is not
 safe for TAB when hidden characters are enabled. No-character rendering follows
 `persona.yml` and the calling context.
