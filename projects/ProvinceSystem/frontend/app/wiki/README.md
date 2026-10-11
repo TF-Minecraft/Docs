@@ -86,4 +86,4 @@ Source artwork that the site does not serve stays outside `public/`. The ammunit
 
 ## Validation
 
-From `frontend/`, run `npm test` and `npx tsc --noEmit --pretty false`, then the guarded production build with `PS_PRODUCTION=1 NEXT_PUBLIC_API_URL=http://127.0.0.1:8000 npm run build`. Check every `SeeAlso` target, every top-level wiki route, dynamic detail routes, referenced assets, visible command filtering, and a rendered-output scan for prohibited player-facing copy. Verify the desktop sidebar has its own bounded vertical scroll and that smaller layouts retain normal page flow.
+From `frontend/`, run `npm run lint`, `npm run format:check`, `npm test` and `npx tsc --noEmit --pretty false`, then the guarded production build with `PS_PRODUCTION=1 NEXT_PUBLIC_API_URL=http://127.0.0.1:8000 npm run build`. Check every `SeeAlso` target, every top-level wiki route, dynamic detail routes, referenced assets, visible command filtering, and a rendered-output scan for prohibited player-facing copy. Verify the desktop sidebar has its own bounded vertical scroll and that smaller layouts retain normal page flow.
