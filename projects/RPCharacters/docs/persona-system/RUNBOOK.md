@@ -80,7 +80,7 @@ Check permissions against the current commands and configuration:
 ### Character switch cooldown
 
 - [ ] Stored as `last-character-switch-ms` timestamp (wall-clock; no online-only tick)
-- [ ] Default **14** days; noble **10**, gilded **7**, ascended **5** (`permission-groups.yml`)
+- [ ] Default **4** days; noble **3**, gilded **2**, ascended and legacy **1** (`permission-groups.yml`)
 - [ ] Cooldown length resolved from **current** rank at check time (upgrade mid-cooldown can unlock sooner)
 - [ ] Legacy `cooldown` minutes in player JSON migrated on first load
 - [ ] `/rpcharacter skipcooldown <player>` clears switch timestamp

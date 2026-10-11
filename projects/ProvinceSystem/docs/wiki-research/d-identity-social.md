@@ -148,7 +148,7 @@ RPCharacters is the roleplay-character backbone of the server: it makes each pla
 
 **`pvp.yml`** — `start-radius: 16`; `start-warn-seconds: 10`; `start-countdown-from: 5`; `knockout-seconds: 30`; `blindness-amplifier: 4`.
 
-**`permission-groups.yml`** — defaults: switch cooldown **14 days**, **3** alive characters, **0** name-colour stops, **1** wardrobe slot. Noble: 10 d / 3 / 1 / 1. Gilded: 7 d / 4 / 2 / 2. Ascended: 5 d / 5 / 20 / 3. Legacy: 5 d / 5 / 20 / 3.
+**`permission-groups.yml`** — defaults: switch cooldown **4 days**, **3** alive characters, **0** name-colour stops, **1** wardrobe slot. Noble: 3 d / 3 / 1 / 1. Gilded: 2 d / 4 / 2 / 2. Ascended: 1 d / 5 / 20 / 3. Legacy: 1 d / 5 / 20 / 3.
 
 **`profile.yml`** — `max-character-slots: 10` (hard cap regardless of rank).
 
