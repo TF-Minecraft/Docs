@@ -12,6 +12,9 @@ See the [shared API versions](../../PLATFORM.md#shared-api-versions) for the mat
 
 The entrypoint is `net.tfminecraft.tlibs.TLibs`. `TLibs.getItemAPI()` and `TLibs.getBlockAPI()` expose the shared APIs; `getApiInstance(APIType)` is deprecated. Item path handlers let integrations register and remove their own item prefixes.
 
+The [character identity API](character-identity.md) gives plugins one way to
+look up the active character, follow character sessions and keep per-session state.
+
 Startup loads `config.yml`, initializes APIs, registers armour and furniture listeners, and attempts to register the MMOItems rebuild bridge. `/tlibs` is restricted by `tlibs.admin` (operator by default). The plugin descriptor declares optional integrations for MMOItems, MythicLib, ItemsAdder, MythicMobs and MMOCore, and requests loading before RPCharacters. Optional runtime hooks still have compile-time dependency requirements in the POM.
 
 ## Build and validation
