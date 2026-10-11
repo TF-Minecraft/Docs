@@ -84,7 +84,7 @@ RPCharacters is the roleplay-character backbone of the server: it makes each pla
 - **Professions** — crafter, forager, herborist, plus a breeding-XP table and animal breeding locks.
 - **Fantasy calendar** — years offset by 1647, era suffix `AE`, minimum character age 18 (`calendar.yml`).
 - **Rank groups** — noble, gilded, ascended, legacy: more alive characters, shorter switch cooldowns, more name-colour gradient stops, more wardrobe slots (`permission-groups.yml`).
-- **Web character creator** — characters can be created on the website and ingested (`web-creator.yml`).
+- **Web character creator** — characters can be created on the website and ingested.
 
 **Per-character data stored** (`data\characterdata\<playerUUID>\<characterUUID>.json`): `active`, `birthday`, `class`, `clues[]`, `conversations`, `created-at`, `description`, `extra-attribute-allocation`, `id`, `kit-status`, `last-location`, `name`, `name-colour.colours[]`, `race`, `slug`, `status`, `traits[]`.
 
@@ -187,7 +187,7 @@ RPCharacters is the roleplay-character backbone of the server: it makes each pla
 - **MMOItems** (hard depend) — `professions.yml` `types.*.mmoitem_types` lists MMOItems types (sword, spear, musket, shield...).
 - **MythicLib** (hard depend) — attribute/stat layer under MMOCore.
 - **TFMCWeb** (hard depend) — API gateway for website sync (`api\GatewayClient.java:145` "TFMCWeb gateway unavailable").
-- **ProvinceSystem** — `api\ProvinceSystemClient.java` (`GET /characters/plugin/pending`); `/rpcharacter resetkit` triggers a ProvinceSystem customise wipe; `web-creator.yml` tiers sync to ProvinceSystem.
+- **ProvinceSystem** — `api\ProvinceSystemClient.java` (`GET /characters/plugin/pending`); `/rpcharacter resetkit` triggers a ProvinceSystem customise wipe.
 - **ItemsAdder** — kit skin customisation via `CustomStack` with namespaces `tfmc_submissions` / `tfmc_armorshop`.
 - **LuckPerms** (softdepend) — `ProfessionCommandHandler` writes LuckPerms `PermissionNode`s with `perm_context: main`; rank groups `rpchar.group.*` come from LuckPerms.
 - **ProtocolLib** (softdepend) — fake-entity speech bubbles.
