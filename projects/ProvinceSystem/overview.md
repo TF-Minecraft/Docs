@@ -13,7 +13,8 @@ ProvinceSystem powers **[tfminecraft.net](https://www.tfminecraft.net/)** - the 
 | `/profile` | Characters, skin and drink wardrobes, custom items, linked accounts |
 | `/profile?tab=skins&skin={new,id}` | Skin upload and review status, inside the Skins tab |
 | `/profile?tab=drinks&drink={new,id}` | BreweryX drink builder and review status, inside the Drinks tab. `/drinks` redirects to the tab |
-| `/character/{id}` | Character sheet, kits, wardrobe; `/character/create` is the creator. `/character` redirects to Profile |
+| `/profile?tab=characters&character={id}` | Character sheet, inside the Characters tab |
+| `/character/{id}/{kits,wardrobe}` | A character's kits and wardrobe; `/character/create` is the creator. `/character` redirects to Profile |
 | `/map/editor` | Staff map title editor (county through empire); hidden unless `NEXT_PUBLIC_MAP_EDITOR_ENABLED=1` |
 
 Players authenticate with in-game tokens from TFMCWeb - no website passwords.
