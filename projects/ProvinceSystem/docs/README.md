@@ -24,6 +24,7 @@ This section is the product and technical reference for **ProvinceSystem**. Tech
 4. [ops/local-dev.md](ops/local-dev.md) - run the site locally
 5. [ops/sheet-render.md](ops/sheet-render.md) - 3D review-sheet renderer (prod deploy + smoke)
 6. [ops/dev-config.md](ops/dev-config.md) - dev-only flags and shortcuts
+7. [ops/diagnostic.md](ops/diagnostic.md) - player diagnostic page and staff reports
 
 Schema assets: [assets/map-export-schema.json](assets/map-export-schema.json) (SF map export contract).
 
