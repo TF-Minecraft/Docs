@@ -87,7 +87,9 @@ A healing trait added later needs a `procedures:` entry only when it should diff
 
 Temperature at or above 110°F, an expired collapse countdown, consecutive extremely weak pulse, consecutive red temperature, cutting while awake, too much chloroform, or closing the menu after the patient was sedated or cut. That last group adds `failure-healing-penalty` (12 hours by default) to the ailment. Closing the menu before then cancels with no penalty.
 
-The operation belongs to the patient's character when it began. If the patient walks out of range, logs off, or changes character (including a permakill), the surgery fails; the penalty only ever lands on that original character, so a patient who has logged off or switched is not penalised. A physician who changes character gives up, the same as closing the menu.
+The operation belongs to the physician's and patient's characters when it began. If the patient walks out of range, dies, logs off, or switches character, the surgery fails. A physician who switches character gives up, the same as closing the menu. A permakill ends the operation for the character who died, including an account's last character, where no other character takes over.
+
+The failure penalty lands only on the patient's original character. A patient who logs off mid-operation still takes it; one who switched character or was permakilled does not. The completion commands in `config.yml` target an account by name, so they are skipped once the physician or the patient has switched character or been permakilled, because they would reach whichever character is now active.
 
 ## Configuration
 
