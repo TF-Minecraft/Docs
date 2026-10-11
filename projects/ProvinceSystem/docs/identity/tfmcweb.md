@@ -109,10 +109,12 @@ Rules:
 
 | Command | Scope | Redeems on |
 |---------|--------|------------|
-| `/token create skin` | `skin` | `/skins` |
-| `/token create drink` | `drink` | `/drinks` |
-| `/token create profile` | `profile` | `/profile` |
-| `/token create skin staff` | `skin_staff` | `/skins` (auto-approve) |
+| `/token create skin` | `skin` | Profile sign-in or the Skins tab's Use a code |
+| `/token create drink` | `drink` | Profile sign-in or the Drinks tab's Use a code |
+| `/token create profile` | `profile` | Profile sign-in |
+| `/token create skin staff` | `skin_staff` | As `skin` (auto-approve) |
+
+The `/skins` and `/drinks` addresses in TFMCWeb's chat text redirect to those Profile tabs.
 
 Rules:
 

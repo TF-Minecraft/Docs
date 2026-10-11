@@ -9,7 +9,7 @@
 | Cog area | Purpose |
 |----------|---------|
 | Skins review | Pending notify → `#bot-feed`, Approve/Deny → ProvinceSystem staff API |
-| Drinks review | `drinksreview` cog - same pattern for `/drinks` submissions |
+| Drinks review | `drinksreview` cog - same pattern for drink submissions |
 | Link | `/linkdiscord <code>` completes MC ↔ Discord bind |
 | Moderation | Ban/warn DMs, **Banned** role add/clear, guild leave/join for 1h grace |
 | Precedent | `/case-log` (staff) logs a case, `/precedent <info>` (staff+helper) searches precedent — see [precedent.md](precedent.md) |
@@ -38,6 +38,6 @@ Player-facing mint and link **start** run in-game via TFMCWeb, not the bot.
 
 ## Local development
 
-Run bot against local API with test `STAFF_KEY`. Create pending submissions via `/skins` or curl. See [ops/local-dev.md](../ops/local-dev.md) and `tfmc_bot/docs/local-dev.md`.
+Run bot against local API with test `STAFF_KEY`. Create pending submissions via Profile's Skins or Drinks tab or curl. See [ops/local-dev.md](../ops/local-dev.md) and `tfmc_bot/docs/local-dev.md`.
 
 For cog structure, deploy on AMP, and moderation details, see `tfmc_bot/docs/hosting.md` and `tfmc_bot/docs/local-dev.md`.

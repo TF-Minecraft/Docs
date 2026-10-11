@@ -72,7 +72,7 @@ Configurable kits in `plugins/RPCharacters/kits.yml`:
 
 Customise **editable** kit lines on the website (character detail → Kits → Edit). Texture via player skins pipeline → `ps_items`; lore via RPCharacters. Block claim while skin pending approval or slug missing on ArmourShop.
 
-**Kit uploads:** new textures (or book covers / 3D model) on editable kit items use **character login only** — no skin mint token. Picking an already-**applied** skin from your account pick list also does not consume a mint token. Standalone cosmetics on [`/skins`](../cosmetics/skins.md) still require a **skin mint token** from TFMCWeb.
+**Kit uploads:** new textures (or book covers / 3D model) on editable kit items use **character login only** — no skin mint token. Picking an already-**applied** skin from your account pick list also does not consume a mint token. Standalone skins from Profile's [Skins tab](../cosmetics/skins.md#profile-wardrobe) still need a skin code (**New skin** or `/token create skin`).
 
 Applied skins appear in the kit editor pick list and can be attached to any character with the same `base_set`.
 
@@ -87,7 +87,7 @@ Editable templates: `2d-template` (required), optional `3d-template`. Book journ
 | Apply | Join + character switch; `/rpcharacter wardrobe` in-game |
 | Web | Standing frames; modal preview |
 
-Separate from item `/skins` and RP identity masks.
+Separate from item skins and RP identity masks.
 
 ## Architecture
 

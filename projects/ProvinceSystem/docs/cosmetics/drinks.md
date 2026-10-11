@@ -19,7 +19,7 @@ End-to-end design for donator **custom BreweryX recipes**: token → website bre
 
 | Rule | Choice |
 |------|--------|
-| Start | **New drink** on `/profile?tab=drinks` (`POST /profile/drinks/start`), or `/token create drink` → scope `drink`, redeemed under Use a code or on `/drinks`. Same rules as skins: [Profile wardrobe](skins.md#profile-wardrobe) |
+| Start | **New drink** on `/profile?tab=drinks` (`POST /profile/drinks/start`), or `/token create drink` → scope `drink`, redeemed under the Drinks tab's Use a code or at [Profile sign-in](skins.md#signing-in-with-a-skin-or-drink-code). Same rules as skins: [Profile wardrobe](skins.md#profile-wardrobe) |
 | Shared cooldown | Skin + drink share one clock; cooldown days come from TFMCWeb config, synced as `skin_token_cooldown_days` |
 | Noble | Can mint drink; **color-only** (no custom texture upload/reuse) |
 | Gilded+ | Can upload texture **or** reuse an existing owned drink texture |
@@ -83,7 +83,7 @@ sequenceDiagram
 ## Website
 
 - Profile Drinks tab: cards with the potion in the drink's colour, review state and New drink
-- `/drinks` redeem + brew editor + `/drinks/[id]` status; a visitor who can open Profile goes to the Drinks tab
+- `/profile/drinks/new` brew editor + `/profile/drinks/[id]` status; `/drinks` redirects to the Drinks tab and `/drinks/<id>` to `/profile/drinks/<id>`
 - Session key `tfmc_drinks_session`; gate texture UI on `allow_drink_texture`
 - Recipe fields: name, ingredients, cooking/distill, lore, effects, message/title, glint, color **xor** PNG/reuse
 - PNG: 16×16 potion icon
