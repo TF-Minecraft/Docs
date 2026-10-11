@@ -39,6 +39,12 @@ Personality / physical / celestial / story traits stay **selection** stages.
 
 RPCharacters on enable/reload **PUT**s a full-replace snapshot to ProvinceSystem (stage order, options, validation rules, slot limits, attribute formula). Web **GET**s snapshot for the wizard.
 
+The character view reads the synced `background`, which holds the in-game lore of the character's
+`background-trait-types` choices, and matches it line by line against catalogue trait descriptions.
+Homeland, cataclysm, reclamation and motivation show as cards under Story; the other choices join the
+trait tags, with their lore on hover. A `<Race>:` line in a trait's lore starts that race's version, which
+only characters of that race see. Lines no trait matches show as prose under Background.
+
 ### Characters API + ownership
 
 | Concern | Owner |
