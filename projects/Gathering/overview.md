@@ -43,7 +43,15 @@ spot type identifier.
 
 ## Discovery and gathering
 
-Only players with an active RPCharacters character take part. When
+Normal discovery, visibility and harvesting require a ready session from the
+[shared character API](../TLibs/character-identity.md). They wait while the provider
+is unavailable or character setup is pending; an account UUID never substitutes
+for a character UUID. Existing discoveries retain their stored character UUIDs,
+so reconnecting or switching back preserves them. Passive discovery also checks
+that the RPCharacters model supplying attributes matches that session.
+
+Wisdom and intelligence use the character sheet's creation-layer attributes,
+without extra MMOCore allocations or equipment bonuses. When
 `passive-discovery.enabled` is true, every `interval-seconds` the plugin rolls
 once for each undiscovered spot within `radius` blocks of each such player. The
 chance is `base-chance` plus wisdom × `wisdom-weight`, intelligence ×
