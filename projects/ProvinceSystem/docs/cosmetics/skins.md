@@ -194,8 +194,8 @@ Removed). The picture is the first 3D preview the review sheet already rendered
 with the render backdrop made transparent, else the flat texture, else a hanger.
 The route never starts a render. Source: [`thumbnail.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/thumbnail.py).
 
-The first card, **New skin**, calls `POST /profile/skins/start` and opens
-`/profile/skins/new` with the returned session. `GET /profile` sends `can_start` for skins
+The first card, **New skin**, calls `POST /profile/skins/start` and opens the
+editor in the tab (`/profile?tab=skins&skin=new`) with the returned session. `GET /profile` sends `can_start` for skins
 and drinks so the card can say why it is unavailable instead. The start follows
 the `/token create` rules:
 
@@ -219,10 +219,13 @@ unlinking under Linked accounts revokes them; sessions from codes stay.
 
 **Use a code** above the grid opens a one-line form
 ([`CodeRedeemForm.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/shared/CodeRedeemForm.tsx))
-for a `/token create skin` code (staff: `skin_staff`), then opens the editor. Cards
-link to `/profile/skins/<id>`. The editor and status pages show **← Profile** back
-to the tab ([`ProfileSubpage.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/profile/ProfileSubpage.tsx));
-paths are in [`paths.ts`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/lib/profile/paths.ts).
+for a `/token create skin` code (staff: `skin_staff`), then opens the editor. A card
+opens its skin in the tab (`&skin=<id>`). The editor and a skin replace the grid
+under Profile's header and tabs, with **← Skins** back to it
+([`ProfileItems.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/profile/ProfileItems.tsx)).
+Opening one adds a history entry, so the browser's Back returns to the grid; a submit
+replaces the editor's entry with the new skin. Drinks work the same with `&drink=`.
+Addresses are in [`paths.ts`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/lib/profile/paths.ts).
 
 ### Signing in with a skin or drink code
 
@@ -253,18 +256,16 @@ Log out ends the profile code's session, the uploads it started, and any skin or
 drink code sessions (`endCodeUploads` in
 [`uploads.ts`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/lib/profile/uploads.ts)).
 
-## Frontend (`/profile/skins/new`)
+## Frontend (`/profile?tab=skins&skin=new`)
 
 1. **New skin** on Profile, or a code → redeem  
 2. Choose kind → fixed slots per kind  
 3. Armor: **Add tier** flow (1-6 tiers)  
 4. Enter **Item name**; colours / styles / live preview  
-5. Submit → `/profile/skins/<id>` status page with review sheet  
+5. Submit → the new skin in the tab (`&skin=<id>`), with its review sheet  
 
-Going back to `/profile/skins/new` after submitting shows that skin instead.
-The next skin starts from Profile's **New skin** tile. `/skins` redirects to
-`/profile?tab=skins` and `/skins/<id>` to `/profile/skins/<id>`
-([`next.config.ts`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/next.config.ts)).
+Going back to `?skin=new` after submitting shows that skin instead.
+The next skin starts from Profile's **New skin** tile.
 
 ## Security (skins-specific)
 
