@@ -83,8 +83,11 @@ second until they leave.
   without dropping them. `/lure leave` fails the lure when nobody committed
   remains.
 - **Logout:** a committed player who logs out has `logout-grace-seconds` to
-  return and remains committed. After the grace period, they are killed on
-  their next login. A committed player who dies leaves the lure.
+  return and remains committed. After the grace period, the character they
+  logged out as is killed when it is next active, at login or after a
+  character switch. If that character has died in the meantime, the death is
+  dropped and the player leaves the lure. Without RPCharacters, the player is
+  killed on their next login. A committed player who dies leaves the lure.
 
 Players cannot break the lure, and explosions and pistons cannot move it. Lure
 furniture that does not match saved lure state is removed on enable, reload,
@@ -144,6 +147,9 @@ map data.
   and skipped.
 - **InteractibleFurniture** hosts the lure; placement, interaction, and break
   events drive the lure lifecycle. TLibs item paths identify the lure item.
+- **RPCharacters** (optional) identifies the character a committed player
+  logged out as, so a death owed after the logout grace reaches only that
+  character.
 - **Map export:** on start and whenever infestations are set, spread, cleared,
   or reloaded, the plugin writes each province's ID, severity, group, and
   display name to `MapAPI/infestation_data.json` and uploads it through the
@@ -151,8 +157,9 @@ map data.
 
 ## Persistence and shutdown
 
-- Infestations and lure state, including committed players, logout grace, and
-  lure counters, are stored in `plugins/Infestations/Data/infestations.json`.
+- Infestations and lure state, including committed players, logout grace, the
+  character each committed player logged out as, and lure counters, are stored
+  in `plugins/Infestations/Data/infestations.json`.
 - The latest map export is `plugins/Infestations/MapAPI/infestation_data.json`.
 - When `logging` is true, spawn decisions are appended to
   `plugins/Infestations/logs/spawn.log`; `wipe-log` deletes it on each start
@@ -186,7 +193,7 @@ dependency set:
    that killing a mob that summons parasitic worms raises the remaining count.
 5. Exercise victory, a committed player leaving the province (damage until
    `/lure leave`), losing the whole party, and a logout both within and beyond
-   the grace period.
+   the grace period, including a return on another character after it.
 6. On a test server, enable `spread` with a short interval and confirm
    worsening, land spread, single water and sea hops, and group terrain limits.
 7. Confirm `MapAPI/infestation_data.json` is written and uploaded.
