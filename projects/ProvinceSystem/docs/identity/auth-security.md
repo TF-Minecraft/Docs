@@ -142,6 +142,46 @@ with `tfmc.map.staff` opens staff maps and the map editor, not the panel. See [C
 for the individual staff panels. Configuration validation is in
 [`auth/config.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/config.py).
 
+## Viewing as a player
+
+Admins and the owner (`view_as_player`) can see the site as a player sees it.
+A player's staff page shows **View the site as them** when that player has
+signed in to the site and has no staff role. Source:
+[`view_as.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/view_as.py).
+
+1. `POST /admin/accounts/{user_id}/view-as` needs the site origin. It opens a
+   30-minute session for the player that names the admin in
+   `user_sessions.acting_user_id`, copying the player's last guild check. The
+   admin's own session token moves to the HttpOnly `__Host-tfmc_staff_session`
+   cookie (`tfmc_staff_session` over plain HTTP), and the site opens the player's Profile.
+2. The site shows a bar at the bottom of every page: "Viewing as …", with
+   **Back to my account**. `/account` returns `viewing_as` with the admin's name
+   and the end time.
+3. **Back to my account** calls `POST /auth/view-as/stop`, which deletes the view
+   and puts the admin's session back, then returns to the player's staff page.
+   It never restores another admin's session in place of a view. When a view
+   runs out, the bar does this itself; otherwise the next `/account` load does.
+   The browser drops the view's cookie when it runs out, so these, signing out
+   and signing in again also end the admin's views that have run out. Starting or
+   leaving a view reloads the site's other tabs, so none shows the wrong account.
+
+A view is view only. [`view_as_guard.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/api/view_as_guard.py)
+answers every `POST`, `PUT`, `PATCH` and `DELETE` sent with the view's session
+cookie with **403** `viewing_as_player`. Only leaving the view, signing out and
+opening or closing Profile get through, and Profile's Linked accounts card shows the
+player's accounts with its actions disabled. Profile opened during a view records its code
+with `minted_via = staff_view:<session id>`, ends with the view, and the guard
+refuses its Bearer writes the same way. The view has no staff rights even if
+the player's role changes, and dev will not hand it to a branch preview.
+Signing out during a view also signs the admin out, and signing in with Discord
+ends the view and drops the session it kept.
+
+Only players who have signed in to the site can be viewed, and never staff.
+Each start and end is written to the staff audit log
+(`account.view_as.start`, `account.view_as.stop` with `expired`), as are
+refused starts, including one from inside a view. Changing the admin's role or revoking their sessions also ends
+their views and their Profile sessions; the role change or revocation is the audit row.
+
 ## Opaque Bearer sessions
 
 | Surface | Mechanism |
