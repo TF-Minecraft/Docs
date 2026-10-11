@@ -87,7 +87,7 @@ Editable templates: `2d-template` (required), optional `3d-template`. Book journ
 | PNG | **64×64 only**; MineSkin v2 sign |
 | Apply | Join, character switch and a 45s refresh while online; `/rpcharacter wardrobe` in-game |
 | Web | Standing frames; modal preview. New uploads can be equipped and edited at once; a **Syncing** chip shows until RPCharacters applies them |
-| Profile | The list's portraits come from `GET /characters/{id}/face` and the character view's 16×32 front view from `GET /characters/{id}/figure` (arms follow the slot's saved model). Both read the worn slot without enforcing slot limits; `GET /characters/{id}/wardrobe` does enforce them, so Profile never calls it |
+| Profile | The list's portraits come from `GET /characters/{id}/face` and the character view's 16×32 front view from `GET /characters/{id}/figure` (arms follow the slot's saved model). `GET /profile` gives each living or pending character `worn_skin`, the worn slot's name or null, shown on the Wardrobe link. All three read the worn slot without enforcing slot limits; `GET /characters/{id}/wardrobe` does enforce them, deleting skins in locked slots, so Profile never calls it |
 
 Separate from item skins and RP identity masks.
 
