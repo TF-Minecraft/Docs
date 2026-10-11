@@ -38,6 +38,12 @@ Required plugins declared by the manifest: MMOItems, MythicLib.
 
 `ShopEvents` handles sign interactions and calls DenarEconomy directly for currency trades; install DenarEconomy even though the current manifest omits it. `ShopEmbargo` provides the SimpleFactions integration. Shop JSON lives under `plugins/BarterShops/Data`; preserve it across upgrades. The manifest declares no commands.
 
+Only the shop's owner, or staff with `bartershops.admin` (default: op), can break a shop sign or any block the plugin can tell would bring it down: the block the sign is fixed to, every hanging sign above it in a chain, and the block under any sand, gravel or other falling block that holds the sign up. Anyone else is refused with a message. Wall hanging signs stay up when the blocks beside them go, so anyone can break those blocks.
+
+When physics or an explosion would destroy a shop sign, the plugin blocks it and the sign stays where it is, even with nothing left holding it up. That covers blocks that give way later, such as a cactus under a sign, fire burning a wooden support, and pistons moving a support away. Commands that replace blocks, such as `/setblock` with `destroy`, still remove the sign and leave its shop record behind. A shop record is removed when the owner or staff breaks the sign, or when a sign their break was expected to bring down falls within the next minute. A sign that has not fallen by then stays up and keeps its shop.
+
+Linking a chest as a shop's storage gives it no protection, but a chest that a shop sign is fixed to is protected as that sign's support.
+
 ## Builds and releases
 
 See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.
