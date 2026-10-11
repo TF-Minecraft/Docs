@@ -34,8 +34,7 @@ tfminecraft.net/
   /              Hub (brand, nav, short intro, links into modules)
   /map/[mapId]   Interactive maps
   /profile       Characters, skin and drink wardrobes, custom items, linked accounts
-    skins/new    Skin upload (from Profile or a code); skins/[id] status. /skins redirects
-    drinks/new   Brew form (from Profile or a code); drinks/[id] status. /drinks redirects
+                 ?tab=skins&skin=new upload, &skin=<id> status (drinks alike). /skins redirects
   /character/*   Character sheets, creator, kits, wardrobe (/character redirects to /profile)
   /admin         Staff player, activity, rail and permission tools
   /map/editor    Staff map title editor (?map= required)
@@ -77,8 +76,7 @@ flowchart LR
 |------|------|
 | [`frontend/app/page.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/page.tsx) | TFMC hub landing |
 | [`frontend/app/map/[map]/page.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/map/%5Bmap%5D/page.tsx) | Dynamic map route, including `main` and `r3b1rth` |
-| [`frontend/app/profile/skins/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/profile/skins) | Skin upload (`new`) and status (`[id]`) |
-| [`frontend/app/profile/drinks/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/profile/drinks) | Drink brew form (`new`) and status (`[id]`) |
+| [`frontend/app/components/profile/ProfileItems.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/profile/ProfileItems.tsx) | Skin upload and brew form, and their status, inside Profile's tabs |
 | [`frontend/app/character/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/character) | Character creator + kits + wardrobe |
 | [`frontend/app/diagnostic/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/diagnostic) | Unlisted player diagnostic ([ops/diagnostic.md](ops/diagnostic.md)) |
 | [`frontend/app/map/editor/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/map/editor) | Staff map title editor |
@@ -108,11 +106,10 @@ frontend/app/
   layout.tsx              Shared shell: nav, fonts, atmosphere
   page.tsx                Hub
   map/[map]/page.tsx      Thin wrapper → MapViewer
-  profile/skins/          new/ upload, [id]/ status (drinks/ alike)
   components/
     shell/                Header, footer, nav
     map/                  MapViewer split over time
-    profile/              Tabs, wardrobes, ProfileSubpage frame
+    profile/              Tabs, wardrobes, skins and drinks opened in a tab
     skins/                Upload form, status card
 ```
 

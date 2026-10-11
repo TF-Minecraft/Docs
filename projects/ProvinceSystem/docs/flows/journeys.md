@@ -64,7 +64,7 @@ flowchart TB
 | 0b | Donator | Discord `/linkdiscord <code>` → UUID ↔ Discord id linked |
 | 1 | Donator | Profile Skins tab: **New skin** (`POST /profile/skins/start`; refused if rank disallowed or on cooldown). Or in game: `/token create skin` (perm `tfmcweb.token.create`; TFMCWeb applies the same rank and cooldown) |
 | 2 | TFMCWeb | For a code: `POST /skins/codes` scope=skin; shows plaintext once (**click-to-copy**) |
-| 3 | Donator | `/profile/skins/new` opens with the session (includes `skin_kinds` + `allow_armor_3d_helmet`); a code is redeemed first under the Skins tab's Use a code or at Profile sign-in |
+| 3 | Donator | The editor opens in the Skins tab (`/profile?tab=skins&skin=new`) with the session (includes `skin_kinds` + `allow_armor_3d_helmet`); a code is redeemed first under the Skins tab's Use a code or at Profile sign-in |
 | 4 | Donator | KindPicker filtered by rank; picks **`base_set`**; grip for large; **Item name**; uploads PNGs per [cosmetics/naming.md](../cosmetics/naming.md) |
 | 5 | API | Requires Discord link; validates kind whitelist, naming, sizes, `base_set`↔kind; stores fixed stems + `discord_user_id`; status `pending`; enqueues submitted notify |
 | 5b | tfmc_bot | DM player: submission received |
@@ -104,7 +104,7 @@ flowchart TB
 | Step | Who | What |
 |------|-----|------|
 | 1 | Donator | Profile Drinks tab: **New drink**, or `/token create drink` (shared cooldown with skin) |
-| 2 | Donator | `/profile/drinks/new` opens (a code is redeemed first); fill brew form; Noble color-only / Gilded+ texture or reuse |
+| 2 | Donator | The brew form opens in the Drinks tab (`/profile?tab=drinks&drink=new`; a code is redeemed first); fill brew form; Noble color-only / Gilded+ texture or reuse |
 | 3 | API | Validate ingredients allowlist + effects blacklist; store pending |
 | 4 | Bot | Review embed + sheet; Approve/Deny |
 | 5 | DrinkBuilder | If texture: write `tfmc_drinks` CMD; merge `recipes.yml`; Brewery reload |

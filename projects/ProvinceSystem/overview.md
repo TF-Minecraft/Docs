@@ -11,8 +11,8 @@ ProvinceSystem powers **[tfminecraft.net](https://www.tfminecraft.net/)** - the 
 | `/` | Hub landing and navigation |
 | `/map/{mapId}` | Interactive political map (pan/zoom, labels, settlements, wars) |
 | `/profile` | Characters, skin and drink wardrobes, custom items, linked accounts |
-| `/profile/skins/new`, `/profile/skins/{id}` | Skin upload and review status. `/skins` redirects to the Skins tab |
-| `/profile/drinks/new`, `/profile/drinks/{id}` | BreweryX drink builder and review status. `/drinks` redirects to the Drinks tab |
+| `/profile?tab=skins&skin={new,id}` | Skin upload and review status, inside the Skins tab. `/skins` redirects there |
+| `/profile?tab=drinks&drink={new,id}` | BreweryX drink builder and review status, inside the Drinks tab. `/drinks` redirects there |
 | `/character/{id}` | Character sheet, kits, wardrobe; `/character/create` is the creator. `/character` redirects to Profile |
 | `/map/editor` | Staff map title editor (county through empire); hidden unless `NEXT_PUBLIC_MAP_EDITOR_ENABLED=1` |
 
