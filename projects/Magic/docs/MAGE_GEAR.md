@@ -42,8 +42,11 @@ it without sneaking. One weapon moves from the hand onto the station and retains
 its state. Apply a charge as above, or take it back with an empty-hand click.
 
 The station does not need to be at a shrine. Difficulty uses the charge item's
-tier, not its displayed aura band. A disconnect or shutdown finishes with the
-captured result rather than refunding the charge.
+tier, not its displayed aura band. A character switch, permanent death, disconnect or shutdown
+finishes the outgoing player's runs with their captured result. The charge stays
+spent and the weapon remains on its station. The incoming character cannot hit
+outgoing orbs or reuse its menu selections and over-tier confirmation. Starting a
+run waits for a ready character session when the identity provider is available.
 
 ## Staff weapon commands
 

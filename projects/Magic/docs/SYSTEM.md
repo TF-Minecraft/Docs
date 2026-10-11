@@ -92,21 +92,43 @@ Each hit costs 1 Focus (RPCharacters, character-keyed). Flow nudges Equilibrium 
 
 ## Persistence (MagicProfile)
 
-Keyed by **character id** (`RPCharacter.getId()`), not player UUID. Files live under `plugins/Magic/data/characters/<characterId>.json`.
+Profiles use the character UUID from the [shared identity API](../../TLibs/character-identity.md).
+Files stay under `plugins/Magic/data/characters/<characterId>.json`; their JSON format
+is unchanged. Existing uppercase or mixed-case UUID filenames are reused. If the
+canonical filename is absent and multiple case-equivalent files exist, loading
+fails without replacing either file. Corrupt profiles are preserved as
+`<characterId>.json.rejected-<uuid>`; if preservation fails, writes remain blocked.
 
 | Event | Action |
 |-------|--------|
-| Character activated (login or switch) | Load profile, or create defaults and write the file |
-| Character switch | Save previous character, then load the new one |
-| Player quit / plugin disable | Save the loaded character profile and unload the session |
+| Shared session starts, after character setup | Load that character's profile, or create defaults |
+| Shared session ends on switch, quit, permanent death or provider shutdown | Stop outgoing activities, then save the captured profile state under its original character UUID |
+| Magic disables | Flush all remaining bound profiles, even if the identity provider has already stopped |
 
-Admin `/magic open` without a character stays ephemeral (nothing saved). Drift still ticks in memory while online and is flushed on save.
+Live profiles are bound to the full session token. Returning to the same character
+creates a new token, so a delayed callback cannot mutate the replacement profile.
+Magic never infers profile ownership from an account UUID or a later active-character
+lookup. Normal `/resonance` waits for a ready, loaded profile. When a provider is available but no profile is ready, admin `/magic open` provides
+an ephemeral layout preview. It does not create a profile or participate in
+character drift. The incoming session closes that preview. Without a provider,
+standalone gameplay state may drift in memory but is never saved as a character.
+
+Session end cancels meditation and sacrifice rites involving the outgoing character,
+clears spell modifiers and pending menu actions, and closes Magic menus. Delayed
+inventory refreshes and orb hits check the captured token. Meditation cannot spend
+the incoming character's Focus or grant it resonance from old orbs. Character
+cooldowns and earned station-item charge remain durable. A permanent sacrifice
+only fills its vessel after RPCharacters accepts and saves the death.
+
+Display names use current aliases and masks. Historical sacrifice lore resolves
+canonical character names through the directory, including offline and dead
+characters.
 
 ## Dependencies
 
-- **TLibs** (required, 2.1.0 or newer) - item refs, formatHex, inventory scanning
+- **TLibs** (required, 2.3.0 or newer) - shared identity/session API, item refs, formatHex, inventory scanning
 - **ItemsAdder** (required) - `ia.` icons in gui.yml / elements
-- **RPCharacters** (required, 2.1.0 or newer) - character Focus pool, character head and per-character MagicProfile persistence
+- **RPCharacters** (required, 2.16.0 or newer) - identity provider, character Focus pool, character head, injury and permadeath APIs
 - **InteractibleFurniture** (required) - pedestals
 
 ## Commands

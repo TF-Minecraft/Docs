@@ -12,7 +12,8 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 ## Build and dependencies
 
-Build from `main` with Java 21. Install the TLibs, RPCharacters, and
+Build from `main` with Java 21. The identity integration requires TLibs 2.3.0 and
+RPCharacters 2.16.0. Install the TLibs, RPCharacters, and
 InteractibleFurniture releases pinned in the
 [POM](https://github.com/TF-Minecraft/Magic/blob/main/pom.xml) using the
 [shared dependency installer](../../PIPELINES.md#build-dependencies), then run
