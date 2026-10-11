@@ -80,6 +80,7 @@ flowchart LR
 | [`frontend/app/skins/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/skins) | Skins redeem, upload, status |
 | [`frontend/app/drinks/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/drinks) | Drink brew form |
 | [`frontend/app/character/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/character) | Character creator + kits + wardrobe |
+| [`frontend/app/diagnostic/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/diagnostic) | Unlisted player diagnostic ([ops/diagnostic.md](ops/diagnostic.md)) |
 | [`frontend/app/map/editor/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/map/editor) | Staff map title editor |
 | [`frontend/app/components/MapViewer.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/MapViewer.tsx) | Map composer |
 | [`frontend/app/components/shell/SiteHeader.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/shell/SiteHeader.tsx) | Shared nav |
@@ -95,6 +96,7 @@ API base: `process.env.NEXT_PUBLIC_API_URL`.
 | Drinks | redeem, submit, catalog, staff review |
 | Characters | session, create, roster, wardrobe, `rpc_player_meta` |
 | Identity | Discord link, guild grace |
+| Diagnostic | Server ping, resource pack copy, speed test, player reports |
 
 Map regen auth: hashed key on claim/regen routes. Cosmetic routes use session tokens / plugin keys. See [identity/auth-security.md](identity/auth-security.md).
 
