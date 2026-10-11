@@ -38,6 +38,8 @@ Required plugins declared by the manifest: MMOItems, MythicLib.
 
 `ShopEvents` handles sign interactions and calls DenarEconomy directly for currency trades; install DenarEconomy even though the current manifest omits it. `ShopEmbargo` provides the SimpleFactions integration. Shop JSON lives under `plugins/BarterShops/Data`; preserve it across upgrades. The manifest declares no commands.
 
+Only the shop's owner can break a shop sign or the block it hangs on; the shop record is removed once the sign is gone. Staff with `bartershops.admin` (default: op) can break any shop. The storage chest is not protected by BarterShops.
+
 ## Builds and releases
 
 See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.
