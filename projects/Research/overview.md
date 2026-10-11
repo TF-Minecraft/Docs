@@ -17,7 +17,10 @@ the six menu rows.
 input's `start_item`. Research rolls one of the input's outputs by weight,
 resolves its result, and then consumes `start_item.amount` from the hand used.
 If the rolled output is disabled or its result cannot be resolved, nothing is
-consumed. Other players get an "in use" message; the owner reopens the menu.
+consumed. The project belongs to the character who started it. Other players,
+and other characters on the same account, get an "in use" message and cannot
+add their focus to it; the starting character reopens the menu. A station saved
+before characters were recorded belongs to the next character to open it.
 
 Lecterns without an active project retain vanilla book handling: players can
 place a written book or book and quill, or open a book already on the lectern.
@@ -137,8 +140,8 @@ open station menus before changing `labels` titles or `colors.inventory_title`.
 
 - Each active station is a JSON file under
   `plugins/Research/data/stations/`, named `<world>_<x>_<y>_<z>.json`, holding
-  the owner, input, output, result path, product reveal, aspect points and
-  states, tested items, and row order.
+  the owner account and character, input, output, result path, product
+  reveal, aspect points and states, tested items, and row order.
 - Station files are written when a project starts, after each confirmed
   experiment, and on a normal plugin disable. They are deleted when a project
   completes, is scrapped, or its block is broken.
@@ -159,7 +162,8 @@ dependency set:
 2. Confirm all aspects, templates, outputs, and inputs load, and that
    `/research reload` succeeds without severe errors or unbuildable item paths.
 3. Start a project with each start item, and confirm only the held item is
-   consumed and another player sees the station as in use.
+   consumed and that another player, or another character on the same account,
+   sees the station as in use.
 4. Run experiments, checking previews, mental point spending, repeat-item
    refusal, off-recipe rejection, and reveal timing at low and high values of
    the discovery attribute.
