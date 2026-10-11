@@ -28,9 +28,10 @@ Donators (and later all players) create and manage RP characters on the website 
 |------|-------|
 | Attributes | strength, dexterity, constitution, intelligence, wisdom, charisma |
 | Pool | **12** points - must spend exactly 12 |
-| Max rank per attribute at creation | **+2** |
-| Cost for *n*-th rank in one attribute | **n** points (1st → 1, 2nd → 2) |
+| Max rank per attribute at creation | **4** in `stages.yml`; rank 4 alone costs 15, so 12 points buy at most rank **3** |
+| Cost for *n*-th rank in one attribute | **2^(n-1)** points (1, 2, 4, 8) |
 | Sync | Formula + caps exported in creation catalog |
+| Character view | Each attribute bar has five segments split across that attribute's ceiling: the best race, affordable rank and trait picks the catalogue allows, honouring mutual exclusions across stages |
 
 Personality / physical / celestial / story traits stay **selection** stages.
 
