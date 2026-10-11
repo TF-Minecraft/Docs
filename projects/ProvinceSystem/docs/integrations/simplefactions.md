@@ -27,7 +27,6 @@ Primary client: `simplefactions/src/main/java/net/tfminecraft/simplefactions/res
 
 | Call | Purpose |
 |------|---------|
-| `GET {api}/{mapRef}/map/province/{x},{z}` | Resolve province under player |
 | `POST {api}/{mapRef}/data/upload/{mode}` | Push nation / provinces / guilds / queue / `map_markers` / title-tier JSON (internal IP; no staff token) |
 | `GET {api}/{mapRef}/{hashedKey}/api/regenerate/{type}` | `textonly`, queued, or `fullregen` |
 | `GET {api}/generator/banner` | Random banner patterns |
