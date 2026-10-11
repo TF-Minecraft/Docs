@@ -16,11 +16,10 @@ is currently in the world.
   it, store it, let it go, or look up the tricks it has learned.
 - Several pets can be outside at once.
 - A pet brought out of the Pet House appears behind or beside you, never inside
-  the Pet House, on a block-centred spot with solid ground and room for its whole
-  scaled body. Calls and teleports to the owner use the same check. For three
-  seconds after appearing, a pet takes no suffocation damage and is moved to the
-  nearest free space if it ends up inside a block. If there is no room, the
-  pet stays in the Pet House and you are told why.
+  the Pet House, on solid ground with room for its whole scaled body and clear
+  of liquids, fire and other harmful blocks. If there is no room, the pet stays
+  in the Pet House and you are told why. Pets take no suffocation or drowning
+  damage.
 
 Plugin replies and egg, rename and release dialogue inputs are private. Ordinary
 spoken pet orders remain roleplay chat.

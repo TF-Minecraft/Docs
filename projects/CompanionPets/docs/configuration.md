@@ -138,8 +138,8 @@ The five global categories are under `items`. All species share these defaults:
 items:
   treats: [mmoitems:PETS:FISH_SNACK, mmoitems:PETS:BISCUIT_TREAT]
   foods:
-    - {item: mmoitems:PETS:MEAT_TREAT, hunger: 35}
-    - {item: mmoitems:PETS:FISH_TREAT, hunger: 35}
+    - {item: mmoitems:PETS:MEAT_TREAT, hunger: 45}
+    - {item: mmoitems:PETS:FISH_TREAT, hunger: 45}
   medicines: [mmoitems:PETS:PET_MEDICINE]
   brushes: [mmoitems:PETS:PET_BRUSH]
   toys: [STICK, mmoitems:PETS:PET_BALL, mmoitems:PETS:PET_CHEW_BONE, mmoitems:PETS:PET_TUG_ROPE, mmoitems:PETS:PET_MOUSE_PLUSH, mmoitems:PETS:PET_TEDDY_PLUSH]
