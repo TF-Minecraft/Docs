@@ -6,8 +6,9 @@ TLibs defines one API for asking which character a player is playing, in
 [`net.tfminecraft.tlibs.character`](https://github.com/TF-Minecraft/TLibs/tree/main/src/main/java/net/tfminecraft/tlibs/character).
 TLibs only defines it. A character plugin provides it by registering a
 `CharacterIdentity` service in Bukkit's `ServicesManager` once its records have
-loaded. No released plugin registers it yet; RPCharacters will, as part of
-[RPCharacters#89](https://github.com/TF-Minecraft/RPCharacters/issues/89).
+loaded. [RPCharacters](../RPCharacters/docs/character-identity.md) implements the
+provider, including saved and online identities, session boundaries and permanent
+death records.
 
 Service and `CharacterSessionMap` calls run on the main thread; the facade and map
 throw `IllegalStateException` from any other thread. Providers fire the synchronous

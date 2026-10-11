@@ -18,6 +18,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 - [Website realm wipe](docs/realm-wipe.md)
 - [Persistent parties](docs/persistent-parties.md)
 - [Playtime tracking](docs/playtime-tracking.md)
+- [Shared character identity](docs/character-identity.md)
 
 ## Builds and releases
 
