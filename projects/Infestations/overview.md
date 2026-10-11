@@ -76,12 +76,13 @@ second until they leave.
   still zero, the lure is removed and the infestation is cleared. The delay lets
   death summons join the count.
 - **Failure:** the lure is removed and the infestation returns to idle at the
-  same severity when no committed player is alive, online, or within the logout
-  grace period. A committed player who leaves the province stays in the lure and
-  takes `deserter-damage` every second, in Survival or Adventure, until
-  `/lure leave` drops them out. Coming back into the province stops that damage
-  without dropping them. `/lure leave` fails the lure when nobody committed
-  remains.
+  same severity when no committed player is alive and online, within the
+  logout grace period, or owed a death on login. A death held without a
+  character, described below, does not count. A committed player who leaves
+  the province stays in the lure and takes `deserter-damage` every second, in
+  Survival or Adventure, until `/lure leave` drops them out. Coming back into
+  the province stops that damage without dropping them. `/lure leave` fails
+  the lure when nobody committed remains.
 - **Logout:** a committed player who logs out has `logout-grace-seconds` to
   return and remains committed. After the grace period, the character they
   logged out as is killed when it is next active, at login or after a
@@ -98,9 +99,11 @@ second until they leave.
 - **Deaths without a character:** with RPCharacters, a death owed by a player
   whose character was not recorded, such as one saved before characters were
   recorded, is held instead of applied, and a console warning names the
-  player and province on enable, reload, and when the grace runs out. It
-  clears when the lure ends or when that account dies or uses `/lure leave`,
-  and like any owed death it keeps the lure from failing until then.
+  player and province on enable, reload, and when the grace runs out. While it
+  is held, that account takes no `deserter-damage` and gets no warnings for
+  being outside the province, and neither the death nor the account's
+  commitment keeps the lure from failing. It clears when the lure ends or when
+  that account dies or uses `/lure leave`.
 - **Without RPCharacters:** the account is the character. A recorded character
   is ignored, so the player is killed on their next login, and any return
   ends the grace.
