@@ -20,7 +20,7 @@ SimpleFactions (plugin)
 FastAPI ── mapgen/regiongen ──► backend/src/output/{map}/…
         │  skins / drinks / characters / identity APIs
         ▼
-Next.js  ◄── hub, /map, /profile, /skins, /drinks, /character
+Next.js  ◄── hub, /map, /profile, /character
 ```
 
 - Generators **do not** write into `frontend/public`.
@@ -34,8 +34,8 @@ tfminecraft.net/
   /              Hub (brand, nav, short intro, links into modules)
   /map/[mapId]   Interactive maps
   /profile       Characters, skin and drink wardrobes, custom items, linked accounts
-  /skins         Upload (from Profile or a code) + status
-  /drinks        Brew form (from Profile or a code) + status
+    skins/new    Skin upload (from Profile or a code); skins/[id] status. /skins redirects
+    drinks/new   Brew form (from Profile or a code); drinks/[id] status. /drinks redirects
   /character/*   Character sheets, creator, kits, wardrobe (/character redirects to /profile)
   /admin         Staff player, activity, rail and permission tools
   /map/editor    Staff map title editor (?map= required)
@@ -77,8 +77,8 @@ flowchart LR
 |------|------|
 | [`frontend/app/page.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/page.tsx) | TFMC hub landing |
 | [`frontend/app/map/[map]/page.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/map/%5Bmap%5D/page.tsx) | Dynamic map route, including `main` and `r3b1rth` |
-| [`frontend/app/skins/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/skins) | Skins redeem, upload, status |
-| [`frontend/app/drinks/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/drinks) | Drink brew form |
+| [`frontend/app/profile/skins/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/profile/skins) | Skin upload (`new`) and status (`[id]`) |
+| [`frontend/app/profile/drinks/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/profile/drinks) | Drink brew form (`new`) and status (`[id]`) |
 | [`frontend/app/character/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/character) | Character creator + kits + wardrobe |
 | [`frontend/app/diagnostic/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/diagnostic) | Unlisted player diagnostic ([ops/diagnostic.md](ops/diagnostic.md)) |
 | [`frontend/app/map/editor/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/frontend/app/map/editor) | Staff map title editor |
@@ -95,6 +95,7 @@ API base: `process.env.NEXT_PUBLIC_API_URL`.
 | Skins | codes, redeem, upload, staff review, plugin approved |
 | Drinks | redeem, submit, catalog, staff review |
 | Characters | session, create, roster, wardrobe, `rpc_player_meta` |
+| Profile | dashboard, skin/drink start, code sign-in (`POST /profile/redeem`), code wardrobe (`GET /profile/wardrobe`) |
 | Identity | Discord link, guild grace |
 | Diagnostic | Server ping, resource pack copy, speed test, player reports |
 
@@ -107,10 +108,11 @@ frontend/app/
   layout.tsx              Shared shell: nav, fonts, atmosphere
   page.tsx                Hub
   map/[map]/page.tsx      Thin wrapper → MapViewer
-  skins/page.tsx          Redeem + upload + status
+  profile/skins/          new/ upload, [id]/ status (drinks/ alike)
   components/
     shell/                Header, footer, nav
     map/                  MapViewer split over time
+    profile/              Tabs, wardrobes, ProfileSubpage frame
     skins/                Upload form, status card
 ```
 

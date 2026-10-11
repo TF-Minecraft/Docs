@@ -32,7 +32,7 @@ API builds **display-slug only**: `slugify(display_name)` (e.g. item name `Blue 
 - Must start with a letter; only `a-z`, `0-9`, `_`; no spaces, hyphens, capitals, dots, unicode, or leading/trailing `_`; no double underscores `__`.
 - Must be unique among `pending` / `approved` / `applied` (`denied` / `revoked` may reuse).
 - Same player cannot submit another **active** skin with the same **display_name** slug (case-insensitive).
-- Reserved ids: `test`, `texture`, `null`, `undefined`, `admin`, `tfmc`.
+- Reserved ids: `test`, `texture`, `null`, `undefined`, `admin`, `tfmc`, `new` (Profile's editor is `/profile/skins/new`).
 
 ## Upload filenames (ignored for identity)
 

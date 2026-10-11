@@ -10,7 +10,7 @@ End-to-end design for donator texture submissions on **ProvinceSystem** (store +
 - Players start a skin from the Profile wardrobe ([below](#profile-wardrobe)) or with a TFMCWeb code (`/token create skin` or **`/token create skin staff`**); either is bound to the player UUID.
 - **Player:** staff approve/deny in Discord; ArmourShop writes **`tfmc_submissions`** + `ps_*` + LP.
 - **Staff curated:** auto-approve (no bot); category + scroll on upload; writes **`tfmc_armorshop`** into real ArmourShop categories.
-- **Kit item customise** (character creator) also creates `submissions` rows via an internal `lore_upload` code per player — not a donator mint token. Staff review and ArmourShop apply use the same pipeline as `/skins` uploads.
+- **Kit item customise** (character creator) also creates `submissions` rows via an internal `lore_upload` code per player — not a donator mint token. Staff review and ArmourShop apply use the same pipeline as Profile skin uploads.
 
 ## Upload kinds
 
@@ -158,6 +158,8 @@ Deploy and verify the headless renderer: [ops/sheet-render.md](../ops/sheet-rend
 |--------|---------|
 | `POST /skins/redeem` | `{ "code" }` → session |
 | `POST /profile/skins/start` | Profile Bearer → the same session, without a code ([below](#profile-wardrobe)) |
+| `POST /profile/redeem` | Profile sign-in with a `profile`, `skin`, `skin_staff` or `drink` code → that scope's redeem payload ([below](#signing-in-with-a-skin-or-drink-code)) |
+| `GET /profile/wardrobe` | Skin or drink code Bearer → `{ kind, items, can_start }` for that wardrobe |
 | `GET /skins/submissions/{id}/thumbnail` | Owner's wardrobe picture |
 | `POST /skins/submissions` | Multipart upload |
 | `GET /skins/submissions/check` | Display name conflict check |
@@ -193,7 +195,7 @@ with the render backdrop made transparent, else the flat texture, else a hanger.
 The route never starts a render. Source: [`thumbnail.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/thumbnail.py).
 
 The first card, **New skin**, calls `POST /profile/skins/start` and opens
-`/skins` with the returned session. `GET /profile` sends `can_start` for skins
+`/profile/skins/new` with the returned session. `GET /profile` sends `can_start` for skins
 and drinks so the card can say why it is unavailable instead. The start follows
 the `/token create` rules:
 
@@ -212,21 +214,57 @@ expires without a submission stops counting once no session from it can still
 upload, so leaving the uploader costs nothing once the code lapses. Codes from `/token create` count whether used or
 not, as before. Source: [`codes.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/codes.py).
 
-Sessions started here are marked `from_profile` in the browser. Profile's Log out
-and signing out or unlinking under Linked accounts revoke them; sessions from codes stay.
-On `/skins` they show **← Profile** in place of the code-session controls.
+Sessions started here are marked `from_profile` in the browser. Signing out or
+unlinking under Linked accounts revokes them; sessions from codes stay.
 
-**Use a code** above the grid opens a one-line form for a `/token create skin`
-code; staff use it for `skin_staff` codes. `/skins` itself sends a visitor who can
-open Profile to the wardrobe and keeps the code form for everyone else.
+**Use a code** above the grid opens a one-line form
+([`CodeRedeemForm.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/shared/CodeRedeemForm.tsx))
+for a `/token create skin` code (staff: `skin_staff`), then opens the editor. Cards
+link to `/profile/skins/<id>`. The editor and status pages show **← Profile** back
+to the tab ([`ProfileSubpage.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/profile/ProfileSubpage.tsx));
+paths are in [`paths.ts`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/lib/profile/paths.ts).
 
-## Frontend (`/skins`)
+### Signing in with a skin or drink code
 
-1. Start from Profile, or enter a code → redeem  
+Profile's code form takes a `/token create profile`, `skin` or `drink` code through
+`POST /profile/redeem`
+([`redeem_sign_in_code`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/codes.py)).
+It shows to signed-out visitors, and under **Enter code** to a Discord account without a
+Minecraft link. Each code
+follows its own redeem rules: a profile code is spent on redeem; a skin or drink
+code stays usable until a submission consumes it. Redeeming mints nothing, so the
+shared cooldown and `minted_via` are unchanged.
+
+| Code | Opens |
+|------|-------|
+| `profile` | All of Profile |
+| `skin`, `skin_staff` | The Skins tab and Linked accounts |
+| `drink` | The Drinks tab and Linked accounts |
+
+A skin or drink code's wardrobe comes from `GET /profile/wardrobe` with the code's
+own session: `{ kind, items, can_start }`, the items the owner status pages already
+show that session. Once the code has made its skin or drink, `can_start.reason` is
+`used` and the New tile says **Code used**. Characters, custom items and
+`GET /profile` need a `profile` session.
+
+`/profile?tab=skins` or `?tab=drinks` shows the code form open to a signed-out
+visitor. Profile opened with a code shows **Opened with an in-game code · Log out**.
+Log out ends the profile code's session, the uploads it started, and any skin or
+drink code sessions (`endCodeUploads` in
+[`uploads.ts`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/lib/profile/uploads.ts)).
+
+## Frontend (`/profile/skins/new`)
+
+1. **New skin** on Profile, or a code → redeem  
 2. Choose kind → fixed slots per kind  
 3. Armor: **Add tier** flow (1-6 tiers)  
 4. Enter **Item name**; colours / styles / live preview  
-5. Submit → status page with review sheet  
+5. Submit → `/profile/skins/<id>` status page with review sheet  
+
+Going back to `/profile/skins/new` after submitting shows that skin instead.
+The next skin starts from Profile's **New skin** tile. `/skins` redirects to
+`/profile?tab=skins` and `/skins/<id>` to `/profile/skins/<id>`
+([`next.config.ts`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/next.config.ts)).
 
 ## Security (skins-specific)
 

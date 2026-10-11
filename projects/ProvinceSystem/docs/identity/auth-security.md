@@ -132,7 +132,9 @@ The browser keeps that session in local storage marked as opened through
 Discord, and reuses it across tabs while more than five minutes remain.
 Signing out of Discord or unlinking Minecraft under Linked accounts revokes it;
 there is no separate Log out for these sessions. A visitor without a link still
-redeems an in-game code, and Profile shows Log out for that code session.
+redeems an in-game code: a profile code opens Profile, and a skin or drink code
+opens only that wardrobe ([code sign-in](../cosmetics/skins.md#signing-in-with-a-skin-or-drink-code)).
+Profile shows Log out for code sessions.
 
 Website roles (`mod`, `admin`, `root`) control staff capabilities independently
 of feature-code scopes. Staff panel tabs follow the role alone: a Profile session
@@ -186,7 +188,7 @@ their views and their Profile sessions; the role change or revocation is the aud
 
 | Surface | Mechanism |
 |---------|-----------|
-| Player redeem (skins / drinks / profile) | `POST …/redeem` with code → short-lived **opaque** session token stored in SQLite; client sends `Authorization: Bearer <token>` |
+| Player redeem (skins / drinks / profile) | `POST …/redeem` with code → short-lived **opaque** session token stored in SQLite; client sends `Authorization: Bearer <token>`. Profile sign-in redeems any of the three through `POST /profile/redeem` |
 | Session scope | Encoded in DB row (`skin`, `skin_staff`, `drink`, `profile`) |
 | TTL | **8h** after redeem. The API still accepts `remember_me` (30 days) for profile, but the site never sends it |
 | Profile / map staff | `profile` scope session from `/profile` redeem or a linked Discord account ([Profile without a code](#profile-without-a-code)); carries `player_uuid` and `realm_id` for permission checks |
@@ -200,7 +202,8 @@ Routes validate session **scope** before acting:
 
 - Skin upload/submit requires a valid `skin` or `skin_staff` session tied to the issuer UUID.
 - Drink submit requires `drink` scope.
-- Character create requires `profile` scope.
+- `GET /profile/wardrobe` requires `skin`, `skin_staff` or `drink` scope and returns only that wardrobe.
+- Character create and `GET /profile` require `profile` scope.
 - Staff map viewer and title editor require `profile` scope plus permission flags.
 
 Invalid or expired tokens return **401**. Wrong scope returns **403**.

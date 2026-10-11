@@ -31,7 +31,7 @@ Dev-only shortcuts, bypasses, and fixture data for ProvinceSystem. **Unset all d
 | Derived-source stamp | `defines/{map}/derived_sources.json` | sha256 of the sources behind the id grid, geometry and map preview from their last successful build. Delete it to force a rebuild on the next regen | Generated; safe to delete |
 | Base map placeholder | `output/{map}/maps/map_preview.webp` | 800x800 WebP (~78 KB on `main`) written by regen when `map.png` changes; frontend shows it while the full base map downloads | Needs a route to be served (see `map_routes.py`) |
 | Title coverage check | `python -m src.scripts.util.validate_title_coverage main` | From `ProvinceSystem/backend` | After county rebuild on `main` |
-| Drinks dev preview | `/drinks/dev-preview` | Local iteration page | Do not link publicly on prod |
+| Drinks dev preview | `/profile/drinks/dev-preview` | Local iteration page | Do not link publicly on prod |
 | Site dev gate | `NEXT_PUBLIC_SITE_DEV_GATE=1` | Entire UI replaced by dev landing until staff redeem | Unset on public launch |
 | Prod build guard | `PS_PRODUCTION=1` at frontend build | `prebuild` fails if `NEXT_PUBLIC_CHARACTER_UI_DEV=1` | Pass `PS_PRODUCTION` build arg in prod Dockerfile |
 

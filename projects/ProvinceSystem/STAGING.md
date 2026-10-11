@@ -116,12 +116,12 @@ Tick after a staging deploy or major pull. Detail for each flow: [docs/flows/jou
 
 ### Skins
 
-- [ ] `/token create skin` → redeem on `/skins` → upload → `#bot-feed` approve → outcome DM
+- [ ] `/token create skin` → redeem on `/profile?tab=skins` → upload → `#bot-feed` approve → outcome DM
 - [ ] Non-ranked player cannot mint; ranked KindPicker filtered by entitlements
 
 ### Drinks
 
-- [ ] `/token create drink` → redeem on `/drinks` → submit → approve in Discord
+- [ ] `/token create drink` → redeem on `/profile?tab=drinks` → submit → approve in Discord
 
 ### Characters
 
