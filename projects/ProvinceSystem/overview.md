@@ -10,9 +10,10 @@ ProvinceSystem powers **[tfminecraft.net](https://www.tfminecraft.net/)** - the 
 |-------|---------|
 | `/` | Hub landing and navigation |
 | `/map/{mapId}` | Interactive political map (pan/zoom, labels, settlements, wars) |
+| `/profile` | Characters, skin and drink wardrobes, custom items, linked accounts |
 | `/skins` | Redeem code, upload textures, track review status |
 | `/drinks` | BreweryX drink builder |
-| `/character` | Character creator, kits, wardrobe |
+| `/character/{id}` | Character sheet, kits, wardrobe; `/character/create` is the creator. `/character` redirects to Profile |
 | `/map/editor` | Staff map title editor (county through empire); hidden unless `NEXT_PUBLIC_MAP_EDITOR_ENABLED=1` |
 
 Players authenticate with in-game tokens from TFMCWeb - no website passwords.
@@ -33,7 +34,7 @@ SimpleFactions (plugin)
 FastAPI ── mapgen/regiongen ──► backend/src/output/{map}/…
         │  skins / drinks / characters / identity APIs
         ▼
-Next.js  ◄── hub, /map, /skins, /drinks, /character
+Next.js  ◄── hub, /map, /profile, /skins, /drinks, /character
 ```
 
 - Map generators write to `backend/src/output/`; the API serves assets via [`file_routes.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/api/file_routes.py) (not into `frontend/public`).

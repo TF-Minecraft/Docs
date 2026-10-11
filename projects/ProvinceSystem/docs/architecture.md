@@ -36,7 +36,7 @@ tfminecraft.net/
   /profile       Characters, skin and drink wardrobes, custom items, linked accounts
   /skins         Upload (from Profile or a code) + status
   /drinks        Brew form (from Profile or a code) + status
-  /character     Character creator, kits, wardrobe
+  /character/*   Character sheets, creator, kits, wardrobe (/character redirects to /profile)
   /admin         Staff player, activity, rail and permission tools
   /map/editor    Staff map title editor (?map= required)
 ```
