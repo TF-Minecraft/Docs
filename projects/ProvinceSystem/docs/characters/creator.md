@@ -84,8 +84,8 @@ Editable templates: `2d-template` (required), optional `3d-template`. Book journ
 |---------|--------|
 | Slots | `base` + `masked` + up to 2 extras by rank |
 | PNG | **64×64 only**; MineSkin v2 sign |
-| Apply | Join + character switch; `/rpcharacter wardrobe` in-game |
-| Web | Standing frames; modal preview |
+| Apply | Join, character switch and a 45s refresh while online; `/rpcharacter wardrobe` in-game |
+| Web | Standing frames; modal preview. New uploads can be equipped and edited at once; a **Syncing** chip shows until RPCharacters applies them |
 
 Separate from item skins and RP identity masks.
 
