@@ -15,6 +15,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 - [CoreProtect activity and movement](docs/integrations/coreprotect.md)
 - [LuckPerms staff panel](docs/integrations/luckperms.md)
 - [Rail network](docs/integrations/rail.md)
+- [Server plugin versions](docs/integrations/servers.md)
 - [Patreon integration](docs/integrations/patreon.md) and [backend protocol](docs/integrations/patreon-backend.md)
 - [Kit default skins](backend/assets/kit_skins/README.md)
 - [Map regeneration benchmarks](backend/benchmarks/regen/README.md)

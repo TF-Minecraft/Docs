@@ -19,6 +19,7 @@ This section is the product and technical reference for **ProvinceSystem**. Tech
    - [identity/auth-security.md](identity/auth-security.md) - Discord sign-in, feature codes and staff access
    - [integrations/coreprotect.md](integrations/coreprotect.md) - staff player activity and movement
    - [integrations/rail.md](integrations/rail.md) - staff rail network
+   - [integrations/servers.md](integrations/servers.md) - staff plugin versions on Main and Dev
    - [integrations/luckperms.md](integrations/luckperms.md) - staff permission policy and plugin protocol
 3. [flows/journeys.md](flows/journeys.md) - end-to-end player and staff journeys
 4. [ops/local-dev.md](ops/local-dev.md) - run the site locally

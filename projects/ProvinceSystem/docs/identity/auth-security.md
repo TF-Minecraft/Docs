@@ -139,7 +139,7 @@ Profile shows Log out for code sessions.
 Website roles (`mod`, `admin`, `root`) control staff capabilities independently
 of feature-code scopes. Staff panel tabs follow the role alone: a Profile session
 with `tfmc.map.staff` opens staff maps and the map editor, not the panel. See [CoreProtect data](../integrations/coreprotect.md),
-[rail data](../integrations/rail.md), [LuckPerms policy](../integrations/luckperms.md),
+[rail data](../integrations/rail.md), [server plugins](../integrations/servers.md), [LuckPerms policy](../integrations/luckperms.md),
 [precedent](../integrations/precedent.md) and the [code lookup](../cosmetics/skins.md#staff-code-lookup)
 for the individual staff panels. Configuration validation is in
 [`auth/config.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/config.py).
