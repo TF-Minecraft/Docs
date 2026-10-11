@@ -50,9 +50,11 @@ via `_log_precedent()` in `minecraftban.py`.
 ## Staff panel tab (`/admin/precedent`)
 
 Staff browse and maintain the whole corpus in the staff panel's Precedent tab; the
-Discord commands only ever show three matches at a time. The tab lists every case,
-filters them in the browser as you type (no API call, no cost), and offers Log / Edit /
-Delete. The semantic search sits in its own panel behind an explicit submit button,
+Discord commands only ever show three matches at a time. The tab lists cases 25 to a
+page, newest first, and offers Log / Edit / Delete. Its search box narrows every case, not
+just the page on screen: each word must appear somewhere in the case's text, rule,
+ruling, punishment, logger or players (a plain database query, no cost). The case form
+suggests player names already in the corpus. The semantic search sits in its own panel behind an explicit submit button,
 since each run costs a Voyage embed plus a Claude call. `/precedent` redirects there.
 
 Access follows the rest of the staff panel: the website role from the Discord sign-in,
@@ -79,7 +81,8 @@ cookie.
 |-------|------|---------|
 | `POST /precedent/staff/log` | `{logged_by, players[], summary, rule, ruling, punishment}` (all fields length-capped) | `{id}` |
 | `POST /precedent/staff/search` | `{query, players[]?}` (`players` is an optional soft-boost ranking hint, not a filter) | `{matches: [{id, logged_by, players, summary, rule, ruling, punishment, created_at, distance}], synthesis, max_distance}` |
-| `GET /precedent/staff/cases?limit=&offset=` | - | `{cases: [...], total}` — plain SELECT, newest first, no Voyage/Claude cost. `limit` clamps to 1000 |
+| `GET /precedent/staff/cases?limit=&offset=&q=` | - | `{cases: [...], total}` — plain SELECT, newest first, no Voyage/Claude cost. `limit` defaults to 500 and clamps to 1000. `q` (up to 200 characters) keeps cases containing every word, ignoring case; `total` counts those matches |
+| `GET /precedent/staff/players` | - | `{players: [...]}` — every player name in the corpus, once each ignoring case, in its newest spelling |
 | `GET /precedent/staff/case/{id}` | - | Full case (same shape as one `matches` entry) or 404 |
 | `PUT /precedent/staff/case/{id}` | Same body as `/staff/log` | `{updated: true, id}` or 404. Re-embeds before writing |
 | `DELETE /precedent/staff/case/{id}` | - | `{deleted: true, id}` or 404 |
