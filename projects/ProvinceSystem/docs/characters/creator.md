@@ -54,6 +54,26 @@ only characters of that race see. Lines no trait matches show as prose under Bac
 | Apply web creates into RPC | RPCharacters pull/ingest |
 | Identity + mint | TFMCWeb + Discord link |
 
+### Applying web creates
+
+RPCharacters checks each pending create against the in-game creation rules before it writes the
+character ([CreationRules](https://github.com/TF-Minecraft/RPCharacters/blob/main/src/main/java/net/tfminecraft/rpcharacters/creation/CreationRules.java)).
+A create that fails is rejected, and the Profile shows the reason on the rejected card.
+
+| Check | Rule |
+|-------|------|
+| Name | Starts with a letter in any alphabet, then letters, spaces, apostrophes, hyphens and full stops; `persona.yml` display-name length; no colour codes |
+| Race | Offered by a web race stage |
+| Age and birthday | From `calendar.yml` `age.minimum` to the race's `age-max` |
+| Class | A displayed MMOCore base class |
+| Description | `config.yml` description length |
+| Traits | Each trait exists and belongs to a web stage that opens for this character (stage dependency and account age). Per stage: pick count, points and the `permanent-only` filter. Attribute ranks run in order up to the max rank and spend the whole pool. No mutually exclusive pair, and each trait's requirements and account-age playtime are met |
+| Clues | At least the character's required count, at most `max-clues`, clue length from `config.yml`, no repeats (ignoring case) |
+| Slots | Online owner: their rank limit. Offline owner: their rank limit read from LuckPerms with this server's contexts. When LuckPerms cannot be read, the create stays pending for the next pull |
+
+Gender and name colours are not checked when applying. ProvinceSystem checks name uniqueness on submit,
+and RPCharacters trims name colours to the rank's limit at login.
+
 ### Product / UI
 
 | Decision | Choice |
@@ -62,7 +82,7 @@ only characters of that race see. Lines no trait matches show as prose under Bac
 | Landing | Session → list characters (alive + dead); CTA to create if free slot |
 | Create | Multi-step wizard from synced stages |
 | Slots | Enforce synced limits (default 3; Gilded 4; Ascended/Legacy 5; hard cap 10) |
-| Dual path | In-game `/rpcharacter create` remains; both paths share validation |
+| Dual path | In-game `/rpcharacter create` remains; RPCharacters checks web creates against the in-game rules before applying them |
 
 ## kits (summary)
 

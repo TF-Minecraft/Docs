@@ -17,6 +17,11 @@ provides distinct views of the character:
 | Safe display | Uses a facade when the active character is hidden |
 | Chat display | Mask first, then temporary alias, then coloured alias/name |
 
+Character names start with a letter in any alphabet, followed by letters, spaces,
+apostrophes, hyphens or full stops, within the `persona.yml` display-name length.
+In-game creation capitalises each word. Web creates are checked against the same
+rule before they are applied.
+
 Use `%rpcharacters_display_safe%` for TAB. A real active-character display is not
 safe for TAB when hidden characters are enabled. No-character rendering follows
 `persona.yml` and the calling context.
