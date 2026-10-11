@@ -259,8 +259,8 @@ Never expose these as `NEXT_PUBLIC_*` env vars.
 
 - Allows loopback (`127.0.0.1`, `::1`) and private TCP peers (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) so Paper on the Docker host can reach a published API (peer is often `172.18.0.1`).
 - Rejects the request if `X-Forwarded-For` or `X-Real-IP` is set, so public nginx `/api/` cannot use the same Docker gateway IP to regen or overwrite map JSON.
-- Used for hashed queue upload, plugin regen, and all `POST /{map}/data/upload/{mode}` (including title tiers). No Bearer session is required on that upload path.
-- Website title editor write/regen still uses `ensure_map_staff_write()` (staff Bearer + `tfmc.map.staff`).
+- Used for plugin regen and all `POST /{map}/data/upload/{mode}` (including the regen queue and title tiers). No Bearer session is required on that upload path.
+- Website title editor reads and regen use `ensure_map_staff_write()` (staff Bearer + `tfmc.map.staff`).
 
 **Production rule:** TFMCWeb `api.base-url` on the game host must be loopback (e.g. `http://127.0.0.1:8000`), not the public website hostname. SimpleFactions regen and uploads inherit that URL through TFMCWeb's gateway. Hitting the public `/api/` hostname adds forwarded-for headers and is rejected.
 

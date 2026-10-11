@@ -86,9 +86,9 @@ Same as staff map viewer:
 
 1. `/profile` redeem → Bearer session.
 2. `permission_flags["tfmc.map.staff"]` on `rpc_player_meta` for map `realm_id`.
-3. Editor route write and editor regen-trigger endpoints return **403** without permission.
+3. Editor province data and regen-trigger endpoints return **403** without permission.
 
-SimpleFactions `POST /data/upload/{mode}` (including title tiers) is not staff Bearer; it uses the same internal IP check as plugin regen. The editor UI does not write through the API: `POST /{map}/editor/titles/{tier}` and `POST /{map}/editor/regen/{type}` exist, but staff changes leave as a ZIP (see [Offline export](#offline-export)).
+SimpleFactions `POST /data/upload/{mode}` (including title tiers) is not staff Bearer; it uses the same internal IP check as plugin regen. The editor UI does not write title tiers through the API; staff changes leave as a ZIP (see [Offline export](#offline-export)). `POST /{map}/editor/regen/{type}` starts a staff regeneration.
 
 ## Entry and nav
 

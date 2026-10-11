@@ -213,12 +213,12 @@ same as `STAFF_KEY`-gated routes elsewhere.
 - `logged_by` is caller-supplied and trusted once the shared `X-Staff-Key` has
   authenticated the request, the same trust model as every other `X-Staff-Key`
   route in this codebase (e.g. `staff_name` fields in the skins routes). Not a
-  gap specific to this feature. **Web callers are exempt:** a session-authenticated
-  request has a known player behind it, so the server overrides `logged_by` with
-  that player's linked Minecraft name (`get_linked_minecraft_name` in
-  `backend/src/skins/codes.py`), falling back to their UUID. A signed-in staff
-  member therefore cannot attribute a case to someone else.
-- `/staff/search` rate-limiting buckets web callers by `player_uuid` rather than
+  gap specific to this feature. **Staff panel callers are exempt:** a signed-in
+  account has a known staff member behind it, so the server overrides `logged_by`
+  with their linked Minecraft name, falling back to their Discord username
+  (`staff_name` in `backend/src/api/staff_access.py`). A signed-in staff member
+  therefore cannot attribute a case to someone else.
+- `/staff/search` rate-limiting buckets staff panel callers by account rather than
   client IP. Behind a reverse proxy every browser shares one IP and would
   otherwise contend for a single 10/60s budget.
 
