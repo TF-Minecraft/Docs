@@ -86,8 +86,24 @@ second until they leave.
   return and remains committed. After the grace period, the character they
   logged out as is killed when it is next active, at login or after a
   character switch. If that character has died in the meantime, the death is
-  dropped and the player leaves the lure. Without RPCharacters, the player is
-  killed on their next login. A committed player who dies leaves the lure.
+  dropped and the player leaves the lure. A committed player who dies leaves
+  the lure.
+- **Other characters:** with RPCharacters, the commitment stays with the
+  character who logged out. Only that character's return ends the grace. While
+  its grace runs or its death waits, another character on the same account
+  takes no `deserter-damage`, and its death or `/lure leave` does not touch the
+  commitment. When that other character logs out, the waiting grace or death
+  keeps its character and deadline. If character data has not loaded when the
+  player logs in, the grace or death waits until a character is active.
+- **Deaths without a character:** with RPCharacters, a death owed by a player
+  whose character was not recorded, such as one saved before characters were
+  recorded, is held instead of applied, and a console warning names the
+  player and province on enable, reload, and when the grace runs out. It
+  clears when the lure ends or when that account dies or uses `/lure leave`,
+  and like any owed death it keeps the lure from failing until then.
+- **Without RPCharacters:** the account is the character. A recorded character
+  is ignored, so the player is killed on their next login, and any return
+  ends the grace.
 
 Players cannot break the lure, and explosions and pistons cannot move it. Lure
 furniture that does not match saved lure state is removed on enable, reload,
@@ -148,8 +164,10 @@ map data.
 - **InteractibleFurniture** hosts the lure; placement, interaction, and break
   events drive the lure lifecycle. TLibs item paths identify the lure item.
 - **RPCharacters** (optional) identifies the character a committed player
-  logged out as, so a death owed after the logout grace reaches only that
-  character.
+  logged out as, read at the lowest quit priority before RPCharacters unloads
+  its data, so the logout grace, deserter damage, and a death owed after the
+  grace reach only that character. Character activation ends that character's
+  grace or applies its death.
 - **Map export:** on start and whenever infestations are set, spread, cleared,
   or reloaded, the plugin writes each province's ID, severity, group, and
   display name to `MapAPI/infestation_data.json` and uploads it through the
