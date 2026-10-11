@@ -122,7 +122,7 @@ Workflows use Ubuntu 24.04 and actions with Node.js 24 runtimes. Plugin workflow
 
 ## Pull request size
 
-Plugin repositories run the **PR size** check on every pull request and again whenever a review is submitted or dismissed. It labels the pull request by its effective changed lines:
+Plugin repositories run the **PR size** check on every pull request. It labels the pull request by its effective changed lines:
 
 | Label | Lines |
 |---|---|
@@ -135,11 +135,9 @@ Plugin repositories run the **PR size** check on every pull request and again wh
 
 Effective lines are the insertions plus deletions from the merge base to the head commit. Whitespace-only changes and hunks of only blank lines do not count, and binary files count as zero. Test files (`src/test/`, `test/`, `tests/`) are left out when the pull request changes anything else; a test-only pull request is sized by its tests.
 
-From `size:L`, the check fails until an organisation member or collaborator other than the author approves the latest commit. Bot reviews, comments and approvals of earlier commits do not count, and a later request for changes from the same reviewer replaces their approval. Below `size:L`, the check passes without a review.
+The label is informational: the check does not block merging, and no approval is required at any size. Each repository's `Protect main - reviewed squash PRs` ruleset requires squash merges and linear history; only ryanbarlow97 and Drefvelin can bypass it.
 
-Each repository's `Protect main - reviewed squash PRs` ruleset requires this check, no approving reviews, squash merges and linear history. Only ryanbarlow97 and Drefvelin can bypass it.
-
-The logic lives in TLibs: [`tools/pr-size.py`](https://github.com/TF-Minecraft/TLibs/blob/main/tools/pr-size.py) and the `pr-size` action. Each plugin's `.github/workflows/pr-size.yml` pins the action to a reviewed TLibs commit; TLibs runs its own copy. The check runs from the pull request's workflow files, so treat changes to `.github/` in a pull request as changes to the review rules.
+The logic lives in TLibs: [`tools/pr-size.py`](https://github.com/TF-Minecraft/TLibs/blob/main/tools/pr-size.py) and the `pr-size` action. Each plugin's `.github/workflows/pr-size.yml` pins the action to a reviewed TLibs commit; TLibs runs its own copy.
 
 ## Documentation and assets
 
