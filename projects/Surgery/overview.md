@@ -40,7 +40,7 @@ src/main/java/net/tfminecraft/surgery/
 
 ## Installation
 
-1. Install **TLibs** and **RPCharacters**, then drop `surgery-<version>.jar` into `plugins/`.
+1. Install **TLibs 2.3.0+** and **RPCharacters 2.16.0+**, then drop `surgery-<version>.jar` into `plugins/`.
 2. Restart the server. Surgery declares a hard dependency on both.
 3. Give physicians `professions.physician` (the same permission that crafts the instruments).
 4. Point `surgeryItemsConfig.yml` at the surgical items. The defaults are the existing `m.surgery.*` MMOItems ids.
@@ -49,8 +49,8 @@ src/main/java/net/tfminecraft/surgery/
 |---|---|
 | Paper 1.21.10 | Yes |
 | Java 21 | Yes |
-| TLibs | Yes |
-| RPCharacters | Yes. Surgery calls `net.tfminecraft.rpcharacters.api.HealingInjuries` |
+| TLibs | Yes, 2.3.0+ for shared character sessions |
+| RPCharacters | Yes, 2.16.0+ for the identity provider. Surgery calls `net.tfminecraft.rpcharacters.api.HealingInjuries` |
 | MMOItems / ItemsAdder | Optional item and texture sources |
 
 ## Usage
@@ -87,9 +87,33 @@ A healing trait added later needs a `procedures:` entry only when it should diff
 
 Temperature at or above 110°F, an expired collapse countdown, consecutive extremely weak pulse, consecutive red temperature, cutting while awake, too much chloroform, or closing the menu after the patient was sedated or cut. That last group adds `failure-healing-penalty` (12 hours by default) to the ailment. Closing the menu before then cancels with no penalty.
 
-The operation belongs to the physician's and patient's characters when it began. If the patient walks out of range, dies, logs off, or switches character, the surgery fails. A physician who switches character gives up, the same as closing the menu. A permakill ends the operation for the character who died, including an account's last character, where no other character takes over.
+Both participants need ready character sessions before an offer can be sent or
+accepted. Consent belongs to those exact sessions and expires when either
+ends, including a reconnect or switching Alice → Bob → Alice. An unavailable
+identity provider cannot turn an old offer into consent for a new character.
 
-The failure penalty lands only on the patient's original character. A patient who logs off mid-operation still takes it; one who switched character or was permakilled does not. The completion commands in `config.yml` target an account by name, so they are skipped once the physician or the patient has switched character or been permakilled, because they would reach whichever character is now active.
+An operation also belongs to both captured sessions. If the patient walks out
+of range, dies, logs off, or switches character, the operation ends. A physician
+who changes character gives up. Ordinary failure after sedation or cutting
+extends only the original patient's healing injury. During the patient's quit
+event, the outgoing body is still loaded, so that same injury receives the
+penalty. A patient who switches character or is permakilled receives no
+penalty from the ended operation. A physician's departure still penalizes a
+patient whose original session is current. Shutdown cancels operations and
+clears offers without a healing penalty.
+
+Configured completion commands name accounts. They run only while **both
+original sessions are current**, and are skipped on every session end,
+including logout. The operation is removed before injury changes or command
+dispatch, so a command cannot complete it twice or erase a replacement
+operation. Old inventory clicks and close events cannot act on a new
+operation. A deferred close checks the original inventory, connection, and
+physician session before closing anything.
+
+Surgery uses TLibs for identity and lifecycle and keeps RPCharacters for
+`HealingInjuries.list`, `cure`, and `extend`. An older TLibs installation disables
+Surgery at startup with an upgrade message. A missing or not-yet-ready identity
+provider blocks new operations.
 
 ## Configuration
 
@@ -109,7 +133,16 @@ python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned
 mvn clean verify
 ```
 
-Use JDK 21. The installer verifies pinned TLibs and RPCharacters releases. Paper API resolves from Maven.
+Use JDK 21. The installer verifies the pinned TLibs 2.3.0 and RPCharacters
+2.16.0 releases. Paper API resolves from Maven. `mvn clean verify` enforces
+100% executable-line coverage.
+
+For live validation, test offers and active operations across switches,
+Alice → Bob → Alice, reconnects, provider loss, and both shutdown orders.
+Confirm quitting after treatment extends only the outgoing patient's injury,
+while patient switches and permanent deaths do not. Test a completion command that starts
+another operation, then verify the old completion and deferred close cannot
+alter its state or inventory.
 
 ## Author
 
