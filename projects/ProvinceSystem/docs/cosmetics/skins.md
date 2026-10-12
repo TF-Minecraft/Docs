@@ -189,8 +189,8 @@ See [identity/auth-security.md](../identity/auth-security.md).
 ## Profile wardrobe
 
 `/profile?tab=skins` shows the player's skins as cards: a picture, the name, the
-kind and the review state (In review, Live soon, Live, Denied with the reason, or
-Removed). The picture is the first 3D preview the review sheet already rendered
+kind and the review state (In review, Live soon, Live, Denied or Removed). A
+denial's reason is on the skin's page, so every card is the same height. The picture is the first 3D preview the review sheet already rendered
 (`preview_model`, `preview_body`, `preview_book_unsigned`, then `preview_hat`)
 with the render backdrop made transparent, else the flat texture, else a hanger.
 The route never starts a render. Source: [`thumbnail.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/thumbnail.py).
