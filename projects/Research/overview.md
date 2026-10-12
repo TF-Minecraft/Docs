@@ -81,13 +81,13 @@ shuffled into random rows when the project starts, and the remaining rows are
 decoys, so an output can require at most six aspects. After each experiment, a
 pulse in the scoring aspect's `pulse_color` crosses the left panel.
 
-Each menu belongs to the session that opened it. Switching characters, quitting,
-permanent death, or provider shutdown closes the outgoing menu and returns its
-experiment item once, before the outgoing character is saved or unloaded. An old
-menu cannot spend focus or scrap a project after switching away and back to the
-same character. Delayed menu refreshes and completion sounds also stop applying
-to that player when the captured session ends; station and dropped-item particle
-effects remain world effects.
+Each menu belongs to the session that opened it. When that session ends, the
+menu closes and returns its experiment item once, before the outgoing character
+is saved. At server stop, Research disables before RPCharacters and returns the
+item itself. A menu from an earlier session cannot spend focus or scrap a
+project, even after switching back to the same character. Delayed refreshes and
+completion sounds stop with the session; station and dropped-item particles
+still play.
 
 ## Configuration files
 
@@ -141,6 +141,8 @@ open station menus before changing `labels` titles or `colors.inventory_title`.
   a missing attribute counts as zero.
 - **TLibs.** TLibs builds and matches every item path, formats text, and supplies
   shared character identity and session events through RPCharacters' provider.
+  Research needs TLibs 2.3.0 or newer; with an older TLibs it logs a severe
+  error and disables itself.
 - **`ResearchCompleteEvent`.** Listen for
   `net.tfminecraft.research.event.ResearchCompleteEvent`, which fires
   synchronously after the result spawns and cannot be cancelled. It exposes
