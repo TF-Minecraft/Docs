@@ -167,9 +167,10 @@ character-bodies:
 
 `selection-world` must be a separate world with a lowercase name containing only
 letters, digits, underscores and hyphens. Existing unrelated worlds are refused.
-The plugin creates a void world and a protected quartz platform, and keeps it
-at midnight so the selection dialog sits on a dark sky. The dialog is the
-selection interface; this does not create mannequin displays.
+The plugin creates a void world with a protected platform enclosed in black
+concrete, so the selection dialog has a dark backdrop whatever the client's sky,
+brightness or shaders. The dialog is the selection interface; this does not
+create mannequin displays.
 
 All selecting players share that platform. The plugin sets `maxEntityCramming`
 to `0` in its owned selection world. To disable server-side entity pushing as
