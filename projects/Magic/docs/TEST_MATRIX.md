@@ -65,7 +65,9 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 - [ ] End a character session with active station orbs: earned fill stays on the weapon, other players' runs continue
 - [ ] Cancel or fail a permanent sacrifice death: no sacrifice fill is granted
 - [ ] Successful sacrifice death ends the character synchronously and grants its vessel fill once
-- [ ] Stop the identity provider before Magic: remaining profile values still flush under their original UUIDs
+- [ ] Stop the server with characters online: every profile is saved under its own UUID
+- [ ] No active character: held, dropped and stored mage weapons still refresh; charging a weapon and starting a sacrifice are refused with a message
+- [ ] Masked or aliased character opens `/resonance`: the head shows the real character name
 - [ ] Load a pre-existing uppercase UUID profile: values restore and save to that same file
 - [ ] Conflicting case-equivalent files with no canonical path: loading reports the conflict and preserves both files
 - [ ] `/magic reload`: online session values stay; new elements get default resonance on next load

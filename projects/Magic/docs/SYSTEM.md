@@ -92,37 +92,37 @@ Each hit costs 1 Focus (RPCharacters, character-keyed). Flow nudges Equilibrium 
 
 ## Persistence (MagicProfile)
 
-Profiles use the character UUID from the [shared identity API](../../TLibs/character-identity.md).
-Files stay under `plugins/Magic/data/characters/<characterId>.json`; their JSON format
-is unchanged. Existing uppercase or mixed-case UUID filenames are reused. If the
-canonical filename is absent and multiple case-equivalent files exist, loading
-fails without replacing either file. Corrupt profiles are preserved as
-`<characterId>.json.rejected-<uuid>`; if preservation fails, writes remain blocked.
+Profiles are keyed by the character UUID from the
+[shared identity API](../../TLibs/character-identity.md) and stored in
+`plugins/Magic/data/characters/<characterId>.json`. A file whose name differs only in
+letter case is reused. If several such files exist and none has the exact name,
+loading refuses and leaves them all. An unreadable profile is moved to
+`<characterId>.json.rejected-<uuid>`; if that move fails, saves for it stay blocked.
 
 | Event | Action |
 |-------|--------|
-| Shared session starts, after character setup | Load that character's profile, or create defaults |
-| Shared session ends on switch, quit, permanent death or provider shutdown | Stop outgoing activities, then save the captured profile state under its original character UUID |
-| Magic disables | Flush all remaining bound profiles, even if the identity provider has already stopped |
+| Character session starts | Load the character's profile, or create defaults |
+| Character session ends (switch, quit or permanent death) | Stop the outgoing character's activities, then save its profile |
+| Magic disables | Save every remaining profile; later shutdown steps still run if one fails |
 
-Live profiles are bound to the full session token. Returning to the same character
-creates a new token, so a delayed callback cannot mutate the replacement profile.
-Magic never infers profile ownership from an account UUID or a later active-character
-lookup. Normal `/resonance` waits for a ready, loaded profile. When a provider is available but no profile is ready, admin `/magic open` provides
-an ephemeral layout preview. It does not create a profile or participate in
-character drift. The incoming session closes that preview. Without a provider,
-standalone gameplay state may drift in memory but is never saved as a character.
+Each live profile belongs to one session. A callback left over from an earlier session
+cannot change a later one, even when the player returns to the same character.
+`/resonance` refuses with `open.no_character` until the player has an active character
+with a loaded profile. Admin `/magic open` without one shows a layout preview that is
+never saved; the next session start closes it. Without a provider, resonance state
+stays in memory only.
 
-Session end cancels meditation and sacrifice rites involving the outgoing character,
-clears spell modifiers and pending menu actions, and closes Magic menus. Delayed
-inventory refreshes and orb hits check the captured token. Meditation cannot spend
-the incoming character's Focus or grant it resonance from old orbs. Character
-cooldowns and earned station-item charge remain durable. A permanent sacrifice
-only fills its vessel after RPCharacters accepts and saves the death.
+Session end cancels the outgoing character's meditation and sacrifice rites, clears its
+spell modifiers and pending menu actions, and closes Magic menus. Old meditation orbs
+cannot spend the incoming character's Focus or grant it resonance. Weapon refreshes
+and vessel lore updates run on the next tick, and are skipped if the player started,
+ended or switched character in between; players with no character still get them.
+Charging a station weapon or starting a sacrifice without an active character is
+refused with a message, as is a sacrifice whose victim has none. A permanent sacrifice
+only fills its vessel after RPCharacters accepts the death.
 
-Display names use current aliases and masks. Historical sacrifice lore resolves
-canonical character names through the directory, including offline and dead
-characters.
+The resonance screen shows the character's real name in its name colour, never a mask
+or alias. Sacrifice lore keeps the victim's character name from the moment of the kill.
 
 ## Dependencies
 
