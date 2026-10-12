@@ -24,7 +24,8 @@ without reconciling wardrobe limits, acknowledging changes or applying skins.
 RPCharacters downloads the signed texture's image from `textures.minecraft.net`.
 An unavailable wardrobe preview falls back to the account skin; if no image can
 be loaded, the dialog shows a neutral figure. Everyone in selection wears the
-default Steve skin, a Mojang-signed copy built into RPCharacters. Portraits still
+default Steve skin, a Mojang-signed copy built into RPCharacters. Helmet, mask and
+wardrobe changes do not replace it there. Portraits still
 fall back to the account skin worn before it. Play puts the cached wardrobe or
 account skin back at once, then refreshes the wardrobe from ProvinceSystem. A
 player whose account skin cannot be read keeps it in selection. Previews never activate a character,
@@ -75,17 +76,19 @@ run, so blindly repeating that restoration is unsafe.
 
 While playing, `/rpcharacter select` returns the player to selection without
 disconnecting. They must stand still for `character-bodies.return-seconds`
-(default 5); moving, taking damage or any refusal below cancels it. Starting
-character creation while playing does the same. It is refused while dead or
-respawning, mounted, falling, creating or editing a character, duelling, knocked
-out or held by an evil-roleplay session. Other plugins can refuse it by cancelling
-`CharacterSelectionRequestEvent`, which fires at the start and on each second of
-the countdown; set a reason with `deny`. Use it where a logout carries a penalty,
-such as leaving a started battle.
+(default 5); moving, teleporting, mounting, taking damage or any refusal below
+cancels it. Starting character creation while playing does the same. It is
+refused while dead or respawning, mounted, falling, creating or editing a
+character, duelling, in a `/pvp` fight, knocked out, in a started SimpleFactions
+battle or held by an evil-roleplay session. Other plugins can refuse it by
+cancelling `CharacterSelectionRequestEvent`, which fires at the start and on each
+second of the countdown; set a reason with `deny`. Use it where a logout carries
+a penalty.
 
 Once the countdown ends, the session ends with reason `SWITCH`, so session
 listeners clean up while the outgoing body is still in the world. Open duel
-challenges and armour fastening are cancelled, and a temporary alias ends. The
+challenges, an expired `/pvp` start mark and armour fastening are cancelled, and
+a temporary alias ends. The
 body and progression are then saved, and the player enters selection as at
 login. A failed save disconnects the player with the body kept live for recovery.
 An unfinished in-game creation draft is cancelled on logout.
