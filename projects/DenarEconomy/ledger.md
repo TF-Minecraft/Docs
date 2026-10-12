@@ -75,6 +75,7 @@ Depend on DenarEconomy with `provided` scope and call [Denars](https://github.co
 | Method | Purpose |
 |---|---|
 | `ready()` | Whether the ledger is open and a character provider is registered. |
+| `taxReady()` | Whether taxable payments can proceed: an installed SimpleFactions must be enabled and have registered its tax policy. |
 | `active(Player)` | The character the player is playing now, or empty. |
 | `pouch(CharacterRef)`, `bank(CharacterRef)`, `guild(UUID)`, `guildTax(UUID)`, `MINT`, `TAX_VOID` | Account IDs. |
 | `balance(String account)` | Balance in cents; zero when the ledger is unavailable. |
@@ -89,7 +90,7 @@ Every posting returns a `Result`: `APPLIED`, `REFUSED`, `CONFLICT` or `UNAVAILAB
 
 Choose operation IDs so that a retry reuses the same ID. Derive the ID from the event when the event can repeat, for example `coin:<item entity UUID>` or `shop:<shop>:<transaction nonce>`, and store a generated ID before any side effect that depends on the payment. A fresh random ID suits a one-off player command. DenarEconomy's own commands use `<kind>:<random UUID>`.
 
-**Tax.** For a taxable `earn` or `trade`, DenarEconomy loads a [TaxPolicy](https://github.com/TF-Minecraft/DenarEconomy/blob/main/src/main/java/net/tfminecraft/denareconomy/api/TaxPolicy.java) from Bukkit's `ServicesManager` and asks it for the holding account and the tax on the gross amount. The earner receives the gross less tax, and the tax leg is part of the same posting. Without a registered policy nothing is taxed. A policy that asks for more than the gross makes the call throw `IllegalStateException`.
+**Tax.** For a taxable `earn` or `trade`, DenarEconomy loads a [TaxPolicy](https://github.com/TF-Minecraft/DenarEconomy/blob/main/src/main/java/net/tfminecraft/denareconomy/api/TaxPolicy.java) from Bukkit's `ServicesManager` and asks it for the holding account and the tax on the gross amount. The earner receives the gross less tax, and the tax leg is part of the same posting. When SimpleFactions is installed but disabled or has not registered its policy, taxable payments return `UNAVAILABLE` without recording an operation. Call `taxReady()` before preparing a new sale. A standalone server without SimpleFactions remains untaxed. `taxFor` only quotes the registered policy and does not replace that readiness check. A policy that asks for more than the gross makes the call throw `IllegalStateException`.
 
 **Events.** `PlayerEarnMoneyEvent` fires after a taxable earning or trade has applied, with the earner's account name, the gross amount and `getCharacter()`. It can fire again when an operation is retried, and changing its amount no longer affects tax. `PlayerBankPulseEvent` fires before `/deco deposit` and `/deco withdraw`, and `PlayerDepositMaterialsEvent` fires on a main-hand right click with an item; both carry `getCharacter()` and fire only for a player with a current character.
 
