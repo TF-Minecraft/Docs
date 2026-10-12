@@ -9,10 +9,23 @@ and character activation flow remains in use.
 ## Playing a character
 
 Players enter a private selection world with no ready character session. A Paper
-dialog lists living characters with their race, class, age, last location and
-playtime. Dead and missing characters remain visible as records. Guild membership
-and pouch/bank balances are labelled as shared by all characters; this feature
-does not migrate money or factions.
+dialog focuses one living character at a time, showing a skin portrait, race,
+class, age, last location and playtime. Character tabs and arrows change the
+preview; **Play** enters the selected character. **New character** starts creation
+when slots and the switch cooldown allow it. **Memorials** opens the records of
+dead and missing characters. Guild membership and pouch/bank balances are labelled
+as shared by all characters; this feature does not migrate money or factions.
+
+Portraits load asynchronously through ProvinceSystem's authenticated, read-only
+`GET /characters/plugin/wardrobe/{player_uuid}/{character_id}/worn` route. It
+returns `character_id`, `value` and `signature`; the latter two are null when
+there is no signed worn skin. It checks ownership and reads the effective slot
+without reconciling wardrobe limits, acknowledging changes or applying skins.
+RPCharacters downloads the signed texture's image from `textures.minecraft.net`.
+An unavailable wardrobe preview falls back to the account skin; if no image can
+be loaded, the dialog shows a neutral figure. Previews never activate a character,
+apply an outfit or restore their body. Old clicks and late portrait responses
+cannot reopen a selector after playing, starting creation or reconnecting.
 
 Play restores the chosen character's progression and body before publishing its
 ready session. Dismissing the dialog does not admit the player into gameplay;
