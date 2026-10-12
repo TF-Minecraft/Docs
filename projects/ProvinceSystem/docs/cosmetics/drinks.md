@@ -82,8 +82,9 @@ sequenceDiagram
 
 ## Website
 
-- Profile Drinks tab: cards with the potion in the drink's colour, review state and New drink
-- Brew editor at `/profile?tab=drinks&drink=new` and status at `&drink=<id>`, inside the Drinks tab; `/drinks` redirects to the tab for the in-game code message
+- Profile Drinks tab: cards with the potion in the drink's colour, or the drink's own texture from `GET /drinks/submissions/{id}/texture` (owner only; the upload, else the shared `drink_textures` file it reuses), review state and New drink
+- Brew editor at `/profile?tab=drinks&drink=new` and the drink's page at `&drink=<id>`, inside the Drinks tab; `/drinks` redirects to the tab for the in-game code message
+- A drink's page shows the potion beside its name, alcohol and difficulty, review state, the in-game tooltip with lore, then ingredients (catalogue names), brewing steps (cook, distil, age and barrel), effects, colour and dates ([`DrinkShowcase.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/profile/DrinkShowcase.tsx))
 - Session key `tfmc_drinks_session`; gate texture UI on `allow_drink_texture`
 - Recipe fields: name, ingredients, cooking/distill, lore, effects, message/title, glint, color **xor** PNG/reuse
 - PNG: 16×16 potion icon
