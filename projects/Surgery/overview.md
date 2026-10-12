@@ -95,16 +95,17 @@ identity provider cannot turn an old offer into consent for a new character.
 An operation also belongs to both captured sessions. If the patient walks out
 of range, dies, logs off, or switches character, the operation ends. A physician
 who changes character gives up. Ordinary failure after sedation or cutting
-extends only the original patient's healing injury. During the patient's quit
-event, the outgoing body is still loaded, so that same injury receives the
-penalty. A patient who switches character or is permakilled receives no
-penalty from the ended operation. A physician's departure still penalizes a
-patient whose original session is current. Shutdown cancels operations and
+extends only the original patient's healing injury. A patient who quits or
+switches character after sedation or cutting receives the penalty on the
+outgoing character, which is still loaded when its session ends. A permakilled
+patient receives none. A physician's departure still penalises a patient whose
+original session is current. Shutdown cancels operations and
 clears offers without a healing penalty.
 
 Configured completion commands name accounts. They run only while **both
-original sessions are current**, and are skipped on every session end,
-including logout. The operation is removed before injury changes or command
+original sessions are current**, so a session end never runs them. A
+physician who logs off with the menu open closes it first, which runs the
+failure command before the session ends. The operation is removed before injury changes or command
 dispatch, so a command cannot complete it twice or erase a replacement
 operation. Old inventory clicks and close events cannot act on a new
 operation. A deferred close checks the original inventory, connection, and
@@ -139,8 +140,8 @@ Use JDK 21. The installer verifies the pinned TLibs 2.3.0 and RPCharacters
 
 For live validation, test offers and active operations across switches,
 Alice → Bob → Alice, reconnects, provider loss, and both shutdown orders.
-Confirm quitting after treatment extends only the outgoing patient's injury,
-while patient switches and permanent deaths do not. Test a completion command that starts
+Confirm quitting or switching after treatment extends only the outgoing
+patient's injury, while a permanent death does not. Test a completion command that starts
 another operation, then verify the old completion and deferred close cannot
 alter its state or inventory.
 

@@ -89,8 +89,10 @@ second until they leave.
   Survival or Adventure, until `/lure leave` drops them out. Coming back into
   the province stops that damage without dropping them. `/lure leave` fails
   the lure when nobody committed remains.
-- **Departure:** switching character, quitting, or shutting down starts
+- **Departure:** switching character or quitting starts
   `logout-grace-seconds` for the outgoing character, which remains committed.
+  A server restart is not a departure: if no committed player is back when
+  the lure next checks, it fails with no penalty.
   Only that character's ready return ends its grace. After the grace expires,
   it is killed when it next becomes ready. A directory record belonging to
   the same account with status `DEAD` or `MISSING` settles the pending death
@@ -198,8 +200,7 @@ map data.
   and reload.
 
 State is saved after each change and every five seconds. On a normal disable,
-the plugin records departures for ready committed characters, removes lure
-text displays, and saves state. Existing grace deadlines and penalties are
+the plugin removes lure text displays and saves state. Existing grace deadlines and penalties are
 preserved, and the JSON field layout is unchanged. Lure timers use
 wall-clock time, so a join window that expired during downtime activates immediately.
 Stop the server before editing the data file, since periodic saves overwrite
