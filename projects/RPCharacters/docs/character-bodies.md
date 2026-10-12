@@ -9,13 +9,16 @@ and character activation flow remains in use.
 ## Playing a character
 
 Players enter a private selection world with no ready character session. A Paper
-dialog focuses one living character at a time, showing a skin portrait, race,
-class, age, last location and playtime. Character tabs and arrows change the
-preview; **Play** enters the selected character. **New character** starts creation
-when slots and the switch cooldown allow it. **Memorials** opens the records of
-dead and missing characters. The focused character's card shows its own pouch and
-bank from the DenarEconomy ledger and its own guild from SimpleFactions 4.0.0.
-The guild line stays hidden while factions are unavailable.
+dialog focuses one living character at a time. Its card shows a skin portrait,
+name, race, class, age, guild and when it was last played. Character tabs and
+arrows change the preview; **Play** enters the selected character, and its
+tooltip lists the playtime, pouch and bank, plus the birthday and last location
+where recorded.
+**New character** starts creation when slots and the switch cooldown allow it;
+its tooltip shows the slots used. **Memorials** opens the records of dead and
+missing characters. Pouch and bank come from the character's own DenarEconomy
+ledger and the guild from SimpleFactions 4.0.0. The guild is hidden when the
+character has none or factions are unavailable.
 
 Portraits load asynchronously through ProvinceSystem's authenticated, read-only
 `GET /characters/plugin/wardrobe/{player_uuid}/{character_id}/worn` route. It
