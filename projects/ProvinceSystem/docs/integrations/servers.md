@@ -66,9 +66,14 @@ check after the first reads only the logs.
 
 ## Restart and release controls
 
-Admins and the owner (`manage_servers`) can review and start a five-minute
-restart countdown, cancel it before installation starts, and recheck a failed
-restart before reopening. The www website can control Main and Dev; the Dev
+Admins and the owner (`manage_servers`) can review and start a restart,
+cancel Main's five-minute countdown before installation starts, and recheck a
+failed restart before reopening. Dev starts immediately after confirmation.
+Main's unchecked **OVERRIDE: restart immediately** option skips the countdown
+for emergencies, recording the flag, actor and reason. It still requires the
+backup reference, saves, release/file verification and startup checks. Instant
+restarts begin installation immediately and cannot be cancelled.
+The www website can control Main and Dev; the Dev
 website can control Dev only. Every action requires the site's own origin,
 a current signed-in session and a reason, and is recorded in the staff audit.
 View-as sessions cannot issue these actions.
@@ -94,7 +99,8 @@ latest AMP ZIP backup time when available. That timestamp and the staff's
 reference are not automatic proof that all affected data is backed up. The
 helper backs up displaced jars, not worlds or databases.
 
-At zero the helper enables maintenance and confirms it, sends `save-all
+After Main's countdown, or immediately for Dev and Main's emergency override,
+the helper enables maintenance and confirms it, sends `save-all
 flush` and waits for its save confirmation. It rechecks the files against the
 reviewed plan, backs up changed jars outside plugin loading paths, installs
 verified files with new inodes, then sends console `stop`. AMP relaunches
@@ -184,8 +190,9 @@ reports `available` while signed in as an admin or owner. It lists
 ## Scheduled restarts and recovery
 
 The host and the currently configured AMP schedules use UTC. The helper
-rejects a start when its countdown plus fifteen minutes for restart/checks
-overlaps these windows:
+rejects a start when its restart/check window overlaps these windows. Normal
+Main restarts reserve twenty minutes including the countdown; Dev and Main's
+emergency override reserve fifteen minutes:
 
 - Main: 05:25–06:20 daily, covering the warnings, 06:00 application Stop,
   06:02 backup and 06:10 Start.
