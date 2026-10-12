@@ -21,10 +21,20 @@ linking while selecting. Other commands, movement, damage, item transfers and
 ordinary chat remain blocked. Players in selection are hidden from each other
 and from players in the game worlds.
 
+On login, Paper first restores any saved vehicle in its original world. The
+player then dismounts into selection; boats, mounts, other passengers and cargo
+stay behind. If resource-pack loading blocks the selection-room teleport, the
+player remains hidden and unable to interact while entry retries. Character
+selection opens only after room entry succeeds.
+
 The destination teleport must succeed before progression or inventory is restored.
 If another plugin blocks it, selection remains available without an activation
 lease or a ready session. Wait for resource packs to finish loading before retrying;
 ItemsAdder can block teleports while a pack is still loading.
+Missing character class definitions also leave selection available so another
+character can be chosen. Failures after progression restoration starts retain
+their activation evidence for manual recovery; reward commands may already have
+run, so blindly repeating that restoration is unsafe.
 
 Starting character creation while playing also requires reconnecting into
 selection. An unfinished in-game creation draft is cancelled on logout; completed
@@ -50,6 +60,9 @@ including the TFMC ring and artifact slots, travel with that inventory. Separate
 custom inventories owned by other plugins require their own integration.
 Forced respawn points retain their forced flag. Empty vanilla accessory slots
 are refreshed through MMOInventory without replacing equipped accessories.
+Game mode, flight settings and shoulder entities remain account-level state.
+Permanently dead characters cannot reopen their stored ender chests through
+selection; those contents remain in the retained body record.
 
 Each character also has its own MMOCore progression, class level and experience,
 skills and bindings, profession experience, skill/attribute/profession point
@@ -66,6 +79,9 @@ characters start with fresh progression. Only the reviewed body heir receives
 the legacy items; other characters receive empty bodies at their saved locations
 or the configured spawn. Accounts with no characters have their legacy body
 retained in quarantine rather than assigned to a future character.
+The initial progression roster is captured at join. A web-created character
+arriving while player data loads receives fresh defaults after the baseline is
+saved, rather than inheriting the account's previous progression.
 
 New graves record the dying character as well as the account. Locked-grave
 ownership and insurance recovery require the matching ready character, unless
@@ -111,8 +127,13 @@ heirs:
 
 The mapping is account UUID to character UUID. Pin the SHA-256 of the exact file
 bytes in `heirs-sha256`. An account with existing characters and no valid reviewed
-heir is blocked. Do not edit an already migrated account's heir to transfer its
-possessions or grave privileges.
+heir is blocked, except a first-ever Minecraft login with no inventory or ender
+chest possessions. That new account's website-created characters start fresh;
+the original body is retained in quarantine. Only exact MMOInventory accessory
+slot placeholders count as empty slots, never equipped accessories or ordinary
+diamond hoes. Previously played accounts still require a reviewed heir even if
+their inventories are empty. Do not edit an already migrated account's heir to
+transfer its possessions or grave privileges.
 
 For cutover:
 
@@ -182,9 +203,31 @@ quarantined.
 
 If recovery fails, keep the affected player offline. Stop Minecraft before
 repairing files, retain the failed files and logs, and compare the player tag,
-activation lease, body revisions and migration baseline. Do not delete tags or
-leases to bypass a refusal, reset revisions, remove baselines, or activate both
-a quarantined copy and its committed body.
+activation lease, body revisions and migration baseline. A room tag and an empty
+inventory alone do not prove recovery is safe: another plugin could have moved
+items or executed reward commands during the interrupted activation.
+
+For a proven failed activation of an empty body, a reviewed recovery can retire
+the exact matching lease after checking all of the following:
+
+- Logs show the character never entered gameplay or published a ready session.
+- The vanilla file is alive and tagged ROOM in the selection world, with no
+  inventory, cursor, crafting or ender chest possessions; exact accessory GUI
+  placeholders are the only permitted inventory contents.
+- Lease owner, character and revision match the checksummed stored body, with
+  neither pending nor completed respawn recorded. The target body contains no
+  gameplay items, and the migration and progression records are intact.
+- Class and level reward effects have been checked independently. If commands
+  may already have granted items, money or other state, reconcile those effects
+  before allowing restoration to repeat; an empty target body is insufficient.
+- A coordinated backup retains every original file and log. Recheck their hashes
+  while stopped, move the lease into a preserved recovery directory, and leave
+  body, progression and vanilla files unchanged. Normal ROOM recovery quarantines
+  leftover placeholders before reopening selection.
+
+Other ambiguous cases remain blocked for investigation. Do not delete tags or
+leases merely to bypass a refusal, reset revisions, remove baselines, or activate
+both a quarantined copy and its committed body.
 
 Rollback restores the entire coordinated pre-cutover backup while Minecraft is
 stopped. Simply disabling the feature after characters have played would expose
@@ -203,6 +246,7 @@ callbacks.
 A Paper integration run should verify real item components and accessory slots,
 A → logout → B → logout → A isolation, cooldown and same-character resume, death
 and grave recovery, creation, selection during resource-pack loading and retry
-after loading, server restart, live-tag crash recovery, failed
-storage and corrupt-file refusal. Mocked Paper or MMOCore boundaries alone do not
-prove those runtime behaviors.
+after loading, server restart, live-tag crash recovery, saved mounts with cargo,
+first-login web characters, roster changes during loading, failed storage and
+corrupt-file refusal. Mocked Paper or MMOCore boundaries alone do not prove those
+runtime behaviors.
