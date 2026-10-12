@@ -36,7 +36,23 @@ and from players in the game worlds.
 
 On login, Paper first restores any saved vehicle in its original world. The
 player then dismounts into selection; boats, mounts, other passengers and cargo
-stay behind. If resource-pack loading blocks the selection-room teleport, the
+stay behind. With `character-bodies.require-resource-pack: true`, a **Loading TFMC**
+dialog holds the player before the room teleport, respawn preparation and selector.
+It requires TFMCCore's `resource-pack.require-on-join: true`; both settings default
+to `false` and require a restart. Core confirms every required pack part, or its
+single-pack fallback, before selection opens. A missing provider, partial load,
+failed load or old connection's response cannot admit the player. Play and New
+character also recheck readiness.
+
+The loading screen offers Leave. A failed request offers Retry and Leave; Retry
+starts a fresh Core request without bypassing loading. A missing provider or a
+wait exceeding 400 seconds offers Leave so the player can reconnect. The player
+remains hidden and protected throughout, and logging out retains the recovered
+body. The loading dialog uses vanilla text, so it does not need the pack it is
+waiting for. See [required join packs](../../TFMCCore/resource-pack.md#required-join-packs)
+for delivery settings and removing duplicate automatic requests.
+
+If another plugin blocks the selection-room teleport, the
 player remains hidden and unable to interact while entry retries. Character
 selection opens only after room entry succeeds.
 
