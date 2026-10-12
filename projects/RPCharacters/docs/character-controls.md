@@ -4,6 +4,13 @@
 
 Commands and configuration below describe the bundled defaults on `main`. Server configuration can override them.
 
+## Character selection
+
+With [separate bodies](character-bodies.md) enabled, login opens the character
+selection dialog. `/rpcharacter select` reopens it while selecting; while playing,
+the command disconnects you so you can choose on reconnect. Each character has
+its own items and progression. `/linkdiscord` remains available in selection.
+
 ## Mail recipient visibility
 
 `/rpcharacter mail` toggles whether your active character appears in BirdMessenger’s recipient list; `/rpcharacter mail off` hides it and `/rpcharacter mail on` restores it. Characters are listed by default, and the setting persists across logouts and restarts. Already-sent mail still arrives.
@@ -20,7 +27,11 @@ A character's first class and first subclass are free. Other picks are priced li
 
 Staff with `class-selection.reset-permission` (`rpchar.class.reset`) can run `/rpcharacter admin resetclasses confirm` to give every character a fresh class window: class and subclass changes are free for the lock-time again, paid prices start over and the first subclass is free again. Online characters start now, offline ones when they next join. The reset count is kept in `data/class-resets.yml`.
 
-The class level is shared by every character and kept in the player file (`account-class-level`). A class capped below it, such as a base class, shows its cap without lowering the level other classes and characters get; accounts saved before this start from the level in MMOCore's own save.
+With separate bodies disabled, the class level is shared by every character and
+kept in the player file (`account-class-level`). Enabling bodies gives each
+character its own saved class level. A class capped below the saved level, such
+as a base class, shows its cap without lowering the level available to that
+character's other classes. Legacy accounts start from MMOCore's saved level.
 
 ## Nonlethal knockouts
 

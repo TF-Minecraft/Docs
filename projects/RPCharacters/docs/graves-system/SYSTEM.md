@@ -45,6 +45,12 @@ experience is returned. Recovery removes the grave. The insurance item recovers
 the owner's newest grave remotely. `/grave unlock` unlocks the newest grave for
 other players.
 
+With [separate bodies](../character-bodies.md) enabled, new graves also store the
+dying character's UUID. Owner recovery and insurance require that character's
+ready session; another character on the same account does not inherit access.
+Legacy graves use the account's reviewed migration heir. Staff and public
+recovery rules still apply, and holograms identify the recorded character.
+
 Protected graves allow the killer to steal while other non-owners are blocked.
 Thievery takes items subject to its budget and inventory capacity; excess stays
 in the grave. RPCharacters does not dump contents for non-owners when Thievery
