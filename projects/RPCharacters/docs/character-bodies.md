@@ -14,8 +14,8 @@ class, age, last location and playtime. Character tabs and arrows change the
 preview; **Play** enters the selected character. **New character** starts creation
 when slots and the switch cooldown allow it. **Memorials** opens the records of
 dead and missing characters. The focused character's card shows its own pouch and
-bank from the DenarEconomy ledger. Guild membership is still labelled as shared by
-all characters; this feature does not migrate factions.
+bank from the DenarEconomy ledger and its own guild from SimpleFactions 4.0.0.
+The guild line stays hidden while factions are unavailable.
 
 Portraits load asynchronously through ProvinceSystem's authenticated, read-only
 `GET /characters/plugin/wardrobe/{player_uuid}/{character_id}/worn` route. It
