@@ -26,7 +26,11 @@ An unavailable wardrobe preview falls back to the account skin; if no image can
 be loaded, the dialog shows a neutral figure. Everyone in selection wears the
 default Steve skin, a Mojang-signed copy built into RPCharacters. It goes on as
 the player joins, before Paper sends the player list, so they arrive as Steve
-without a skin refresh during the resource-pack prompt. Helmet, mask and
+without a skin refresh during the resource-pack prompt. LibsDisguises re-reads a
+cached player's skin 20 ticks after they join, which would now save Steve as
+their disguise skin, so both servers set `UpdateGameProfiles: false` in
+`plugins/LibsDisguises/configs/libsdisguises.yml`. Skins already in its cache
+stay as they are. Helmet, mask and
 wardrobe changes do not replace it there. Portraits still
 fall back to the account skin worn before it. Play puts the cached wardrobe or
 account skin back at once, then refreshes the wardrobe from ProvinceSystem. A
