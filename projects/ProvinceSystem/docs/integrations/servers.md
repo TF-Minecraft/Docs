@@ -34,6 +34,8 @@ Jars are matched to plugins by SHA-256 first, using the digests GitHub reports
 for release assets, then by the release file's name before its version (for
 example `tfmccore-`). The running version comes from the
 `Enabling <name> v<version>` lines of the most recent startup in `logs/`;
+plugins that then report an enable failure or disable before startup finishes
+are excluded from the running versions.
 Paper also starts a new log at midnight, so up to twelve rotated logs are read
 until one holds a startup. A jar replaced with another of the same version
 since the last startup is not detected.
@@ -86,7 +88,8 @@ The release inventory is cached for ten minutes with a GitHub token, or one
 hour without one. A failed refresh prevents a release plan.
 
 Main upgrades also require the target release's exact bytes to be on Dev,
-with its version enabled at Dev's last completed startup. A jar changed after
+with its version enabled without a subsequent enable failure or disable at
+Dev's last completed startup. A jar changed after
 that startup is not proof and is skipped. This check proves that the release
 was loaded; staff must still verify its changed features and dependencies.
 Related migrations must be deployed as a reviewed set with a recovery plan.
@@ -107,16 +110,24 @@ verified files with new inodes, then sends console `stop`. AMP relaunches
 Paper. The helper never uses AMP instance `stop` or `restart`, kills Java,
 or runs reload commands.
 
-A new completed startup must load every recorded plugin at its expected
-version, with the planned hashes on disk and no additional startup errors.
-Existing errors are recorded in the plan and compared with severity/message
-counts; they do not prevent an unchanged restart. Plans expire after ten
+A new completed startup must load every changed plugin and every previously
+working plugin at its expected version, with the planned hashes on disk and
+no new startup error messages. An unchanged plugin with an explicitly recorded
+enable failure may retain that same failure at the same version. It is not
+shown as a staged activation and never counts as a verified Dev release.
+Existing errors are recorded in the plan and compared as distinct messages,
+preserving severity and normalizing worker thread numbers in log headers.
+Repeated copies of the same known error do not prevent reopening; a new
+message still fails the check. Older saved plans use the same comparison.
+Plans expire after ten
 minutes. A changed file invalidates the plan even when its size and
 modification time are unchanged.
 
-For Main release upgrades, successful startup leaves maintenance on with
+For Main release upgrades and restarts that activate staged plugin versions,
+successful startup leaves maintenance on with
 **Startup passed**. Check the changed features, then use **Recheck and
-reopen** with a reason. Dev upgrades and ordinary restarts reopen after the
+reopen** with a reason. This also applies to Main's emergency override. Dev
+upgrades and restarts with no Main plugin activation reopen after the
 automatic checks pass. Cancellation, reopening and failure resolution also
 require reasons.
 
@@ -164,7 +175,8 @@ The installer performs the cutover and cleanup:
 5. Installs `/etc/systemd/system/tfmc-server-control.service`, starts it, checks
    both socket scopes and prepares read-only restart plans to exercise file
    and console access. It does not start a countdown, replace a jar or
-   restart Minecraft. Original job evidence is checked again before cleanup.
+   restart Minecraft. Original accepted job evidence is checked again before
+   cleanup; expired plans that were never accepted may be pruned normally.
 6. Removes the old helper directory and user-unit file from `ryan`, moving
    the known old `stage-<sha>` directories and source tar files into the
    private cutover backup. It preserves the `ryan` account and its separate
@@ -262,6 +274,15 @@ needed, and use application Start. Do not stop/restart the AMP instance.
 **Recheck and reopen** accepts either the complete planned set or the complete
 recorded original set, provided the current server loaded it and startup
 checks pass. A mixture never passes.
+
+If new startup errors persist, **Recheck and reopen** continues to refuse.
+The website does not offer an override for those errors. A deployment owner
+with console access must investigate and verify the running plugins, changed
+features and data before deciding whether to send `maintenance off` manually.
+Then use **Mark failure handled** with the findings and reason. Resolving the
+job alone leaves maintenance enabled and prevents a new plan until the server
+is ready. Reopen requests allow up to two minutes for file checks and console
+confirmation; a disconnected client should refresh job status before retrying.
 
 **Mark failure handled** records a staff reason and releases the job lock. It
 issues no console commands, restores no files and does not disable maintenance.
