@@ -41,7 +41,7 @@ caller.
 | `currentSession(Player)` | The session being played now, or empty. |
 | `isCurrent(CharacterSession)` | Whether that session is still being played. It turns false when the session ends and never turns true again. |
 | `info(UUID characterId)` | Any character, online or offline, or empty if unknown. |
-| `characters(UUID ownerId)` | Every character on the account. Empty means the records could not be read; an empty list means the account has none. |
+| `characters(UUID ownerId)` | Every character on the account, as an immutable copy. Empty means the records could not be read; an empty list means the account has none. |
 | `lastPlayed(UUID ownerId)` | The character the account played most recently, dead or alive. |
 | `displayName(Player)` | The name other players see now, including masks and aliases. |
 
@@ -73,35 +73,50 @@ still clean up against it.
 fires only after the death has been saved, and does not fire if the save fails.
 `killerId` and `killerCharacter` may be null; a killer character always belongs to
 `killerId`. Delivery is not durable: a crash between the save and the event loses
-it, and a later replay may deliver it again, so consumers must be idempotent by
-`deathId`.
+it. Consumers must be idempotent by `deathId`.
 
 None of these events can be cancelled.
+
+## Provider obligations
+
+A provider must fire the end event for a session, and let it finish, before
+starting the account's next session, and must never nest transitions for one
+account, such as starting a session from an end listener. It must never reuse a
+session ID, must fire a `SHUTDOWN` end for every active session when it disables,
+and must return immutable lists. The `CharacterIdentity` Javadoc lists the same
+rules.
 
 ## Per-session state
 
 `CharacterSessionMap<V>` holds at most one value per account, stored against the
 session that put it. Create it on enable with the plugin and an optional
-`onEnd(session, value)` callback, and call `close()` on disable.
+`onEnd(session, value)` callback, and call `close()` last in `onDisable`.
 
 `put(session, value)` stores the value and returns true only if the session is
-current; a late callback for an ended session gets false and changes nothing.
-`get(session)` returns the value only while that session is current and is the one
-that stored it, and `get(player)` does the same for the player's current session.
-`remove(session)` removes the value only if that session stored it, without calling
-`onEnd`.
+current; a late callback for an ended session gets false and changes nothing. If the
+account still holds a value from an earlier session whose end the map missed, `put`
+passes that value to `onEnd` first; a failing callback is logged and the new value
+is still stored. `get(session)` returns the value only while that session is current
+and is the one that stored it, and `get(player)` does the same for the player's
+current session. `remove(session)` removes the value only if that session stored
+it, without calling `onEnd`.
+
+Inside end-event listeners the ending session is no longer current, so `get`
+returns empty there. Clean up in `onEnd`, or take the value with
+`remove(session)`.
 
 When a session ends, the map calls `onEnd` with the stored value and then removes
-it, even if `onEnd` throws. It listens at `MONITOR` priority, after lower-priority
-end listeners. Providers must finish dispatching the end event before starting
-another session; nested transitions would interrupt outgoing cleanup.
+it, even if `onEnd` throws. A value the next session stores while `onEnd` runs is
+kept. The map listens at `MONITOR` priority, after lower-priority end listeners.
 
 `close()` stops listening and flushes every remaining value through `onEnd`. Call
-it on disable: consumers may stop before the provider can fire `SHUTDOWN`. It also
-works after the provider unregisters. A failed callback does not prevent the other
-values from flushing; failures are reported together as suppressed exceptions on
-an `IllegalStateException`. Closing again or closing from an end callback does not
-flush the same entry twice, and writes are rejected once closing begins.
+it last in `onDisable`: consumers may stop before the provider can fire `SHUTDOWN`.
+It also works after the provider unregisters. A callback that throws an exception
+does not stop the other values from flushing; the exceptions are then thrown
+together as suppressed exceptions on an `IllegalStateException`. Errors are not
+caught. Closing again or closing from an end callback does not flush the same entry
+twice. Once closing begins, `put` throws `IllegalStateException`; before that it
+returns false for a session that is not current.
 
 Use the map for state that lives only while the character is played, such as a
 loaded cache that `onEnd` flushes. Debts, refunds, character cooldowns and anything
