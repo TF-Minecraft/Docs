@@ -32,7 +32,8 @@ ready session. Dismissing the dialog does not admit the player into gameplay;
 `/rpcharacter select` reopens it. Players can use character creation and Discord
 linking while selecting. Other commands, movement, damage, item transfers and
 ordinary chat remain blocked. Players in selection are hidden from each other
-and from players in the game worlds.
+and from players in the game worlds. Permanent-death respawns are hidden before
+entering selection, while the outgoing body is saved after respawn.
 
 On login, Paper first restores any saved vehicle in its original world. The
 player then dismounts into selection; boats, mounts, other passengers and cargo
@@ -142,6 +143,23 @@ character-bodies:
 letters, digits, underscores and hyphens. Existing unrelated worlds are refused.
 The plugin creates a void world and a protected quartz platform. The dialog is
 the selection interface; this does not create mannequin displays.
+
+All selecting players share that platform. The plugin sets `maxEntityCramming`
+to `0` in its owned selection world. To disable server-side entity pushing as
+well, set the following in `<selection-world>/paper-world.yml` and restart the
+server, preserving the file's existing settings and `_version`:
+
+```yaml
+collisions:
+  max-entity-collisions: 0
+```
+
+Apply this override only to the selection world. Both settings are needed to
+skip Paper's entity-pushing and overcrowding checks; the gamerule alone does
+not disable pushing. Mutual player hiding prevents selecting players from
+receiving each other's entities. No scoreboard teams or per-character collision
+flags are changed. A shared platform does not establish a concurrent-join limit;
+validate client behavior and server load separately before increasing capacity.
 
 `persistent-keys` lists exact player persistent-data keys to isolate by character.
 Account-level keys remain outside this list. Keys in the plugin's reserved body
