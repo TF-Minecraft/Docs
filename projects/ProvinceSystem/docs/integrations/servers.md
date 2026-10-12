@@ -12,9 +12,11 @@ connection below installs released jars and restarts servers.
 
 Each server has a card showing whether it is running, its Paper version and
 how many plugins have each kind of problem. Below them,
-**Needs a look** lists the plugins with a problem, worst first; **All TFMC
+**Needs a look** lists the plugins with a problem, worst first; **TFMC
 plugins** lists every plugin, and **Other plugins** compares third-party jars
-between Main and Dev by version.
+between Main and Dev by version. Each row shows the plugin's latest release
+beside the version each server runs, dimmed when it matches that release.
+Hovering a version shows the jar's file name.
 
 A plugin is any active repository in the organisation whose published
 releases carry a jar. Drafts and pre-releases are ignored. Each server copy
@@ -83,7 +85,7 @@ website can control Dev only. Every action requires the site's own origin,
 a current signed-in session and a reason, and is recorded in the staff audit.
 View-as sessions cannot issue these actions.
 
-**Restart only** activates the jars already on disk. **Update and restart**
+**Restart** activates the jars already on disk. **Update and restart**
 upgrades installed TFMC plugins whose hashes identify known older published
 releases. Non-increasing versions and plugins not installed on the target are
 skipped; the review shows those skips.
