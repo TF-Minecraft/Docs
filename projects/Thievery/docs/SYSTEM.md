@@ -178,6 +178,43 @@ Only listed IF ids are lockable. Listed entity types are all lockable.
 
 Thievery softdepends InteractibleFurniture. Register IF listeners only when IF is present.
 
+## Hands-up inventory inspection
+
+Any player can run `/handsup` to raise both arms and let nearby players
+right-click them and open `Inventory (read-only)`. Run `/handsup` again or sneak
+to withdraw consent and close all
+inspections of your inventory. The command takes no arguments and needs no
+thief trait or staff permission.
+
+The pose uses ItemsAdder 4.0.18 and the `tfmc_handsup` emote from
+[ServerAssets](../../ServerAssets/handsup-emote.md). Both arms rise over 0.8
+seconds and hold above the shoulders. Inspection is enabled only after the
+ItemsAdder API confirms this animation is playing. A missing plugin, missing
+animation or refused start leaves inspection off. Playing the emote through
+ItemsAdder alone does not grant inspection consent; use `/handsup`.
+
+The first three rows show the main inventory, the fourth shows the hotbar, and
+the last shows helmet, chestplate, leggings, boots and off-hand, in that order.
+Items retain their names and lore. The view uses independent item copies and
+refreshes every five ticks. It does not include the ender chest or crafting grid.
+All clicks and drags, including shift-clicks, number keys, off-hand swaps,
+collect-to-cursor, drops and creative cloning, are blocked across the inspection
+window and the viewer's inventory while it is open.
+
+Inspection requires being within four blocks in the same world and being able
+to see the target. Moving out of range closes the view on its next refresh.
+Emote cancellation, death, disconnect, teleport, character-session end, plugin reload or shutdown
+clears consent and closes affected views. Character-session cleanup uses the
+TLibs 2.3.0 character API. Consent is not saved across restarts.
+
+Hands up does not restrain the player or grant immunity. They can walk while
+posed; sneaking, taking or dealing damage, and leaving the ground cancel the
+emote and inspection. Right-clicks on a consenting player open
+inspection before robbery or pickpocket targeting and do not start either
+action, spend a theft budget or record a theft cooldown. Ordinary right-click
+profile display is suppressed during consent; explicit profile commands remain
+available. `/handsup` does not accept or cancel an existing robbery.
+
 ## Robbery (success loot)
 
 Start the bar only if the player does not already have access (same as chests; honor `debug-allow-own-chest`). Apply the chest **thief trait** check (`Cache.traits`). Reuse door start checks: clues, guild-online, fail cooldown, lockpick strength.
