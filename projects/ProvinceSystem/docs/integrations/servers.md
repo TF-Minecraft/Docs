@@ -255,6 +255,34 @@ startup before midnight whose log continues into the next day. A changed jar
 ACL updates its change time; if that invalidates Dev evidence, the release
 becomes eligible after a subsequent verified Dev startup.
 
+## Updating the helper
+
+Once the administrator has installed `scripts/server-control-update.py` as
+`/usr/local/sbin/tfmc-server-control-update` and allowed the deployment
+account to run it with sudo, helper code changes no longer need root:
+
+```sh
+sudo /usr/local/sbin/tfmc-server-control-update <full commit on main>
+```
+
+It updates only the four modules under
+`/usr/local/lib/tfmc-server-control/backend/src/servers/`, which run as the
+service account. The commit must be on the ProvinceSystem `main` branch with a
+successful push Build run. The updater compiles the modules as root but never
+imports or runs them as root. It refuses a commit that changes the service
+unit, the console wrapper or the updater itself, or whose installer differs
+from the installed commit's; those need the administrator installer. It also
+refuses while a restart is running; a Main feature review waiting for staff
+does not block it.
+
+The updater backs up the old modules under
+`/var/backups/tfmc-server-control/update-*` (the last ten are kept), restarts
+the service and checks that both sockets answer with their scopes. If they
+don't, or the update is interrupted, it puts the old modules back.
+`/usr/local/lib/tfmc-server-control/SOURCE.json` records the installed commit,
+and `/var/log/tfmc-server-control-update.log` records each attempt. Running it
+with the commit that is already installed only records that commit.
+
 ## Scheduled restarts and recovery
 
 The host and the currently configured AMP schedules use UTC. The helper
