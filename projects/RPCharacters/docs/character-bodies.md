@@ -23,7 +23,12 @@ there is no signed worn skin. It checks ownership and reads the effective slot
 without reconciling wardrobe limits, acknowledging changes or applying skins.
 RPCharacters downloads the signed texture's image from `textures.minecraft.net`.
 An unavailable wardrobe preview falls back to the account skin; if no image can
-be loaded, the dialog shows a neutral figure. Previews never activate a character,
+be loaded, the dialog shows a neutral figure. Everyone in selection wears the
+default Steve skin, a Mojang-signed copy built into RPCharacters. Helmet, mask and
+wardrobe changes do not replace it there. Portraits still
+fall back to the account skin worn before it. Play puts the cached wardrobe or
+account skin back at once, then refreshes the wardrobe from ProvinceSystem. A
+player whose account skin cannot be read keeps it in selection. Previews never activate a character,
 apply an outfit or restore their body. Old clicks and late portrait responses
 cannot reopen a selector after playing, starting creation or reconnecting.
 
@@ -69,13 +74,26 @@ character can be chosen. Failures after progression restoration starts retain
 their activation evidence for manual recovery; reward commands may already have
 run, so blindly repeating that restoration is unsafe.
 
-Starting character creation while playing also requires reconnecting into
-selection. An unfinished in-game creation draft is cancelled on logout; completed
-characters remain saved and can be selected after reconnecting.
+While playing, `/rpcharacter select` returns the player to selection without
+disconnecting. They must stand still for `character-bodies.return-seconds`
+(default 5); moving, teleporting, mounting, taking damage or any refusal below
+cancels it. Starting character creation while playing does the same. It is
+refused while dead or respawning, mounted, falling, creating or editing a
+character, duelling, in a `/pvp` fight, knocked out, in a started SimpleFactions
+battle or held by an evil-roleplay session. Other plugins can refuse it by
+cancelling `CharacterSelectionRequestEvent`, which fires at the start and on each
+second of the countdown; set a reason with `deny`. Use it where a logout carries
+a penalty.
 
-While playing, `/rpcharacter select` disconnects the player. Reconnecting opens
-selection and follows the existing logout and combat rules. There is no live
-inventory swap. Resuming the last character does not consume or require the
+Once the countdown ends, the session ends with reason `SWITCH`, so session
+listeners clean up while the outgoing body is still in the world. Open duel
+challenges, an expired `/pvp` start mark and armour fastening are cancelled, and
+a temporary alias ends. The
+body and progression are then saved, and the player enters selection as at
+login. A failed save disconnects the player with the body kept live for recovery.
+An unfinished in-game creation draft is cancelled on logout.
+
+Resuming the last character does not consume or require the
 switch cooldown. Choosing another living character uses the configured
 permission-group switch cooldown and records the switch. A dead previous
 character does not prevent choosing a survivor. Permanent death ends the session
@@ -134,6 +152,7 @@ character-bodies:
   enabled: false
   heirs-sha256: ''
   selection-world: character_selection
+  return-seconds: 5
   # Optional; otherwise the first loaded world is used.
   spawn-world: world
   persistent-keys: []

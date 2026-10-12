@@ -8,7 +8,7 @@ Commands and configuration below describe the bundled defaults on `main`. Server
 
 With [separate bodies](character-bodies.md) enabled, login opens the character
 selection dialog. `/rpcharacter select` reopens it while selecting; while playing,
-the command disconnects you so you can choose on reconnect. Each character has
+it returns you to selection after you stand still for five seconds. Each character has
 its own items and progression. `/linkdiscord` remains available in selection.
 
 ## Mail recipient visibility
