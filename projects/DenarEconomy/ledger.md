@@ -37,10 +37,10 @@ A posting first adds together the legs on each account, using checked arithmetic
 
 - **The operation ID already exists with the same reason and legs.** It returns the stored result and changes nothing. The fingerprint compares the reason and the sorted legs, so the order of legs does not matter.
 - **The operation ID exists with a different reason or legs.** It returns `CONFLICT`, logs a warning and changes nothing. The first result stands.
-- **An account would go below zero where it may not, a sum overflows, or a dead character would be debited.** It records the operation as `REFUSED` and changes nothing. Posting the same ID again returns `REFUSED` again, even if the money has since arrived.
+- **An account would go below zero where it may not, a sum overflows, or a frozen character account would be debited.** It records the operation as `REFUSED` and changes nothing. Posting the same ID again returns `REFUSED` again, even if the money has since arrived.
 - **Otherwise** it applies every leg, records the operation as `APPLIED` with its legs, and commits.
 
-A dead character's accounts still receive credits such as wages, dividends and refunds. Debits from them are refused unless the posting's reason starts with `staff:` or `estate:`. DenarEconomy asks the TLibs character API for the character's status at posting time.
+A character account is frozen unless the TLibs character API reports the character as alive at posting time. That covers dead characters, and also characters whose status cannot be read because they are unknown or no identity provider is registered. Frozen accounts still receive credits such as wages, dividends and refunds. Debits from them are refused unless the posting's reason starts with `staff:` or `estate:`.
 
 ### Failures
 
@@ -70,7 +70,7 @@ SELECT SUM(cents) FROM accounts WHERE kind IN ('char', 'legacy');
 
 ## API for other plugins
 
-Depend on DenarEconomy with `provided` scope and call [Denars](https://github.com/TF-Minecraft/DenarEconomy/blob/main/src/main/java/net/tfminecraft/denareconomy/api/Denars.java) on the main thread.
+Depend on DenarEconomy with `provided` scope and call [Denars](https://github.com/TF-Minecraft/DenarEconomy/blob/main/src/main/java/net/tfminecraft/denareconomy/api/Denars.java) on the main thread. Every method except the account ID helpers throws `IllegalStateException` on another thread, before it looks up a service or calls a tax policy.
 
 | Method | Purpose |
 |---|---|
@@ -93,4 +93,4 @@ Choose operation IDs so that a retry reuses the same ID. Derive the ID from the 
 
 **Events.** `PlayerEarnMoneyEvent` fires after a taxable earning or trade has applied, with the earner's account name, the gross amount and `getCharacter()`. It can fire again when an operation is retried, and changing its amount no longer affects tax. `PlayerBankPulseEvent` fires before `/deco deposit` and `/deco withdraw`, and `PlayerDepositMaterialsEvent` fires on a main-hand right click with an item; both carry `getCharacter()` and fire only for a player with a current character.
 
-**Older calls.** `OfflineModifier.apply/change/balance`, `MoneyManager.addMoney/addMoneyToAccount/changeBal/doTaxes/getBalance`, `PlayerManager.get` and the per-player `Database` methods still compile. They act only on an online player's current character: changes post from the mint with reason `api` and never overdraw, and `doTaxes` returns the policy's tax. For an offline player or one without a character they refuse (false, zero or nothing) and log the first caller of each method with a stack trace. `PlayerManager.get` returns read-only balances whose `Account` mutators throw `UnsupportedOperationException`. Move callers to `Denars`; these methods are kept for one release.
+**Older calls.** `OfflineModifier.apply/change/balance`, `MoneyManager.addMoney/addMoneyToAccount/changeBal/doTaxes/getBalance`, `PlayerManager.get` and the per-player `Database` methods still compile. They act only on an online player's current character: changes post from the mint with reason `api` and never overdraw, and `doTaxes` returns the policy's tax. Amounts that are not finite or do not fit in whole cents are refused before any posting. For an offline player or one without a character they refuse (false, zero or nothing) and log the first caller of each method with a stack trace. `PlayerManager.get` returns read-only balances whose `Account` mutators throw `UnsupportedOperationException`. Move callers to `Denars`; these methods are kept for one release.

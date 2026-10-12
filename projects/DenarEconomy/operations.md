@@ -14,7 +14,7 @@ Every money command acts on the character the player is playing now. A player wi
 | `/deco bal` | Players | Shows the character's pouch and bank balances. |
 | `/deco pay <amount>` | Players | Takes the amount from the pouch and drops it as coins in the world. |
 | `/deco toitem <amount> [coin]` | Players | Converts pouch money into coin items. With a coin id or value, `<amount>` is a whole number of that coin. Items that do not fit are dropped at the player's feet. |
-| `/deco topouch` | Players | Puts the withdrawable coin stack in the main hand into the pouch and saves the player at once, so a crash cannot return the coins. World payout coins are refused. |
+| `/deco topouch` | Players | Takes the withdrawable coin stack in the main hand, saves the player, then credits the pouch. If the credit does not apply, the coins go back into the hand. World payout coins are refused. |
 | `/deco deposit <amount>` | Players | Moves money from the pouch to the bank. |
 | `/deco withdraw <amount>` | Players | Moves money from the bank to the pouch. |
 | `/deco baltop` | Players | Lists the 20 characters with the largest combined pouch and bank. |
@@ -25,7 +25,7 @@ Every money command acts on the character the player is playing now. A player wi
 | `/deco legacy` | Console, operators or `denareconomy.admin` | Lists pre-ledger money that has not reached a character yet. |
 | `/deco legacy assign <account> <character>` | Console, operators or `denareconomy.admin` | Moves an account's legacy money to one of that account's characters. |
 
-Money amounts must be positive and use at most two decimal places. `deposit` and `withdraw` first fire the cancellable `PlayerBankPulseEvent`, so another plugin can refuse banking at that moment. Coins that leave the pouch as items (`pay`, `toitem`) go to the mint account, and coins that come back (`topouch`, pickups) come from it.
+Money amounts must be positive and use at most two decimal places. `deposit` and `withdraw` first fire the cancellable `PlayerBankPulseEvent`, so another plugin can refuse banking at that moment. Coins that leave the pouch as items (`pay`, `toitem`) go to the mint account, and coins that come back (`topouch`, pickups) come from it. `pay`, `toitem` and PvP pouch drops spawn or hand over every coin in the same tick as the debit, so a shutdown straight afterwards cannot leave money debited but undelivered.
 
 Tab completion only offers `give`, `reload` and `legacy` to senders who can use them.
 
@@ -41,6 +41,8 @@ The console always passes the permission check; a player needs operator status o
 
 ## Coins in the world
 
-A picked-up coin is credited as operation `coin:<item entity UUID>`. The coin is removed only after that posting applies, so a coin that reappears after a crash cannot pay twice, and a player without a character leaves coins where they are. Coins a character drops are marked with that character; picking them up again is untaxed, while any other character, including another character of the same player, pays tax on them. Coins dropped before the ledger release carry the account instead of a character and are taxed when picked up.
+A picked-up coin is credited as operation `coin:<item entity UUID>`. The coin is removed only after that posting applies, and a player without a character leaves coins where they are. Picking up the same entity again never pays twice. If the operation was already recorded with different legs, the coin is removed only when the stored result is `APPLIED`; a coin whose earlier pickup was refused stays on the ground.
 
-A PvP death drops the victim character's pouch as coins unless keep-inventory or the `simplefactions.keep-pouch` metadata applies. If the character is already dead when the pouch would drop, its pouch is frozen and nothing drops.
+Coins are ordinary items. An unclean shutdown can roll back a coin item, in the world or in an inventory, whose credit already committed, the same as it can roll back any other item, and the restored coin can be credited again. Saving the player in `/deco topouch` does not prevent this. Coins a character drops are marked with that character; picking them up again is untaxed, while any other character, including another character of the same player, pays tax on them. Coins dropped before the ledger release carry the account instead of a character and are taxed when picked up.
+
+A PvP death drops the victim character's pouch as coins unless keep-inventory or the `simplefactions.keep-pouch` metadata applies. If the character is already dead when the pouch would drop, or its status cannot be read, its pouch is frozen and nothing drops.
