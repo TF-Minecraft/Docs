@@ -18,9 +18,12 @@ model servers with and without that API.
 
 Trait tests register the shared character service and cover absent providers,
 pending sessions, unknown character information, character switching, and current
-trait changes. Container and display tests exercise the shared checker before
-clue checks or lockpick start; plugin lifecycle tests cover the old-TLibs startup
-failure.
+trait changes, and mixed-case configured traits. Container and display tests
+exercise the shared checker before clue checks or lockpick start. Plugin lifecycle
+tests start Thievery without the character API and check that its protection
+listeners register while trait checks deny. Robbery tests cover requests made as
+one character and accepted after switching away and back, and pending requests
+expiring when either session ends.
 
 Surefire writes test results to `target/surefire-reports/`. JaCoCo includes every
 production class and writes `target/site/jacoco/index.html` and

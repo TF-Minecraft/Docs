@@ -37,14 +37,14 @@ The action bar confirms the selection and carried amount, or reports that no
 compatible ammunition is available. Selection is blocked while the gun is
 reloading.
 
-
 ## Character sessions and reload cleanup
 
-The build pins TLibs 2.3.0. GunsAndGadgets listens directly for shared
-`CharacterSessionEndEvent` events and no longer has a compile dependency or
-`softdepend` on RPCharacters. RPCharacters 2.16.0 supplies these events when
-installed; ordinary gun use remains available without a character provider. With
-a provider present, gun use waits until the character has a ready session.
+The build pins TLibs 2.3.0. With an older TLibs that lacks the character API,
+GunsAndGadgets logs an update message and disables itself at startup.
+RPCharacters is neither a build dependency nor a `softdepend`: GunsAndGadgets
+listens for the shared `CharacterSessionEndEvent`, which RPCharacters 2.16.0
+fires when installed. Without a character provider guns work normally; with one,
+gun use waits until the character has a ready session.
 
 A reload reserves the exact ammunition stacks it consumes and captures the current
 session. Its timer checks that session before progressing; a stale session or a
@@ -62,9 +62,9 @@ session ends, even when the player switches away and back to the same character.
 It also stops on disconnect, pending character readiness, or a provider appearing
 between scheduling and completion.
 
-For runtime validation, start a reload and exercise each session-end reason.
-Confirm ammunition returns to the outgoing inventory before its save, the next
-character receives no old reload completion, and clean shutdown preserves exact
-item metadata and quantities. Repeat without RPCharacters to check quit cleanup.
-See the [shared identity API](../TLibs/character-identity.md) and
+To check on a server, start a reload and end the session by switching, permanent
+death, quitting and shutdown. Each time the ammunition must return to the outgoing
+character's inventory and the next character must not finish the old reload.
+Repeat without RPCharacters to check quit cleanup. See the
+[shared identity API](../TLibs/character-identity.md) and
 [RPCharacters provider](../RPCharacters/docs/character-identity.md).
