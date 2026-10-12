@@ -4,6 +4,28 @@ Steal from lockable **displays**: InteractibleFurniture types, armor stands, and
 
 See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist.
 
+## Character traits
+
+Trait restrictions use TLibs' ready character session and the matching character
+snapshot. A configured list allows any one matching trait ID; IDs in configuration
+are compared exactly against the lower-case IDs in the snapshot. A null or empty
+list is unrestricted. Nonempty lists deny access while the character is loading,
+the identity provider is unavailable, or its character information is unknown.
+Each check reads the current session and traits; switching characters does not
+reuse the previous character's training.
+
+Commands, container lockpicking and display lockpicking use the same checker.
+Containers and displays silently refuse unavailable character information, and
+show the existing training message when a ready character lacks the required
+traits. Command messages retain their existing behavior. The pickpocket loader
+still defaults an empty configured list to `thief`; robbery permits an empty list.
+
+The build pins TLibs **2.3.0** and RPCharacters **2.16.0**. Install these providers
+with Thievery before restarting. An older TLibs without the identity API disables
+Thievery with an update message before initialization. RPCharacters remains a
+required dependency for clues, graves and evil-RP rewards. Account-owned locks,
+risk, cooldowns and saved data keep their existing format and ownership.
+
 ## Responsibilities
 
 | Target | Lock model | Robbery | Fail |
