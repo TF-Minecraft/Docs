@@ -122,70 +122,110 @@ require reasons.
 
 ## Host connection setup
 
-The website's existing read-only jar/log mounts remain in place. Control uses
-a separate Unix socket served by a helper running as `ryan` on the Minecraft
-host. One helper owns both sockets and persists countdowns independently of
-website containers, with one active operation at a time. It accepts only
-`status`, `plan`, `start`, `cancel`, `reopen` and `resolve`; clients cannot
-supply console commands, host paths or download URLs.
+The website's read-only jar/log mounts remain separate from control. Control
+uses a system service running as the locked `tfmc-server-control` account.
+The account has `/usr/sbin/nologin`, a locked password and no supplementary
+AMP, Docker or sudo groups. The service starts at boot independently of user
+login sessions; it does not need `loginctl enable-linger ryan`.
 
-Install from the reviewed ProvinceSystem revision on the host as `ryan`:
-
-```sh
-bash scripts/install-server-control.sh
-```
-
-The installer copies only the four server-control Python modules to
-`/home/ryan/.local/share/tfmc-server-control/code/backend/src/servers/`, installs
-`scripts/tfmc-server-control.service` as the user unit
-`tfmc-server-control.service`, and enables/starts it. Python 3.10 or later
-and the existing `sudo -n -u amp /usr/local/sbin/amp-ctl` permission are required.
-It refuses to replace a running helper. During an update, first check for
-active jobs; stop only this helper when idle, then run the installer again.
-
-The administrator must enable the user service after logout and reboot:
+The administrator installs from the reviewed ProvinceSystem revision:
 
 ```sh
-sudo loginctl enable-linger ryan
+sudo bash scripts/install-server-control.sh
 ```
 
-The administrator then adds the following mount and environment entry to the
-**production backend's existing override lists**, preserving the existing
-`!override` mounts, plugin/log folders and environment settings:
+Python 3.10+, systemd, ACL tools (`getfacl`/`setfacl`), `visudo`, the existing
+AMP helper and the canonical Main/Dev instance directories are required. Run
+with no active restart or pending Main feature review. If either backend
+already mounts the legacy `/home/ryan/.local/share/tfmc-server-control/`
+socket directory, first remove that mount and recreate that backend. The
+installer refuses a live legacy mount or busy job.
+
+The installer performs the cutover and cleanup:
+
+1. Creates or validates the locked service account and snapshots the existing
+   service files, code, job state and affected ACLs under a private
+   `/var/backups/tfmc-server-control/cutover-*/` directory.
+2. Stops only the idle control helpers and disables the old `ryan` user unit.
+   It copies plans, job journals and jar backups into
+   `/var/lib/tfmc-server-control/state/` with checksum verification, refusing
+   symlinks or a conflicting destination rather than overwriting evidence.
+3. Installs root-owned Python modules under
+   `/usr/local/lib/tfmc-server-control/backend/src/servers/`, a root-owned
+   `/usr/local/sbin/tfmc-server-command` and a validated sudoers entry allowing
+   only that wrapper as `amp`. The wrapper accepts the fixed Main/Dev
+   console commands used by this feature; it does not accept arbitrary
+   console input or AMP instance stop/restart commands.
+4. Grants traversal of the two instance paths, access to plugin jars and
+   top-level plugin replacement, read access to Maintenance's configuration
+   and logs, and backup directory metadata. It grants no backup archive
+   contents. Already readable jars do not receive a new ACL, preserving
+   their timestamp evidence where possible.
+5. Installs `/etc/systemd/system/tfmc-server-control.service`, starts it, checks
+   both socket scopes and prepares read-only restart plans to exercise file
+   and console access. It does not start a countdown, replace a jar or
+   restart Minecraft. Original job evidence is checked again before cleanup.
+6. Removes the old helper directory and user-unit file from `ryan`, moving
+   the known old `stage-<sha>` directories and source tar files into the
+   private cutover backup. It preserves the `ryan` account and its separate
+   SSH/deployment permissions.
+
+On failure before cleanup, the installer attempts to restore saved service
+files, code and ACLs and restart the previous helper. Inspect the printed
+backup directory and journal if any rollback step needs attention. It retains
+all state copies and the locked account for inspection. Do not delete the
+cutover backup until the migrated controls have been checked.
+
+The service runs with root-owned code, private state and a filesystem
+namespace exposing the two plugin folders, read-only logs and read-only backup
+folders. Other home-directory files, including AMP configuration outside
+those mounts, are hidden from the service. `RuntimeDirectoryPreserve=yes`
+keeps socket directories intact across service restarts, so existing container
+bind mounts follow the replacement socket inode. See the
+[systemd execution settings](https://github.com/systemd/systemd/blob/v249/man/systemd.exec.xml).
+
+The administrator appends the following entries to the **production backend's
+existing override lists**, preserving its `!override` volumes, existing
+server mounts and environment values:
 
 ```yaml
 services:
   backend:
     volumes:
-      - /home/ryan/.local/share/tfmc-server-control/www:/server-control:ro
+      - /run/tfmc-server-control/www:/server-control:ro
     environment:
       - SERVER_CONTROL_SOCKET=/server-control/control.sock
 ```
 
-If enabling the Dev website, its override uses the **Dev-only** socket:
+For the Dev website, use the separate **Dev-only** directory instead:
 
 ```yaml
 services:
   backend:
     volumes:
-      - /home/ryan/.local/share/tfmc-server-control/dev:/server-control:ro
+      - /run/tfmc-server-control/dev:/server-control:ro
     environment:
       - SERVER_CONTROL_SOCKET=/server-control/control.sock
 ```
 
-Mount the directory, not the socket file, so helper restarts expose the new
-socket inode. The sockets have mode `0600`, owned by `ryan`; the current
-backend runs as container root and can connect. If backend user mapping
-changes, explicitly grant that mapped user access rather than opening the
-socket to everyone. A read-only mount prevents replacing the socket; it does
-not prevent connecting to it. Do not mount either socket into branch previews
-or other containers, and do not expose it through a public proxy.
+Mount the directory, not the individual socket. Both sockets have mode
+`0600`, owned by `tfmc-server-control`; the current backend runs as container
+root and can connect. If backend user mapping changes, grant that mapped user
+explicit access rather than opening the sockets to everyone. A read-only
+mount prevents replacing the socket; it still allows connections. Never mount
+these sockets into branch previews or expose them through a public proxy.
 
 Recreate the affected website backend through the administrator's Compose
 workflow. Website code deploys still use GitHub Actions as described in
-[Previews and deploys](../../DEPLOY.md). Verify `GET /admin/servers/control`
-reports `available` while signed in as an admin or owner. It lists
-`allowed_servers` and the latest jobs. This check does not restart Minecraft.
+[Previews and deploys](../../DEPLOY.md). While signed in as an admin or owner,
+verify `GET /admin/servers/control` reports `available` and the expected
+`allowed_servers`. This check does not restart Minecraft.
+
+`SERVER_CONTROL_LOG_TIMEZONE` in the system unit must match the Dev JVM's log
+clock; the current host uses `Etc/UTC`. The Dev verification check handles a
+startup before midnight whose log continues into the next day. A changed jar
+ACL updates its change time; if that invalidates Dev evidence, the release
+becomes eligible after a subsequent verified Dev startup.
 
 ## Scheduled restarts and recovery
 
@@ -201,7 +241,7 @@ emergency override reserve fifteen minutes:
 These guards must be updated in `scheduled_restart` if AMP schedules change.
 Recheck other backup jobs and offline work before confirming a restart.
 
-Control state is under `/home/ryan/.local/share/tfmc-server-control/state/`.
+Control state is under `/var/lib/tfmc-server-control/state/`.
 Each plan has its immutable inventory, staged jars, `job.json` events and a
 `backup/` folder holding displaced jars. `jobs.json` records the latest job
 per server. Accepted plan IDs are never reused for another countdown, even
@@ -230,6 +270,6 @@ block work on Main, but active operations remain serialized. The helper's
 journal is available with:
 
 ```sh
-systemctl --user status tfmc-server-control.service
-journalctl --user -u tfmc-server-control.service
+sudo systemctl status tfmc-server-control.service
+sudo journalctl -u tfmc-server-control.service
 ```
