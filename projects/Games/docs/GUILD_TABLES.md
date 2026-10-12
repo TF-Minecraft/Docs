@@ -4,7 +4,7 @@ Guild-house tables connect blackjack operation to guild permissions, auto-dealer
 
 Bank money reaches the felt only through `BankAccount`, as a leg of a wager transaction. See [WAGER_ENGINE.md](WAGER_ENGINE.md).
 
-Games **softdepends SimpleFactions** and may call guild / bank / modifiers. SimpleFactions **does not** import Games, persist table ids, or listen to table events. **No Bukkit events** for create, dealer, or bank.
+Games requires DenarEconomy and **softdepends SimpleFactions** for guild identity, modifiers and profit bookkeeping. SimpleFactions **does not** import Games, persist table ids, or listen to table events. **No Bukkit events** for create, dealer, or bank.
 
 ## Modes
 
@@ -26,21 +26,26 @@ Staff auto needs `games.autodealer.staff`. It is not the default for a normal pl
 On place, store:
 
 - `ownerPlayer` (placer UUID)
-- `ownerGuildId` (guild id at place time, or null if no SF / no guild)
+- `ownerGuildId` (guild id at place time, or null for a personal table)
+- `ownerGuildIncarnation` (the owning guild's permanent UUID)
 
-Cap and bank always use **that guild id**, not "whoever is standing here." Re-resolve the guild object on cover / pickup. If the guild is gone: refuse auto cover, and on pickup skip bank deposit (chips still despawn / given per existing teardown).
+Guild membership and leadership use the active character. Editing or picking up a guild table requires that character to lead the captured guild incarnation, or staff permission. The placer account alone gives no guild-table rights. The account remains the host of a personal table.
+
+The captured incarnation selects the `guild:<uuid>` Denars account. A deleted guild's later namesake cannot use its tables, bank or expansion slots. Missing guilds, unavailable faction services and unresolved incarnations refuse funding; tray settlement retains the table and chips for review instead of dropping money through a failure fallback.
+
+Existing guild tables wait for `SimpleFactionsApi.ready()`. Migration preserves each original JSON file in `migrations/guild-tables/backup/` and writes a complete migration plan before applying it. Each table resolves its guild id once. Restart reuses that plan; an unresolved guild remains unresolved even if a namesake appears later. Deferred loads retry every five seconds without reloading already active tables.
 
 ## Cap
 
 SF `GuildModifier.AUTO_DEALER_TABLES` from an **expansion upgrade** (not a branch). `allowed-types`: `guild` and `realm`. Stacks with upgrade level via existing `Guild.getModifier`.
 
-A table counts against the cap if `autoDealer && !staffMint` and `ownerGuildId` matches.
+A non-staff guild table counts against the cap when its guild id and captured incarnation match the current guild.
 
 Refuse (do not place, or do not turn auto on) when `count >= cap`. Cap `0` means guild auto is off. Missing SF: guild auto off; staff mint still works.
 
 If upgrades drop so `count > cap`, **do not** pick up tables or cancel a live round. Every counted table of that guild **cannot start a new round** until `count <= cap` (turn auto off or pick up extras). A bet window that was already open refunds and does not deal.
 
-Toggling auto **off** frees the slot immediately. Human takeover of a guild-auto table (between rounds) does the same.
+Human takeover changes who deals; guild ownership and its slot remain.
 
 ## House float (any backed table)
 
@@ -49,11 +54,11 @@ No "please top up" wait. Cover is withdraw-or-refuse.
 1. During the bet window, after a legal chip-in, `need = max(0, action - tray)`. Only auto tables run a bet window, so on a human-dealt table the round reserve at step 5 is the only cover step.
 2. If `need == 0`, do nothing.
 3. Staff auto: spawn `need` (today).
-4. Guild auto: if bank wealth `< need` or bankrupt / no bank, **do not accept that chip-in** (restore item, message). Else `withdraw(need)`, spawn on tray.
+4. Guild auto: if bank wealth `< need` or bankrupt / no bank, **do not accept that chip-in** (restore item, message). Else post the guild debit through Denars, then materialize the planned chips on the tray.
 5. When bets close, blackjack reserves the round's worst case: `sum(boxStake) * max-hands-per-box * 2`, rounded up to a whole coin. Withdraw-or-refuse again, but at round scope: if the bank cannot supply it the round does not start and every box is refunded. Splits and doubles inside the round then take their cover from the reserve and never touch the bank. `closeBets` is the gate for both modes: the bet timer calls it on auto tables, and a human dealer reaches it with `/games bet close`, which is also the only way their round starts.
 6. Player wins peel the tray. The settle shortfall path still exists but the reserve should make it unreachable, so it logs a mismatch when `wager.audit-log` is on.
 7. Round end (settled or abandoned): the whole tray `deposit`s back to the owning guild bank, so the float is zero between rounds and house wins are banked each round rather than piling up as chips. Staff mint burns it. A table with no guild returns the float to its dealer instead.
-8. Pickup / teardown: any remaining tray on a backed table `deposit`s to the owning guild bank; if that guild is gone, drop the tray items. Staff mint tray is despawned, not dropped. Player pots still drop.
+8. Pickup / teardown: any remaining tray on a backed table `deposit`s to the owning guild bank; if the guild or posting is unavailable, retain the table and tray for review. Staff mint tray is despawned, not dropped. Player pots still drop.
 
 A guild running several tables shares one bank, so reserving per round is also what stops two tables from both counting the same denars.
 
@@ -73,7 +78,7 @@ Right-click shoe (existing claim path):
 
 - Already this player: **unset** dealer.
 - Empty seat, human table: **set** if the player is in `ownerGuildId` (or staff). No guild on the table: placer / staff only.
-- Guild auto, between rounds: **takeover** - become human dealer, `autoDealer=false`, tray stays, slot freed.
+- Guild auto, between rounds: **takeover** - become human dealer, `autoDealer=false`, tray and guild ownership stay.
 - Staff auto: guild members **cannot** takeover. Staff can turn mint off from options (when not live) or pick up the table.
 
 Leave-distance still does not clear dealer. Logout / pickup still does (existing).
@@ -101,6 +106,6 @@ Default `SHOE`. Engine stays dumb; blackjack asks the table for policy.
 
 ## Isolation
 
-One Games class (same idea as `RpNames`): plugin present + enabled, then `FactionManager` / `Guild` / `Bank`. Catch `LinkageError`. Do not scatter SF types through `BlackjackGame`.
+Guild access checks plugin presence, enabled state and `SimpleFactionsApi.ready()` before character membership and incarnation lookups. Errors fail closed. Denars owns money posting; SimpleFactions only reads identity/modifiers and records idempotent casino profit. New rounds wait for `Denars.taxReady()`.
 
 SimpleFactions integration: `GuildModifier` entry + `upgrades.yml` row. No Games dependency in SF `pom` / `plugin.yml`.

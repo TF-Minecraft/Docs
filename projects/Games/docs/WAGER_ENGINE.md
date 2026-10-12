@@ -10,11 +10,11 @@ A `MoneyAccount` is a place money can sit. All of them answer the same questions
 |---|---|---|
 | `PlayerAccount` | Coins in an inventory | Filtered, so a blackjack box only takes real money coins. Falls back to dropping at the table when the player is gone, so a payout is never deleted |
 | `BucketAccount` | One owner's stakes in the `TableLedger` | The tray is the bucket keyed by the table's own id |
-| `BankAccount` | The owning guild bank | The only class in games that reaches SimpleFactions money, via the package-private `GuildBank` |
+| `BankAccount` | Captured guild incarnation account | Reads Denars balance; mutations are legs of the transaction posting |
 | `MintAccount` | Nothing, creates money | Refuses on anything but a staff-mint table |
-| `TaxSink` | Nothing, destroys chips | Withheld citizen tax on coin winnings. Not on the felt |
+| `TaxSink` | Withheld chips | Credits their actual whole-chip value to the captured tax account in the same posting |
 
-Build them through `Accounts`: `bucket`, `tray`, `pockets`, `coins`, `declared`, `payee`, `ground`, `bank`, `mint`, `taxSink`, and `house`, which picks mint or bank depending on the table.
+Build them through `Accounts`: `bucket`, `tray`, `pockets`, `coins`, `declared`, `payee`, `ground`, `bank`, `mint`, and `house`, which picks mint or bank depending on the table.
 
 ## A transaction
 
@@ -35,14 +35,13 @@ Legs come in four shapes:
 - `moveAll` and `moveStreet` - everything a bucket holds, or everything it holds from one betting street.
 - `spread` - one amount covered by several sources in turn, which is how a pot pays out of the buckets that built it.
 
-`commit()` runs with no yield point in the middle:
+`commit()` plans sources on detached copies, reserving each take before planning the next. Reuse one source handle for multiple legs; distinct handles naming the same source are refused. Destinations confirm acceptance before anything moves.
 
-1. **Plan.** Every source works out which coins it would hand over, without moving any of them. A source that cannot make the amount exactly fails the leg.
-2. **Accept.** Destinations confirm they can take the planned value. Buckets fed from the bank or the mint derive their value from what the coin template can represent, so the bank leg and the stake leg always agree and no compensating deposit is ever needed.
-3. **Apply.** One synchronous pass: take, accept, log.
-4. **Audit.** `LedgerAudit.check` re-asserts the invariants, and the felt total is compared against what the legs said it should move.
+For guild-bank or tax legs, the transaction writes a flushed, atomic intent under `Data/wager-intents/<table-id>.json` before one balanced `Denars.post`. The `games:<table-id>:<uuid>` operation records its legs, item templates, destinations, captured tax quote and expected float/profit. Physical chips exchanged with a guild bank use the Denars mint account as the other ledger leg. Bank-funded tax directly debits the guild and credits the tax destination; it never mints the gross win into a character pouch.
 
-Reserve then apply, never apply then undo. A caller that gets a failure knows nothing moved and can simply refuse its action.
+Only `APPLIED` authorizes the planned item and float changes. The engine rechecks physical inventory and character snapshots, applies the changes, saves the table durably, then records casino profit with the same operation ID. The journal is removed only after all steps succeed. A repeated successful `commit()` returns the previous result without delivering again. An unchanged prepared intent can retry in the same process using its original operation ID.
+
+A known tax-readiness wait creates no payment intent. Refused postings leave items, float and profit untouched. A failure after posting may already have moved value; the retained journal freezes the table for staff review. Callers must not compensate or repeat delivery based solely on a failed result. See the recovery procedure below.
 
 `TxResult.reason()` names why a refusal happened - `PLAYER_SHORT`, `NO_CHANGE`, `FELT_SHORT`, `BANK_SHORT`, `NO_TEMPLATE`, `MINT_REFUSED`, `NO_TABLE` - and `messageKey()` maps it to `messages.yml`, so the player is told the real problem rather than a guess.
 
@@ -56,19 +55,36 @@ A `Stake` carries the spot it was put down on, so a player's chips sit where the
 
 `BankAccount` is the only door between a guild bank and a table, so it is also where profit is worked out. Money going out raises the table's `houseFloat`; money coming in settles that float first, and only what is left over is profit. A guild pays tax on the profit, never on a float it took out and handed straight back.
 
-Nothing is moved for tax. Winnings are already in the bank the moment `settleAutoTray` deposits the tray, so `BankAccount.accept` only reports the profit onward, through `GuildBank.declareProfit` into the owning guild's SimpleFactions ledger as its `GAMBLING` cashflow. That entry is gross counted, so it widens guild tax, overlord tax, tribute and reparations, and it settles as a ledger line with no delta of its own. Adding a delta would pay the guild for the same denars twice.
+Casino-profit bookkeeping moves no extra money. Winnings enter the guild account in the transaction posting. After saving the resulting table, `GuildBank.declareProfit` reports only the surplus into the owning guild's SimpleFactions ledger as its `GAMBLING` cashflow, using `addCasinoProfitEntry(operationId, amount)`. Exact retries do not count profit twice, even after a tax settlement. That entry is gross counted, so it widens guild tax, overlord tax, tribute and reparations, and it settles as a ledger line with no delta of its own. Adding a delta would pay the guild for the same denars twice.
 
 A six-box table at 1000 reserves 48000. If players net lose 1500 the tray banks 49500, the float is cleared and 1500 is declared. If players net win 2000 only 46000 comes back, the float stays 2000, nothing is declared, and the table's next 2000 of winnings is sheltered until it is level again. So a losing streak carries forward by itself, and a bank covering a winner directly leaves the float raised for the same reason: the house is down until it earns that back.
 
-`houseFloat` lives on `Table` and is saved with it, because every commit ends in `WagerHost.moneyMoved`. It is zeroed if a table changes owning guild, since a float belongs to whoever put it up. Staff mint tables never reach `BankAccount` at all, so they declare nothing, and a private table with a human dealer returns its float to the dealer rather than a bank and is likewise untaxed.
+`houseFloat` lives on `Table` and is saved with it, with a checked durable save before its money intent can complete. It is zeroed if a table changes owning guild, since a float belongs to whoever put it up. Staff mint tables never reach `BankAccount` at all, so they declare nothing, and a private table with a human dealer returns its float to the dealer rather than a bank and is likewise untaxed.
 
 ## Player coin profit this round
 
-`RoundMoney` on each `Table` tracks coin `moneyIn` and `moneyOut` per player for the current session. `MoneyTx` updates it on every successful leg: pockets to the felt raise `moneyIn`, any payout to a `PlayerAccount` raises `moneyOut` (tray, bank, pot, or a dealer covering from pockets). Loot stakes are ignored via `ChipItems.moneyValue`. `moneyProfit` is `max(0, moneyOut - moneyIn)`. Maps are cleared in `clearSession` (end of hand, idle reset) and are not saved with the table file.
+`RoundMoney` on each `Table` tracks coin `moneyIn` and `moneyOut` per player for the current session. `MoneyTx` updates it on every successful leg: pockets to the felt raise `moneyIn`, any payout to a `PlayerAccount` raises `moneyOut` (tray, bank, pot, or a dealer covering from pockets). Loot stakes are ignored via `ChipItems.moneyValue`. `moneyProfit` is `max(0, moneyOut - moneyIn)`. Maps are cleared at settled session end and are not saved as a resumable game. Unpaid outcomes and interrupted postings retain separate durable records and prevent automatic reset.
 
-Blackjack settle calls `WagerEngine.payWin`, which withholds citizen tax on the `pay` map profit to `TaxSink` before the net reaches the player, and sends DenarEconomy's `money.tax` line.
+Blackjack settle calls `WagerEngine.payWin`, which quotes citizen tax on the `pay` map profit for the captured wager character, and sends DenarEconomy's `money.tax` line.
 
-Hold'em and Five-Draw pot payouts include the winner's own stake. `RoundMoney.taxableProfit(owner, payout)` subtracts stake still returning (`moneyIn - moneyOut`) before tax applies. `WagerEngine.payFromPot` and `sweepPot` spread net coins to the payee and tax to `TaxSink` from `potAccounts` in two commits, then `sweepPot` `moveAll`s loot and any leftover stakes untaxed. `returnStakes` stays untaxed. `coinPot` sums coin denars across pot buckets for sweep tax math.
+Hold'em and Five-Draw pot payouts include the winner's own stake. `RoundMoney.taxableProfit(owner, payout)` subtracts stake still returning (`moneyIn - moneyOut`) before tax applies. `WagerEngine.payFromPot` and `sweepPot` spread net coins to the payee and tax to `TaxSink` from the same `potAccounts` in one transaction, then `sweepPot` transfers remaining loot. A failed residual transfer is retained for review. `returnStakes` stays untaxed. `coinPot` sums coin denars across pot buckets for sweep tax math.
+
+## Character ownership and recovery
+
+A table stores `wagerCharacters`, mapping account UUIDs to the character captured when money enters play or the session begins. Tax quotes use that immutable character reference, including offline winners. A missing reference or another active character on the same account cannot collect a payout or refund. A settled round clears bindings when no player stakes remain, even if the house tray is nonempty; the next occupant can then bind their own character.
+
+Citizen tax is a pure `TaxPolicy` quote. Whole-chip rounding and source priority remain unchanged: net payout first, then whatever tax chips the sources can actually supply. The credited tax is exactly the chip value destroyed, in cents, even when the quote rounds or the payout is partial. Partial payments retain the paid amount, actual withholding and remaining obligation separately; they never retry the full gross amount automatically.
+
+Interrupted intents, unresolved identity/tax policy, partial winnings and failed guild tray settlements freeze further transfers, round clearing, editing and pickup. On restart the table and journal remain for review. Legacy saved player stakes without a recorded character also require review; loading never guesses from the account's current or last-played character.
+
+Staff recovery is manual because Minecraft inventory delivery and the money ledger are not one atomic store:
+
+1. Preserve the table JSON, `Data/wager-intents/<table-id>.json` and any guild migration backup before investigating.
+2. Inspect the operation ID, ledger legs, encoded items, captured character/tax destination, float before/after and `unpaidOutcomes`. The latter are observations of failed or partial settlement attempts; repeated observations must not be summed as independent debts.
+3. Check Denars status for the recorded operation and compare the saved table, inventories and casino-profit bookkeeping. `prepared` does not prove no posting occurred; `applying` does not prove delivery finished.
+4. Reconcile the verified remaining obligation once through a reviewed ledger operation and item correction. Never recalculate the original tax against today's character or guild, replay gross winnings, or remove the journal merely to unfreeze a table. Keep the evidence with the correction.
+
+Physical item escrow and automatic recovery of ambiguous item delivery are outside this system. There is no automatic journal replay on startup.
 
 ## Coin selection is exact, not greedy
 

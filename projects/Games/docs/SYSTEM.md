@@ -2,7 +2,7 @@
 
 Tabletop plugin. Engines are dumb: they cannot tell poker from blackjack. Games only call engines.
 
-Games provides blackjack, [Tenceur Hold'em](HOLDEM.md) (`poker`) and [Five-Draw](FIVEDRAW.md) (`draw`). Tables persist locations and house settings; stopping or restarting the plugin resets sessions to idle.
+Games provides blackjack, [Tenceur Hold'em](HOLDEM.md) (`poker`) and [Five-Draw](FIVEDRAW.md) (`draw`). Tables persist locations and house settings; stopping or restarting resets settled sessions to idle; unresolved money operations retain frozen tables for review.
 
 
 ## Config folder layout
@@ -106,9 +106,9 @@ Ace file and IA id is `_1` or `1`, not 14. Ace-high ranking is a poker flag, not
 
 ## Dependencies
 
-`TLibs`, `ItemsAdder`, `ProtocolLib`. DenarEconomy softdepend (wager). RPCharacters softdepend (character names and voice). SimpleFactions softdepend (guild auto cap + bank; [GUILD_TABLES.md](GUILD_TABLES.md)). SF does not depend on Games.
+`TLibs`, `ItemsAdder`, `ProtocolLib` and `DenarEconomy` are required. RPCharacters softdepend (character names and voice). SimpleFactions softdepend (guild auto cap + bank; [GUILD_TABLES.md](GUILD_TABLES.md)). SF does not depend on Games.
 
-The build pins TLibs **2.3.0** and RPCharacters **2.16.0**. Names use the shared
+The build pins TLibs **2.4.0**, DenarEconomy **0.3.0**, SimpleFactions **4.0.0** and RPCharacters **2.16.0**. Names use the shared
 character identity service; voice still uses RPCharacters' chat API. Deploy the
 pinned providers with Games and restart to activate them.
 

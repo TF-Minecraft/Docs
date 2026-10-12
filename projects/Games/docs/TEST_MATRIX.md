@@ -110,7 +110,7 @@ See [BLACKJACK.md](BLACKJACK.md).
 - [ ] 3:2 natural, double, split, DAS
 - [ ] Auto: 10s after first min bet, spawn pays
 - [ ] Voice via RPCharacters `dispatch`, not `/rp` command
-- [ ] With TLibs 2.3.0 and RPCharacters 2.16.0, table labels and game messages show the current mask/alias; changing it or switching characters updates the next rendered name without revealing a canonical name
+- [ ] With TLibs 2.4.0 and RPCharacters 2.16.0, table labels and game messages show the current mask/alias; changing it or switching characters updates the next rendered name without revealing a canonical name
 - [ ] An online player with no active character shows the RPCharacters no-character label (`Unknown` by default), matching chat
 - [ ] Without the character provider, online labels use account names; offline names use the last known account name or `-`; gameplay and wagers still work
 
@@ -126,3 +126,14 @@ See [GUILD_TABLES.md](GUILD_TABLES.md).
 - [ ] Guild cover withdraws shortfall only; empty bank restores the chip; pickup deposits tray
 - [ ] Dealer: guild member set/unset; no mid-round; takeover auto frees slot; no takeover of staff mint
 - [ ] Shuffle `ROUND` vs `SHOE` matches policy after a full round
+
+## Ledger and identity failure checks
+
+- [ ] While installed SimpleFactions is waiting, new rounds and guild migration stay closed; readiness permits them without restarting Games.
+- [ ] Switching characters on one account cannot collect or edit the other character's guild table/stakes; a later settled round can bind the new character.
+- [ ] A deleted guild's namesake cannot claim the old table or bank, including after restarting migration.
+- [ ] A bank-funded win and its actual withheld chip tax produce one balanced Denars posting; refused posting changes no items, float or casino profit.
+- [ ] After a posting, interrupt table save or profit bookkeeping; restart retains a frozen table and intent without delivering money/items again.
+- [ ] Missing winning character, mid-round tax failure and partial payout retain the remaining obligation and prevent round clear/pickup.
+
+Run automated checks with `tfmc-mvn -o -B --no-transfer-progress clean verify`. Journal tests inject posting, storage and bookkeeping failures; they do not prove atomic Minecraft inventory persistence or replace server integration checks.
