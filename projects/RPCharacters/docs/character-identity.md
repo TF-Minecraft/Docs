@@ -41,6 +41,11 @@ the current mask and temporary alias rules. The playtime field is the existing
 
 ## Sessions and readiness
 
+With [separate bodies](character-bodies.md) enabled, login waits in selection
+without a ready session. Play restores the chosen body and progression before
+publishing a session; permanent death returns to selection. The automatic
+activation and replacement behavior below applies while bodies are disabled.
+
 `CharacterTransitions` owns join, switch, quit, permanent death and shutdown.
 Each activation receives a fresh session token, including reconnecting or
 switching Alice → Bob → Alice. Ended tokens never become current again.

@@ -53,6 +53,44 @@ request without reentering the bridge. Leaving removes queued sends. This bridge
 uses the server's existing ProtocolLib plugin and is enabled only with multipart
 delivery; no additional server configuration is needed.
 
+## Required join packs
+
+`resource-pack.require-on-join: true` sends a required pack on every connection,
+independently of the player's auto/manual preference. It defaults to `false` and
+requires a restart. Enable RPCharacters' `character-bodies.require-resource-pack`
+with it to show a loading dialog before character selection. The existing body
+recovery and selection protections remain active while loading.
+Core marks the connection as loading at join's LOWEST priority, then queues
+delivery at MONITOR. This lets RPCharacters queue the room teleport and loading
+dialog first, so the dialog cannot cover Minecraft's pack confirmation prompt.
+
+Every part must report `SUCCESSFULLY_LOADED`. A failed multipart request or its
+180-second timeout tries the standard ItemsAdder archive once; that required
+fallback also has a 180-second timeout. Decline or discard fails the attempt
+without another automatic prompt. Minecraft may disconnect a player who refuses
+a required pack. Fallback success counts only after that entire pack loads.
+Each required attempt uses fresh pack UUIDs, and a disconnected player's late
+responses cannot complete a newer attempt.
+
+Core publishes `loading`, `ready` or `failed` under Bukkit player metadata
+`tfmccore:required-pack`, owned by the current Core plugin instance. This is
+transient connection state, overwritten on join and removed on quit/shutdown.
+RPCharacters accepts only that owner's `ready` value. Ordinary manual/ItemsAdder
+requests cannot replace the join request while it is loading. Only the required
+attempt changes its readiness state.
+
+The failure dialog's Retry uses `tfmccore:tcore packretry <player>` from console.
+Console or `tfmccore.admin` may also run it directly; it only retries a failed
+attempt on the same connection. It never bypasses an active load or readiness.
+
+Before enabling this mode, back up and remove ConditionalEvents'
+`resourcepack_apply_auto` and `resourcepack_reminder` entries from
+`events/a_commands.yml`. Keep ItemsAdder automatic join delivery disabled.
+Core now owns the initial request; leaving another automatic sender active can
+produce a second reload. Restore those exact entries and both disabled gate
+settings when rolling back. Test cached and uncached joins, partial loads,
+failures and reconnects on Dev before enabling Main.
+
 ## Activation
 
 Activate and verify on Dev before Main.
@@ -85,7 +123,8 @@ Activate and verify on Dev before Main.
    The port must be free and publicly reachable; each server instance on a host
    needs its own port. The listener serves only the published ZIP parts. No
    directory listing or arbitrary plugin file is exposed.
-4. In ConditionalEvents' `events/a_commands.yml`, the automatic join event sends
+4. If using required join packs, follow the preceding section instead of enabling
+   another automatic sender. Otherwise, in ConditionalEvents' `events/a_commands.yml`, the automatic join event sends
    the pack to players with `tfmcresourcepack.enable`. Use
    `console_command: tcore pack %player%` for that action rather than
    `iatexture %player%`, and show “Loading Resource Pack…” rather than an
