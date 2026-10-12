@@ -137,7 +137,7 @@ State lives below `plugins/RPCharacters/data/`:
 | --- | --- |
 | `body-migrations/<account>.yml` | Immutable legacy body, initial roster, heir and migration completion state. |
 | `bodies/` | Versioned, checksummed character bodies and recovery copies. |
-| `body-leases/<account>.json` | Durable activation claim with character, base revision and pending normal-respawn intent. |
+| `body-leases/<account>.json` | Durable activation claim with character, base revision, pending normal-respawn intent and completed vanilla respawn. |
 | `progress/<account>/baseline.yml` | Immutable legacy progression baseline. |
 | `progress/<account>/characters/<character>.yml` | Character progression and revision. |
 
@@ -166,7 +166,11 @@ Disconnecting on the ordinary death screen leaves the live vanilla body and its
 lease intact. Rejoining completes the normal respawn before opening selection;
 the saved body retains its actual respawn location, items and experience and
 restores full health after character equipment and attributes are applied.
-Durable respawn intent also covers another interruption during this recovery.
+Recovery waits for Paper to finish its actual respawn and teleport, even if a
+progression plugin restores health first. The lease durably records both respawn
+intent and completion. An interrupted respawn whose saved vanilla state disagrees
+with that evidence blocks login for manual recovery. A living character body is
+never recovered from the selection room.
 Permanently dead character bodies remain dead; respawning the vanilla player
 only returns them to selection. Unassigned returns from that respawn are
 quarantined.
