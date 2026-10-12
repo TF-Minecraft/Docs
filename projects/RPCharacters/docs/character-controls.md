@@ -64,3 +64,7 @@ Putting armour on takes a while (by default 1 second for a helmet, 20 for a ches
 - [PvP and armour configuration](https://github.com/TF-Minecraft/RPCharacters/blob/main/src/main/resources/pvp.yml)
 - [Focus configuration](https://github.com/TF-Minecraft/RPCharacters/blob/main/src/main/resources/focus.yml)
 - [Codex population service](https://github.com/TF-Minecraft/RPCharacters/blob/main/src/main/java/net/tfminecraft/rpcharacters/placeholder/CodexPopulationService.java)
+
+Realm OOC chat follows the active character's top-overlord realm. Online accounts
+receive it only while playing a character in that realm. It waits for
+SimpleFactions readiness; another character on the account grants no access.

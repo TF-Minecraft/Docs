@@ -3,7 +3,7 @@
 [RPCharacters](../README.md) · [TLibs API](../../TLibs/character-identity.md)
 
 RPCharacters provides TLibs' `CharacterIdentity` service through Bukkit's
-`ServicesManager`. The build pins TLibs 2.3.0; install that release or a compatible
+`ServicesManager`. The build pins TLibs 2.4.1; install that release or a compatible
 newer one before RPCharacters. Consumers use the `Characters` facade rather than
 reading RPCharacters files or waiting a fixed number of ticks after login.
 
@@ -107,6 +107,14 @@ disconnects while the end event is dispatched also keeps the character alive.
 Once the death is saved, a replacement character that cannot be activated
 disconnects the player, and the death's own follow-up, such as the roster push
 and the caller's result, still runs.
+
+`Characters.deathId(characterId)` returns the latest saved death ID, including
+for offline characters. Revival retains it; another death replaces it. A legacy
+DEAD record without a death ID uses a deterministic UUID derived from
+`rpcharacters:legacy-death:<characterId>`, stable across restarts without
+rewriting the original record. Quarantined or unknown records return empty.
+Consumers recover their incomplete journals first, then reconcile DEAD records;
+they must not replay an old death just because a living character retains its ID.
 
 Event delivery is not durable. A crash after saving but before dispatch can lose
 the event; consumers must use `deathId` for idempotency. Account saves still write
