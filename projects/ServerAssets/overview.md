@@ -28,10 +28,12 @@ python3 -m pip install PyYAML==6.0.3
 python3 tools/verify.py
 python3 tools/verify_magic.py
 python3 tools/verify_companionpets.py
+python3 tools/build_handsup_emote.py --check
 ```
 
 CI checks the size and SHA-256 checksum of every file in the manifest, rune and
-spell bindings, and CompanionPets provider and resource references. Results are
+spell bindings, CompanionPets provider and resource references, and the
+[hands-up emote export](handsup-emote.md). Results are
 printed to the terminal; there is no coverage gate. These checks do not establish
 the current live deployment or verify client rendering. Keep private snapshot
 instructions with the assets in ServerAssets.

@@ -29,6 +29,10 @@ Hands-up inspection tests exercise consent, independent item copies and live
 refresh, full-view click and drag cancellation, creative inventory events,
 robbery/pickpocket event ordering, range and visibility checks, cancelled opens,
 multiple viewers, and cleanup when a participant leaves or changes character.
+ItemsAdder tests check actual-animation confirmation, missing/refused starts,
+API failures, stopping only the owned pose, and end-event cleanup without
+recursively stopping ItemsAdder. Plugin lifecycle tests cover ItemsAdder present
+and absent. Asset export verification runs in ServerAssets.
 Client inventory prediction and interactions with the full live plugin set
 still need the hands-up checks in the manual matrix.
 

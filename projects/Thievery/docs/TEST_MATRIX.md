@@ -29,7 +29,11 @@ addition to the checks below.
 
 ## Hands-up inventory inspection
 
-With two ordinary players, run `/handsup` on one and right-click them with the
+With ItemsAdder and the [hands-up asset](../../ServerAssets/handsup-emote.md)
+installed, use two ordinary players. Run `/handsup` on one: both arms should
+rise over 0.8 seconds and remain raised without resetting at the loop boundary.
+Check another player's view, skins with classic and slim arms, equipped armour,
+held items, and walking. Right-click the posed player with the
 other. Confirm main inventory, hotbar, armour, off-hand, custom names and lore
 match. Change the target's items and check the display updates. Try ordinary
 clicks, shift-clicks in both inventories, drags spanning both inventories,
@@ -39,12 +43,20 @@ duplicate. Test with a nonempty cursor and confirm closing returns those items
 normally.
 
 Open two inspections of the same player, then lower their hands: both views
-must close. Repeat with disconnect, death, teleport and switching characters.
+must close. Repeat with sneak, jumping, taking/dealing damage, replacing the
+emote, disconnect, death, teleport and switching characters. After each, confirm
+the pose ends and inspection cannot reopen. Test shutdown with a posed player
+who has no viewers. A different emote must not be stopped by inspection cleanup.
 Walk more than four blocks apart and check the view closes. Restart and confirm
 consent starts off. Ordinary chests must still allow item movement. Arm
 `/robbery start` or `/pickpocket start`, then right-click a consenting player:
 only inspection should open. Repeat while sneaking and holding an off-hand
-item; there must be no duplicate window or theft attempt.
+item on the viewer; there must be no duplicate window or theft attempt.
+
+On an isolated fixture, test missing ItemsAdder, a missing `tfmc_handsup`
+animation, and another plugin cancelling the emote start. `/handsup` must report
+failure and leave inspection off. Starting `tfmc_handsup` directly through
+ItemsAdder must not grant inspection access.
 
 ## Chest lock minigame
 

@@ -8,6 +8,7 @@ Technical documentation is maintained here. Run commands from the source checkou
 
 - [JARS.md](JARS.md)
 - [Contents and verification](overview.md)
+- [Hands-up emote](handsup-emote.md)
 
 ## Verification and dependency access
 
