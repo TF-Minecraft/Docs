@@ -13,6 +13,10 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 - [Statistics configuration and commands](src/main/java/net/tfminecraft/tfmccore/stats/STATS.md)
 - [Player commands](src/main/java/net/tfminecraft/tfmccore/tfmc/TFMC.md)
 
+The POM pins TLibs **2.4.1** and SimpleFactions **4.0.0**. Battle participation
+remains an account UUID integration; the character migration preserves that
+event contract.
+
 ## Builds and releases
 
 See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.

@@ -27,16 +27,40 @@ current and that the robber still has a robbery trait; otherwise the request
 expires. Switching away and back to the same character starts a new session, so
 it also expires the request. When either player's session ends by switching,
 death, quitting or shutdown, the robber stops targeting and pending requests
-expire, with a message to the other player. An accepted robbery is not tied to
-sessions and ends through the robbery's own quit handling.
+expire, with a message to the other player. An accepted robbery ends through its
+own quit handling. Pouch transfers still require both captured sessions to be
+current; switching characters never redirects the transfer to another pouch.
 
-The build pins TLibs **2.3.0** and RPCharacters **2.16.0**. With an older TLibs
-that lacks the character API, Thievery still starts and logs a warning. Lock,
-door and container protection keeps working; every action with a nonempty trait
-list is denied, and pending robbery requests are checked only on acceptance.
-RPCharacters remains a required dependency for clues, graves and evil-RP
-rewards. Account-owned locks, risk, cooldowns and saved data keep their format
-and ownership.
+The build pins TLibs **2.4.0**, RPCharacters **2.16.0**, SimpleFactions **4.0.0**
+and DenarEconomy **0.3.0**. RPCharacters remains required for clues, graves and
+evil-RP rewards. Protected guild access and theft cooldown checks deny access
+while factions or reviewed heirs are unavailable.
+
+## Character money and guild access
+
+Pouch clicks transfer whole cents between the captured victim and robber using
+one ledger posting. Before posting, Thievery forces a record under
+`plugins/Thievery/pouch-payments/<nonce>.properties` and its directories to disk.
+The record contains the operation ID, both character IDs, cents and budget cost.
+Only `APPLIED` consumes budget. A retry reuses the pending operation and its
+original amount; a repeated event never transfers or consumes budget twice.
+An unavailable ledger or an unsavable record changes neither pouch nor budget.
+
+Robbery sessions end on restart, and these records remain as an audit trail.
+A ledger result is authoritative: look up its `thievery:robbery:<nonce>` operation
+before investigating a disputed payment. Startup does not issue another payment
+or resume a closed robbery. Pouch transfers move no physical coin items.
+
+Guild lookups use the active character. Guild cooldowns map character members
+back to their account UUIDs and retain existing account-wide history. Offline
+lock owner guild checks and `LockAccess` ownership checks use the account's
+reviewed legacy heir; a different active character does not inherit those access
+rights. Online guild checks require the relevant member character to be active.
+
+Lock files, owner controls, risk and cooldown storage remain account-based until
+stage 6. This includes owner toggles, shared-key and automation paths; this stage
+does not claim full character isolation for physical locks. Existing guild target
+keys retain their cooldown history.
 
 ## Responsibilities
 

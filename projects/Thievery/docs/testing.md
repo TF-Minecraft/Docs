@@ -5,7 +5,7 @@ with Java 21 and the pinned dependencies prepared according to the
 [shared build guide](../../../PIPELINES.md#build-dependencies):
 
 ```sh
-mvn -B --no-transfer-progress clean verify
+tfmc-mvn -o -B --no-transfer-progress clean verify
 python3 .github/scripts/check-test-reports.py
 ```
 
@@ -24,6 +24,13 @@ tests start Thievery without the character API and check that its protection
 listeners register while trait checks deny. Robbery tests cover requests made as
 one character and accepted after switching away and back, and pending requests
 expiring when either session ends.
+
+Pouch payment tests use real temporary SQLite files for balanced transfers,
+ledger reopen, a committed payment with a lost reply, insufficient funds and
+stale sessions. Handler tests repeat the same click, retry unavailable payments,
+and verify that unsavable intents consume no budget. Identity tests check
+reviewed-heir ownership, another character on the same account, faction waiting,
+and member-to-account cooldown mapping.
 
 Hands-up inspection tests exercise consent, independent item copies and live
 refresh, full-view click and drag cancellation, creative inventory events,

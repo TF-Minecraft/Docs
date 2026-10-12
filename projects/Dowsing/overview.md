@@ -73,8 +73,21 @@ node.
 - Purchased guild capacity is stored in
   `plugins/Dowsing/guild_capacity.json`.
 
-On a normal plugin disable, Dowsing rewrites the node JSON files and saves guild
-capacity. Back up the complete `plugins/Dowsing/` directory before changing
+Dowsing waits for `SimpleFactionsApi.ready()` before loading nodes, starting their
+timers or saving owners. A temporary unavailable faction lookup never clears an
+owner. Guild access uses the player's active character, and leader names use the
+character directory.
+
+Upgrades, downgrades and capacity purchases write `node-payment.json` before
+posting to the guild's immutable treasury account. The journal contains the
+operation ID, guild incarnation, node and exact target level/capacity. Recovery
+reuses that posting, saves the target state, then marks the journal complete.
+Unknown owners, conflicting state or failed writes pause node changes and preserve
+the journal for staff; inspect it alongside DenarEconomy's operation before making
+any repair. Never delete an unresolved journal just to re-enable purchases.
+
+On a normal plugin disable after successful startup and payment recovery, Dowsing
+saves the node JSON files before pruning removed nodes and saves guild capacity. Back up the complete `plugins/Dowsing/` directory before changing
 identifiers or migrating configuration, and stop the server cleanly before
 copying live state.
 

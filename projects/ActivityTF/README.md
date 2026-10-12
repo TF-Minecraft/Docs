@@ -17,6 +17,10 @@ Optional runtime integrations are declared as `softdepend` in `src/main/resource
 - [Reward pools and operator checks](REWARD-POOLS.md)
 - [Activity descriptions, placeholders and config updates](ACTIVITY-LORE.md)
 
+The POM pins TLibs **2.4.1** and SimpleFactions **4.0.0**. Battle participation
+remains an account UUID integration; the character migration preserves that
+event contract.
+
 ## Builds and releases
 
 See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.

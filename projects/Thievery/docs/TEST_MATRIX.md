@@ -6,7 +6,8 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 
 ## Regression
 
-With TLibs **2.3.0** and RPCharacters **2.16.0**, check a restricted command,
+With TLibs **2.4.0**, RPCharacters **2.16.0** or newer, SimpleFactions **4.0.0**
+and DenarEconomy **0.3.0**, check a restricted command,
 container lockpick and display lockpick while the character is loading, after
 loading a character with the required trait, and after switching to one without
 it. Only the matching ready character should pass the trait restriction. Switch
@@ -156,7 +157,9 @@ ItemsAdder must not grant inspection access.
 | M3 | `/robbery start` + accept: GUI slot 8 (top-right) shows pouch when victim balance > 0 and thief has `money` |
 | M4 | Slot 8 left-click takes up to `pouch-click-amount` (10); shift-left up to `pouch-shift-amount` (100) |
 | M5 | Pouch take capped by victim balance, remaining budget (`floor(remaining / amount_per_money)`), and config amounts |
-| M6 | Pouch debits victim DenarEconomy pouch, credits robber pouch (not coin items); GUI title budget updates |
+| M6 | Pouch debits the captured victim character, credits the captured robber character; only an applied transfer updates the budget |
+| M7 | Repeat one payout attempt after ledger failure: reuse its operation ID and amount, charge budget once; a closed ledger or unwritable payment folder takes nothing |
+| M8 | Switch either character after acceptance: no transfer from the new character; faction waiting grants no protected access |
 | M7 | Without `money` in loadout: slot 8 is filler; coins in shuffled grid stay hidden |
 | M8 | Victim with 7 denars: single click takes 7 |
 | M9 | Grave steal **without** `money`: coins in grave are skipped; message "nothing you can steal" if only coins |
