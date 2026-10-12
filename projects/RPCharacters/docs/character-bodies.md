@@ -12,7 +12,8 @@ Players enter a private selection world with no ready character session. A Paper
 dialog focuses one living character at a time. Its card shows a skin portrait,
 name, race, class, age, guild and when it was last played. Character tabs and
 arrows change the preview; **Play** enters the selected character, and its
-tooltip lists the birthday, playtime, pouch and bank, and last location.
+tooltip lists the playtime, pouch and bank, plus the birthday and last location
+where recorded.
 **New character** starts creation when slots and the switch cooldown allow it;
 its tooltip shows the slots used. **Memorials** opens the records of dead and
 missing characters. Pouch and bank come from the character's own DenarEconomy
