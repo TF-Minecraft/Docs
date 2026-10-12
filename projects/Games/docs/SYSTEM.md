@@ -106,4 +106,23 @@ Ace file and IA id is `_1` or `1`, not 14. Ace-high ranking is a poker flag, not
 
 ## Dependencies
 
-`TLibs`, `ItemsAdder`, `ProtocolLib`. DenarEconomy softdepend (wager). RPCharacters softdepend (character voice). SimpleFactions softdepend (guild auto cap + bank; [GUILD_TABLES.md](GUILD_TABLES.md)). SF does not depend on Games.
+`TLibs`, `ItemsAdder`, `ProtocolLib`. DenarEconomy softdepend (wager). RPCharacters softdepend (character names and voice). SimpleFactions softdepend (guild auto cap + bank; [GUILD_TABLES.md](GUILD_TABLES.md)). SF does not depend on Games.
+
+The build pins TLibs **2.3.0** and RPCharacters **2.16.0**. Names use the shared
+character identity service; voice still uses RPCharacters' chat API. Deploy the
+pinned providers with Games and restart to activate them.
+
+## Displayed names
+
+Table labels and game messages resolve online names through
+`Characters.displayName`, preserving masks and temporary aliases. Each lookup
+reads the provider again, so switching characters or changing an alias is visible
+on the next label/message update. Games does not substitute a canonical character
+name or query offline character records.
+
+Without a provider, online names fall back to the account name. A null or blank
+display, an incompatible identity API, or a failing provider also falls back to
+the account name; integration failures log one warning per server start. Offline
+players use their last known account name, or `-` when unavailable. Names are
+presentation only: player UUIDs, wagers, payouts and table ownership keep their
+existing behavior.

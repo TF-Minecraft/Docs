@@ -110,6 +110,8 @@ See [BLACKJACK.md](BLACKJACK.md).
 - [ ] 3:2 natural, double, split, DAS
 - [ ] Auto: 10s after first min bet, spawn pays
 - [ ] Voice via RPCharacters `dispatch`, not `/rp` command
+- [ ] With TLibs 2.3.0 and RPCharacters 2.16.0, table labels and game messages show the current mask/alias; changing it or switching characters updates the next rendered name without revealing a canonical name
+- [ ] Without the character provider, online labels use account names; offline names use the last known account name or `-`; gameplay and wagers still work
 
 ---
 
