@@ -169,8 +169,10 @@ character-bodies:
 letters, digits, underscores and hyphens. Existing unrelated worlds are refused.
 The plugin creates a void world with a protected platform enclosed in black
 concrete, so the selection dialog has a dark backdrop whatever the client's sky,
-brightness or shaders. The dialog is the selection interface; this does not
-create mannequin displays.
+brightness or shaders. Selecting players are invisible, so third person shows
+no body; the character's own effects replace this on **Play**. Spectator mode is
+not used because it ignores the inventory clicks that creation menus need. The
+dialog is the selection interface; this does not create mannequin displays.
 
 All selecting players share that platform. The plugin sets `maxEntityCramming`
 to `0` in its owned selection world. To disable server-side entity pushing as
