@@ -24,9 +24,9 @@ without reconciling wardrobe limits, acknowledging changes or applying skins.
 RPCharacters downloads the signed texture's image from `textures.minecraft.net`.
 An unavailable wardrobe preview falls back to the account skin; if no image can
 be loaded, the dialog shows a neutral figure. Everyone in selection wears the
-default Steve skin, a Mojang-signed copy built into RPCharacters. At login it
-replaces the textures in the player's profile before they join, so they arrive
-as Steve without a skin refresh during the resource-pack prompt. Helmet, mask and
+default Steve skin, a Mojang-signed copy built into RPCharacters. It goes on as
+the player joins, before Paper sends the player list, so they arrive as Steve
+without a skin refresh during the resource-pack prompt. Helmet, mask and
 wardrobe changes do not replace it there. Portraits still
 fall back to the account skin worn before it. Play puts the cached wardrobe or
 account skin back at once, then refreshes the wardrobe from ProvinceSystem. A
