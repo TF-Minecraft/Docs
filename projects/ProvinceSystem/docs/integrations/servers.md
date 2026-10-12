@@ -10,7 +10,8 @@ connection below installs released jars and restarts servers.
 
 ## What the tab shows
 
-Each server has a card with its counts and Paper version. Below them,
+Each server has a card showing whether it is running, its Paper version and
+how many plugins have each kind of problem. Below them,
 **Needs a look** lists the plugins with a problem, worst first; **All TFMC
 plugins** lists every plugin, and **Other plugins** compares third-party jars
 between Main and Dev by version.
