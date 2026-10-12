@@ -10,13 +10,16 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 Infestations builds with Java **21** against
 `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT`. Install the pinned TLibs
-`2.0.1`, RPCharacters `2.4.0`, SimpleFactions `3.0.2`, and
+`2.3.0`, SimpleFactions `3.0.2`, and
 InteractibleFurniture `0.2.1` release artifacts with the shared dependency
 installer. The build also prepares a checksum-verified MythicMobs
 `5.13.1-SNAPSHOT` input from the private ServerAssets repository.
 
-At runtime, `plugin.yml` requires TLibs, SimpleFactions, MythicMobs,
-ItemsAdder, and InteractibleFurniture; RPCharacters is optional. The plugin
+At runtime, `plugin.yml` requires TLibs **2.3.0 or newer**, SimpleFactions,
+MythicMobs, ItemsAdder, and InteractibleFurniture. RPCharacters **2.16.0 or
+newer** optionally supplies character identity through TLibs; Infestations has
+no direct RPCharacters dependency. An older TLibs installation disables
+Infestations at startup with an upgrade message. The plugin
 code does not call ItemsAdder directly; the default lure is an ItemsAdder item
 (`ia.tfmc:lure`) placed as InteractibleFurniture.
 

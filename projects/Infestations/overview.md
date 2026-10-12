@@ -37,12 +37,18 @@ MythicMobs list and tagged with the province and kind. Mobs that a dying
 tagged mob summons, such as parasitic worms, take its tags. Killing ambient
 mobs never clears an infestation, and the plugin does not remove spawned mobs.
 The loaded ambient count is recounted at most every five seconds after tagged
-mobs load or unload.
+mobs load or unload. A delayed ambient spawn requires the original connection
+and, when character identity is available, the original character session.
+Switching away and back, reconnecting, or losing that session cancels the
+attempt. A provider that is present but has no ready character schedules no
+attempt; a standalone attempt is cancelled if a provider appears before it fires.
 
 **Lure.** Placing InteractibleFurniture whose item path equals `lure-item`
 starts a lure. Placement is cancelled unless the province is infested land with
 no lure; placing the lure item as an ordinary block is always cancelled. The
 placer joins automatically and other players in the province are notified.
+With character identity, placing or joining a lure requires a ready character.
+Characters still loading receive no nonjoiner damage.
 During the `join-seconds` window, players in the province see an action-bar
 countdown and join by right-clicking the lure. Ambient spawning stops for the
 duration of the lure; existing ambient mobs stay.
@@ -83,30 +89,34 @@ second until they leave.
   Survival or Adventure, until `/lure leave` drops them out. Coming back into
   the province stops that damage without dropping them. `/lure leave` fails
   the lure when nobody committed remains.
-- **Logout:** a committed player who logs out has `logout-grace-seconds` to
-  return and remains committed. After the grace period, the character they
-  logged out as is killed when it is next active, at login or after a
-  character switch. If that character has died in the meantime, the death is
-  dropped and the player leaves the lure. A committed player who dies leaves
-  the lure.
-- **Other characters:** with RPCharacters, the commitment stays with the
-  character who logged out. Only that character's return ends the grace. While
-  its grace runs or its death waits, another character on the same account
-  takes no `deserter-damage`, and its death or `/lure leave` does not touch the
-  commitment. When that other character logs out, the waiting grace or death
-  keeps its character and deadline. If character data has not loaded when the
-  player logs in, the grace or death waits until a character is active.
-- **Deaths without a character:** with RPCharacters, a death owed by a player
-  whose character was not recorded, such as one saved before characters were
-  recorded, is held instead of applied, and a console warning names the
-  player and province on enable, reload, and when the grace runs out. While it
-  is held, that account takes no `deserter-damage` and gets no warnings for
-  being outside the province, and neither the death nor the account's
-  commitment keeps the lure from failing. It clears when the lure ends or when
-  that account dies or uses `/lure leave`.
-- **Without RPCharacters:** the account is the character. A recorded character
-  is ignored, so the player is killed on their next login, and any return
-  ends the grace.
+- **Departure:** switching character, quitting, or shutting down starts
+  `logout-grace-seconds` for the outgoing character, which remains committed.
+  Only that character's ready return ends its grace. After the grace expires,
+  it is killed when it next becomes ready. A directory record belonging to
+  the same account with status `DEAD` or `MISSING` settles the pending death
+  without damaging the current character. Unknown records do not settle it.
+  A committed character's death removes its own commitment.
+- **Other characters:** another character on the same account takes no
+  deserter damage for the waiting commitment, and its death or `/lure leave`
+  does not touch it. Further departures preserve the first character and
+  deadline. Character UUIDs are compared without case sensitivity; saved
+  strings are not rewritten.
+- **Deaths without a character:** when character identity is in use, a death
+  saved without a character is held. A console warning names the player and
+  province on enable, reload, and grace expiry. That debt brings no outside
+  warnings or deserter damage and does not keep the lure alive. It clears
+  when the lure ends or a ready character on that account dies or leaves.
+- **Provider unavailable:** once the running manager has seen character
+  identity or loaded a saved character tag, losing the provider holds
+  commitments and penalties until a character is ready. It never converts a
+  tagged penalty into an account penalty. This mode survives a config reload;
+  saved character tags also restore it after restart. Invalid or unknown tags
+  remain held.
+- **Standalone:** with no provider seen and no saved character tags, the
+  account owns the commitment. Quitting starts its grace and returning ends
+  it or applies its pending death. Old records without character tags cannot
+  distinguish a standalone penalty from a character-era penalty after a
+  restart with no provider.
 
 Players cannot break the lure, and explosions and pistons cannot move it. Lure
 furniture that does not match saved lure state is removed on enable, reload,
@@ -166,11 +176,12 @@ map data.
   and skipped.
 - **InteractibleFurniture** hosts the lure; placement, interaction, and break
   events drive the lure lifecycle. TLibs item paths identify the lure item.
-- **RPCharacters** (optional) identifies the character a committed player
-  logged out as, read at the lowest quit priority before RPCharacters unloads
-  its data, so the logout grace, deserter damage, and a death owed after the
-  grace reach only that character. Character activation ends that character's
-  grace or applies its death.
+- **TLibs character identity** provides ready sessions, end events, and
+  owner-checked directory snapshots. RPCharacters 2.16.0+ is the optional
+  provider. Infestations captures the outgoing identity even though its
+  session is already invalid at end, and applies pending work only to a
+  current ready session. It rechecks the session between penalties because
+  damage listeners can switch characters synchronously.
 - **Map export:** on start and whenever infestations are set, spread, cleared,
   or reloaded, the plugin writes each province's ID, severity, group, and
   display name to `MapAPI/infestation_data.json` and uploads it through the
@@ -187,7 +198,9 @@ map data.
   and reload.
 
 State is saved after each change and every five seconds. On a normal disable,
-the plugin removes lure text displays and saves state. Lure timers use
+the plugin records departures for ready committed characters, removes lure
+text displays, and saves state. Existing grace deadlines and penalties are
+preserved, and the JSON field layout is unchanged. Lure timers use
 wall-clock time, so a join window that expired during downtime activates immediately.
 Stop the server before editing the data file, since periodic saves overwrite
 manual changes.
@@ -214,7 +227,11 @@ dependency set:
    that killing a mob that summons parasitic worms raises the remaining count.
 5. Exercise victory, a committed player leaving the province (damage until
    `/lure leave`), losing the whole party, and a logout both within and beyond
-   the grace period, including a return on another character after it.
+   the grace period, including a return on another character after it. Switch
+   Alice → Bob → Alice and confirm only Alice settles her saved penalty.
+   Test provider loss while debts are pending, startup with tagged saved data
+   but no provider, and standalone play with no tags. Confirm an old ambient
+   callback cannot follow a reconnect or character switch.
 6. On a test server, enable `spread` with a short interval and confirm
    worsening, land spread, single water and sea hops, and group terrain limits.
 7. Confirm `MapAPI/infestation_data.json` is written and uploaded.
