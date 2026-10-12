@@ -70,8 +70,10 @@ check after the first reads only the logs.
 
 Admins and the owner (`manage_servers`) can review and start a restart,
 cancel Main's five-minute countdown before installation starts, and recheck a
-failed restart before reopening. Dev starts immediately after confirmation.
-Main's unchecked **OVERRIDE: restart immediately** option skips the countdown
+failed restart before reopening. Each server's card holds its buttons and shows
+the restart's progress; the review opens as a dialog. Dev starts immediately
+after confirmation.
+Main's unchecked **Emergency: skip the countdown** option skips the countdown
 for emergencies, recording the flag, actor and reason. It still requires the
 backup reference, saves, release/file verification and startup checks. Instant
 restarts begin installation immediately and cannot be cancelled.
@@ -80,10 +82,20 @@ website can control Dev only. Every action requires the site's own origin,
 a current signed-in session and a reason, and is recorded in the staff audit.
 View-as sessions cannot issue these actions.
 
-**Restart** activates the jars already on disk. **Use latest releases and
-restart** upgrades installed TFMC plugins whose hashes identify known older
-published releases. Test builds, unknown files, non-increasing versions and
-plugins not installed on the target are skipped; the review shows those skips.
+**Restart only** activates the jars already on disk. **Update and restart**
+upgrades installed TFMC plugins whose hashes identify known older published
+releases. Non-increasing versions and plugins not installed on the target are
+skipped; the review shows those skips.
+
+A jar whose hash matches no published release is a test build. The review
+lists each one with a checkbox to replace it with the latest release, and
+warns when the test build reports a higher version than the release. They are
+ticked by default on Main and unticked on Dev, where a test build is often
+someone's work in progress. The start request names the chosen plugins in
+`replace_test_builds`; the helper rejects names that are not test builds in
+the plan, and the audit records the list. Unchosen test builds are left on
+disk, are not checked as changes, and are recorded in the plan as
+`test_build_kept`. Main still requires the release to have run on Dev.
 The release inventory is cached for ten minutes with a GitHub token, or one
 hour without one. A failed refresh prevents a release plan.
 
