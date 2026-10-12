@@ -40,7 +40,7 @@ src/main/java/net/tfminecraft/surgery/
 
 ## Installation
 
-1. Install **TLibs 2.3.0+** and **RPCharacters 2.16.0+**, then drop `surgery-<version>.jar` into `plugins/`.
+1. Install TLibs and RPCharacters at the versions in the table below, then drop `surgery-<version>.jar` into `plugins/`.
 2. Restart the server. Surgery declares a hard dependency on both.
 3. Give physicians `professions.physician` (the same permission that crafts the instruments).
 4. Point `surgeryItemsConfig.yml` at the surgical items. The defaults are the existing `m.surgery.*` MMOItems ids.
@@ -87,34 +87,13 @@ A healing trait added later needs a `procedures:` entry only when it should diff
 
 Temperature at or above 110°F, an expired collapse countdown, consecutive extremely weak pulse, consecutive red temperature, cutting while awake, too much chloroform, or closing the menu after the patient was sedated or cut. That last group adds `failure-healing-penalty` (12 hours by default) to the ailment. Closing the menu before then cancels with no penalty.
 
-Both participants need ready character sessions before an offer can be sent or
-accepted. Consent belongs to those exact sessions and expires when either
-ends, including a reconnect or switching Alice → Bob → Alice. An unavailable
-identity provider cannot turn an old offer into consent for a new character.
+Both participants need ready character sessions before an offer can be sent or accepted. Consent belongs to those exact sessions and expires when either ends, including a reconnect or switching Alice → Bob → Alice. An unavailable identity provider cannot turn an old offer into consent for a new character.
 
-An operation also belongs to both captured sessions. If the patient walks out
-of range, dies, logs off, or switches character, the operation ends. A physician
-who changes character gives up. Ordinary failure after sedation or cutting
-extends only the original patient's healing injury. A patient who quits or
-switches character after sedation or cutting receives the penalty on the
-outgoing character, which is still loaded when its session ends. A permakilled
-patient receives none. A physician's departure still penalises a patient whose
-original session is current. Shutdown cancels operations and
-clears offers without a healing penalty.
+An operation also belongs to both captured sessions. If the patient walks out of range, dies, logs off, or switches character, the operation ends. A physician who changes character or is permakilled gives up, and still receives the failure message while online. Ordinary failure after sedation or cutting extends only the original patient's healing injury. A patient who quits or switches character after sedation or cutting receives the penalty on the outgoing character, which is still loaded when its session ends. A permakilled patient receives none. A physician's departure still penalises a patient whose original session is current. Shutdown cancels operations and clears offers without a healing penalty.
 
-Configured completion commands name accounts. They run only while **both
-original sessions are current**, so a session end never runs them. A
-physician who logs off with the menu open closes it first, which runs the
-failure command before the session ends. The operation is removed before injury changes or command
-dispatch, so a command cannot complete it twice or erase a replacement
-operation. Old inventory clicks and close events cannot act on a new
-operation. A deferred close checks the original inventory, connection, and
-physician session before closing anything.
+Configured completion commands name accounts. They run only while **both original sessions are current**, so a session end never runs them. A physician who logs off with the menu open closes it first, which runs the failure command before the session ends. The operation is removed before injury changes or command dispatch, so a command cannot complete it twice or erase a replacement operation. Old inventory clicks and close events cannot act on a new operation. A deferred close checks the original inventory, connection, and physician session before closing anything.
 
-Surgery uses TLibs for identity and lifecycle and keeps RPCharacters for
-`HealingInjuries.list`, `cure`, and `extend`. An older TLibs installation disables
-Surgery at startup with an upgrade message. A missing or not-yet-ready identity
-provider blocks new operations.
+Surgery uses TLibs for identity and lifecycle and keeps RPCharacters for `HealingInjuries.list`, `cure`, and `extend`. An older TLibs installation disables Surgery at startup with an upgrade message. If RPCharacters is enabled but provides no character identity once the server has started, as older releases do, Surgery logs a warning because every offer would fail. A missing or not-yet-ready identity provider blocks new operations.
 
 ## Configuration
 
@@ -134,16 +113,16 @@ python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned
 mvn clean verify
 ```
 
-Use JDK 21. The installer verifies the pinned TLibs 2.3.0 and RPCharacters
-2.16.0 releases. Paper API resolves from Maven. `mvn clean verify` enforces
-100% executable-line coverage.
+Use JDK 21. The installer verifies the pinned TLibs and RPCharacters releases, and Paper API resolves from Maven.
 
-For live validation, test offers and active operations across switches,
-Alice → Bob → Alice, reconnects, provider loss, and both shutdown orders.
-Confirm quitting or switching after treatment extends only the outgoing
-patient's injury, while a permanent death does not. Test a completion command that starts
-another operation, then verify the old completion and deferred close cannot
-alter its state or inventory.
+## Testing
+
+`mvn clean verify` runs the unit tests and enforces 100% executable-line coverage. On a test server, check that:
+
+- offers and operations end when either character switches (including Alice → Bob → Alice), reconnects, or loses its identity provider;
+- a server stop, and RPCharacters disabling while Surgery keeps running, both end operations and clear offers without a healing penalty;
+- quitting or switching after sedation or cutting extends only the outgoing patient's injury, and a permanent death extends nothing;
+- a completion command that starts another operation leaves that operation's state and menu untouched.
 
 ## Author
 

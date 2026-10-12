@@ -97,7 +97,10 @@ second until they leave.
   it is killed when it next becomes ready. A directory record belonging to
   the same account with status `DEAD` or `MISSING` settles the pending death
   without damaging the current character. Unknown records do not settle it.
-  A committed character's death removes its own commitment.
+  A committed character's death removes its own commitment: an ordinary
+  death at once, and a permanent death once RPCharacters has saved it. If
+  that save fails, the character stays alive and committed, and the death
+  starts no grace.
 - **Other characters:** another character on the same account takes no
   deserter damage for the waiting commitment, and its death or `/lure leave`
   does not touch it. Further departures preserve the first character and
