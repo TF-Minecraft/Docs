@@ -52,7 +52,10 @@ durable operation intents. They capture the actor's character session and the
 participating guild incarnations. Confirmations cannot act for a new character
 or a replacement guild.
 
-Loan offer IDs are paid once. Principal acceptance and its debt record recover
+Loan offer IDs are paid once. An offer book records the lending guild's
+incarnation; books written before that binding existed, or whose lending guild
+has been deleted and recreated under the same ID, are rejected as out of date
+and the lender must issue a new agreement. Principal acceptance and its debt record recover
 together. Manual repayments credit the lender directly and persist exact debt
 and credit-score changes; they do not create another daily receipt. Pillage
 uses the war identity and attacker incarnation to recover the same loot and
@@ -70,6 +73,34 @@ already reached the guild treasury; this records its taxable income once.
 Startup finishes an incomplete bookkeeping save before daily settlement. An
 exact retry after the profit has been settled does not tax it again.
 
+## Vehicle finance
+
+Vehicle payments use the selected living character. Construction and
+maintenance capture a character session; handovers capture both participants,
+so switching characters cannot redirect an armed payment. `Cache/vehicles_registry.json`
+keeps PERSONAL records whose `playerUuid` is the payer character UUID; personal
+daily upkeep and vehicle tax charge only that recorded payer, never the
+account's current character. VehicleFramework owner tags still describe
+physical ownership and are not migrated to characters.
+
+On the first startup with VehicleFramework enabled, `identity/vehicle-payers.json`
+records every player-owned vehicle from VehicleFramework's persisted
+repository, mapping the account to its legacy heir character. Existing registry
+records win, the plan is saved before the registry changes, and it never
+reinterprets later owner-tag changes. Unresolved owners keep a null payer and
+stay unpaid; there is no in-game command to reassign them, and the completed
+plan must not be deleted to force a new mapping.
+
+Fees, refunds and maintenance use durable intents in `vehicle-payments/`,
+recovered at startup before realm settlement. `Cache/vehicle_fees.json` holds
+outstanding build, claim and handover receipts; an unfinished receipt blocks
+new ownership payments for its vehicle and leaves its daily upkeep unpaid,
+rather than charging the previous payer. A construction refund pays the
+originally captured character from the original guild incarnation, limited to
+the treasury's positive balance. Maintenance explicitly selects bank or pouch
+and never falls back to the other. Daily vehicle charges run last inside the
+single `sf:settle:<day>` posting, as described above.
+
 ## Saved recovery state
 
 Paths are relative to `plugins/SimpleFactions/`:
@@ -82,6 +113,11 @@ Paths are relative to `plugins/SimpleFactions/`:
 | `external-income/` | Idempotent external casino income bookkeeping |
 | `deaths/` | Death cleanup, succession and outstanding character claims |
 | `deaths/payments/` | Settlement acknowledgments for those claims |
+| `vehicle-payments/` | Vehicle fee, refund and maintenance intents |
+| `identity/vehicle-payers.json` | One-time legacy vehicle payer migration plan |
+| `Cache/vehicles_registry.json` | Vehicle ownership scopes and personal payer characters |
+| `Cache/vehicle_fees.json` | Outstanding vehicle payment receipts and owner history |
+| `Cache/vehicle_maintenance.json` | Vehicle upkeep and unpaid maintenance state |
 
 An intent is forced to storage before its dependent action. Completed intents
 and receipts are financial history, not disposable retry files. Restoring a
