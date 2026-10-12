@@ -28,8 +28,8 @@ default Steve skin, a Mojang-signed copy built into RPCharacters. It goes on as
 the player joins, before Paper sends the player list, so they arrive as Steve
 without a skin refresh during the resource-pack prompt. LibsDisguises re-reads a
 cached player's skin 20 ticks after they join, which would now save Steve as
-their disguise skin, so both servers set `UpdateGameProfiles: false` in
-`plugins/LibsDisguises/configs/libsdisguises.yml`. Skins already in its cache
+their disguise skin. Servers with selection enabled set `UpdateGameProfiles:
+false` in `plugins/LibsDisguises/configs/libsdisguises.yml`. Skins already in its cache
 stay as they are. Helmet, mask and
 wardrobe changes do not replace it there. Portraits still
 fall back to the account skin worn before it. Play puts the cached wardrobe or
