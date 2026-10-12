@@ -176,7 +176,24 @@ heirs:
 ```
 
 The mapping is account UUID to character UUID. Pin the SHA-256 of the exact file
-bytes in `heirs-sha256`. An account with existing characters and no valid reviewed
+bytes in `heirs-sha256`.
+
+Generate the manifest from the server's stopped data with
+`tools/body_heirs.py` in RPCharacters (Python 3.10 or later, standard library only):
+
+```sh
+python3 tools/body_heirs.py plugins/RPCharacters/data out/ --overrides reviewed.yml
+```
+
+It writes `character-body-heirs.yml`, `character-body-heirs.sha256` and
+`character-body-heirs-review.md`. Each account's heir is its active living
+character, else its most-played living character, else its most-played
+character. `--overrides` takes a file in the manifest format whose entries
+replace the proposal, so staff decisions survive regeneration. The report lists
+accounts that need a decision, heirs that are not the most-played character,
+accounts with no characters, and records that block the manifest: unreadable
+files, invalid IDs, duplicate character IDs and overrides naming a character
+from another account. The tool exits with status 1 while any record blocks it. An account with existing characters and no valid reviewed
 heir is blocked, except a first-ever Minecraft login with no inventory or ender
 chest possessions. That new account's website-created characters start fresh;
 the original body is retained in quarantine. Only exact MMOInventory accessory
@@ -189,8 +206,9 @@ For cutover:
 
 1. Stop Minecraft cleanly and back up vanilla player data, RPCharacters data,
    MMOCore data, graves, configuration and the reviewed manifest together.
-2. Verify the manifest against the current roster and resolve duplicate or
-   unreadable character records. Keep dead characters as records. Complete any
+2. Generate the manifest from the stopped server's data with the reviewed
+   overrides, and resolve every blocked record and every account the report
+   lists for a decision. Keep dead characters as records. Complete any
    pending vanilla death-screen respawn before this first cutover: an untagged,
    dead vanilla player is refused without changing its data. This is separate
    from the character's permanent-death status.
