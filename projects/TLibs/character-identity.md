@@ -41,6 +41,7 @@ caller.
 | `currentSession(Player)` | The session being played now, or empty. |
 | `isCurrent(CharacterSession)` | Whether that session is still being played. It turns false when the session ends and never turns true again. |
 | `info(UUID characterId)` | Any character, online or offline, or empty if unknown. |
+| `deathId(UUID characterId)` | Most recent saved death ID, including after revival; empty when unknown. |
 | `characters(UUID ownerId)` | Every character on the account, as an immutable copy. Empty means the records could not be read; an empty list means the account has none. |
 | `lastPlayed(UUID ownerId)` | The character the account played most recently, dead or alive. |
 | `displayName(Player)` | The name other players see now, including masks and aliases. |
@@ -73,7 +74,12 @@ still clean up against it.
 fires only after the death has been saved, and does not fire if the save fails.
 `killerId` and `killerCharacter` may be null; a killer character always belongs to
 `killerId`. Delivery is not durable: a crash between the save and the event loses
-it. Consumers must be idempotent by `deathId`.
+it. Consumers must be idempotent by `deathId`. Since TLibs 2.4.1, they can reconcile
+`DEAD` characters through `Characters.deathId(characterId)` after restart. The
+interface has an empty default for older providers. RPCharacters preserves each
+saved ID across revival and assigns a new one for the next death. Older deceased
+records without a saved ID use a deterministic legacy key based on their character
+UUID; a later saved death supersedes that key.
 
 None of these events can be cancelled.
 
