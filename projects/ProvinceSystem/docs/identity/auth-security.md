@@ -148,12 +148,18 @@ for the individual staff panels. Configuration validation is in
 
 Admins and the owner (`view_as_player`) can see the site as a player sees it.
 A player's staff page shows **View the site as them** when that player has
-signed in to the site and has no staff role. Source:
+linked Discord and has no staff role, whether or not they have signed in to
+the site. Source:
 [`view_as.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/view_as.py).
 
-1. `POST /admin/accounts/{user_id}/view-as` needs the site origin. It opens a
-   30-minute session for the player that names the admin in
-   `user_sessions.acting_user_id`, copying the player's last guild check. The
+1. `POST /admin/players/{player_uuid}/view-as` needs the site origin. It finds
+   the player's website account through their Discord link (**404**
+   `not_linked` without one) and opens a 30-minute session for it that names the
+   admin in `user_sessions.acting_user_id`, copying the player's last guild check.
+   A player who has never signed in gets a placeholder account (`users.placeholder = 1`,
+   named from the link) that is deleted once its views end. Staff lists, the
+   account lookup and player pages treat it as no account, and the player signing
+   in with Discord turns it into their real account. The
    admin's own session token moves to the HttpOnly `__Host-tfmc_staff_session`
    cookie (`tfmc_staff_session` over plain HTTP), and the site opens the player's Profile.
 2. The site shows a bar at the bottom of every page: "Viewing as …", with
@@ -178,9 +184,10 @@ the player's role changes, and dev will not hand it to a branch preview.
 Signing out during a view also signs the admin out, and signing in with Discord
 ends the view and drops the session it kept.
 
-Only players who have signed in to the site can be viewed, and never staff.
+Only players with a Discord link can be viewed, and never staff.
 Each start and end is written to the staff audit log
-(`account.view_as.start`, `account.view_as.stop` with `expired`), as are
+(`account.view_as.start` with `player_uuid` and `placeholder`,
+`account.view_as.stop` with `expired`), as are
 refused starts, including one from inside a view. Changing the admin's role or revoking their sessions also ends
 their views and their Profile sessions; the role change or revocation is the audit row.
 
