@@ -10,7 +10,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 Run Maven with **JDK 21** from the source checkout. The POM sets `maven.compiler.release=21` and resolves `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT` with `provided` scope from the PaperMC Maven repository. The plugin descriptor declares `api-version: 1.21.10`.
 
-Install these matching Java 21 TFMC artifacts into local Maven before building: `me.plugins:tlibs:2.0.0`, `net.tfminecraft:rpcharacters:2.0.1`. Use the [shared installer](../TLibs/README.md) for published dependencies, or `mvn clean install` from matching source versions. CI uses the shared dependency setup actions.
+Install these matching Java 21 TFMC artifacts into local Maven before building: `me.plugins:tlibs:2.3.0`, `net.tfminecraft:rpcharacters:2.16.0`. Use the [shared installer](../TLibs/README.md) for published dependencies, or `mvn clean install` from matching source versions. CI uses the shared dependency setup actions.
 
 Populate `libs/` with the exact files and hashes listed in `.github/dependencies.sha256`. `.github/scripts/prepare-release.sh` downloads those pinned private assets when supplied with the approved dependency token.
 
@@ -34,7 +34,7 @@ Use `mvn clean install` when another plugin needs the result as a Maven dependen
 
 ## Runtime and configuration
 
-The manifest requires TLibs and marks RPCharacters, TFMCWeb and ItemsAdder optional. The character picker needs RPCharacters; furniture mailboxes need ItemsAdder; offline Discord notifications need TFMCWeb and `discord.enabled`. `/birdmessenger reload` requires `birdmessenger.reload` (op by default). See the mailbox guide below for interaction checks.
+The manifest requires TLibs and marks RPCharacters, TFMCWeb and ItemsAdder optional. Sending requires a ready character session from TLibs, and the character picker needs RPCharacters; furniture mailboxes need ItemsAdder; offline Discord notifications need TFMCWeb and `discord.enabled`. `/birdmessenger reload` requires `birdmessenger.reload` (op by default). See the mailbox guide below for interaction checks.
 
 ## Guides
 
