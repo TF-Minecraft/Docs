@@ -21,6 +21,11 @@ linking while selecting. Other commands, movement, damage, item transfers and
 ordinary chat remain blocked. Players in selection are hidden from each other
 and from players in the game worlds.
 
+The destination teleport must succeed before progression or inventory is restored.
+If another plugin blocks it, selection remains available without an activation
+lease or a ready session. Wait for resource packs to finish loading before retrying;
+ItemsAdder can block teleports while a pack is still loading.
+
 Starting character creation while playing also requires reconnecting into
 selection. An unfinished in-game creation draft is cancelled on logout; completed
 characters remain saved and can be selected after reconnecting.
@@ -197,6 +202,7 @@ callbacks.
 
 A Paper integration run should verify real item components and accessory slots,
 A → logout → B → logout → A isolation, cooldown and same-character resume, death
-and grave recovery, creation, server restart, live-tag crash recovery, failed
+and grave recovery, creation, selection during resource-pack loading and retry
+after loading, server restart, live-tag crash recovery, failed
 storage and corrupt-file refusal. Mocked Paper or MMOCore boundaries alone do not
 prove those runtime behaviors.
