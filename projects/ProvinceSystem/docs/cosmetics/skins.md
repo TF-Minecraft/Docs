@@ -161,7 +161,7 @@ Deploy and verify the headless renderer: [ops/sheet-render.md](../ops/sheet-rend
 | `POST /profile/redeem` | Profile sign-in with a `profile`, `skin`, `skin_staff` or `drink` code → that scope's redeem payload ([below](#signing-in-with-a-skin-or-drink-code)) |
 | `GET /profile/wardrobe` | Skin or drink code Bearer → `{ kind, items, can_start }` for that wardrobe |
 | `GET /skins/submissions/{id}/thumbnail` | Owner's wardrobe picture |
-| `GET /skins/submissions/{id}/files/{filename}` | One of the owner's uploaded textures or models (`.png`, `.json`; not `meta.json`, `review_sheet.png` or `name_preview.png`) for the 3D viewer |
+| `GET /skins/submissions/{id}/files?name=` | One of the owner's uploaded textures or models (`.png`, `.json`; not `meta.json`, `review_sheet.png` or `name_preview.png`) for the 3D viewer. The name is a query parameter because Cloudflare caches paths ending in `.png` by URL alone |
 | `POST /skins/submissions` | Multipart upload |
 | `GET /skins/submissions/check` | Display name conflict check |
 | `GET /skins/submissions/{id}` | Status for owner session |
