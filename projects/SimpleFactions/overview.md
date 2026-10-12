@@ -30,7 +30,50 @@ This project also demonstrates cross-language integration through **ProvinceSyst
 ## Technical Overview
 - Runtime target: TFMC Minecraft **1.21.10**; follow the [shared platform baseline](../../PLATFORM.md).
 - Build with JDK 21 and Maven. The POM targets Java 21 bytecode (`maven.compiler.release=21`) and resolves `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT` with `provided` scope.
-- Supply the authorized private JARs in `libs/` using the repository’s dependency preparation script and checksum file. Install matching Java 21 TLibs, RPCharacters, DenarEconomy, VehicleFramework and VFBuilders builds in local Maven before `mvn clean verify`. The shared baseline explains release status and dependency cycles.
+- The Maven API dependencies pin **TLibs 2.3.0** and **RPCharacters 2.16.0**. Install the POM's shared plugin versions with the checksum-verifying installer, then prepare the authorized private dependencies and build from the SimpleFactions checkout:
+
+```sh
+python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned
+bash .github/scripts/prepare-release.sh
+mvn clean verify
+```
+
+The installer command assumes a sibling TLibs checkout. Private inputs go in `libs/`
+and are checked against `.github/dependencies.sha256`; preparation requires authorized
+ServerAssets access. See [build dependencies](../../PIPELINES.md#build-dependencies)
+for credentials, dependency records and the shared workflow.
+
+### Character identity
+
+SimpleFactions reads character identity through TLibs' shared service. RPCharacters
+provides that service and remains optional at runtime; its direct API is still used
+for office attributes, chat integration and the lore calendar. SimpleFactions requires
+TLibs 2.3.0 or newer and disables itself if the shared API is unavailable. A connected player whose character is
+still loading has no ready session. Online lookups wait for that session rather than
+substituting an offline character.
+
+Realm and guild leader data uses canonical character names. A ready-character event
+refreshes the leader immediately and schedules changed names for the map's next export.
+When a leader is offline, SimpleFactions resolves only an account UUID already cached
+by Bukkit and asks the character directory for its most recently played character;
+that character may be dead. It neither scans RPCharacters JSON nor requests account
+identities from Mojang. Unknown data keeps a remembered name only for the same leader;
+without a provider, remembered character names are cleared.
+
+Online menus and invitations use visible character names, including masks and aliases.
+Their fallback and foreign-view privacy rules are described in the
+[espionage guide](docs/espionage.md#rosters).
+
+- **Member prestige:** uses actual online-playtime seconds from the ready character,
+  or the offline account's last-played character. Unknown members contribute no playtime.
+- **Mercenary companies:** with a provider available, founding or joining requires a
+  ready, living character with the `mercenary` trait. Pending characters cannot start
+  new mercenary work. Existing membership checks all living characters belonging to
+  the account; unknown or unreadable records preserve the current membership. Without
+  a provider, the optional trait restriction is not enforced.
+- **Special positions:** new appointments require a matching ready character session.
+  Existing offices survive unknown character data; confirmed character death is handled
+  as described under [character death](docs/espionage.md#character-death).
 
 ### Architecture
 - The main class initializes managers and overall plugin setup  

@@ -113,7 +113,10 @@ Open **Special Positions** in the faction menu or use `/faction positions`, then
   members.
 
 Only the faction leader can appoint or remove the Spymaster. The appointee must be an online
-member with an active RPCharacters character. Missing or ineligible Spymasters have aptitude 0.
+member with a ready, living character from the shared identity service. The account UUID,
+character UUID and current connection must agree. A character that is still loading cannot
+be appointed; an absent provider also leaves new offices waiting. Missing or ineligible
+Spymasters have aptitude 0.
 
 ### The leader as default holder
 
@@ -121,7 +124,7 @@ The faction leader holds every special position that has no appointee, whatever 
 the faction. An office falls back to the leader on founding, when its appointee is dismissed,
 dies or leaves, and when the leadership changes: a default holding moves to the new leader,
 while a deliberate appointment stays with its appointee. The office waits for the leader's
-next live active character and is filled the next time it is checked (for example when a
+next ready, living character and is filled the next time it is checked (for example when a
 faction menu opens). Until then it counts as vacant. Dismissing the leader's own default
 holding is refused.
 
@@ -133,7 +136,8 @@ far, so the penalty matters once more offices are added.
 
 Only the appointee receives the roleplay appointment letter and their aptitude in chat.
 Member and candidate entries use character names and guild affiliations. Appointment
-commands and invitations accept either full character names (including spaces) or Minecraft
+commands and invitations accept either full visible character names (including masks,
+aliases and spaces) or Minecraft
 account names; only online players match, matching is exact and ignores case, and duplicate
 character names require the account name.
 
@@ -181,10 +185,20 @@ it. This is independent of the replacement unrest.
 
 ### Character death
 
-Permanent RPCharacters character death removes that character's Spymaster office and keeps
-the appointment history, and waives the wait before the next appointment. Ordinary Minecraft respawns and cancelled character deaths do
-not remove the office. Removal is confirmed after the death event commits, and loaded
-assignments for dead characters are rejected when checked.
+Committed character death removes that character's Spymaster office, keeps the appointment
+history and waives the wait before the next appointment. Ordinary Minecraft respawns,
+cancelled deaths and deaths that could not be saved do not remove the office.
+
+The death must match both the account and character UUID. Each death is settled once per
+faction, and a delayed notification cannot clear an appointment or pending founder binding
+created after that death, including the leader's automatic holding. Removal and the record
+that the death was handled are saved together. A failed faction save restores the previous
+office and appointment wait, leaving the notification eligible for a later retry.
+
+Death notifications are not a durable delivery queue. If one is missed, ordinary office
+checks still remove a holder whose matching directory entry is known to be **DEAD**.
+Unknown, unreadable or **MISSING** character records do not establish a death and leave the
+existing office intact.
 
 ## Aptitude
 
@@ -197,10 +211,18 @@ the faction JSON.
 On startup the registry imports aptitudes stored per faction by older saves without
 rerolling them. If a character has several faction-specific values, an existing registry
 entry wins; otherwise the first faction ID alphabetically supplies the permanent value.
+Uppercase and lowercase spellings of a full character UUID reuse the same stored roll
+without renaming the original JSON key. If older data already contains conflicting case
+aliases, an exact key wins; otherwise the first stored alias is used. Other legacy keys are
+preserved separately, including shortened UUID spellings.
 
 The roll uses permanent MMOCore attribute bases (creation, traits and allocated points;
 equipment bonuses excluded), capped to 0–16 and centred at 6. Without MMOCore, aptitude uses
 RPCharacters' saved attribute values.
+Those values must belong to the same ready character that began the appointment. Switching
+characters, reconnecting or losing the provider during attribute lookup aborts the unfinished
+appointment and roll. Switching back to the same character does not resume that old action;
+an existing permanent aptitude is retained without rerolling.
 
 ```
 base aptitude = clamp(round(50 + sum(weight * (attribute - 6)))
@@ -269,9 +291,17 @@ zero-information category **Botched report**, with private fields Unknown.
 ### Rosters
 
 Member samples are rounded down, capped at 23, and saved with the report so reopening cannot
-reveal extra names. They contain character names and guild affiliations; foreign reports
-show Unknown for missing character names, while own views, staff bypass and invitations fall
-back to account names. The faction leader is always displayed separately alongside the
+reveal extra names. They contain character names and guild affiliations. Online names come
+from the ready character's visible name, preserving masks and aliases without substituting
+a canonical name. Offline names use the directory's last-played character for an account
+UUID already cached by Bukkit, including dead characters; no character files or Mojang
+account lookups are used.
+
+With a provider available, foreign reports show Unknown for unavailable names, including
+online characters still loading. Own views, staff bypass and invitations fall back to
+account names. Without a provider, account names remain available. Canonical realm and guild
+leader names are maintained separately for public map data and refresh as soon as a character
+is ready. The faction leader is always displayed separately alongside the
 member-count range. Guild rosters use the same sample, filtered by guild; guild leaders and
 office identities use their own tier gates. All rosters distinguish the leader, guild
 leaders and office holders. The leader uses the faction's custom ruler title, defaulting to
@@ -491,26 +521,29 @@ without regenerating reports.
 ## Saving and failure handling
 
 Office appointments, removals and sabotage changes report success only after the faction
-save succeeds. Failed saves restore the previous office state and refund any appointment
-charge; faction JSON is staged before replacing the previous save. Daily refreshes batch
+save succeeds. Failed saves restore the previous office state; faction JSON is staged before
+replacing the previous save. Daily refreshes batch
 faction saves once per changed faction. A startup failure before faction restoration
 completes cannot overwrite faction saves or the saved timer during shutdown.
 
-A founder whose aptitude cannot be saved, or who has no active character (or RPCharacters is
-disabled), stays pending. The office is retried when next checked while the founder has an
-active character; a failed roll is never finalised as a permanent zero and never consumes the
+A founder whose aptitude cannot be saved, or who has no ready character or available identity
+provider, stays pending. The office is retried when next checked while the founder has a
+ready character; a failed roll is never finalised as a permanent zero and never consumes the
 free appointment. Pending founder appointments keep their character identity, and an
-unrelated character death cannot cancel them. Changed pending identities are saved
+unrelated or older character death cannot cancel a newer binding. Changed pending identities are saved
 immediately during office lookups, or once with the faction's report batch, so they survive
 an unexpected process exit. Failed immediate saves restore the previous identity and keep
 initialisation pending, so a later lookup can retry without consuming an appointment.
 
 ## Verification
 
+Prepare the pinned dependencies as described in the [overview](../overview.md#technical-overview).
 Automated tests run with `mvn clean verify` (Java 21) and cover attribute weights and
 extremes, daily luck, estimate bounds, caching, character aptitude persistence and
 migration, the leader's default holding, extra-office penalties, sampled rosters, rank privacy,
-overlord bonuses, sharing with overlords and vassals, and permissions.
+overlord bonuses, sharing with overlords and vassals, and permissions. Identity regressions
+cover pending characters, switching away and back, reconnects, provider changes, masked
+names, UUID case preservation, and death replay and save failures.
 
 On a test server, use `/faction menu`, then compare reports from two members, test prestige
 and wealth sorting, browse foreign guilds and inspect private conduct. Use
