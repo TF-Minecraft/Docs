@@ -34,11 +34,11 @@ Use `mvn clean install` when another plugin needs the result as a Maven dependen
 
 ## Runtime and configuration
 
-The manifest requires TLibs and marks RPCharacters, TFMCWeb and ItemsAdder optional. Sending requires a ready character session from TLibs, and the character picker needs RPCharacters; furniture mailboxes need ItemsAdder; offline Discord notifications need TFMCWeb and `discord.enabled`. `/birdmessenger reload` requires `birdmessenger.reload` (op by default). See the mailbox guide below for interaction checks.
+The manifest requires TLibs and marks RPCharacters, TFMCWeb and ItemsAdder optional. Sending and the character picker need RPCharacters, which provides character sessions through TLibs; furniture mailboxes need ItemsAdder; offline Discord notifications need TFMCWeb and `discord.enabled`. `/birdmessenger reload` requires `birdmessenger.reload` (op by default). See the mailbox guide below for interaction checks.
 
 ## Guides
 
-- [Behavior and operations](overview.md)
+- [Behaviour and operations](overview.md)
 
 ## Builds and releases
 

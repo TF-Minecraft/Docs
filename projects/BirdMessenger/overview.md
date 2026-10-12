@@ -25,34 +25,46 @@ mail still arrives.
 
 ## Character sessions
 
-Mailbox sending requires a ready character. The letter slot, recipient picker,
-queued picker opening and skin refresh belong to the same player connection and
-character activation. Switching away and back does not revive an old menu.
-Ending that session closes its menus and returns unsent letters to the outgoing
-inventory before RPCharacters saves it. Plugin shutdown also returns letters from
-current sessions. When that inventory is no longer safe to use, the letter is
-queued for its captured owner and character instead. Storage errors are logged;
-failed unsent refunds remain in memory for retry on character start and plugin
-shutdown. Repair a reported storage problem before stopping the plugin.
+Sending from a mailbox needs a character in play. The letter slot, recipient
+picker and head refresh belong to the character that opened the mailbox;
+switching away and back closes them instead of bringing them back.
 
-Letter editing, signing and opening preserve the original item checks and also
-verify the captured session before changing an item on the next tick. While a
-character provider is registered but no character is ready, edits and signatures
-are refused; sealed books remain readable without rewriting the item. Standalone
-letter editing remains available without a provider, provided one has not arrived
-before the delayed write.
+When a character stops being played, its menus close and any unsent letter goes
+back to that character's inventory before RPCharacters saves it. A player who
+logs out, or is online when the plugin stops, gets the letter in their inventory
+if there is room; otherwise it waits in pending mail for that character. A death
+that empties the inventory (keepInventory off for that death) drops the letter at
+the player's feet instead, including a permadeath that ends the character.
+Letters that cannot go straight back wait in pending mail and arrive with the
+`unsent-returned` message the next time that character is played.
 
-In-flight mail belongs to the recipient character and survives session changes.
-Delivery requires a ready session for the stored owner and character. Pending
-mail is removed one letter at a time, checking the same session between letters;
-a switch during delivery leaves the rest queued. Existing UUID text is preserved,
-including uppercase spelling. Malformed character IDs and mail for another owner
-are retained and are not delivered to the current character.
+If a send fails while the character is still in play, the letter goes straight
+back to the player. If mail storage refuses a letter for a character no longer
+in play, BirdMessenger keeps it in memory and tries again whenever a character
+starts. The log names the letter's item type, amount, display name, character and
+owner; a letter still held when the plugin stops is lost, so staff can use that
+entry to replace it.
 
-The shared TLibs API supplies session identity. RPCharacters still supplies the
-mail-specific opted-in recipient list, head textures and flight destinations.
-BirdMessenger requires TLibs 2.3.0 or newer; missing provider registration blocks
-sending and delivery until it becomes available.
+Editing, signing and opening a letter also check, on the next tick, that the same
+character is still in play before the item changes. While RPCharacters is running
+but the player has no character in play, edits and signatures are refused with the
+`letter-needs-character` message from `letters-config.yml` and the typed text is
+not kept; sealed letters can still be read without breaking the seal. Without
+RPCharacters, letter editing works on its own, unless RPCharacters starts in the
+tick between the edit and the save.
+
+In-flight mail belongs to the recipient character and survives character changes.
+Delivery needs the stored owner to be playing the stored character. Pending
+letters are handed over one at a time, checking the character before each; a
+switch part-way leaves the rest queued, and the file is saved once afterwards.
+Character IDs match regardless of letter case and are kept as written. Malformed
+IDs and mail for another owner stay in the file and are not delivered to the
+current character.
+
+RPCharacters provides character sessions through the TLibs character API, as well
+as the opted-in recipient list, head textures and flight destinations.
+BirdMessenger requires TLibs 2.3.0 or newer; sending and delivery wait until
+RPCharacters has registered its sessions.
 
 ## Mail recovery
 
@@ -64,6 +76,9 @@ the original file beside it as `<filename>.corrupt-<uuid>` before later saves ca
 replace it. These recovery copies include unreadable entries and should be kept
 until the affected mail has been recovered. If the copy cannot be created,
 startup fails and the affected file cannot be overwritten by the store.
+
+Unsent letters on their way back to their writer are kept in `pending_mail.yml`
+with `returned: true`.
 
 ## Build and verification
 
@@ -80,7 +95,11 @@ Before deployment, verify on a test server with ItemsAdder:
   character keeps the unsent letter and the next character receives no stale menu.
 - Switch away and back while a picker refresh or letter edit is queued: old work
   cannot change the current inventory.
+- Die with the recipient picker open and keepInventory off: the letter drops at
+  the death spot. With keepInventory on, it stays in the inventory.
+- Log out with a full inventory while the picker is open: the letter returns with
+  the `unsent-returned` message when that character is next played.
 - Receive several pending letters, switching during delivery: remaining letters
-  wait for a ready session of their stored owner and character.
+  wait until their stored owner plays their stored character.
 - Restart with pending and in-flight mail: delivery resumes without changing
-  recipient opt-out behavior or stored character IDs.
+  recipient opt-out behaviour or stored character IDs.
