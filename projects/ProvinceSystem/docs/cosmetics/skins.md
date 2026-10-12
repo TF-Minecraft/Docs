@@ -131,7 +131,7 @@ backend/src/data/skins/{submission_id}/
 
 | Phase | What the API serves | Who consumes |
 |-------|---------------------|--------------|
-| Contact sheet | Composite `review-sheet` PNG (2D textures + 3D tiles when renderer is available) | Website status page + Discord `#bot-feed` |
+| Contact sheet | Composite `review-sheet` PNG (2D textures + 3D tiles when renderer is available) | Discord `#bot-feed` |
 | Render failure | `preview_render_error.txt` on disk; staff `X-Sheet-Render-Error` header; Discord **3D preview** embed field | Staff only (texture-only sheet still attached) |
 
 Deploy and verify the headless renderer: [ops/sheet-render.md](../ops/sheet-render.md).
@@ -161,6 +161,7 @@ Deploy and verify the headless renderer: [ops/sheet-render.md](../ops/sheet-rend
 | `POST /profile/redeem` | Profile sign-in with a `profile`, `skin`, `skin_staff` or `drink` code → that scope's redeem payload ([below](#signing-in-with-a-skin-or-drink-code)) |
 | `GET /profile/wardrobe` | Skin or drink code Bearer → `{ kind, items, can_start }` for that wardrobe |
 | `GET /skins/submissions/{id}/thumbnail` | Owner's wardrobe picture |
+| `GET /skins/submissions/{id}/files/{filename}` | One of the owner's uploaded textures or models (`.png`, `.json`; not `meta.json`, `review_sheet.png` or `name_preview.png`) for the 3D viewer |
 | `POST /skins/submissions` | Multipart upload |
 | `GET /skins/submissions/check` | Display name conflict check |
 | `GET /skins/submissions/{id}` | Status for owner session |
@@ -227,6 +228,16 @@ Opening one adds a history entry, so the browser's Back returns to the grid; a s
 replaces the editor's entry with the new skin. Drinks work the same with `&drink=`.
 Addresses are in [`paths.ts`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/lib/profile/paths.ts).
 
+A skin's page puts the skin on a stage beside its name, kind, review state and
+dates, with **Check again** while it waits for review or the pack. The stage is the
+editor's 3D viewer fed the owner's own files (`ModelPreview` or `ArmorPreview` with
+`stage`), opening on the item itself; armour sets switch between their sets and show
+the four inventory icons, books switch between unsigned and signed. Which files each
+kind needs is in [`ownerFiles.ts`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/lib/skins/ownerFiles.ts).
+The wardrobe picture stands in while they load or when the viewer fails. A coloured
+or styled name also shows as the in-game tooltip. Source:
+[`SkinShowcase.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/profile/SkinShowcase.tsx).
+
 ### Signing in with a skin or drink code
 
 Profile's code form takes a `/token create profile`, `skin` or `drink` code through
@@ -262,7 +273,7 @@ drink code sessions (`endCodeUploads` in
 2. Choose kind → fixed slots per kind  
 3. Armor: **Add tier** flow (1-6 tiers)  
 4. Enter **Item name**; colours / styles / live preview  
-5. Submit → the new skin in the tab (`&skin=<id>`), with its review sheet  
+5. Submit → the new skin's page in the tab (`&skin=<id>`)  
 
 Going back to `?skin=new` after submitting shows that skin instead.
 The next skin starts from Profile's **New skin** tile.
@@ -271,7 +282,7 @@ The next skin starts from Profile's **New skin** tile.
 
 - Plugin and staff secrets only in server env  
 - Rate-limit redeem and upload  
-- Review sheets for staff only  
+- Review sheets for staff and Discord; owners get their own uploads only  
 - No public list-all-submissions endpoint  
 
 Local MVP: [ops/local-dev.md](../ops/local-dev.md).
