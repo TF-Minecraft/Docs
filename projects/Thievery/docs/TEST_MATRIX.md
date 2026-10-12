@@ -6,6 +6,15 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 
 ## Regression
 
+With TLibs **2.3.0** and RPCharacters **2.16.0**, check a restricted command,
+container lockpick and display lockpick while the character is loading, after
+loading a character with the required trait, and after switching to one without
+it. Only the matching ready character should pass the trait restriction. Switch
+back and repeat after changing that character's traits; the next check must use
+the current traits. Confirm unrestricted lists still permit access (the
+pickpocket loader defaults its empty list to `thief`). Record these results in
+addition to the checks below.
+
 | # | Check |
 |---|--------|
 | R1 | Door lockpick bar still runs; success opens door |

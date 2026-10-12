@@ -16,6 +16,12 @@ isolated under `target/test-runtime`. External plugin APIs use mocks or fixtures
 Optional RPCharacters API compatibility uses a separately loaded fixture to
 model servers with and without that API.
 
+Trait tests register the shared character service and cover absent providers,
+pending sessions, unknown character information, character switching, and current
+trait changes. Container and display tests exercise the shared checker before
+clue checks or lockpick start; plugin lifecycle tests cover the old-TLibs startup
+failure.
+
 Surefire writes test results to `target/surefire-reports/`. JaCoCo includes every
 production class and writes `target/site/jacoco/index.html` and
 `target/site/jacoco/jacoco.xml`. The `verify` phase requires 100% instruction,
