@@ -21,6 +21,10 @@ linking while selecting. Other commands, movement, damage, item transfers and
 ordinary chat remain blocked. Players in selection are hidden from each other
 and from players in the game worlds.
 
+Starting character creation while playing also requires reconnecting into
+selection. An unfinished in-game creation draft is cancelled on logout; completed
+characters remain saved and can be selected after reconnecting.
+
 While playing, `/rpcharacter select` disconnects the player. Reconnecting opens
 selection and follows the existing logout and combat rules. There is no live
 inventory swap. Resuming the last character does not consume or require the
@@ -39,6 +43,8 @@ effects and explicitly configured persistent-data keys. Paper item bytes retain
 item components and nested item data. Accessories implemented as vanilla slots,
 including the TFMC ring and artifact slots, travel with that inventory. Separate
 custom inventories owned by other plugins require their own integration.
+Forced respawn points retain their forced flag. Empty vanilla accessory slots
+are refreshed through MMOInventory without replacing equipped accessories.
 
 Each character also has its own MMOCore progression, class level and experience,
 skills and bindings, profession experience, skill/attribute/profession point
@@ -108,7 +114,10 @@ For cutover:
 1. Stop Minecraft cleanly and back up vanilla player data, RPCharacters data,
    MMOCore data, graves, configuration and the reviewed manifest together.
 2. Verify the manifest against the current roster and resolve duplicate or
-   unreadable character records. Keep dead characters as records.
+   unreadable character records. Keep dead characters as records. Complete any
+   pending vanilla death-screen respawn before this first cutover: an untagged,
+   dead vanilla player is refused without changing its data. This is separate
+   from the character's permanent-death status.
 3. Set the correct profession permission context for this server. Dev must use
    `server=dev` because Dev and Main share LuckPerms storage. Configure the intended
    switch cooldowns in `permission-groups.yml`; the target migration policy is
@@ -128,7 +137,7 @@ State lives below `plugins/RPCharacters/data/`:
 | --- | --- |
 | `body-migrations/<account>.yml` | Immutable legacy body, initial roster, heir and migration completion state. |
 | `bodies/` | Versioned, checksummed character bodies and recovery copies. |
-| `body-leases/<account>.json` | Durable claim identifying the character and base body revision activated into vanilla player data. |
+| `body-leases/<account>.json` | Durable activation claim with character, base revision and pending normal-respawn intent. |
 | `progress/<account>/baseline.yml` | Immutable legacy progression baseline. |
 | `progress/<account>/characters/<character>.yml` | Character progression and revision. |
 
@@ -152,6 +161,15 @@ lease, a live tag without its lease, or mismatched evidence blocks login for
 manual recovery. This also prevents replaying a body when Paper returns from a
 player save without persisting it. Items returned by another plugin after stowing
 are retained in quarantine and are not automatically merged into another body.
+
+Disconnecting on the ordinary death screen leaves the live vanilla body and its
+lease intact. Rejoining completes the normal respawn before opening selection;
+the saved body retains its actual respawn location, items and experience and
+restores full health after character equipment and attributes are applied.
+Durable respawn intent also covers another interruption during this recovery.
+Permanently dead character bodies remain dead; respawning the vanilla player
+only returns them to selection. Unassigned returns from that respawn are
+quarantined.
 
 If recovery fails, keep the affected player offline. Stop Minecraft before
 repairing files, retain the failed files and logs, and compare the player tag,
