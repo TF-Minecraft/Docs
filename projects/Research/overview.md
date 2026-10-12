@@ -13,14 +13,17 @@ the six menu rows.
 
 ## Player flow
 
-**Starting.** A player right-clicks a free station while holding an enabled
-input's `start_item`. Research rolls one of the input's outputs by weight,
+**Starting.** A player with a ready character session right-clicks a free station
+while holding an enabled input's `start_item`. Research rolls one of the input's outputs by weight,
 resolves its result, and then consumes `start_item.amount` from the hand used.
 If the rolled output is disabled or its result cannot be resolved, nothing is
 consumed. The project belongs to the character who started it. Other players,
 and other characters on the same account, get an "in use" message and cannot
 add their focus to it; the starting character reopens the menu. A station saved
-before characters were recorded belongs to the next character to open it.
+before characters were recorded belongs to the next ready character to open it.
+Without a ready shared session, Research leaves start items and station ownership
+untouched. The optional `station.character_required` message explains this;
+existing message files without that key use a built-in message.
 
 Lecterns without an active project retain vanilla book handling: players can
 place a written book or book and quill, or open a book already on the lectern.
@@ -78,6 +81,14 @@ shuffled into random rows when the project starts, and the remaining rows are
 decoys, so an output can require at most six aspects. After each experiment, a
 pulse in the scoring aspect's `pulse_color` crosses the left panel.
 
+Each menu belongs to the session that opened it. Switching characters, quitting,
+permanent death, or provider shutdown closes the outgoing menu and returns its
+experiment item once, before the outgoing character is saved or unloaded. An old
+menu cannot spend focus or scrap a project after switching away and back to the
+same character. Delayed menu refreshes and completion sounds also stop applying
+to that player when the captured session ends; station and dropped-item particle
+effects remain world effects.
+
 ## Configuration files
 
 The plugin copies `config.yml`, `gui.yml`, and `messages.yml` into
@@ -128,7 +139,8 @@ open station menus before changing `labels` titles or `colors.inventory_title`.
   player without an active character has no points and cannot experiment.
 - **MMOCore.** The discovery attribute is read as the attribute's total value;
   a missing attribute counts as zero.
-- **TLibs.** TLibs builds and matches every item path and formats text.
+- **TLibs.** TLibs builds and matches every item path, formats text, and supplies
+  shared character identity and session events through RPCharacters' provider.
 - **`ResearchCompleteEvent`.** Listen for
   `net.tfminecraft.research.event.ResearchCompleteEvent`, which fires
   synchronously after the result spawns and cannot be cancelled. It exposes
@@ -147,6 +159,13 @@ open station menus before changing `labels` titles or `colors.inventory_title`.
   completes, is scrapped, or its block is broken.
 - On start, files that reference an unknown input, output, or world are skipped
   with a warning and left on disk. A missing or stale row order is reshuffled.
+- Session cleanup leaves the station and its progress intact. Normal plugin
+  disable returns held experiment items directly, even after the identity provider
+  or Research's event listeners have stopped, and then saves the stations.
+- The station JSON schema is unchanged. New ownership uses the canonical character
+  UUID; existing UUID strings compare without regard to letter case and are not
+  rewritten. Projects without a recorded character are claimed only by a ready
+  character on their owner account.
 
 Back up the complete `plugins/Research/` directory before renaming identifiers
 or migrating configuration, and stop the server cleanly before copying live
@@ -172,3 +191,11 @@ dependency set:
 6. Scrap one project and break the block under another.
 7. Restart cleanly mid-project and confirm ownership, progress, tested items,
    row order, and the rolled result are restored.
+8. With an experiment item held in the menu, switch characters, quit, permanently
+   kill the character, and stop the server. Verify one refund, including an item
+   dropped when inventory space is full, and unchanged station progress. Switching
+   away and back must invalidate the old menu and its pending refresh.
+9. Check that loading or unavailable characters cannot start or claim projects,
+   and that an older station with an uppercase character UUID remains accessible
+   to its owner. A provider shutdown must not transfer ownership to the account
+   or another character.
