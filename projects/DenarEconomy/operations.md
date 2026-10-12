@@ -14,7 +14,7 @@ Every money command acts on the character the player is playing now. A player wi
 | `/deco bal` | Players | Shows the character's pouch and bank balances. |
 | `/deco pay <amount>` | Players | Takes the amount from the pouch and drops it as coins in the world. |
 | `/deco toitem <amount> [coin]` | Players | Converts pouch money into coin items. With a coin id or value, `<amount>` is a whole number of that coin. Items that do not fit are dropped at the player's feet. |
-| `/deco topouch` | Players | Puts the withdrawable coin stack in the main hand into the pouch. World payout coins are refused. |
+| `/deco topouch` | Players | Puts the withdrawable coin stack in the main hand into the pouch and saves the player at once, so a crash cannot return the coins. World payout coins are refused. |
 | `/deco deposit <amount>` | Players | Moves money from the pouch to the bank. |
 | `/deco withdraw <amount>` | Players | Moves money from the bank to the pouch. |
 | `/deco baltop` | Players | Lists the 20 characters with the largest combined pouch and bank. |
