@@ -96,6 +96,10 @@ someone's work in progress. The start request names the chosen plugins in
 the plan, and the audit records the list. Unchosen test builds are left on
 disk, are not checked as changes, and are recorded in the plan as
 `test_build_kept`. Main still requires the release to have run on Dev.
+
+The helper must be able to read every jar. A jar moved into `plugins` keeps
+its own permissions, so make it `0644` first; otherwise every plan for that
+server, and every Main update plan, stops with "A plugin jar can’t be read".
 The release inventory is cached for ten minutes with a GitHub token, or one
 hour without one. A failed refresh prevents a release plan.
 
@@ -285,7 +289,9 @@ and Java exit, restore the recorded old jars and consistent data backups as
 needed, and use application Start. Do not stop/restart the AMP instance.
 **Recheck and reopen** accepts either the complete planned set or the complete
 recorded original set, provided the current server loaded it and startup
-checks pass. A mixture never passes.
+checks pass. A mixture never passes. A recheck after midnight reads that
+startup from Paper's rotated log. If a countdown fails before maintenance
+starts, players are told the restart is cancelled.
 
 If new startup errors persist, **Recheck and reopen** continues to refuse.
 The website does not offer an override for those errors. A deployment owner
