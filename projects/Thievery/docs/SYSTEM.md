@@ -7,24 +7,36 @@ See [TEST_MATRIX.md](TEST_MATRIX.md) for the manual checklist.
 ## Character traits
 
 Trait restrictions use TLibs' ready character session and the matching character
-snapshot. A configured list allows any one matching trait ID; IDs in configuration
-are compared exactly against the lower-case IDs in the snapshot. A null or empty
-list is unrestricted. Nonempty lists deny access while the character is loading,
-the identity provider is unavailable, or its character information is unknown.
-Each check reads the current session and traits; switching characters does not
-reuse the previous character's training.
+snapshot. A configured list allows any one matching trait ID. Trait IDs in
+`traits`, `robbery.traits` and `pickpocket.traits` are lower-cased on load, so
+`Thief` matches the snapshot's `thief`. A null or empty list is unrestricted.
+Nonempty lists deny access while the character is loading, the identity provider
+is unavailable, or its character information is unknown. Each check reads the
+current session and traits; switching characters does not reuse the previous
+character's training.
 
 Commands, container lockpicking and display lockpicking use the same checker.
 Containers and displays silently refuse unavailable character information, and
-show the existing training message when a ready character lacks the required
-traits. Command messages retain their existing behavior. The pickpocket loader
-still defaults an empty configured list to `thief`; robbery permits an empty list.
+show the training message when a ready character lacks the required traits.
+Commands show their own training messages. The pickpocket loader defaults an
+empty configured list to `thief`; robbery permits an empty list.
 
-The build pins TLibs **2.3.0** and RPCharacters **2.16.0**. Install these providers
-with Thievery before restarting. An older TLibs without the identity API disables
-Thievery with an update message before initialization. RPCharacters remains a
-required dependency for clues, graves and evil-RP rewards. Account-owned locks,
-risk, cooldowns and saved data keep their existing format and ownership.
+A player robbery request belongs to the character sessions both players are in
+when the robber clicks the victim. Accepting checks that both sessions are still
+current and that the robber still has a robbery trait; otherwise the request
+expires. Switching away and back to the same character starts a new session, so
+it also expires the request. When either player's session ends by switching,
+death, quitting or shutdown, the robber stops targeting and pending requests
+expire, with a message to the other player. An accepted robbery is not tied to
+sessions and ends through the robbery's own quit handling.
+
+The build pins TLibs **2.3.0** and RPCharacters **2.16.0**. With an older TLibs
+that lacks the character API, Thievery still starts and logs a warning. Lock,
+door and container protection keeps working; every action with a nonempty trait
+list is denied, and pending robbery requests are checked only on acceptance.
+RPCharacters remains a required dependency for clues, graves and evil-RP
+rewards. Account-owned locks, risk, cooldowns and saved data keep their format
+and ownership.
 
 ## Responsibilities
 

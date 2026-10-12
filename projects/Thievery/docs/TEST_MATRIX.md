@@ -12,7 +12,12 @@ loading a character with the required trait, and after switching to one without
 it. Only the matching ready character should pass the trait restriction. Switch
 back and repeat after changing that character's traits; the next check must use
 the current traits. Confirm unrestricted lists still permit access (the
-pickpocket loader defaults its empty list to `thief`). Record these results in
+pickpocket loader defaults its empty list to `thief`). Configure a trait in
+mixed case (`Thief`) and confirm it matches. For player robbery, send a request,
+switch the robber to another character and back, then accept: the request must
+have expired. Repeat with the victim switching. On a server with TLibs older
+than 2.3.0, Thievery must stay enabled, locked chests and doors must stay
+protected, and trait-restricted actions must be refused. Record these results in
 addition to the checks below.
 
 | # | Check |

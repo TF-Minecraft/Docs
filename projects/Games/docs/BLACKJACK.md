@@ -126,8 +126,10 @@ Shoe TextDisplay (gold title, aqua dealer, gray limits, green Open, gold countdo
 **Card totals** sit on the **dealer** cards only (upcard or `6 + ?` while the hole is down; full / soft / bust after). Players read their own hands. No holo on box or split piles.
 
 Turn, box stakes, and claimed dealer use the online player's shared character
-display name, including masks and aliases. An unavailable provider or blank
-display falls back to the account name; see [displayed names](SYSTEM.md#displayed-names).
+display name, including masks and aliases. A player with no active character
+shows RPCharacters' no-character label (`Unknown` by default). An unavailable
+provider or blank display falls back to the account name; see
+[displayed names](SYSTEM.md#displayed-names).
 
 No em dash in any of these strings.
 

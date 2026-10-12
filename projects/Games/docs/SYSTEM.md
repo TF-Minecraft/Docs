@@ -120,9 +120,11 @@ reads the provider again, so switching characters or changing an alias is visibl
 on the next label/message update. Games does not substitute a canonical character
 name or query offline character records.
 
-Without a provider, online names fall back to the account name. A null or blank
-display, an incompatible identity API, or a failing provider also falls back to
-the account name; integration failures log one warning per server start. Offline
-players use their last known account name, or `-` when unavailable. Names are
-presentation only: player UUIDs, wagers, payouts and table ownership keep their
-existing behavior.
+An online player with no active character shows RPCharacters' no-character
+label, `no-character-fallback` in its `persona.yml` (`Unknown` by default), the
+same label chat uses. Without a provider, online names fall back to the account
+name. A null or blank display, an incompatible identity API, or a failing
+provider also falls back to the account name; only integration failures log a
+warning, once per server start. Offline players use their last known account
+name, or `-` when unavailable. Names are presentation only: player UUIDs, wagers,
+payouts and table ownership do not depend on them.

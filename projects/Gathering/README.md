@@ -15,9 +15,10 @@ installer. The build also prepares checksum-verified MMOCore `1.13.1-SNAPSHOT` a
 MythicLib `1.7.1-SNAPSHOT` inputs from the private ServerAssets repository.
 
 At runtime, `plugin.yml` requires TLibs and RPCharacters. Character identity comes
-from the [shared TLibs session API](../TLibs/character-identity.md). The direct
-RPCharacters dependency remains for creation-layer wisdom and intelligence;
-MMOCore totals would change discovery odds. MMOCore is optional;
+from the [shared TLibs session API](../TLibs/character-identity.md). Discovery
+odds use wisdom and intelligence from the RPCharacters character sheet, so
+Gathering depends on RPCharacters directly; MMOCore attribute totals include
+extra allocations and equipment and would give different odds. MMOCore is optional;
 the profession bonus to discovery chance is only applied when that plugin is
 enabled. MythicLib is a compile input only and is not declared in `plugin.yml`.
 
