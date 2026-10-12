@@ -100,9 +100,25 @@ health from saturation and cannot damage each other. Leaving through the exit,
 dying, or disconnecting clears the flag.
 
 Items matching a `conversions` line gain "converts on exit" lore when picked up.
-Leaving through the exit removes them and credits their Denar value through
-DenarEconomy. When any player dies, convertible items are removed from their
-drops and inventory.
+Leaving through the exit credits their value to the current character's pouch
+through DenarEconomy. Realm tax is included in the same ledger posting. The loot
+is removed only after payment is applied. With no active character, a refused
+payment or an unavailable ledger, the player still exits and keeps the loot.
+When any player dies, convertible items are removed from their drops and inventory.
+
+Each conversion saves its operation ID, owner account, character, gross cents
+and inventory slots in `plugins/TrialRooms/pending-conversions/<owner>.properties`
+before posting. Completed and refused intents are removed. Interrupted or
+unavailable payments leave the file in place and block further conversions for
+that account. Exit polling cannot start another payment for that pending intent.
+
+Staff must reconcile a pending file against the DenarEconomy ledger and the
+player's inventory before archiving it. An applied operation has already paid the
+captured character: resolve the remaining item removal without crediting again.
+If the operation is absent, confirm that no payment occurred and retain the loot
+before archiving its intent. Do not clear pending files as routine cleanup.
+Minecraft inventory saves and ledger commits are separate; crash recovery is not
+an automatic item-for-money transaction.
 
 ## Commands and permissions
 
