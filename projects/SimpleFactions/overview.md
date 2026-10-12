@@ -30,7 +30,9 @@ This project also demonstrates cross-language integration through **ProvinceSyst
 ## Technical Overview
 - Runtime target: TFMC Minecraft **1.21.10**; follow the [shared platform baseline](../../PLATFORM.md).
 - Build with JDK 21 and Maven. The POM targets Java 21 bytecode (`maven.compiler.release=21`) and resolves `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT` with `provided` scope.
-- The Maven API dependencies pin **TLibs 2.3.0** and **RPCharacters 2.16.0**. Install the POM's shared plugin versions with the checksum-verifying installer, then prepare the authorized private dependencies and build from the SimpleFactions checkout:
+- The Maven API dependencies pin **TLibs 2.3.0** and **RPCharacters 2.16.0**. Install the
+  POM's shared plugin versions with the checksum-verifying installer, then prepare the
+  authorised private dependencies and build from the SimpleFactions checkout:
 
 ```sh
 python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned
@@ -39,7 +41,7 @@ mvn clean verify
 ```
 
 The installer command assumes a sibling TLibs checkout. Private inputs go in `libs/`
-and are checked against `.github/dependencies.sha256`; preparation requires authorized
+and are checked against `.github/dependencies.sha256`; preparation requires authorised
 ServerAssets access. See [build dependencies](../../PIPELINES.md#build-dependencies)
 for credentials, dependency records and the shared workflow.
 
@@ -48,9 +50,9 @@ for credentials, dependency records and the shared workflow.
 SimpleFactions reads character identity through TLibs' shared service. RPCharacters
 provides that service and remains optional at runtime; its direct API is still used
 for office attributes, chat integration and the lore calendar. SimpleFactions requires
-TLibs 2.3.0 or newer and disables itself if the shared API is unavailable. A connected player whose character is
-still loading has no ready session. Online lookups wait for that session rather than
-substituting an offline character.
+TLibs 2.3.0 or newer and disables itself if the shared API is unavailable. A connected
+player whose character is still loading has no ready session. Online lookups wait for
+that session rather than substituting an offline character.
 
 Realm and guild leader data uses canonical character names. A ready-character event
 refreshes the leader immediately and schedules changed names for the map's next export.
@@ -60,7 +62,12 @@ that character may be dead. It neither scans RPCharacters JSON nor requests acco
 identities from Mojang. Unknown data keeps a remembered name only for the same leader;
 without a provider, remembered character names are cleared.
 
-Online menus and invitations use visible character names, including masks and aliases.
+Offline names and offline members' playtime come from RPCharacters' last-played
+character. Records saved before RPCharacters 2.16.0 have no last-played time, so the
+account's active character is used instead.
+
+Online menus and invitations use visible character names, including masks and aliases,
+as plain text without RPCharacters' name colours.
 Their fallback and foreign-view privacy rules are described in the
 [espionage guide](docs/espionage.md#rosters).
 
