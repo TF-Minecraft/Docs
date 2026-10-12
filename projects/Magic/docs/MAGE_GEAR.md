@@ -99,7 +99,9 @@ behavior. Refusal and alignment derive from live session and weapon state.
 Provenance records parts and revisions. Refresh reconciles socket layouts while
 preserving applied runes. A rune that no longer fits marks the weapon broken;
 its data is retained for reclamation. Disable configured IDs instead of deleting
-them from persisted item definitions.
+them from persisted item definitions. Refresh and socket rewrites keep an
+ArmourShop skin the weapon is wearing; the part model scheme only applies to
+unskinned weapons.
 
 The Recycler provider returns configured part materials and discards weapon
 resonance. Check refresh and reclamation after changing parts or archetypes.

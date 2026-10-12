@@ -99,6 +99,12 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 - [ ] Quit / disable clears applied modifiers
 - [ ] Spark: idle decay does not nest a full `SpellModifierApplyService.syncOnline` under `MagicTickService.tick`
 
+## Weapon skins
+
+- [ ] Skin a staff in `/armourshop`, socket a rune, switch hotbar slots away and back: the skin stays and the rune is stamped
+- [ ] Bump a part revision and `/magic reload`: a skinned weapon refreshes and keeps its skin; an unskinned one takes the part model
+- [ ] A weapon whose skin was lost before this fix keeps the part model after a refresh
+
 ## Artifact generator
 
 ### Server setup
