@@ -10,7 +10,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 Run Maven with **JDK 21** from the source checkout. The POM sets `maven.compiler.release=21` and resolves `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT` with `provided` scope from the PaperMC Maven repository. The plugin descriptor declares `api-version: 1.21.10`.
 
-Install these matching Java 21 TFMC artifacts into local Maven before building: `net.tfminecraft:denareconomy:0.2.0`, `net.tfminecraft:simplefactions:3.0.1`. Their source repositories use `mvn clean install`; CI uses the pinned dependency setup actions.
+Install these matching Java 21 TFMC artifacts into local Maven before building: `net.tfminecraft:denareconomy:0.3.0`, `net.tfminecraft:simplefactions:4.0.0`, `me.plugins:tlibs:2.4.0`. Their source repositories use `mvn clean install`; CI uses the pinned dependency setup actions.
 
 Populate `libs/` with the exact files and hashes listed in `.github/dependencies.sha256`. `.github/scripts/prepare-release.sh` downloads those pinned private assets when supplied with the approved dependency token.
 
@@ -34,15 +34,76 @@ Use `mvn clean install` when another plugin needs the result as a Maven dependen
 
 ## Runtime and configuration
 
-Required plugins declared by the manifest: MMOItems, MythicLib.
+Required plugins declared by the manifest: MMOItems, MythicLib, DenarEconomy and TLibs. Character sessions and reviewed legacy heirs come from RPCharacters. When SimpleFactions is installed, use its character-member release (4.0.0). Shops wait for its migration and tax setup before allowing trades; a disabled or failing provider also closes trades. SimpleFactions remains optional when absent.
 
-`ShopEvents` handles sign interactions and calls DenarEconomy directly for currency trades; install DenarEconomy even though the current manifest omits it. `ShopEmbargo` provides the SimpleFactions integration. Shop JSON lives under `plugins/BarterShops/Data`; preserve it across upgrades. The manifest declares no commands.
+`ShopEvents` handles sign interactions and posts currency trades through the DenarEconomy character ledger. `ShopEmbargo` provides the SimpleFactions integration. Shop JSON lives under `plugins/BarterShops/Data`; preserve it across upgrades. The manifest declares no commands.
 
-Only the shop's owner, or staff with `bartershops.admin` (default: op), can break a shop sign or any block the plugin can tell would bring it down: the block the sign is fixed to, every hanging sign above it in a chain, and the block under any sand, gravel or other falling block that holds the sign up. Anyone else is refused with a message. Wall hanging signs stay up when the blocks beside them go, so anyone can break those blocks.
+Only the shop's owning character, or staff with `bartershops.admin` (default: op), can break a shop sign or any block the plugin can tell would bring it down: the block the sign is fixed to, every hanging sign above it in a chain, and the block under any sand, gravel or other falling block that holds the sign up. Anyone else is refused with a message. Wall hanging signs stay up when the blocks beside them go, so anyone can break those blocks.
 
 When physics or an explosion would destroy a shop sign, the plugin blocks it and the sign stays where it is, even with nothing left holding it up. That covers blocks that give way later, such as a cactus under a sign, fire burning a wooden support, and pistons moving a support away. Commands that replace blocks, such as `/setblock` with `destroy`, still remove the sign and leave its shop record behind. A shop record is removed when the owner or staff breaks the sign, or when a sign their break was expected to bring down falls within the next minute. A sign that has not fallen by then stays up and keeps its shop.
 
 During setup, BarterShops rejects chest clicks already denied by Thievery or another protection listener. Public and otherwise permitted shared chests can still be linked. Existing links are not revalidated when chest access changes. Linking a chest as a shop's storage gives it no protection, but a chest that a shop sign is fixed to is protected as that sign's support.
+
+## Character ownership and migration
+
+New shops belong to the creating character. The shop file keeps `owner` as the
+account UUID and `owner character` as the character UUID; its filename UUID is
+the stable shop ID. Another character on the same account cannot remove the
+shop. A character switch during setup cancels the next setup step.
+
+BarterShops waits until the identity provider and reviewed heirs are ready. It
+checks again every five seconds, keeping creation, trading and owner removal
+closed while waiting. Staff removal and sign protection remain available.
+Migration writes each original shop to `migrations/backup/<shopId>.json` before
+changing it, with a SHA-256 hash and progress record in
+`migrations/character-v1/<shopId>.json`. An interrupted migration restores the
+verified original before retrying. Existing backups are never overwritten.
+
+An account without a reviewed heir keeps its original shop file and cannot
+trade or remove the shop except through staff. The quarantine entry preserves
+the complete original JSON; `migrations/quarantine.txt` lists unresolved shops.
+After staff correct the reviewed heir mapping, restarting the plugin as part
+of a server restart retries the mapping. Backup/hash/write errors keep shops
+closed for review. Preserve `Data`, `migrations` and `trades` alongside the
+ledger when backing up; rollback restores the same pre-cutover data set for
+identity, shops, factions and economy together.
+
+## Payments and interrupted trades
+
+Buying from a shop debits the active customer's pouch and credits the shop
+owner's character bank, including while the owner is offline or playing another
+character. Selling to a shop debits that owner's bank and credits the active
+customer's pouch. Both directions apply the seller's tax inside the same
+ledger posting. An owner with insufficient money cannot buy goods on credit.
+Zero-price shops record a zero-value posting and still exchange their items.
+
+Items move only after an applied posting. Refused payments leave inventory
+unchanged. Each trade first writes `trades/<shopId>.json`, containing its
+`shop:<shopId>:<nonce>` operation ID, character references, direction, amount,
+quantity and encoded item. A temporary ledger outage retains the same ID for
+a retry by the same customer with the same terms. The journal is removed only
+after delivery succeeds. Payment event handlers cannot silently change the
+character or inventory between payment and delivery: that leaves a review
+record instead.
+
+A remaining trade file after restart, conflicting intent, or interrupted item
+delivery blocks further trades at that shop. Staff must inspect the recorded
+operation in the ledger and the actual inventories before compensating or
+completing the exchange. Stop the server before archiving a resolved record
+outside `trades/`; then restart. Do not simply delete an unresolved record or
+replay its delivery: some or all items may already have moved. Item inventories
+and the ledger do not share a transaction, so crash rollback of Minecraft item
+saves still requires reconciliation; automatic item escrow is not provided.
+
+## Verification
+
+`tfmc-mvn -o -B --no-transfer-progress clean verify` runs the tests using the
+workspace Maven wrapper. The suite covers character ownership, same-account
+separation, readiness, backup and interrupted migration recovery, embargo
+character arguments, both taxable trade directions, insufficient funds,
+durable operation retries and delivery failures. Plain `mvn clean verify`
+also works with Java 21 and prepared dependencies. Live Minecraft persistence
+and a coordinated data migration rehearsal remain separate checks.
 
 ## Builds and releases
 
