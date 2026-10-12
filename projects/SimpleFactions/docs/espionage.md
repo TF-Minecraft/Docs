@@ -137,9 +137,8 @@ far, so the penalty matters once more offices are added.
 Only the appointee receives the roleplay appointment letter and their aptitude in chat.
 Member and candidate entries use character names and guild affiliations. Appointment
 commands and invitations accept either full visible character names (including masks,
-aliases and spaces) or Minecraft
-account names; only online players match, matching is exact and ignores case, and duplicate
-character names require the account name.
+aliases and spaces) or Minecraft account names; only online players match, matching is
+exact and ignores case, and duplicate character names require the account name.
 
 ### Founding offices and appointments
 
@@ -192,8 +191,9 @@ cancelled deaths and deaths that could not be saved do not remove the office.
 The death must match both the account and character UUID. Each death is settled once per
 faction, and a delayed notification cannot clear an appointment or pending founder binding
 created after that death, including the leader's automatic holding. Removal and the record
-that the death was handled are saved together. A failed faction save restores the previous
-office and appointment wait, leaving the notification eligible for a later retry.
+that the death was handled are saved together; each faction keeps the 64 most recent
+handled deaths. A failed faction save restores the previous office and appointment wait,
+leaving the notification eligible for a later retry.
 
 Death notifications are not a durable delivery queue. If one is missed, ordinary office
 checks still remove a holder whose matching directory entry is known to be **DEAD**.
@@ -293,7 +293,8 @@ zero-information category **Botched report**, with private fields Unknown.
 Member samples are rounded down, capped at 23, and saved with the report so reopening cannot
 reveal extra names. They contain character names and guild affiliations. Online names come
 from the ready character's visible name, preserving masks and aliases without substituting
-a canonical name. Offline names use the directory's last-played character for an account
+a canonical name. Names are stored and shown as plain text, without RPCharacters' name
+colours. Offline names use the directory's last-played character for an account
 UUID already cached by Bukkit, including dead characters; no character files or Mojang
 account lookups are used.
 
