@@ -60,6 +60,9 @@ independently of the player's auto/manual preference. It defaults to `false` and
 requires a restart. Enable RPCharacters' `character-bodies.require-resource-pack`
 with it to show a loading dialog before character selection. The existing body
 recovery and selection protections remain active while loading.
+Core marks the connection as loading at join's LOWEST priority, then queues
+delivery at MONITOR. This lets RPCharacters queue the room teleport and loading
+dialog first, so the dialog cannot cover Minecraft's pack confirmation prompt.
 
 Every part must report `SUCCESSFULLY_LOADED`. A failed multipart request or its
 180-second timeout tries the standard ItemsAdder archive once; that required

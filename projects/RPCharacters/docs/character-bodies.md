@@ -36,8 +36,10 @@ and from players in the game worlds.
 
 On login, Paper first restores any saved vehicle in its original world. The
 player then dismounts into selection; boats, mounts, other passengers and cargo
-stay behind. With `character-bodies.require-resource-pack: true`, a **Loading TFMC**
-dialog holds the player before the room teleport, respawn preparation and selector.
+stay behind. Living players enter the selection world before the pack request.
+With `character-bodies.require-resource-pack: true`, a **Loading TFMC** dialog holds
+them there until the pack loads, before progression preparation and the selector.
+Pending death/respawn recovery also waits for the pack before continuing.
 It requires TFMCCore's `resource-pack.require-on-join: true`; both settings default
 to `false` and require a restart. Core confirms every required pack part, or its
 single-pack fallback, before selection opens. A missing provider, partial load,
@@ -53,8 +55,9 @@ waiting for. See [required join packs](../../TFMCCore/resource-pack.md#required-
 for delivery settings and removing duplicate automatic requests.
 
 If another plugin blocks the selection-room teleport, the
-player remains hidden and unable to interact while entry retries. Character
-selection opens only after room entry succeeds.
+player remains hidden and unable to interact in the original world. The loading
+dialog still opens before Minecraft's pack prompt, and room entry retries after
+the pack loads. Character selection opens only after room entry succeeds.
 
 The destination teleport must succeed before progression or inventory is restored.
 If another plugin blocks it, selection remains available without an activation
