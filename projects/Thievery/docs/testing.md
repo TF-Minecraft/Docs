@@ -25,6 +25,13 @@ listeners register while trait checks deny. Robbery tests cover requests made as
 one character and accepted after switching away and back, and pending requests
 expiring when either session ends.
 
+Hands-up inspection tests exercise consent, independent item copies and live
+refresh, full-view click and drag cancellation, creative inventory events,
+robbery/pickpocket event ordering, range and visibility checks, cancelled opens,
+multiple viewers, and cleanup when a participant leaves or changes character.
+Client inventory prediction and interactions with the full live plugin set
+still need the hands-up checks in the manual matrix.
+
 Surefire writes test results to `target/surefire-reports/`. JaCoCo includes every
 production class and writes `target/site/jacoco/index.html` and
 `target/site/jacoco/jacoco.xml`. The `verify` phase requires 100% instruction,

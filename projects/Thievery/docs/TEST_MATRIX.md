@@ -27,6 +27,25 @@ addition to the checks below.
 | R3 | Walking away cancels door pick |
 | R4 | Solving the ring opens the chest probe menu; budget, clues and taking items work as before (seized pins replace the random break roll, see G13-G18) |
 
+## Hands-up inventory inspection
+
+With two ordinary players, run `/handsup` on one and right-click them with the
+other. Confirm main inventory, hotbar, armour, off-hand, custom names and lore
+match. Change the target's items and check the display updates. Try ordinary
+clicks, shift-clicks in both inventories, drags spanning both inventories,
+number keys, off-hand swaps, double-click collection and dropping. Repeat
+middle-click cloning in creative mode. No items should transfer, disappear or
+duplicate. Test with a nonempty cursor and confirm closing returns those items
+normally.
+
+Open two inspections of the same player, then lower their hands: both views
+must close. Repeat with disconnect, death, teleport and switching characters.
+Walk more than four blocks apart and check the view closes. Restart and confirm
+consent starts off. Ordinary chests must still allow item movement. Arm
+`/robbery start` or `/pickpocket start`, then right-click a consenting player:
+only inspection should open. Repeat while sneaking and holding an off-hand
+item; there must be no duplicate window or theft attempt.
+
 ## Chest lock minigame
 
 | # | Check |
