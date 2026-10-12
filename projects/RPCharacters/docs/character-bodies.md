@@ -13,8 +13,9 @@ dialog focuses one living character at a time, showing a skin portrait, race,
 class, age, last location and playtime. Character tabs and arrows change the
 preview; **Play** enters the selected character. **New character** starts creation
 when slots and the switch cooldown allow it. **Memorials** opens the records of
-dead and missing characters. Guild membership and pouch/bank balances are labelled
-as shared by all characters; this feature does not migrate money or factions.
+dead and missing characters. The focused character's card shows its own pouch and
+bank from the DenarEconomy ledger. Guild membership is still labelled as shared by
+all characters; this feature does not migrate factions.
 
 Portraits load asynchronously through ProvinceSystem's authenticated, read-only
 `GET /characters/plugin/wardrobe/{player_uuid}/{character_id}/worn` route. It
