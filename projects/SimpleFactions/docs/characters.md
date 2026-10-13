@@ -66,7 +66,8 @@ guild recreated under the same name does not inherit access, and a guild keeps
 its incarnation when it changes realm.
 
 Each death journal records `lockGuildIncarnation` when the death is captured,
-including deaths first found by the startup reconcile. It is the first guild
+including deaths first found by the startup reconcile. It also records that
+guild's realm as `lockGuildRealm` for [estates](estates.md#death-guild). It is the first guild
 `getGuildByMember` would have answered at that moment. A member moved into a
 civil war's rebel main guild records the guild untangle would return them to,
 resolved at death:
@@ -134,6 +135,11 @@ and disbanding. A later staff appointment is preserved during replay.
 Dead warband leaders pass leadership to the captured first living participant,
 or leave a vacant seat when none is available. Pending rejoin records still
 identify the deceased character if its session ended before the death event.
+
+Replay acts only on the life its journal belongs to. A revived or re-dead
+character's unfinished journal is closed without running its remaining steps,
+and a living seat holder is never replaced; see
+[revived and re-dead characters](estates.md#revived-and-re-dead-characters).
 
 See [treasury recovery](treasuries.md) for journal paths and coordinated backup
 requirements.
