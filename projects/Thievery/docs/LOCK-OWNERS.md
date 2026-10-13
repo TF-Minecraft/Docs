@@ -34,7 +34,8 @@ is in the same faction as that guild.
 
 The guild a lock follows comes from SimpleFactions' `lockGuild`: the owner's current
 guild while they live, and the guild they belonged to when they died afterwards. A
-dead owner's GUILD and FACTION locks therefore keep working for that guild. A
+dead owner's GUILD and FACTION locks therefore keep working for that guild until
+their estate moves them (see [Estates](#estates)). A
 revived character lost their guild at death, so their guild has no access until they
 rejoin. When SimpleFactions is not ready, or is older than 4.1.0 and has no
 `lockGuild`, GUILD and FACTION locks deny everyone except staff.
@@ -77,6 +78,44 @@ Clue clearing on a PUBLIC or unowned container is open to anyone. A PRIVATE cont
 needs the owning character, and a GUILD or FACTION container anyone that lock lets in.
 On a door, the owning character or a member of its lock guild may clear clues.
 
+## Estates
+
+When RPCharacters decides a dead character's estate, their
+locks pass at the next restart. Locks move only in the startup pass described below,
+never while players are online.
+
+| Record | New owner |
+|---|---|
+| Container, armour stand or item frame, PRIVATE or PUBLIC | the estate's property recipient |
+| Container, armour stand or item frame, GUILD or FACTION | the estate's guild-locks recipient |
+| Locked door | the property recipient |
+| Lockable furniture | as for containers, on the first interaction after the decision |
+
+Only the owner changes. The lock state and the thief cooldowns stay, so a GUILD
+chest given to the death guild's leader is still a GUILD chest. A door's owner passes
+but its keys do not; staff can make the recipient a key. A part that is waiting for
+a guild leader, or frozen for staff, stays with the dead owner and keeps the rules
+above until a later revision of the estate gives it a recipient; it then moves at
+the following restart.
+
+A lock moves only while the estate's guard holds: the owner is still dead with the
+same death, and the estate is decided and not reverted. The halves of a double chest
+move together. A bare owner value of the dead character's that the migration marks
+in the same pass moves at the next restart, and so do the chests beside it.
+
+After the pass, Thievery reports each decided estate to RPCharacters from what is
+left on disk. It answers DONE, with counts per store and every moved file path, only
+when the dead owner holds nothing more in a part that goes to a character. If locks
+remain to be moved it answers that they move at restart, and if the estate planner
+failed it answers RETRY. Between restarts Thievery answers "at restart" whenever an
+estate gains a part going to a character for which the dead owner still held locks,
+so a revive of that estate waits for a restart. The log line
+`Estate <deathId> (revision N): locks DONE, … moved in all, … still with the testator.`
+records each report.
+
+Estates need TLibs 2.6.0. On an older TLibs Thievery logs a warning, takes no part in
+estates and a dead owner keeps their locks.
+
 ## Staff commands
 
 Both commands need `thievery.admin` and are written to the server log and to
@@ -94,8 +133,9 @@ that an unreadable record becomes PRIVATE and a lock given to `server` always be
 PRIVATE, as server placements are; the reply says so. A door keeps its key, which
 still opens it after it is given to `server`. Staff without a character cannot
 enter the world when character bodies are on, so this is how they make a server lock.
-The thief cooldowns of an unreadable container are kept when they can still be read. A UUID must be a known character
-ID, dead characters included. A name must match exactly one living character; names
+The thief cooldowns of an unreadable container are kept when they can still be read. A UUID must be a known living
+character's ID; a dead character is refused, because their locks pass through their
+estate. A name must match exactly one living character; names
 need TLibs 2.5.0, and without it use the UUID. A door whose record has lost its key or
 its strength cannot be repaired this way, so the lock is never weakened: break the
 door in Creative to remove it. Fixed records leave the quarantine list straight away.
@@ -132,7 +172,8 @@ picked. A classification made while character identity is unavailable is never
 written back.
 
 Furniture is upgraded on first interaction instead of at startup: a bare character ID
-gains its marker and a legacy account moves to its reviewed heir. Furniture values
+gains its marker, a legacy account moves to its reviewed heir, and a dead owner's
+piece passes through a decided estate. Furniture values
 written by older jars stay readable until stage 7.
 
 ## Startup, guard mode and the migration
@@ -163,18 +204,24 @@ UUID gains `SERVER`, and an account with a reviewed heir moves to that heir char
 Accounts without a heir, and values that cannot be classified yet, stay as they are
 and go on the quarantine list, which every boot retries. A bare value written later,
 for example by an older jar, goes through the same journalled pass on the next boot.
-The log line `Lock migration: … in N ms` records the counts and duration.
+The same pass moves the locks of decided estates (see [Estates](#estates)). The log
+line `Lock migration: … N moved for M decided estates, in N ms` records the counts
+and duration.
 
 Each pass that rewrites files first archives every lock file it scanned to
-`plugins/Thievery/migrations/backup/locks-NNNN.zip`, then writes
+`plugins/Thievery/migrations/backup/locks-NNNN.zip` (a pass that only moves estate
+locks archives just the files it rewrites), then writes
 `migrations/journal-NNNN.json` with each file's original hash and the hash of the
-exact bytes it will write. It rewrites the files by atomic move, forces every
+exact bytes it will write. Each entry is marked `"kind": "migrate"` or
+`"kind": "estate"`, and estate entries carry their `deathId`. It rewrites the files by atomic move, forces every
 directory it wrote into, marks the journal completed and writes `data-version` into
 each store. If the server stops during the pass, or the pass throws (locks then stay
 frozen until a restart), the next boot replays the unfinished journal: files already
 at their new hash are done, files at their original hash are rewritten, a torn file
 is taken from the archive and rewritten, and a missing file is listed for staff and
-never restored. A journal is never archived twice, and a completed journal is never
+never restored. An estate entry is replayed only while its estate still applies;
+otherwise the file keeps (or gets back from the archive) its original bytes and the
+entry is marked `"skipped": true`. A journal is never archived twice, and a completed journal is never
 replayed.
 
 ## Rolling back
@@ -197,6 +244,19 @@ deletes the journals, `data-version` in `data/`, `door-data/` and `entities/`, a
 `migrations/quarantine.json`, so a later upgrade starts clean; the archives are kept.
 If a journal or archive cannot be read it stops with exit code 2 and writes nothing.
 `--report` saves the per-journal result as JSON.
+
+To undo only estate moves, keeping the character-lock migration, add `--estate-only`:
+
+```sh
+python3 tools/thievery_rollback.py /path/to/plugins/Thievery --estate-only --apply
+```
+
+It restores only entries marked `"kind": "estate"`, on the same conditions, and keeps
+the journals, `data-version` and `quarantine.json`. Entries marked `skipped` moved
+nothing and are left out in both modes. Revert the estate (`/estate revert`) or put
+back the previous Thievery jar first, or the next boot moves the locks again. A
+Thievery older than 1.8.0 that completes an unfinished journal rewrites it without
+`kind` and `deathId`; those entries can then only be undone by a full rollback.
 
 Then put back the previous jars.
 
