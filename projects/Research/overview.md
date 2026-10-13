@@ -190,8 +190,20 @@ open station menus before changing `labels` titles or `colors.inventory_title`.
   or Research's event listeners have stopped, and then saves the stations.
 - The station JSON schema is unchanged. New ownership uses the canonical character
   UUID; existing UUID strings compare without regard to letter case and are not
-  rewritten. Projects without a recorded character are claimed only by a ready
-  character on their owner account.
+  rewritten.
+- **Heir backfill (once per server).** Stations saved before characters were
+  recorded go to their account's reviewed heir, as locks and vehicles did in stage
+  6a. On a start-up where TLibs reports reviewed heirs ready, Research plans every
+  station with no recorded character to its account's legacy heir and writes the
+  plan to `plugins/Research/data/backfill-character-v1/plan.json` before changing
+  anything. Each station it fills has its original file copied to `backup/` in that
+  folder (never overwritten) and is saved atomically. `done.json` then records how
+  many stations were filled and which had no heir; once it exists, later starts do
+  nothing. If heirs are not ready, or a station cannot be backed up or saved, no
+  `done.json` is written and the backfill runs again at the next start, reusing the
+  same plan. Stations whose account has no heir are logged for staff and stay
+  unassigned: the first ready character on their owner account claims them when it
+  opens them. Stations the backfill filled belong to the heir only.
 
 Back up the complete `plugins/Research/` directory before renaming identifiers
 or migrating configuration, and stop the server cleanly before copying live
