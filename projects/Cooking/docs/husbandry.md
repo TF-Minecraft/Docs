@@ -20,7 +20,7 @@ Keep this guide aligned with the implementation and configuration on `main`.
 
 ## Persistence
 
-**SQLite is the source of truth.** Main thread only. WAL mode. Write on ownership change, tick flush, death, chunk unload, plugin disable.
+**SQLite is the source of truth.** Main thread only. WAL mode with FULL synchronous ownership commits. Write on ownership change, tick flush, death, chunk unload, plugin disable.
 
 Entity **PDC is persistent** in Paper (saved with the entity on unload). We still do **not** treat PDC as the database. Genetics, owners, care, states, and cooldowns live in SQLite.
 
@@ -46,11 +46,18 @@ Owned/managed entities must `setPersistent(true)` and `setRemoveWhenFarAway(fals
 - `neutered`
 - `world`, `x`, `y`, `z` (last block the animal was seen at; null until it loads once)
 
-`owners`
+`character_owners`
 
-- `animal_uuid`, `player_uuid`, `role` (`owner` / `coowner`)
-- unique pair
-- `COUNT(*)` per player vs `max-animals`
+- `animal_uuid`, `account_uuid`, `character_uuid`, `role` (`owner` / `coowner`)
+- primary key `(animal_uuid, character_uuid)`; several characters on one account may co-own the same animal
+- capacity counts distinct animal UUIDs per account, including unresolved legacy slots
+
+`owners` remains the legacy account table. Its resolved rows never grant gameplay rights.
+`husbandry_owner_archive` is an immutable SQLite copy of every legacy owner column,
+without cascading foreign keys. `husbandry_owner_plan` records the fixed reviewed
+character or a held reason for each original account slot; `husbandry_owner_meta`
+records completion. Character ownership uses its own expansion tables, separately
+from `PRAGMA user_version`.
 
 ### Entity PDC flags
 
@@ -112,13 +119,111 @@ Chunk loaders / another player at the pen = **loaded**. The 6h affliction loop i
 
 ## Ownership
 
-- `max-animals` default **15**. Co-ownership **counts for every** owner.
-- Reject tame / co-own if that player is at cap (`cooking.admin` bypasses cap only).
+- Ownership belongs to the selected character. Another character on the same account has no owner/co-owner rights.
+- `max-animals` default **15** stays account-wide. Count each distinct animal once per account across every character and held legacy slot. Co-ownership counts toward each owning account; a second character's slot on the same animal does not consume another place.
+- Reject voluntary tame/co-own acquisitions at cap (`cooking.admin` bypasses cap). Inheritance keeps every animal, including overflow; overflow prevents further acquisitions.
+- A resolved co-owner retains access when another legacy owner slot is held. Held slots prevent unowned claims and bearer-token self-claims. Staff can inspect `husbandry_owner_plan`; unknown roles or identities remain held.
+- Tame/co-own actions require an exact current character session belonging to that account; stale or misrouted provider sessions are refused. Native vanilla taming, sitting and tameable inventory interactions do not override existing Cooking ownership.
 - Chickens and llamas count. Bees are **vanilla** (not in the 15, not wiped).
 - Tameable vanilla types (horses, etc.) must be vanilla-tamed before plugin-own.
 - Tame token (anvil-named) claims the animal. No SQLite row yet: insert then claim. Existing UNTAMED row: keep genetics, then claim. Token name is applied only after a successful claim. First tame plays spore blossom particles and the enchantment-table sound; renames are silent.
 - Feed and glove require ownership (or staff).
 - Items: TLibs paths in `husbandry.yml` (glove, universal feed, tame, co-own). Not MMOItems.
+
+## Character migration and estates
+
+Cooking pins TLibs **2.6.0**. Identity-dependent ownership fails closed without a
+ready character. New heir/estate entry points are capability-probed before their
+bridge classes load: an older provider retains legacy slots or dead characters'
+property instead of guessing a current character.
+
+The boot task and hourly reconcile wait for `Characters.legacyHeirsReady()`.
+Each original account slot maps only through its reviewed `legacyHeir`; a dead
+reviewed heir remains the migration recipient. One SQLite transaction copies all
+legacy owner columns into the immutable archive, verifies its count, writes the
+fixed plan, inserts resolved character slots and writes completion. The archive
+includes committed WAL content through SQLite itself and cannot cascade away
+when an animal dies. A failed transaction leaves no partial archive, plan or
+ownership publication. Missing heirs, malformed identities, unknown roles and
+conflicting slots remain recorded for staff; another character never claims them
+by opening a menu. Animal rows, snapshots, care, genes, timers and unknown columns
+are retained. Normal animal updates patch known fields rather than rebuilding rows.
+
+The `cooking-animals` estate participant moves only the deceased character's slot
+to the decided property recipient. WAITING/FROZEN slots stay with the testator;
+other co-owners keep their own rights. A recipient already sharing the animal
+merges to one slot, retaining the stronger recognized role (`owner` over
+`coowner`). Unknown/conflicting role metadata blocks settlement for staff.
+Capacity does not reject inheritance. No animals are copied or respawned by an
+ownership transfer.
+
+All slots, recipient merges and receipts for one estate revision commit in one
+SQLite transaction. `husbandry_estate_intents` records the full decision identity,
+revision and from/to refs; `husbandry_estate_slots` records IDs and before/after
+roles. Exact `Estates.guardHolds` checks before mutation and before commit reject
+revival, re-death, changed recipients and newer revisions. Repeated settlement
+reports the cumulative moved IDs without moving them again, including later WAITING/FROZEN revisions. Raw source/recipient
+rows, including unknown nullable or BLOB fields, remain in
+`husbandry_estate_owner_archive` independently of the live slot's deletion.
+
+An interrupted transaction rolls back as a whole. A retained incomplete intent
+or conflicting same-revision receipt is BLOCKED for review; affected ownership
+writers refuse changes while resolved co-owners can still care for or ride their
+animal. Transient database failures report RETRY. Use the estate staff retry/waive
+workflow after resolving the recorded cause; never clear a held intent merely to
+force another recipient. Reconciliation runs at boot and hourly, independently
+per death/revision.
+
+Ownership and token use are sequential checked operations, not one transaction
+with Minecraft inventory or entity saves. An arbitrary crash after a slot commit
+and before token consumption is not proved exactly-once; preserve the database
+and player body for staff reconciliation rather than blindly repeating effects.
+Public milk/shear/egg/shed harvesting and existing animal care clocks retain their
+rules.
+
+### Offline rollback
+
+Stop the Minecraft application through its normal deployment procedure before
+using these commands. From the Cooking checkout, preview against the plugin's
+`Data/husbandry.db`:
+
+```sh
+python3 tools/husbandry-ownership-rollback.py /path/to/plugins/Cooking/Data/husbandry.db
+```
+
+The JSON preview reports archived/restorable slots, held slots, current character
+slots and changed resolved slots. Review ownership grants, removals and estates
+since migration. To restore the original account slots for an old Cooking JAR:
+
+```sh
+python3 tools/husbandry-ownership-rollback.py /path/to/plugins/Cooking/Data/husbandry.db --apply --backup /path/to/husbandry-before-rollback.db
+```
+
+The tool refuses to overwrite a backup, makes a verified SQLite backup including
+committed WAL pages, and restores only archived account slots whose animal still
+exists. It never resurrects a deleted animal. Current animal progress/snapshots
+and the character tables/journals remain preserved; old Cooking ignores the
+character tables. Account authority after rollback discards post-migration
+character grants/removals/estate transfers from gameplay, so reconcile those
+changes using the recovery image before proceeding. Keep that image and do not
+re-upgrade after old-version ownership writes without reviewing both sets.
+Deleting expansion tables or immutable archives is a separate later migration.
+
+### Verification
+
+Run Java 21 `tfmc-mvn -o -B clean verify` from the Cooking worktree. The zero-missed
+production-line gate covers two characters on one account, stale menus, session
+end/start mounts, held co-owners/token refusal, account capacity, immutable archive
+and unknown-column preservation, injected SQLite publication faults, estate role
+merges, replay and strict revival/re-death/revision guards. SQLite rollback tests
+use isolated databases; they do not touch a running server.
+
+Native Paper testing must additionally exercise an owned horse: mount as A,
+end A's already-noncurrent session, verify dismount, start B on the same account,
+verify B cannot remount, then return to A. Include missing identity and held legacy
+ownership while preserving ordinary unowned riding. A controlled identity-provider
+fixture proves the husbandry hooks on real Paper; it does not prove RPCharacters'
+complete select-screen/body flow or arbitrary-crash inventory delivery.
 
 ## Care and states
 
@@ -208,7 +313,7 @@ Mount types in code: all `AbstractHorse` (horse, donkey, mule, camel, llama). At
 - Wild/spawn-egg mounts keep vanilla stats until first interact, tame, or inspect enrolls a row (`0 … initial-genetic-max`, care 0)
 - Health, speed, and jump are then written from genetics and care: `max * (min-pct + genetics-pct * genetics/max-genetics + care-pct * care/care-max)`, floored at the type min
 - Bred foals roll genetics from parents, then the same formula is applied one tick after birth (vanilla breed stats are overwritten)
-- Owner/co-owner (or staff) only ride when the mount has owners; untamed mounts stay rideable
+- The current owner/co-owner character (or staff) may ride owned mounts. Unowned mounts stay rideable with a ready character session. Missing records or identity refuse mounting. Session end dismounts the outgoing body before the next character starts; session start also rejects any retained unauthorized mount.
 
 ## Damage
 
@@ -226,7 +331,10 @@ Applies to entities with a SQLite row. If `other-players` is false, cancel playe
 
 Sneak empty-hand (or configured `items.inspect` TLibs path; blank = sneak-only) on a managed animal, including mounts.
 
-**54-slot** double-chest inventory for all animals (livestock and mounts).
+**54-slot** double-chest inventory for all animals (livestock and mounts). The menu
+captures the opening character session; a stale remove-ownership click closes the
+menu without changing a slot. Owner labels use character names, with an explicit
+staff-review label for held slots.
 
 Layout uses **gray/green concrete bars** (5 centered segments each). One empty row separates the two bars. Each segment shows title (`Care` / `Genetics`) and current/max only.
 
@@ -251,9 +359,9 @@ Stars are **not** shown in the GUI (visible on slaughter quality instead). No af
 
 Players (no permission node):
 
-- `/animals` (alias `/livestock`) — list every animal you own or co-own. Each line is name, species, co-owner when shared, growing when immature, Happy / Hungry / Dirty, then the world and block coordinates last recorded for that animal. Click the coordinates to copy them. Animals in unloaded chunks are listed too. When the server starts, Cooking reads the saved entity chunks to fill in or correct where each unloaded animal is. An owned animal lost from the save is restored or dropped at that scan (see [Lost animals](#lost-animals)). One that could not be restored shows `Missing` (with `last seen` coordinates if any were recorded) until it loads again. `location not recorded yet` only appears when neither a recorded spot nor a saved chunk is available, for example when some chunks could not be read. The header is `Your animals (owned/max)`.
+- `/animals` (alias `/livestock`) — list every animal the selected character owns or co-owns. Each line is name, species, co-owner when shared, growing when immature, Happy / Hungry / Dirty, then the world and block coordinates last recorded for that animal. Click the coordinates to copy them. Animals in unloaded chunks are listed too. When the server starts, Cooking reads the saved entity chunks to fill in or correct where each unloaded animal is. An owned animal lost from the save is restored or dropped at that scan (see [Lost animals](#lost-animals)). One that could not be restored shows `Missing` (with `last seen` coordinates if any were recorded) until it loads again. `location not recorded yet` only appears when neither a recorded spot nor a saved chunk is available, for example when some chunks could not be read. The header counts the selected character's animals; a separate `Account animal places: used/max` line shows capacity across all its characters and held slots.
 
-Staff with `cooking.admin`, including the console, can run `/animals <player>` for someone who has joined. A player without that permission cannot list another player's animals.
+Staff with `cooking.admin`, including the console, can run `/animals <player>` for someone who has joined. This read-only account view aggregates distinct animals across that account's resolved character slots. A player without that permission cannot list another player's animals.
 
 The last location is written when the animal loads, on the one-minute tick while loaded, on unload, and on plugin disable if the entity is still present. Listing refreshes a loaded animal from the live entity before printing.
 
