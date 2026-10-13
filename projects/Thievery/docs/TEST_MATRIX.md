@@ -122,6 +122,14 @@ ItemsAdder must not grant inspection access.
 | L11 | Pick up and replace furniture: lock still on that piece |
 | L13 | Shift left-click on an owned chest, display and furniture: `/co inspect` or `/co lookup` shows `<player> set <block> lock to <state>.`; display and furniture entries sit on the supporting block |
 | L14 | Staff shift left-click on another player's lock changes state, keeps the owner, and logs with "(staff override)" |
+| L15 | Your alt on the same account cannot open your PRIVATE chest, rotate it, clear its clues or merge a chest onto it |
+| L16 | Placing a chest with no character selected leaves it unowned; staff with no character place a PRIVATE server chest only the staff override opens |
+| L17 | A dead owner's GUILD chest still opens for the guild they died in; a revived owner's old guild has no access |
+| L18 | A hopper minecart under an owned PRIVATE chest (either half of a double chest) takes nothing; under a PUBLIC or unowned chest it works |
+| L19 | A block hopper under its owner's chest moves items; an alt's hopper under the same chest does not; server hoppers move between server chests |
+| L20 | A double chest whose halves have two owners cannot be rotated or picked and appears in `/thievery locks quarantine` until `/thievery locks setowner` fixes it |
+| L21 | Restart with RPCharacters failing to load: locks stay frozen ("Locks are starting up"), owned chests stay shut, key holders open doors, nothing in `plugins/Thievery/data` changes; the next good restart migrates |
+| L22 | First boot on an old store: `Lock migration:` log line with counts and duration, `migrations/backup/locks-0001.zip`, a completed `journal-0001.json`, `data-version` in each store; a second boot changes nothing |
 
 ## Robbery
 

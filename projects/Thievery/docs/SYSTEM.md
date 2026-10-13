@@ -31,10 +31,11 @@ expire, with a message to the other player. An accepted robbery ends through its
 own quit handling. Pouch transfers still require both captured sessions to be
 current; switching characters never redirects the transfer to another pouch.
 
-The build pins TLibs **2.4.0**, RPCharacters **2.16.0**, SimpleFactions **4.0.0**
+The build pins TLibs **2.4.0**, RPCharacters **2.16.0**, SimpleFactions **4.1.0**
 and DenarEconomy **0.3.0**. RPCharacters remains required for clues, graves and
-evil-RP rewards. Protected guild access and theft cooldown checks deny access
-while factions or reviewed heirs are unavailable.
+evil-RP rewards. Guild and faction locks need SimpleFactions 4.1.0 or later for
+`lockGuild`; with an older SimpleFactions they deny everyone except staff. Theft
+cooldown checks deny access while factions or reviewed heirs are unavailable.
 
 ## Character money and guild access
 
@@ -52,15 +53,12 @@ before investigating a disputed payment. Startup does not issue another payment
 or resume a closed robbery. Pouch transfers move no physical coin items.
 
 Guild lookups use the active character. Guild cooldowns map character members
-back to their account UUIDs and retain existing account-wide history. Offline
-lock owner guild checks and `LockAccess` ownership checks use the account's
-reviewed legacy heir; a different active character does not inherit those access
-rights. Online guild checks require the relevant member character to be active.
+back to their account UUIDs and retain existing account-wide history. Risk, thief
+cooldowns and the container `accessMap` stay keyed by account, so switching
+characters does not reset them.
 
-Lock files, owner controls, risk and cooldown storage remain account-based until
-stage 6. This includes owner toggles, shared-key and automation paths; this stage
-does not claim full character isolation for physical locks. Existing guild target
-keys retain their cooldown history.
+Locks belong to characters: see [lock owners](LOCK-OWNERS.md) for ownership,
+access, automation, staff commands, storage, guard mode and the lock migration.
 
 ## Responsibilities
 
@@ -72,7 +70,9 @@ keys retain their cooldown history.
 
 ## Chest hopper automation
 
-When a **block hopper** moves items (`InventoryMoveItemEvent`), allow pull/deposit only if the hopper and every involved block container (chest, barrel, hopper, etc.) share the same **non-null owner UUID**. Guild/PUBLIC player access does not apply to hoppers — only owner equality. Unowned containers block automation; hopper minecarts are not covered. Droppers and other initiators are unchanged.
+When a **block hopper** moves items (`InventoryMoveItemEvent`), Thievery allows the pull or deposit only if every involved block container (chest, barrel, hopper and so on) has exactly the hopper's owner. Both halves of a double chest are checked, and an unowned half goes with its owned partner. Guild and PUBLIC access do not apply to block hoppers, and unowned hoppers move nothing.
+
+A **hopper minecart** has no owner. Its moves are cancelled when the source or destination is an owned container that is not PUBLIC, including either half of a double chest, so owners cannot drain their own private storage with one. Droppers and other initiators are unchanged. See [lock owners](LOCK-OWNERS.md#automation).
 
 Displays do not use the chest GUI. Doors and displays share one engine.
 
@@ -153,9 +153,9 @@ Honor `min-lock-strength-ratio` against that display strength.
 
 ## Lock state
 
-Reuse `LockState` (`PRIVATE` / `GUILD` / `FACTION` / `PUBLIC`) and the same access rules as `ContainerData.canAccess` (owner, same guild, same faction, public, `thievery.admin` bypass). `FACTION` is every guild in the owner's faction. Vassals are not included. Chest lockpick sessions scale budget, risk, critical chance, and break chance from `lockpicking.lock-types`.
+Reuse `LockState` (`PRIVATE` / `GUILD` / `FACTION` / `PUBLIC`) and the same access rules as `ContainerData.canAccess` (owning character, the guild the owner's locks follow, that guild's faction, public, `thievery.admin` bypass). `FACTION` is every guild in that faction. Vassals are not included. Chest lockpick sessions scale budget, risk, critical chance, and break chance from `lockpicking.lock-types`.
 
-Shift left-click is the toggle (same titles/sound as chests). The owner rotates state; staff with `thievery.admin` can also rotate a lock another player owns, and the placer stays the owner. Shift left-click **never** breaks a lockable display.
+Shift left-click is the toggle (same titles/sound as chests). The owning character rotates state; staff with `thievery.admin` can also rotate a lock another character owns, and that character stays the owner. Shift left-click **never** breaks a lockable display.
 
 ### Lock change logging
 
@@ -174,15 +174,15 @@ If the player cannot access a locked display, cancel:
 
 Owner / guild / public access still allows legitimate break and take.
 
-Owner is set on place (`FurniturePlaceEvent`, `EntityPlaceEvent`). If missing, the first successful owner toggle may claim it.
+Owner is set on place (`FurniturePlaceEvent`, `EntityPlaceEvent`) to the placer's current character, or the server for staff without one. If missing, the first toggle by a player with a current character claims it.
 
 ## Persistence (entity-capable)
 
 `ContainerDataManager` is block-file keyed. Do not reuse it for entities.
 
-**Vanilla entities** (armor stand, item frame, glow item frame): `plugins/Thievery/entities/<uuid>.json` (`owner`, `lockState`). Delete on entity remove.
+**Vanilla entities** (armor stand, item frame, glow item frame): `plugins/Thievery/entities/<uuid>.json` (`owner`, `ownerKind`, `lockState`). Delete on entity remove.
 
-**IF furniture:** do not key only by `Furniture.getEntityId()`. Restore can respawn the ItemDisplay and change the UUID (`FurnitureRestoreHandler.ensureDisplay`). Store `thievery.owner` and `thievery.lockState` in `Furniture.getVariables()` and `persistFurniture`. The lock follows pickup, chunk reload, and respawn.
+**IF furniture:** do not key only by `Furniture.getEntityId()`. Restore can respawn the ItemDisplay and change the UUID (`FurnitureRestoreHandler.ensureDisplay`). Store `thievery.owner`, `thievery.ownerKind` and `thievery.lockState` in `Furniture.getVariables()` and `persistFurniture`. The lock follows pickup, chunk reload, and respawn.
 
 Config:
 
