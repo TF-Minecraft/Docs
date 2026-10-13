@@ -166,6 +166,13 @@ reports the cumulative moved IDs without moving them again, including later WAIT
 rows, including unknown nullable or BLOB fields, remain in
 `husbandry_estate_owner_archive` independently of the live slot's deletion.
 
+If a previously transferred animal reappears in the testator's owner rows while
+its completed receipt remains, settlement is BLOCKED across all revisions.
+Preserve both rows and receipts for staff reconciliation. A completed revision
+with newly resolved, untouched testator holdings also blocks that revision;
+a reviewed new revision may transfer those untouched holdings. Receipt account
+and character references must agree with the recorded decision.
+
 An interrupted transaction rolls back as a whole. A retained incomplete intent
 or conflicting same-revision receipt is BLOCKED for review; affected ownership
 writers refuse changes while resolved co-owners can still care for or ride their
