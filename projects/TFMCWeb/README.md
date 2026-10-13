@@ -30,7 +30,7 @@ LuckPerms storage is shared, so set `apply-ranks: true` on exactly one server; l
 
 ## Realm on gateway requests
 
-`ProvinceSystemGateway` adds this server's `realm.id` to allow-listed plugin routes. A request that already names `realm_id` (in the query, or at the top level of the JSON body) keeps its own value, so a plugin that sends its realm is never overridden.
+`ProvinceSystemGateway` adds this server's `realm.id` to allow-listed plugin routes. A request that already names `realm_id` (in the query, or at the top level of the JSON body) keeps its own value, so a plugin that sends its realm is never overridden. The gateway does not check that value, so callers must send `TFMCWeb.getRealmId()`, never a literal realm.
 
 | Method | Route | `realm_id` goes in |
 |---|---|---|
