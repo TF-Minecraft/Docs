@@ -16,7 +16,8 @@ master key records the character as the door's owner; the key stays the credenti
 for opening, unlocking and breaking the door.
 
 Without a current character session, placing still works but leaves the block or
-display unowned and writes no lock file, while claims, rotations and door locking
+display unowned (any stale record left at that spot by a container that was blown up
+is removed), while claims, rotations and door locking
 are refused with "Play a character to claim or change locks." Staff without a
 current character are the exception for placement and door locking: the lock is
 stamped as a **server** lock, starts PRIVATE and opens only through the staff
@@ -39,7 +40,8 @@ rejoin. When SimpleFactions is not ready, or is older than 4.1.0 and has no
 `lockGuild`, GUILD and FACTION locks deny everyone except staff.
 
 Both halves of a double chest are read together. Opening fills an unowned half from
-its owned partner, and a wholly unowned double chest is claimed for the opener. When
+its owned partner, and a wholly unowned double chest is claimed for the opener. An
+unreadable half is never copied onto its partner; the chest is listed for staff. When
 the halves have two different owners, nothing is synced: opening still needs access
 to both halves, nobody can rotate the chest (staff included), thieves cannot pick it,
 and staff see it in the quarantine list until they set one owner with
@@ -86,12 +88,14 @@ files missing after a migration replay, and double chests with two owners. The f
 list is in `plugins/Thievery/migrations/quarantine.json`.
 
 `/thievery locks setowner <character|uuid|server>` sets the owner of the container
-(both halves of a double chest), locked door or lockable armour stand or item frame
-you look at within 5 blocks. It keeps the lock state, except that an unreadable
-record becomes PRIVATE. A UUID must be a known character ID, dead characters
-included. A name must match exactly one living character; names need TLibs 2.5.0,
-and without it use the UUID. A door whose record has lost its key cannot be
-repaired this way: break it in Creative to remove the lock.
+(both halves of a double chest), locked door, lockable armour stand or item frame, or
+lockable furniture piece you look at within 5 blocks. It keeps the lock state, except
+that an unreadable record becomes PRIVATE, and it keeps the thief cooldowns of an
+unreadable container when they can still be read. A UUID must be a known character
+ID, dead characters included. A name must match exactly one living character; names
+need TLibs 2.5.0, and without it use the UUID. A door whose record has lost its key or
+its strength cannot be repaired this way, so the lock is never weakened: break the
+door in Creative to remove it. Fixed records leave the quarantine list straight away.
 
 ## Storage
 
@@ -114,7 +118,8 @@ A record that cannot be read loads locked, with an unresolved owner: an empty,
 truncated or `null` file, a bad UUID, an owned record with a missing or unknown lock
 state, an unknown `ownerKind`, or garbage furniture variables. Such a lock denies
 everyone except staff, cannot be picked, is never overwritten by ordinary play, and
-is listed for staff. An error inside a lock listener cancels the event.
+is listed for staff. An error inside a lock listener cancels the event, including a
+linkage error from a changed SimpleFactions or TLibs API.
 
 A bare UUID without `ownerKind` is classified once whenever its record is loaded: a
 known character ID is a character, an account with a reviewed heir is a legacy
