@@ -13,8 +13,15 @@ dialog focuses one living character at a time. Its card shows a skin portrait,
 name, race, class, age, guild and when it was last played. Character tabs and
 arrows change the preview; **Play** enters the selected character, and its
 tooltip lists the playtime, pouch and bank, plus the birthday where recorded.
-**New character** starts creation when slots and the switch cooldown allow it;
-its tooltip shows the slots used. **Memorials** opens the records of dead and
+All living characters stay visible in compact rows of up to three names; characters
+with the same name remain separate selections by ID. Changing the preview does
+not shift the rows or hide other characters.
+**New character** appears beside the character-name tabs. Selecting it shows a
+welcome page with one **Create character** button, which starts creation when
+slots and the switch cooldown allow it; its tooltip shows the slots used.
+Existing-character cards have one **Play** button. Arrows include the new-character
+tab, and incoming portrait loads do not replace its welcome page.
+The **Memorials** link opens the records of dead and
 missing characters. Pouch and bank come from the character's own DenarEconomy
 ledger and the guild from SimpleFactions 4.0.0. The guild is hidden when the
 character has none or factions are unavailable.
