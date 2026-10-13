@@ -95,7 +95,14 @@ are receipts and are not redirected automatically when staff later change a
 recipient. A newer decision can replace an untouched plan. If any output was
 published under an older decision, that partial transfer stays BLOCKED for staff
 recovery. Affected libraries refuse conflicting edits while an intent is pending.
-Transient disk failures return RETRY; conflicting contents return BLOCKED.
+Every entry, including historical completed receipts, validates its captured
+death, full source/recipient references and integral revision. A previously
+transferred project that reappears at its source blocks every revision, including
+WAITING/FROZEN, while preserving both files and receipts for staff review.
+Before/after YAML may differ only in the project authority fields: titles, tracks,
+authorship and unknown nullable metadata remain unchanged even when a modified
+plan carries recomputed hashes. Transient disk failures return RETRY; conflicting
+contents return BLOCKED.
 
 Inspect an estate's files before staff retry or waive a blocked participant:
 
@@ -115,18 +122,24 @@ Archive the current studio directory first; this retains new projects and edits
 that restoring an old snapshot would otherwise discard. Preview estates first,
 then legacy migration, with the inspection commands above.
 
-The same tool applies checked restoration only when current source/destination
-contents still match their planned hashes:
+The offline tool requires Python 3 and PyYAML (`python3-yaml` on Ubuntu). Its safe
+loader rejects duplicate YAML fields, and duplicate XML keys are also rejected.
+It preflights every entry in a journal before restoring any project, checking
+full references, captured decisions, paths, hashes and the authority-only
+before/after transformation. Current source/destination contents must still
+match their planned hashes. Apply requires a new recovery directory:
 
 ```sh
 python3 tools/studio-ownership.py \
-  --studio /path/to/plugins/MusicalInstruments/studio --kind estates --apply
+  --studio /path/to/plugins/MusicalInstruments/studio --kind estates --apply --backup /path/to/new-estate-recovery
 python3 tools/studio-ownership.py \
-  --studio /path/to/plugins/MusicalInstruments/studio --kind migration --apply
+  --studio /path/to/plugins/MusicalInstruments/studio --kind migration --apply --backup /path/to/new-migration-recovery
 ```
 
-It restores exact original source bytes, removes only the unchanged planned
-copy, and archives fully restored journals under `ownership/rolled-back/`.
+It preserves the current journal and every current project copy in the new
+recovery directory before the first restore or removal. It restores exact
+original source bytes, removes only the unchanged planned copy, and archives
+fully restored journals under `ownership/rolled-back/`.
 Changed or missing copies produce conflicts and remain preserved for staff.
 Projects created after migration are listed and retained; an older jar cannot
 read their character namespace, so staff must reconcile them separately.
