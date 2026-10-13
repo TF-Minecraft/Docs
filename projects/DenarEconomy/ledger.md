@@ -40,7 +40,9 @@ A posting first adds together the legs on each account, using checked arithmetic
 - **An account would go below zero where it may not, a sum overflows, or a frozen character account would be debited.** It records the operation as `REFUSED` and changes nothing. Posting the same ID again returns `REFUSED` again, even if the money has since arrived.
 - **Otherwise** it applies every leg, records the operation as `APPLIED` with its legs, and commits.
 
-A character account is frozen unless the TLibs character API reports the character as alive at posting time. That covers dead characters, and also characters whose status cannot be read because they are unknown or no identity provider is registered. Frozen accounts still receive credits such as wages, dividends and refunds. Debits from them are refused unless the posting's reason starts with `staff:` or `estate:`.
+A character account is frozen unless the TLibs character API reports the character as alive at posting time. That covers dead characters, and also characters whose status cannot be read because they are unknown or no identity provider is registered. Frozen accounts still receive credits such as wages, dividends and refunds. Debits from them are refused unless the posting's reason starts with `staff:`, or the posting is an [estate sweep](estates.md).
+
+Operation IDs and reasons starting `estate:` belong to estate sweeps. Any other posting that uses one returns `UNAVAILABLE`, logs a warning and records nothing, so no plugin can debit a dead character or take an estate's operation number.
 
 ### Failures
 
@@ -86,7 +88,7 @@ Depend on DenarEconomy with `provided` scope and call [Denars](https://github.co
 | `trade(opId, reason, buyerAccount, seller, sellerAccount, cents, taxable)` | A sale: the buyer pays the seller. |
 | `taxFor(character, cents)` | The tax the registered policy would take. |
 
-Every posting returns a `Result`: `APPLIED`, `REFUSED`, `CONFLICT` or `UNAVAILABLE`. Act on a payment only after `APPLIED`.
+Every posting returns a `Result`: `APPLIED`, `REFUSED`, `CONFLICT` or `UNAVAILABLE`. Act on a payment only after `APPLIED`. `post`, `transfer`, `earn` and `trade` answer `UNAVAILABLE` for an operation ID or reason starting `estate:`, before any tax policy runs.
 
 Choose operation IDs so that a retry reuses the same ID. Derive the ID from the event when the event can repeat, for example `coin:<item entity UUID>` or `shop:<shop>:<transaction nonce>`, and store a generated ID before any side effect that depends on the payment. A fresh random ID suits a one-off player command. DenarEconomy's own commands use `<kind>:<random UUID>`.
 
