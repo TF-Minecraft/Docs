@@ -26,7 +26,7 @@ Each sweep first checks the estate guard: the character is DEAD with the estate'
 
 ## Recipients
 
-Estate money goes only to a character account (normally the heir's bank) or a `guild:` treasury; any other account is listed for staff (`BLOCKED`). Before moving money to a treasury, the participant asks SimpleFactions whether the guild still exists:
+When both of the character's accounts are empty there is nothing to move, and the participant answers `DONE` without asking about the recipient, so a gone guild never holds up an estate that has already been swept. Otherwise, estate money goes only to a character account (normally the heir's bank) or a `guild:` treasury; any other account is listed for staff (`BLOCKED`). Before moving money to a treasury, the participant asks SimpleFactions whether the guild still exists:
 
 | Answer | Action |
 |---|---|
@@ -39,7 +39,7 @@ Estate money goes only to a character account (normally the heir's bank) or a `g
 
 | Outcome | When |
 |---|---|
-| `DONE` | A sweep completed at the current revision, including one that found nothing to move, or the money is FROZEN. |
+| `DONE` | A sweep completed at the current revision, the accounts were already empty (whatever became of the recipient), or the money is FROZEN. |
 | `RETRY` | The guard does not hold, the ledger or character directory is unavailable, the sweep was refused, or SimpleFactions could not answer. |
 | `BLOCKED` | The money recipient is not a character account or guild treasury, the guild and any realm to take its money are gone, or (in principle) a sweep conflicted. |
 

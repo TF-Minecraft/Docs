@@ -43,7 +43,7 @@ The console always passes the permission check; a player needs operator status o
 
 ## Checking and correcting accounts
 
-`/deco account <name|id>` takes a character ID or a name, ignoring case. A name matches living characters and any other character that has a ledger account; when several share it, the command lists them with their IDs and status, and staff repeat it with the ID. It shows the pouch and bank and the last 20 postings, so estate sweeps (`estate:<deathId>`) and staff corrections are visible.
+`/deco account <name|id>` takes a character ID or a name, ignoring case; a name may contain spaces (`/deco account Marco Morales`). A name matches living characters and any other character that has a ledger account; when several share it, the command lists them with their IDs and status, and staff repeat it with the ID. It shows the pouch and bank and the last 20 postings, so estate sweeps (`estate:<deathId>`) and staff corrections are visible.
 
 `/deco move <from> <to> <cents> <note>` takes full account IDs, such as `char:<character>:bank` or `guild:<incarnation>`, and a positive whole number of cents. It posts operation `staff:move:<random UUID>` with reason `staff:move <note>`. The `staff:` reason lets it take money from a dead character, for example to hand back what an estate moved after a forced revive. It refuses to take a `guild:` treasury below zero; character, legacy and tax holding accounts cannot go below zero anyway. A refused or unavailable move answers "The move was not applied" with the result and changes nothing. Each applied move is logged with the sender, amount, both accounts, operation ID and note.
 
