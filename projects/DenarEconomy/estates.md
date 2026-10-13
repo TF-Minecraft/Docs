@@ -4,7 +4,7 @@
 
 When a dead character's estate is decided, DenarEconomy moves the character's pouch and bank to the estate's money recipient, and keeps moving any money that reaches those accounts later. RPCharacters decides who receives what (the will heir's bank, the death guild's treasury or the realm treasury, or nothing, which leaves the money for staff); DenarEconomy only moves the money. The rules for the whole estate are in the [RPCharacters estate guide](../RPCharacters/README.md).
 
-The code is the `denareconomy` [estate participant](https://github.com/TF-Minecraft/DenarEconomy/blob/main/src/main/java/net/tfminecraft/denareconomy/estate/MoneyEstates.java) and `Ledger.sweepEstate` in [Ledger](https://github.com/TF-Minecraft/DenarEconomy/blob/main/src/main/java/net/tfminecraft/denareconomy/ledger/Ledger.java). It needs TLibs 2.6.0 or later; on an older TLibs the participant does not register and dead characters' money stays where it is.
+The code is the `denareconomy` [estate participant](https://github.com/TF-Minecraft/DenarEconomy/blob/main/src/main/java/net/tfminecraft/denareconomy/ledger/MoneyEstates.java) and the package-private `Ledger.sweepEstate` in [Ledger](https://github.com/TF-Minecraft/DenarEconomy/blob/main/src/main/java/net/tfminecraft/denareconomy/ledger/Ledger.java). It needs TLibs 2.6.0 or later; on an older TLibs the participant does not register and dead characters' money stays where it is.
 
 ## The sweep
 
@@ -24,15 +24,15 @@ RPCharacters calls the participant when it decides an estate, when a revision ch
 
 Each sweep first checks the estate guard: the character is DEAD with the estate's death ID, and the estate is DECIDED (not reverted) at the revision being settled. A revived character, a later death or a reverted estate stops all further sweeps. A sweep that already committed stays; money that arrives after a revive stays with the character.
 
-## Guild recipients
+## Recipients
 
-Before moving money to a `guild:` treasury, the participant asks SimpleFactions whether the guild still exists:
+Estate money goes only to a character account (normally the heir's bank) or a `guild:` treasury; any other account is listed for staff (`BLOCKED`). Before moving money to a treasury, the participant asks SimpleFactions whether the guild still exists:
 
 | Answer | Action |
 |---|---|
 | Live | The money goes to the guild's treasury. |
-| Gone, and it was the death guild whose realm is live | The money goes to the realm treasury (`guild:<capital incarnation>`). |
-| Gone, and its realm is gone, unknown, or the guild was the realm's own capital, or staff chose the guild | Nothing moves; the estate is listed for staff (`BLOCKED`). |
+| Gone, and it was the death guild whose realm is live | The money goes to the treasury SimpleFactions names for the realm. If the decision did not record the realm, SimpleFactions is asked again for the death guild's realm. |
+| Gone, and its realm is gone or unknown, or the guild was the realm's own capital, or staff chose the guild | Nothing moves; the estate is listed for staff (`BLOCKED`). |
 | SimpleFactions cannot answer, or is not installed | Nothing moves this time (`RETRY`). |
 
 ## What the participant reports
@@ -41,9 +41,9 @@ Before moving money to a `guild:` treasury, the participant asks SimpleFactions 
 |---|---|
 | `DONE` | A sweep completed at the current revision, including one that found nothing to move, or the money is FROZEN. |
 | `RETRY` | The guard does not hold, the ledger or character directory is unavailable, the sweep was refused, or SimpleFactions could not answer. |
-| `BLOCKED` | The money recipient is not a ledger account, the guild and any realm to take its money are gone, or (in principle) a sweep conflicted. |
+| `BLOCKED` | The money recipient is not a character account or guild treasury, the guild and any realm to take its money are gone, or (in principle) a sweep conflicted. |
 
-`DONE` carries `cents` (everything moved by the estate's applied sweeps so far, capped at the largest int) and `postings` (how many), with the operation IDs as the moved records. The hourly loop reports an outcome only when it differs from the last one it reported for that death since the server started.
+`DONE` carries `cents` (everything moved by the estate's applied sweeps so far, capped at the largest int) and `postings` (how many), with the operation IDs as the moved records. The hourly loop reports an outcome when it differs from the last one the estate service accepted for that death since the server started; a report that fails is sent again at the next pass. One estate that fails is logged and does not stop the others. `cents` is a count for `/estate show`; the site shows the amount moved from RPCharacters' own record.
 
 `describe` gives the will screen and staff a character's money today: `cents` and one line with the pouch and bank.
 
