@@ -2,8 +2,9 @@
 
 [Project index](../README.md) · [Character selection](character-bodies.md)
 
-The **New character** button in character selection opens a native Minecraft
-dialog wizard. Character creation is controlled entirely through its menus. It uses the same `stages.yml` definitions
+The **New character** tab in character selection opens a welcome page.
+**Create character** starts the native Minecraft dialog wizard. Character
+creation is controlled entirely through its menus. It uses the same `stages.yml` definitions
 as the website creator, with the configured in-game stage order and gates.
 Existing slot limits, switching cooldowns and character restrictions still apply.
 
@@ -17,22 +18,26 @@ Names and clues use single-line fields; description uses a multiline field.
 Age uses a slider bounded by the chosen race. Description also includes optional gender. Real-life age attestation
 uses an explicit **Yes** or **No** choice followed by **Next**.
 
-Name colours use the existing donor-rank allowance (up to eight stops). Palette
-controls choose colours in gradient order; custom space-separated hex colours
-can override them. **Preview name** displays the entered name and colours.
-Default/unused palette entries and an empty custom field keep the default colour.
+The name screen contains one name field and its preview. Donors can open
+**Edit colours** to choose default, solid, gradient or custom hex colours within
+their existing rank allowance (up to eight stops). Solid colour uses one picker;
+gradient uses two; custom uses one space-separated hex field for longer gradients.
+**Preview** checks and shows the colours. **Use colours** returns to the name;
+**Back to name** discards colour-editor changes. Only **Next** commits the name
+and colours. The name screen never shows unused colour slots.
 
-Race and class use a compact choice control. Up to two picks use one control
-per pick, preventing extra selections; duplicate picks are rejected. Options
-incompatible with earlier choices or unavailable to the account are filtered
-from the form. Option names appear in short rows with hover descriptions;
-point costs use a separate colour. Larger selection limits use checkboxes with
-**Previous choices** and **More choices** pages. Attribute choices show the
+Race, class and traits use direct clickable choice rows, with a checkbox marker
+and hover description. Class colours remain visible. Unavailable choices stay
+grey and cannot be ticked; their hover text names the conflicting trait or
+explains the missing requirement, playtime gate, point cost or filled pick limit.
+Unticking a choice reopens available alternatives. Longer lists use **Previous
+choices** and **More choices** links only where another page exists.
+Point costs use a separate colour. Attribute choices show the
 point cost beside each rank and exclude ranks that exceed the entire budget.
 **Check points** reports what remains; **Balanced** fills a valid allocation for
 review. Only **Next** commits the allocation, which must use the whole budget.
-These controls change locally: choosing, checking or sliding age does not replace
-the dialog, reset the cursor or send a server callback.
+Age and attribute inputs change locally. Clicking a choice updates its marker
+and availability through a guarded callback, replacing the dialog directly.
 
 **Back** and **Next** occupy a separate navigation row below the form. **Next**
 validates and saves the current step, including dependencies, conflicts and
@@ -52,7 +57,8 @@ screen controls. `/rpcharacter select` can recover the current menu.
 ## Review and finish
 
 The review screen shows committed values for every available choice. Long
-reviews have page controls. Clicking **Edit** opens that step; **Save and review**
+reviews have page links only where another page exists. Clicking **[Edit]** next
+to a value opens that step; **Save and review**
 validates the change and returns directly to review. **Back to review** returns
 without committing the edited step.
 
@@ -61,7 +67,9 @@ available, including dependent traits. Newly available or invalidated required
 steps must be confirmed before **Create character** can finish. Final validation
 checks the name, class, birthday, description, clues, stage gates, trait
 restrictions and attribute spending. Slot availability is rechecked before the
-character is added to the roster.
+character is added to the roster. The coloured name shows the chosen appearance;
+there is no separate hex-colour row. Back/Create occupy the action row without
+empty spacer buttons.
 
 **Cancel creation** asks whether to discard the draft. **Keep creating** returns
 to the screen; **Discard draft** cancels. Logging out also discards the unfinished
@@ -83,10 +91,11 @@ stale callbacks. The repository enforces 100% production line coverage.
 For a requested Dev playtest, exercise the full configured creator on Paper
 1.21.10 with a Minecraft client, including a small window and different GUI
 scales. Check readable option details, page controls, inline errors, Back,
-review editing, donor palette/custom gradients, rank limits, optional gender,
+review editing and boundary page links, donor palette/custom gradients, rank limits, optional gender,
 Esc at every screen, discard returning to selection, logout and final character
-activation. Repeated local choice/slider changes must leave the same screen and
-cursor in place, and Next/Back must not recenter the cursor, with no waiting screen or legacy chat/title overlay.
+activation. Check disabled-choice hover reasons and immediate pick limits.
+Local sliders must leave the same screen in place; choice updates and Next/Back
+must preserve the cursor, with no waiting screen or legacy chat/title overlay.
 Unit tests do not prove client rendering or live server integration.
 
 ## Source references
