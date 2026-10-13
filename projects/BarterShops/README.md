@@ -148,9 +148,9 @@ BLOCKED and names the shop; staff resolve it with `/bartershops intent`, then ru
 separate property and moves at the next restart. The will screen and
 `/estate show` list the character's shops and where their signs stand.
 
-BarterShops settles each decided estate on the first tick after start-up and
-every hour, and reports to RPCharacters only when its answer changes. It waits
-until its own character migration has finished. On TLibs 2.5.0 it starts
+BarterShops settles each decided estate on the first tick after start-up, again
+as soon as its own character migration has finished (it waits for that), and then
+every hour. It reports to RPCharacters only when its answer changes. On TLibs 2.5.0 it starts
 normally without joining estates: shops of dead owners stay paused with them.
 
 ## Verification
