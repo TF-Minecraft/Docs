@@ -6,7 +6,7 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 
 ## Automated tests
 
-`mvn clean verify` runs the JUnit suite (MockBukkit and Mockito) and writes JaCoCo reports to `target/site/jacoco/`. JaCoCo measures every production class with no exclusions; open `target/site/jacoco/index.html` to inspect uncovered behaviour. Coverage data is replaced on each run, so use the full suite when assessing repository-wide coverage.
+`tfmc-mvn -o -B clean verify` runs the JUnit suite (MockBukkit and Mockito) and writes JaCoCo reports to `target/site/jacoco/`. JaCoCo measures every production class with no exclusions and enforces no threshold; open `target/site/jacoco/index.html` to inspect uncovered behaviour. Coverage data is replaced on each run, so use the full suite when assessing repository-wide coverage.
 
 Game scenarios drive public callbacks through complete Poker, Draw and Blackjack rounds across the real table, deck and money implementations, and assert game rules, money conservation or player-visible effects. Tests should protect supported behaviour, not create impossible internal states merely to execute a branch. Where no real caller can reach a branch, remove the branch rather than force it.
 
@@ -110,9 +110,9 @@ See [BLACKJACK.md](BLACKJACK.md).
 - [ ] 3:2 natural, double, split, DAS
 - [ ] Auto: 10s after first min bet, spawn pays
 - [ ] Voice via RPCharacters `dispatch`, not `/rp` command
-- [ ] With TLibs 2.4.0 and RPCharacters 2.16.0, table labels and game messages show the current mask/alias; changing it or switching characters updates the next rendered name without revealing a canonical name
+- [ ] With TLibs 2.6.0 and a compatible RPCharacters provider, table labels and game messages show the current mask/alias; changing it or switching characters updates the next rendered name without revealing a canonical name
 - [ ] An online player with no active character shows the RPCharacters no-character label (`Unknown` by default), matching chat
-- [ ] Without the character provider, online labels use account names; offline names use the last known account name or `-`; gameplay and wagers still work
+- [ ] Without the character provider, online labels use account names and offline names use the last known account name or `-`; missing identity still refuses current owner authority, new character-bound sessions and unsafe wagers
 
 ---
 
@@ -137,3 +137,19 @@ See [GUILD_TABLES.md](GUILD_TABLES.md).
 - [ ] Missing winning character, mid-round tax failure and partial payout retain the remaining obligation and prevent round clear/pickup.
 
 Run automated checks with `tfmc-mvn -o -B --no-transfer-progress clean verify`. Journal tests inject posting, storage and bookkeeping failures; they do not prove atomic Minecraft inventory persistence or replace server integration checks.
+
+## Private ownership and estates
+
+See [OWNERSHIP.md](OWNERSHIP.md) for source paths, compatibility probes and the conservative rollback procedure.
+
+- [ ] Character A owns a private table; same-account B cannot edit, deal, host or confirm A's old menu/placement arm, including a missed session-end event and an A-to-B-to-A session renewal.
+- [ ] Staff edits opened before a table changes owner cannot apply or restore the old owner, including queued chat and an owner changing back.
+- [ ] Guild-plus-mint, nonguild mint, human private and automatic private tables follow their separate authority and inheritance classification.
+- [ ] Legacy missing/null mode fields and explicit mint/non-mint values use the same raw/runtime classification; frozen mode survives layout changes, loading and publication interruption without recapturing owner or changing money.
+- [ ] An unready reviewed-heir service makes no migration or empty estate receipt; later readiness resolves raw unloaded rows without discarding settings or unknown nulls.
+- [ ] Duplicate JSON fields/IDs, invalid owner/guild/float UUIDs and external file replacement stay untouched and held before new money or ownership publication.
+- [ ] A live private table receives a durable pending estate intent: new activity is refused, captured work can settle, and only idle ownership moves without touching floats, wagers or unknown fields.
+- [ ] Restart resumes the exact current decision; changed historical envelope/receipt IDs, partial stale transfers and a restored completed source block every later recipient mode.
+- [ ] Empty CHARACTER/WAITING/FROZEN completions record exact revision evidence; same-revision new ownership or changed decisions block, newer guarded revisions can consider untouched new property, and retained completions preserve cumulative moved IDs.
+- [ ] Confirmed revival releases untouched pending plans; missing provider evidence and partial publication retain the hold.
+- [ ] Rollback preview accepts only the exact migrated source; progress, active/recovery marker and estate history refuse apply. Successful apply preserves current bytes and restores the immutable original.

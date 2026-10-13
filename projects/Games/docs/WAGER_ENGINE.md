@@ -71,6 +71,8 @@ Hold'em and Five-Draw pot payouts include the winner's own stake. `RoundMoney.ta
 
 ## Character ownership and recovery
 
+Private table ownership uses a separate recorded owner character and the [idle-only property estate participant](OWNERSHIP.md). Transferring the table never changes its wager identities or money. Pending ownership prevents new stakes/sessions; existing captured payouts can finish subject to the original money and identity guards. Held raw ownership persistence refuses further money writes, and ownership recovery never replays or removes a wager intent.
+
 A table stores `wagerCharacters`, mapping account UUIDs to the character captured when money enters play or the session begins. Tax quotes use that immutable character reference, including offline winners. A missing reference or another active character on the same account cannot collect a payout or refund. A settled round clears bindings when no player stakes remain, even if the house tray is nonempty; the next occupant can then bind their own character.
 
 Citizen tax is a pure `TaxPolicy` quote. Whole-chip rounding and source priority remain unchanged: net payout first, then whatever tax chips the sources can actually supply. The credited tax is exactly the chip value destroyed, in cents, even when the quote rounds or the payout is partial. Partial payments retain the paid amount, actual withholding and remaining obligation separately; they never retry the full gross amount automatically.
