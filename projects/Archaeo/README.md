@@ -7,7 +7,7 @@ Archaeo provides archaeology, hidden ruins, excavation, and fragile finds for TF
 ## Build and configuration
 
 Use the shared [Java 21 / Minecraft 1.21.10 platform baseline](../../PLATFORM.md).
-From the source checkout, run `mvn clean verify`. The JAR is written to
+From the source checkout, run `tfmc-mvn -o -B clean verify`. The JAR is written to
 `target/archaeo-<version>.jar`.
 
 - [Plugin commands and permissions](https://github.com/TF-Minecraft/Archaeo/blob/main/src/main/resources/plugin.yml)
@@ -17,6 +17,7 @@ From the source checkout, run `mvn clean verify`. The JAR is written to
 - [Gameplay guide and default tools](docs/gameplay.md)
 - [Custom-pack player guide](docs/pack-gameplay.md)
 - [Lore catalog editing](docs/lore-catalogs.md)
+- [Character authority, migration, estates and offline recovery](docs/character-ownership.md)
 - [Tests, coverage and optional API contracts](docs/testing.md)
 
 Technical guides live here. Plugin code, bundled YAML defaults, and optional
