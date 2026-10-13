@@ -2,8 +2,8 @@
 
 [Project index](../README.md) · [Character selection](character-bodies.md)
 
-The **New character** button in character selection and `/rpcharacter create`
-open a native Minecraft dialog wizard. It uses the same `stages.yml` definitions
+The **New character** button in character selection opens a native Minecraft
+dialog wizard. Character creation is controlled entirely through its menus. It uses the same `stages.yml` definitions
 as the website creator, with the configured in-game stage order and gates.
 Existing slot limits, switching cooldowns and character restrictions still apply.
 
@@ -14,19 +14,33 @@ Instructions appear together on a screen and remain until the player clicks
 game-only instructions keep their game copy.
 
 Names and ages use fields; descriptions and player-authored clues use multiline
-fields. Real-life age attestation uses explicit **Yes** and **No** choices.
-Race, class and trait screens show selectable buttons, details and remaining
-points. Long lists have **Previous choices** and **More choices** pages. Attribute
-screens use increase/decrease buttons and require the whole point budget.
+fields. Description also includes optional gender. Real-life age attestation
+uses an explicit **Yes** or **No** choice followed by **Next**.
 
-**Next** validates and saves the current step. Validation errors appear on the
-same screen, retaining the submitted text. **Back** retains field text and
-unconfirmed choices for the session. A previously saved step can be submitted
-again. The step count reflects stages available to this character.
+Name colours use the existing donor-rank allowance (up to eight stops). Palette
+controls choose colours in gradient order; custom space-separated hex colours
+can override them. **Preview name** displays the entered name and colours.
+Default/unused palette entries and an empty custom field keep the default colour.
 
-**Esc** closes the screen. `/rpcharacter create` or `/rpcharacter help` reopens
-the current draft. Text is captured when a screen button is clicked; typing
-dismissed with Esc is not submitted. Normal chat cannot submit creation fields.
+Race and class use a choice control. Trait screens use choice controls or
+checkboxes, with hover details and point costs. Long checkbox lists have
+**Previous choices** and **More choices** pages. Attribute screens use rank
+sliders, explain cumulative point costs, and require the whole point budget.
+These controls change locally: choosing, checking or sliding does not replace
+the dialog, reset the cursor or send a server callback.
+
+**Back** and **Next** occupy a separate navigation row below the form. **Next**
+validates and saves the current step, including dependencies, conflicts and
+budgets. Errors appear inline and retain the entered values. **Back** retains
+unconfirmed form values for this session. The step count reflects stages
+available to this character. Saves do not send legacy chat messages or titles.
+
+**Esc** cannot close selection, creation or discard confirmation. In the
+character world, discarding a draft returns to selection; playing a character
+or disconnecting leaves the menus. Normal chat cannot submit creation fields.
+`/rpcharacter create` no longer starts creation. Navigation commands are retained
+for existing-character editing and staff previews; a native draft uses its
+screen controls. `/rpcharacter select` can recover the current menu.
 
 ## Review and finish
 
@@ -62,7 +76,10 @@ stale callbacks. The repository enforces 100% production line coverage.
 For a requested Dev playtest, exercise the full configured creator on Paper
 1.21.10 with a Minecraft client, including a small window and different GUI
 scales. Check readable option details, page controls, inline errors, Back,
-review editing, cancel/resume, logout and the final character activation.
+review editing, donor palette/custom gradients, rank limits, optional gender,
+Esc at every screen, discard returning to selection, logout and final character
+activation. Repeated local choice/slider changes must leave the same screen and
+cursor in place, with no waiting screen or legacy chat/title overlay.
 Unit tests do not prove client rendering or live server integration.
 
 ## Source references
