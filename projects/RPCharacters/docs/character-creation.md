@@ -13,8 +13,8 @@ Instructions appear together on a screen and remain until the player clicks
 **Next**. Shared instruction stages use their website copy when it is available;
 game-only instructions keep their game copy.
 
-Names and ages use fields; descriptions and player-authored clues use multiline
-fields. Description also includes optional gender. Real-life age attestation
+Names and clues use single-line fields; description uses a multiline field.
+Age uses a slider bounded by the chosen race. Description also includes optional gender. Real-life age attestation
 uses an explicit **Yes** or **No** choice followed by **Next**.
 
 Name colours use the existing donor-rank allowance (up to eight stops). Palette
@@ -22,18 +22,25 @@ controls choose colours in gradient order; custom space-separated hex colours
 can override them. **Preview name** displays the entered name and colours.
 Default/unused palette entries and an empty custom field keep the default colour.
 
-Race and class use a choice control. Trait screens use choice controls or
-checkboxes, with hover details and point costs. Long checkbox lists have
-**Previous choices** and **More choices** pages. Attribute screens use rank
-sliders, explain cumulative point costs, and require the whole point budget.
-These controls change locally: choosing, checking or sliding does not replace
+Race and class use a compact choice control. Up to two picks use one control
+per pick, preventing extra selections; duplicate picks are rejected. Options
+incompatible with earlier choices or unavailable to the account are filtered
+from the form. Option names appear in short rows with hover descriptions;
+point costs use a separate colour. Larger selection limits use checkboxes with
+**Previous choices** and **More choices** pages. Attribute choices show the
+point cost beside each rank and exclude ranks that exceed the entire budget.
+**Check points** reports what remains; **Balanced** fills a valid allocation for
+review. Only **Next** commits the allocation, which must use the whole budget.
+These controls change locally: choosing, checking or sliding age does not replace
 the dialog, reset the cursor or send a server callback.
 
 **Back** and **Next** occupy a separate navigation row below the form. **Next**
 validates and saves the current step, including dependencies, conflicts and
 budgets. Errors appear inline and retain the entered values. **Back** retains
 unconfirmed form values for this session. The step count reflects stages
-available to this character. Saves do not send legacy chat messages or titles.
+available to this character. Saves do not send legacy chat messages, titles or inventory-close packets.
+Next/Back replace the dialog directly without briefly returning to gameplay.
+Short clue inputs avoid the multiline character counter overlapping navigation.
 
 **Esc** cannot close selection, creation or discard confirmation. In the
 character world, discarding a draft returns to selection; playing a character
@@ -79,7 +86,7 @@ scales. Check readable option details, page controls, inline errors, Back,
 review editing, donor palette/custom gradients, rank limits, optional gender,
 Esc at every screen, discard returning to selection, logout and final character
 activation. Repeated local choice/slider changes must leave the same screen and
-cursor in place, with no waiting screen or legacy chat/title overlay.
+cursor in place, and Next/Back must not recenter the cursor, with no waiting screen or legacy chat/title overlay.
 Unit tests do not prove client rendering or live server integration.
 
 ## Source references
