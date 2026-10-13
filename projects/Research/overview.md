@@ -106,8 +106,10 @@ example content is shipped.
 | `inputs/*.yml` | Inputs keyed by identifier: `enabled`, `start_item` (`item`, `amount`), and an `outputs` list of `id` and `weight`. |
 
 The folders load in the order aspects, templates, outputs, inputs, so outputs
-may reference aspects and templates, and inputs reference outputs. Identifiers
-must be unique within each folder, and each start item may belong to only one
+may reference aspects and templates, and inputs reference outputs. Within a
+folder, files load in file-name order, ignoring case. Identifiers must be
+unique within each folder: when one repeats, the file that loads first keeps it
+and the later copy is logged and skipped. Each start item may belong to only one
 input. If an item path is listed as primary (or secondary) on two aspects, the
 conflict is logged and the aspect loaded last wins.
 
