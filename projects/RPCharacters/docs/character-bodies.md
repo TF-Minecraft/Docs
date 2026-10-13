@@ -76,10 +76,44 @@ body. The loading dialog uses vanilla text, so it does not need the pack it is
 waiting for. See [required join packs](../../TFMCCore/resource-pack.md#required-join-packs)
 for delivery settings and removing duplicate automatic requests.
 
+With ProtocolLib on Minecraft 1.21.10, `character-bodies.hide-hud: true` (the
+default) hides the survival HUD, custom action bar and loading titles throughout
+loading, selection and the native creation wizard. The client displays spectator
+HUD rules while its server game mode, player-list mode and actual abilities stay
+unchanged. Mode and authoritative abilities travel together in a packet bundle;
+Play restores the normal display before publishing the ready session. Other
+Minecraft versions or an unavailable ProtocolLib keep the existing interface and
+log the missing adapter. Changing the setting requires a restart.
+
+Flight requests caused by the temporary client display are ignored while hidden.
+Restoration uses a client ping acknowledgement before allowing flight requests
+again, so a late spectator flight request cannot change the server's saved flags.
+
+Plugin system messages wait until Play, including join messages and chat
+sent before a delayed room teleport succeeds. Return countdown and cancellation
+feedback stays live until the switch commits. The queue belongs to one connection,
+retains up to 100 messages and 131,072 JSON characters, and preserves formatting,
+clicks and hover text. Overflow omits the oldest messages, or a message larger than
+the entire budget, and reports the omitted count when releasing the queue. Busy
+queues drain in bounded batches; gameplay chat follows retained messages. Quit
+discards undelivered chat, and plugin shutdown restores the display and releases
+retained messages; arrivals beyond the shutdown drain budget report an omitted
+count. Signed player chat and disguised chat from `/say` or `/me` remain untouched.
+
+Selection and creation errors appear in their dialogs. When Discord linking is
+required, **Link Discord to play** opens the readable chat-based linking flow;
+new messages remain visible there, while previously queued ordinary messages
+still wait for Play. `/rpcharacter select` returns to the menu. Already-received
+chat fades normally when returning from gameplay. Minecraft's resource-pack
+consent screen and progress notification remain visible; this needs no pack
+changes or client mod.
+
 If another plugin blocks the selection-room teleport, the
 player remains hidden and unable to interact in the original world. The loading
 dialog still opens before Minecraft's pack prompt, and room entry retries after
 the pack loads. Character selection opens only after room entry succeeds.
+Once the pack is ready, **Entering character selection** explains the delayed
+room entry, retries automatically and offers **Leave**.
 
 The destination teleport must succeed before progression or inventory is restored.
 If another plugin blocks it, selection remains available without an activation
