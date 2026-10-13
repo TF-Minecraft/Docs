@@ -172,6 +172,8 @@ Preserve both rows and receipts for staff reconciliation. A completed revision
 with newly resolved, untouched testator holdings also blocks that revision;
 a reviewed new revision may transfer those untouched holdings. Receipt account
 and character references must agree with the recorded decision.
+Completed IDs must also agree with the preserved source archive for that
+death/revision; missing or changed receipt IDs cannot authorize another transfer.
 
 An interrupted transaction rolls back as a whole. A retained incomplete intent
 or conflicting same-revision receipt is BLOCKED for review; affected ownership
