@@ -20,7 +20,8 @@ If the rolled output is disabled or its result cannot be resolved, nothing is
 consumed. The project belongs to the character who started it. Other players,
 and other characters on the same account, get an "in use" message and cannot
 add their focus to it; the starting character reopens the menu. A station saved
-before characters were recorded belongs to the next ready character to open it.
+before characters were recorded belongs to its account's reviewed migration heir;
+an unassigned station stays unusable until staff resolve its ownership.
 Without a ready shared session, Research leaves start items and station ownership
 untouched. The optional `station.character_required` message explains this;
 existing message files without that key use a built-in message.
@@ -212,12 +213,37 @@ open station menus before changing `labels` titles or `colors.inventory_title`.
   written and the next start reuses the same plan. Replay checks the file's location
   and original account and leaves a station claimed by another character alone;
   incomplete or unreadable plans are refused. Stations whose account has no heir
-  stay unassigned: the first ready character on their owner account claims them
-  when it opens them. Stations the backfill filled belong to the heir only.
+  stay unassigned and cannot be opened or claimed by another character. Staff
+  must resolve their recorded ownership. Stations the backfill filled belong to
+  the heir only.
 
 Back up the complete `plugins/Research/` directory before renaming identifiers
 or migrating configuration, and stop the server cleanly before copying live
 state.
+
+### Resolve an unassigned legacy station
+
+There is no in-game ownership assignment command. `/research reload` does not
+repeat the completed heir backfill; restarting, publishing a later heir, or
+deleting only `done.json` cannot replace its fixed plan.
+
+1. Stop Paper cleanly and back up the complete `plugins/Research/` directory.
+2. Find the unresolved station key in the startup log or
+   `data/backfill-character-v1/done.json`, then its matching JSON file under
+   `data/stations/`.
+3. Verify the account's reviewed migration heir in RPCharacters and confirm that
+   the heir's owning account matches the station's `owner_uuid`. Without a
+   verified matching identity, leave the station unassigned for staff review.
+4. Set only that station's `owner_character_id` to the reviewed character's
+   canonical UUID. Preserve `owner_uuid`, all recipe/progress/extension fields,
+   and the immutable backfill plan, completion marker and backups. Validate the
+   JSON before restarting; never delete or regenerate those migration artifacts.
+5. Restart and verify that the reviewed character can reopen the project while
+   another character on that account cannot open it or spend focus through an
+   old menu.
+
+Keep the pre-edit backup until these checks pass. Restoring the whole snapshot
+discards any station progress or ownership changes made since it was taken.
 
 ## Validation
 
