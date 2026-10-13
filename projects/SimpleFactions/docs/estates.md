@@ -52,7 +52,7 @@ Before an unfinished journal is replayed, the character is checked:
 | DEAD with this journal's death ID | Replayed as before. |
 | ALIVE (revived), or DEAD with a later death ID | Closed: the remaining steps are marked done without running, the journal is marked complete, and `closedBy` records `revive` or `redeath`. |
 | Unreadable (quarantined account, or no death ID) | Skipped until it can be read. |
-| MISSING | Replayed as before. |
+| MISSING | Skipped: staff decide what happens to a missing character. |
 
 Closing also cancels every claim whose cleanup step never ran, in the same
 write, by marking it paid in full. That cleanup step would have cleared the
@@ -109,10 +109,16 @@ A replay after a crash looks at the row and owner as they are now:
 
 If the owner write fails for any reason other than a missing vehicle, the
 previous row is put back and the participant retries. If the vehicle is
-missing or cannot be read three times, it is listed for staff (BLOCKED). The
-row is not put back, so upkeep never falls on the dead owner. Staff fix the
-vehicle and run `/estate retry <deathId> simplefactions-vehicles`, or handle it
-by hand and waive it.
+missing or cannot be read on three checks at least an hour apart, it is listed
+for staff (BLOCKED). The row is not put back, so upkeep never falls on the dead
+owner. The participant's own hourly run leaves a listed vehicle alone. Staff fix
+the vehicle and run `/estate retry <deathId> simplefactions-vehicles`, which
+reads it once more, or handle it by hand and waive it. A vehicle planned for a
+recipient other than the decision's is also listed, never reported as moved.
+
+The participant answers "nothing to move" for property that is waiting or
+frozen even while the vehicle stage is not running, so it never holds back a
+revive for that reason.
 
 A finished settle reports the number of vehicles moved and every vehicle ID.
 The participant also runs over every decided estate shortly after the vehicle
@@ -129,8 +135,10 @@ While a vehicle's payer is dead and its latest estate is open, held or decided,
 the vehicle has not moved yet. Settlement marks no new unpaid day for it, and
 the hourly upkeep does not damage it. An unpaid day marked before the death
 stays until the recipient pays. Storage is free while property waits or is
-frozen. If staff revert an estate, the vehicle stays with the dead owner and
-upkeep applies as before.
+frozen. The pause also lasts while the vehicles participant is not registered
+(VehicleFramework older than 2.13 or not in characters mode), until staff
+assign or revert the estate. If staff revert an estate, the vehicle stays with
+the dead owner and upkeep applies as before, even if its property was frozen.
 
 ## Files
 
