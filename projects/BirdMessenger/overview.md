@@ -88,9 +88,10 @@ that death and the estate is decided at the current revision:
     `returned_mail.yml` and arrives with the `returned-to-sender` message at that
     account's next character session, whichever character is played;
   - a letter whose writing character is dead or unknown, a letter with no
-    sender, and the dead character's own unsent letters stay in its queue. The
-    estate counts them as `held`, `/estate show` lists them, and staff deal with
-    them by hand. A held letter goes back on its own if its writer is revived.
+    sender, and the dead character's own unsent letters stay in its queue.
+    `/estate show` lists them with their writer's character name, and staff deal
+    with them by hand. A held letter goes back on its own if its writer is
+    revived. Only moved letters are counted in the estate result.
 
 Letters still in flight are left alone; they land in the dead character's queue
 and the hourly reconcile moves them. Each moved letter keeps a stored ID (letters
@@ -101,13 +102,16 @@ moved letter's ID, which `/estate show` displays; to undo a move by hand, find
 those IDs in the receiving queues. The will screen and `/estate show` list a
 character's waiting letters and who wrote them. BirdMessenger settles decided
 estates on the first tick after start-up and every hour, and reports only
-changed answers.
+changed answers. A move is all or nothing: if a queue cannot be saved, every
+queue is put back as it was and the estate is told to try again within the hour.
 
 ## Mail recovery
 
 Mail is stored in `plugins/BirdMessenger/in_flight_mail.yml`,
 `plugins/BirdMessenger/pending_mail.yml` and, for letters returned to an account,
-`plugins/BirdMessenger/returned_mail.yml`. An estate move saves `returned_mail.yml`
+`plugins/BirdMessenger/returned_mail.yml`. Each file is written whole: a flushed
+temporary file replaces it, so a crash leaves the old or the new file. An estate
+move saves `returned_mail.yml`
 before it drops the letter from `pending_mail.yml`; if the server stops in between,
 the next start keeps the account's copy and drops the other, logging a warning.
 An older BirdMessenger ignores `returned_mail.yml` (keep it for re-upgrading) and
