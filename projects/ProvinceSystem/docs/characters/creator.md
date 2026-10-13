@@ -123,7 +123,15 @@ Configurable kits in `plugins/RPCharacters/kits.yml`:
 
 ## kit item customise (summary)
 
-Customise **editable** kit lines on the website (character detail → Kits → Edit). Texture via player skins pipeline → `ps_items`; lore via RPCharacters. Block claim while skin pending approval or slug missing on ArmourShop.
+Customise **editable** kit lines on the website (Profile → character → Kits → Customise). Texture via player skins pipeline → `ps_items`; lore via RPCharacters. Block claim while skin pending approval or slug missing on ArmourShop.
+
+The character's **Kits** card opens `/profile?tab=characters&character=<id>&view=kits`
+inside the Characters tab: each kit's state (claimed or not, once per character or its
+cooldown), the claim command while it can be claimed, and its items with their amounts.
+Item names come from the kit, the item preview, or the config path in title case.
+Editable items in an unclaimed kit have **Customise**; customised items show their
+state chip and **View**, which opens them in Custom items. Source:
+[`ProfileKits.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/profile/ProfileKits.tsx).
 
 Profile's **Custom items** tab (`/profile?tab=items`) lists every customised kit item
 from `GET /profile` (`custom_items`, each with its `kit_id`) as cards with the item's
