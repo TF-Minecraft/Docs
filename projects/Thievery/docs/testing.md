@@ -29,8 +29,24 @@ Pouch payment tests use real temporary SQLite files for balanced transfers,
 ledger reopen, a committed payment with a lost reply, insufficient funds and
 stale sessions. Handler tests repeat the same click, retry unavailable payments,
 and verify that unsavable intents consume no budget. Identity tests check
-reviewed-heir ownership, another character on the same account, faction waiting,
-and member-to-account cooldown mapping.
+member-to-account cooldown mapping and faction waiting.
+
+Lock owner tests use temporary directories for real lock files. They cover the
+migration (classification, exact-byte journal hashes, the archive, a second boot,
+quarantine retry, stragglers, an exception mid-pass, every replay case and
+`data-version`), the guard freeze in each data manager and handler, fail-closed
+parsing, access for characters, alts, dead owners and server locks, double chests,
+block hoppers and hopper minecarts, target keys and the staff lock commands.
+`FactionFixture` gives each mocked player a character whose ID is their account
+UUID; `plays(player, id)` switches it, and its `guilds` field stands in for
+SimpleFactions' `lockGuild`. A JUnit extension starts every test with locks in
+normal mode, no guild source and an empty quarantine list.
+
+The offline rollback tool has Python tests in `tools/test_thievery_rollback.py`, run
+with `python3 -m unittest discover -s tools -p 'test_*.py'` and in CI after the Maven
+build. They build a fixture laid out as the migration writes it, with two journals,
+and cover the dry run, newest-first restores across both passes, changed, missing and
+mismatched files, marker removal, and journals or archives that cannot be trusted.
 
 Hands-up inspection tests exercise consent, independent item copies and live
 refresh, full-view click and drag cancellation, creative inventory events,
