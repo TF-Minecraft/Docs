@@ -33,6 +33,10 @@ grey and cannot be ticked; their hover text names the conflicting trait or
 explains the missing requirement, playtime gate, point cost or filled pick limit.
 Unticking a choice reopens available alternatives. Longer lists use **Previous
 choices** and **More choices** links only where another page exists.
+Reopening a trait step rechecks remembered ticks against the updated draft and
+clears incompatible or unavailable choices. Valid ticks stay selected. For
+example, replacing Gift of Intelligence with Gift of Dexterity clears a pending
+Elegance tick; Elegance becomes disabled with its conflict explained on hover.
 Affected attributes appear as a compact current/result line, for example
 **Dexterity: 2 → 3 (+1)**. Gains are green and losses red. Values include the
 draft's race, saved traits and current ticks; single-pick replacement removes
