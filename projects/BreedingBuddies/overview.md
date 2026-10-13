@@ -22,6 +22,14 @@ until the server restarts.
 
 ### Ownership and taming
 
+Each owner slot belongs to a character, with its account retained for routing.
+Another character on the same account has no care, roster, mount, rename, sharing
+or removal rights until explicitly granted its own slot. Tame/share/menu actions
+require a current session matching that account. Missing identity, stale sessions
+and held animal records refuse actions; staff permission retains its existing
+inspection/interaction privileges with a ready session, without a riding bypass.
+
+
 1. Rename the taming item in an anvil. The plugin stores the rename text on the
    anvil result; taming needs both that stored text and a display name.
 2. Right-click an unowned farm animal with it. Animals that vanilla can tame,
@@ -43,13 +51,14 @@ recalculated from health, speed and jump when tamed (see [Mounts](#mounts)).
    item to the animal and, for a named animal, sets the lore
    `This token is linked to <name> the <type>.`
 2. Then either the owner right-clicks another player with the linked item, or
-   whoever holds the linked item right-clicks the air or a block. That player is
-   added as an owner and one item is used.
+   whoever holds the linked item right-clicks the air or a block. That player's
+   selected character is added as an owner and one item is used. The receiving
+   player must have a ready current character.
 
-A linked item works for any holder; the player using it does not need to be an
-owner. All owners have the same rights. An owner leaves by opening the animal's
-menu and clicking **Remove ownership**. When the last owner leaves, the animal
-becomes `UNOWNED` and anyone can tame it again; its genetics are kept and its
+A linked item works for any holder with a ready character; the player using it
+does not need to be an owner. Held legacy slots block bearer-token acquisitions. All owners have the same rights. An owner leaves by opening the animal's
+menu and clicking **Remove ownership**. When the last resolved owner leaves and no held slot remains, the animal
+becomes `UNOWNED` and anyone with a ready character can tame it again; its genetics are kept and its
 friendship restarts at 0.
 
 ### Protection
@@ -206,7 +215,9 @@ daily change.
 
 The menus open for owners, unowned tracked animals and holders of
 `breedingbuddies.use`; the mount menu also opens for untracked mounts. Both use
-the `inventoryName` title.
+the `inventoryName` title. Each menu captures the opening session and refuses
+removal after switching. Outgoing session cleanup closes its captured menu and
+dismounts the outgoing player even when that session is already noncurrent.
 
 ### Anvil renaming
 
@@ -226,7 +237,8 @@ the type's `mountStats` in `bundles.yaml`, then `defaultMountStats` in
 - **Breeding:** when the player owns both parents, one tick after the birth
   each of the foal's stats is set to a random value between slightly below the
   weaker parent and slightly above the stronger parent, kept within the range.
-  Parent values above the range maximum are capped first. The foal is tamed in
+  The callback retains the initiating session and rechecks ownership; switching
+  characters cancels it. Parent values above the range maximum are capped first. The foal is tamed in
   vanilla and recorded as unowned.
 
 ### Mount nerfing
@@ -352,28 +364,139 @@ Data is written as JSON beneath `plugins/BreedingBuddies/Data/`:
 
 | Path | Contents |
 | --- | --- |
-| `PlayerData/<player UUID>.json` | `animals`: every animal the player owns or co-owns. |
-| `unownedanimals.json` | `animals`: bred, spawned, released and escaped animals not yet tamed. |
+| `CharacterData/<character UUID>.json` | Explicit account/character `owner` envelope and raw `animals` fanout for each current owner slot. |
+| `character-unowned.json` | Agreed animals without resolved character slots, including held legacy slots. |
+| `PlayerData/<account UUID>.json`, `unownedanimals.json` | Untouched legacy source; never loaded as character files. |
+| `ownership/source.json` | Fixed archive of every original legacy document, including top-level and nested unknown/null fields. |
+| `ownership/legacy-heirs.json` | Fixed reviewed account-to-character/null mapping, written before the migration intent and reused after failure. |
+| `ownership/migration.json` | Versioned canonical agreed animal rows, fixed character slots, held conflicts and original documents. |
+| `ownership/journals/*.json` | Full expected-before/desired-after documents, canonical rows and durable completion for migration, gameplay saves and estate fanout. |
+| `ownership/token-effects/*.json` | Stable operation IDs, captured sessions/refs, exact token bytes, animal before/after and owner journal, with prepared/debit-prepared/done status. |
 | `stablechunks.json` | Array of chunk areas with `daysAbandoned` and `chunks` (`world`, `x`, `z`). |
 
-Animal entries store `uuid`, `name`, `ownersUuids`, `stableNeeded`,
+Animal entries retain `uuid`, `name`, legacy `ownersUuids`, `stableNeeded`,
 `friendshipPoints`, `geneticPoints`, `state`, `fed`, `cared`, `sleptInStable`,
-`spaceNeeded`, `waterNeeded`, `daysOut`, and `lastRewardCollected` and
-`lastUpdated` in epoch milliseconds. A co-owned animal appears in each owner's
-file, and loading merges them into one record.
+`spaceNeeded`, `waterNeeded`, `daysOut`, and millisecond timestamps. The explicit
+`characterOwners` slots grant authority; `heldOwners` record unresolved legacy
+accounts. Legacy `ownersUuids` remain historical metadata. A co-owned animal
+appears in each character file with an identical raw row, and loads into one
+runtime object only after agreement. Normal saves patch recognized fields while
+retaining unknown fields, explicit nulls and held/unloadable rows across repeated
+saves and restarts. Raw per-file envelopes remain with their own copies.
 
-Data loads on enable, before the configuration. The plugin saves every
-10 minutes, after each daily change and on disable. Each save writes a file for
-every owner in memory, online or not. Autosave and `savedata` are skipped while
-a daily change is queued; the save on disable always runs.
+Configuration loads before animal data. Boot recovers or holds incomplete
+fanout before runtime/day updates, then waits for reviewed legacy heirs. The
+plugin saves every 10 minutes, after each daily change and on disable, including
+offline characters. Every fanout plan includes existing recipient and emptied
+former-owner files; it durably writes the intent first and forces each atomically
+replaced file and directory before acknowledging completion. Each output must
+still match its captured before state or the desired after state. A conflicting
+post-plan edit stays held instead of being overwritten. Routine saves use the
+same journal so a crash cannot make the next boot choose an arbitrary copy.
+Version 1 journals bind their kind to their envelope and validate every desired document against captured source bytes and canonical rows before publishing. Unsupported paths/versions, extra or omitted animals, changed unrelated estate state, inconsistent slots and duplicate JSON keys at any nesting depth stay BLOCKED without rewriting their bytes. Held IDs require independent preservation evidence; a changed hold map cannot hide an ordinary source row. Journals freeze full unfinished token-effect snapshots and validate their fixed identity/session/item/animal-before fields. A later reviewed completion can release that animal without invalidating a historical estate receipt. Keep the original fixed effect fields and any captured owner-publication evidence when recording that resolution. Every destination is checked again immediately before its write.
+
+Autosave and `savedata` are skipped while a daily change is queued; disable saves
+run when the ownership store is ready.
+
+### Reviewed migration and estates
+
+Inventory includes every row in `PlayerData` and `unownedanimals.json`. The
+account filename contributes its old effective ownership; ownership arrays are
+compared as sets. Disagreements in effective owners, known state or unknown
+fields hold the complete animal, with every original copy retained. No first
+file, latest file or synthesized union wins. An unreadable inventory file holds
+the migration because completeness cannot be established. Logs name held causes.
+
+Mapping uses only fixed reviewed `Characters.legacyHeir` answers after
+`legacyHeirsReady`; missing/wrong-account heirs stay held. A dead reviewed heir
+still receives its legacy slot. Optional heir and estate bridges load only after
+capability probes. Older providers retain ownership in place rather than assign
+an active character.
+
+The `breedingbuddies-animals` estate participant moves only the deceased
+character's slot. Other owners remain, and an already-owning recipient merges to
+one slot. Physiology, genetics, friendship and reward/care timestamps are retained;
+no animal is copied or respawned. Existing chunk occupancy limits remain global;
+there is no per-account animal-acquisition cap in this plugin.
+
+Before planning a new estate movement, validate all source/recipient slots and
+flush every runtime animal’s buffered physiology through the checked gameplay
+journal; pending/held fanout refuses that flush. Recheck the estate decision after
+flush. This retains unrelated care in shared files when runtime records reload.
+
+Estate intents retain exact decision text, revision, death ID, from/to account
+and character refs, canonical rows and all expected fanout documents. Exact
+`Estates.guardHolds` checks precede each publication and completion. Replaying the
+same revision returns cumulative IDs without another transfer; later frozen or
+waiting revisions retain earlier receipts. Completed receipts are semantically validated before their IDs are counted, including their full captured decision and source/destination snapshots. New revisions can move only untouched still-testator slots; restoring an already-moved animal to the testator while its receipt remains is BLOCKED rather than transferred again.
+A stale partially published plan is BLOCKED for reviewed recovery, never completed
+to an obsolete recipient or restored over newer progress. I/O failures RETRY;
+conflicting state or metadata stays held. Boot/hourly reconciliation reports each
+death/revision independently. Resolve recorded conflicts through the normal
+estate staff retry/waive workflow; do not clear a journal to force a new recipient.
+
+### Offline rollback
+
+Use normal deployment downtime before preview/apply. From the source checkout:
+
+```sh
+python3 tools/animal-ownership-rollback.py /path/to/plugins/BreedingBuddies/Data
+python3 tools/animal-ownership-rollback.py /path/to/plugins/BreedingBuddies/Data --apply --backup /path/to/new-breedingbuddies-recovery
+```
+
+Preview is read-only. Automatic apply requires complete journals, unchanged
+legacy files and exact agreement with the fixed migrated canonical rows. New
+animals, deaths, care updates, ownership grants/removals and estates are reported
+as conflicts and refuse automatic restoration; they require staff reconciliation.
+This avoids resurrecting animals or silently discarding subsequent progress.
+
+A permitted apply refuses an existing/overlapping backup path, copies the entire
+data directory, verifies every file's SHA-256 and forces the recovery image before
+restoring the unchanged account source documents. Character data, unknown fields
+and journals remain available. The old JAR reads account files; reinstalling it
+alone can expose obsolete ownership/progress. Keep the recovery image and review
+any old-version writes before upgrading again. Source/archive contraction is a
+separate later migration.
+
+New tame/co-own acquisitions write token evidence before checked ownership
+publication, then arm the debit before touching the item/entity. A known failure
+before ownership publication leaves the token and entity name intact. Receipt
+failure after a debit, changed captured session/payload, or an unfinished receipt
+on restart holds that animal for staff; no token is automatically replayed or
+refunded. The compatibility naming helper remains separate.
+
+Ownership files and Minecraft inventory/entity saves are sequential, not one
+transaction. A crash after the done receipt but before Minecraft persists the
+body can still retain a token; a crash after debit but before receipt completion
+is explicitly held. Arbitrary-crash exactly-once token/bundle effects are not
+proved. Preserve receipt, player body and store for manual reconciliation rather
+than trusting an old stack or clearing the hold. Existing bundle overflow remains
+as described above.
+
+### Verification
+
+Run Java 21 `tfmc-mvn -o -B clean verify` and
+`python3 -m unittest discover -s tools -p 'test_*.py'` from the source worktree.
+Tests cover same-account characters, stale/wrong-account sessions and menus,
+switching before deferred mount inheritance, resolved/held co-owner rights,
+all legacy copy representations, raw/null preservation through normal saves and
+restart, failure after individual fanout publications and edits to later destinations,
+pre-publication token I/O refusal and post-debit receipt holds, strict estate guards,
+co-owner merges, cumulative replay, completed-receipt/source restoration conflicts, valid-JSON journal tampering, nested duplicate keys and conservative rollback conflicts. The
+existing zero-missed production-line gate remains enabled. Actual older TLibs
+classloader probes prove optional API isolation. A synthetic real Paper fixture
+with unchanged production authority/menu/mount classes proves mounted A-to-B
+isolation, stale menu refusal and resolved co-owner access with a held sibling.
+Actual older TLibs also passed that probe. The controlled entrypoint/provider
+proves those hooks, not full plugin startup or RPCharacters selection/body flow.
 
 ### Operational caveats
 
 - The JSON paths are relative to the server's working directory, not the plugin
   data folder. They match only when the server runs from the directory that
   holds `plugins/`.
-- `loaddata` replaces in-memory records with the saved ones without clearing
-  others, so unsaved changes are lost.
+- `loaddata` rebuilds runtime records from the recovered store; unsaved changes
+  are lost. Held records stay raw and inert.
 - The daily change writes the in-memory `config.yaml` back to disk. Run
   `reload` straight after editing `config.yaml`, or the next change overwrites
   the edit.
