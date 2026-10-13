@@ -4,7 +4,7 @@ Every Thievery lock belongs to a character. Chests, barrels and other containers
 locked doors, armour stands, item frames and lockable furniture record the owning
 character's ID, and only that character, played in a current session, counts as the
 owner. Another character on the same account is a stranger: it cannot open a private
-lock, rotate the lock state, clear clues or merge a chest onto it. Staff with
+lock, rotate the lock state, clear a private lock's clues or merge a chest onto it. Staff with
 `thievery.admin` keep their override.
 
 ## Who owns a lock
@@ -73,9 +73,9 @@ Clue bookkeeping keys a lock's victim as `guild:<incarnation>`, otherwise
 `player:<characterId>`, and a pickpocket's victim by the character they are playing.
 Clue keys written before character locks age out.
 
-Clue clearing on a PUBLIC or unowned container is open to anyone. Any other container
-needs the owning character. On a door, the owning character or a member of its lock
-guild may clear clues.
+Clue clearing on a PUBLIC or unowned container is open to anyone. A PRIVATE container
+needs the owning character, and a GUILD or FACTION container anyone that lock lets in.
+On a door, the owning character or a member of its lock guild may clear clues.
 
 ## Staff commands
 
