@@ -24,7 +24,9 @@ queue, like web creation ([creator.md](creator.md)).
   date), the heir captured at death, the estate's state, each part's recipient,
   the money moved and what each part of the server moved.
 - **Wardrobe and kits** refuse dead and missing characters: the pages say so and
-  the backend answers `403 Character is not alive` to every edit. The face and
+  the backend answers `403 Character is not alive` to every edit. The wardrobe
+  read (`GET /characters/{id}/wardrobe`) and the kit list refuse them too,
+  because the wardrobe read also trims slots to the rank's limit. The face and
   figure pictures still load, for the cards and the memorial.
 
 ## Data
@@ -84,15 +86,19 @@ Times from the plugin are epoch milliseconds; the site returns ISO-8601 UTC.
 - An estate with a lower `revision` than the stored one is ignored. With the
   same revision, it replaces the stored one only when its `updated_at` is not
   older (an estate without `updated_at` cannot replace one that has it). An
-  estate already stored for another character is left alone. A bad estate
-  (unknown status, no death id, no revision) is dropped; the rest of the push
-  still applies.
+  estate already stored for another character is left alone. `updated_at` is
+  compared to the millisecond.
+- Every estate push must carry `status`, `revision` and a death id (its own
+  `death_id` or the character's); without them the estate is dropped and the
+  rest of the push still applies. Send `updated_at` every time too.
+- Negative counts and money read as zero.
 - `estate.death_id` defaults to the character's `death_id`. Profile shows the
   estate of the character's current death; with no `death_id`, its latest one.
 - Recipient kinds `FROZEN`, `WAITING`, `SENDER` and `NONE` show as "Held by
   staff", "Waiting for a guild leader", "Returned to senders" and "Nothing";
   others show their `name`. Counts are summed by label across participants and
-  shown as "297 locks, 1 vehicle", so labels are plural nouns players know.
+  shown as "297 locks, 1 entity", so labels are plural nouns players know.
+  Money is shown only from `money_moved_cents`.
 
 ## Will requests
 
@@ -148,7 +154,8 @@ Both routes use `X-Plugin-Key` and require a realm. Neither defaults to `main`.
 
 `result` is one of `applied`, `stale`, `invalid heir`, `invalid`,
 `character dead`. With `applied`, an optional `will_revision` updates the
-roster row at once under the revision rule; the roster push follows. The
+roster row at once when it is exactly `base_revision + 1` (and not older than
+the stored will); any other value waits for the roster push that follows. The
 answer lists `acked` ids, `already` ids (answered or replaced before; a
 replayed ack lands here and changes nothing) and `refused` entries with reason
 `realm` (the request belongs to another realm), `result` or `unknown`.
