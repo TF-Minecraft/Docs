@@ -78,13 +78,17 @@ exact retry after the profit has been settled does not tax it again.
 Vehicle payments use the selected living character. Construction and
 maintenance capture a character session; handovers capture both participants,
 so switching characters cannot redirect an armed payment. `Cache/vehicles_registry.json`
-keeps PERSONAL records whose `playerUuid` is the payer character UUID; personal
-daily upkeep and vehicle tax charge only that recorded payer, never the
-account's current character. VehicleFramework owner tags still describe
-physical ownership and are not migrated to characters.
+keeps PERSONAL records whose `playerUuid` is the payer character UUID and whose
+`accountUuid` caches that character's account for slot limits; personal daily
+upkeep and vehicle tax charge only that recorded payer, never the account's
+current character. Upkeep covers every vehicle VehicleFramework names a
+character or legacy account as owner of, minus faction vehicles; without a
+readable VehicleFramework it covers the personal rows. [Vehicle owners](vehicle-owners.md)
+covers how owners and rows are kept in step.
 
-On the first startup with VehicleFramework enabled, `identity/vehicle-payers.json`
-records every player-owned vehicle from VehicleFramework's persisted
+On the first vehicle stage (see [Vehicle owners](vehicle-owners.md#startup)),
+`identity/vehicle-payers.json` records every player-owned vehicle from
+VehicleFramework's persisted
 repository, mapping the account to its legacy heir character. Existing registry
 records win, the plan is saved before the registry changes, and it never
 reinterprets later owner-tag changes. Unresolved owners keep a null payer and
@@ -115,6 +119,7 @@ Paths are relative to `plugins/SimpleFactions/`:
 | `deaths/payments/` | Settlement acknowledgments for those claims |
 | `vehicle-payments/` | Vehicle fee, refund and maintenance intents |
 | `identity/vehicle-payers.json` | One-time legacy vehicle payer migration plan |
+| `vehicles/owner-migration.json` | One-time vehicle owner migration plan ([Vehicle owners](vehicle-owners.md#files)) |
 | `Cache/vehicles_registry.json` | Vehicle ownership scopes and personal payer characters |
 | `Cache/vehicle_fees.json` | Outstanding vehicle payment receipts and owner history |
 | `Cache/vehicle_maintenance.json` | Vehicle upkeep and unpaid maintenance state |
