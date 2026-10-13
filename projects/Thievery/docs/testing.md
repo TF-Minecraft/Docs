@@ -42,6 +42,12 @@ UUID; `plays(player, id)` switches it, and its `guilds` field stands in for
 SimpleFactions' `lockGuild`. A JUnit extension starts every test with locks in
 normal mode, no guild source and an empty quarantine list.
 
+The offline rollback tool has Python tests in `tools/test_thievery_rollback.py`, run
+with `python3 -m unittest discover -s tools -p 'test_*.py'` and in CI after the Maven
+build. They build a fixture laid out as the migration writes it, with two journals,
+and cover the dry run, newest-first restores across both passes, changed, missing and
+mismatched files, marker removal, and journals or archives that cannot be trusted.
+
 Hands-up inspection tests exercise consent, independent item copies and live
 refresh, full-view click and drag cancellation, creative inventory events,
 robbery/pickpocket event ordering, range and visibility checks, cancelled opens,

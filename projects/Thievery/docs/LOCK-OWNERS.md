@@ -90,8 +90,10 @@ list is in `plugins/Thievery/migrations/quarantine.json`.
 `/thievery locks setowner <character|uuid|server>` sets the owner of the container
 (both halves of a double chest), locked door, lockable armour stand or item frame, or
 lockable furniture piece you look at within 5 blocks. It keeps the lock state, except
-that an unreadable record becomes PRIVATE, and it keeps the thief cooldowns of an
-unreadable container when they can still be read. A UUID must be a known character
+that an unreadable record becomes PRIVATE and a lock given to `server` always becomes
+PRIVATE, as server placements are; the reply says so. Staff without a character cannot
+enter the world when character bodies are on, so this is how they make a server lock.
+The thief cooldowns of an unreadable container are kept when they can still be read. A UUID must be a known character
 ID, dead characters included. A name must match exactly one living character; names
 need TLibs 2.5.0, and without it use the UUID. A door whose record has lost its key or
 its strength cannot be repaired this way, so the lock is never weakened: break the
@@ -176,14 +178,26 @@ replayed.
 
 ## Rolling back
 
-Stop the server and roll back the whole stage 6a set together:
+Stop the server and roll back the whole stage 6a set together. Thievery's part is the
+offline tool [`tools/thievery_rollback.py`](https://github.com/TF-Minecraft/Thievery/blob/main/tools/thievery_rollback.py)
+in the source checkout. It needs only Python 3 and runs against the plugin folder:
 
-1. For each `journal-NNNN.json`, newest first, restore a file from its archive only
-   if the file's current SHA-256 equals the entry's `newHash`. List changed and
-   missing files and leave them alone.
-2. Delete the journals, `data-version` in `data/`, `door-data/` and `entities/`, and
-   `migrations/quarantine.json`.
-3. Put back the previous jars.
+```sh
+python3 tools/thievery_rollback.py /path/to/plugins/Thievery
+python3 tools/thievery_rollback.py /path/to/plugins/Thievery --apply --report rollback.json
+```
+
+Without `--apply` it is a dry run that writes nothing. It processes every
+`migrations/journal-NNNN.json` newest first and restores a file from that journal's
+archive only if the file's current SHA-256 still equals the journal's `newHash` and
+the archived copy matches `originalHash`. Files changed or deleted since the migration,
+and archive copies that do not match, are listed and left alone. With `--apply` it then
+deletes the journals, `data-version` in `data/`, `door-data/` and `entities/`, and
+`migrations/quarantine.json`, so a later upgrade starts clean; the archives are kept.
+If a journal or archive cannot be read it stops with exit code 2 and writes nothing.
+`--report` saves the per-journal result as JSON.
+
+Then put back the previous jars.
 
 Under the old jars, lock files left unrestored, furniture upgraded since the
 migration and server locks hold values the old code cannot match, so they deny
