@@ -32,6 +32,11 @@ grey and cannot be ticked; their hover text names the conflicting trait or
 explains the missing requirement, playtime gate, point cost or filled pick limit.
 Unticking a choice reopens available alternatives. Longer lists use **Previous
 choices** and **More choices** links only where another page exists.
+Affected attributes appear as a compact current/result line, for example
+**Dexterity: 2 → 3 (+1)**. Gains are green and losses red. Values include the
+draft's race, saved traits and current ticks; single-pick replacement removes
+the old choice's contribution. A removable checked trait's tooltip previews
+unticking it. These previews do not change the character or allocate points.
 Point costs use a separate colour. Attribute choices show the
 point cost beside each rank and exclude ranks that exceed the entire budget.
 **Check points** reports what remains; **Balanced** fills a valid allocation for
