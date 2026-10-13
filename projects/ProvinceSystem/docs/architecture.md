@@ -88,9 +88,9 @@ API base: `process.env.NEXT_PUBLIC_API_URL`.
 
 ### Loading states
 
-[`LoadingSkeleton.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/shared/LoadingSkeleton.tsx) provides reusable content, article, form, list, table, map, model and chart outlines using Profile's muted placeholder blocks. Each loader announces one status message; decorative blocks are hidden from assistive technology. The pulse animation uses `motion-safe` so reduced-motion preferences keep the outlines still.
+[`LoadingSkeleton.tsx`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/shared/LoadingSkeleton.tsx) provides reusable content, article, form, list, table, map, model and chart outlines using Profile's muted placeholder blocks. Each loading view announces one status message; accompanying outlines and preview thumbnails are decorative and hidden from assistive technology. The pulse animation uses `motion-safe` so reduced-motion preferences keep the outlines still.
 
-App Router `loading.tsx` boundaries cover route navigation, with outlines suited to the map, gameplay guide, updates, staff panel and character pages. Client components use the same skeletons while their initial data or previews load. Background refreshes retain the previous results where available. Upload, export, generation and server-action progress continue to show their task-specific feedback.
+App Router `loading.tsx` boundaries cover route navigation, with outlines suited to the map, gameplay guide, updates, staff panel and character pages. Client components use the same skeletons while their initial data or previews load. The live wardrobe keeps its slot frames non-interactive until the saved slots arrive, then shows placeholders while their previews load. Background refreshes retain the previous results where available. Upload, export, generation and server-action progress continue to show their task-specific feedback.
 
 ## Backend API (high level)
 
