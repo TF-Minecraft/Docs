@@ -28,8 +28,9 @@ steps 3 or 4 is logged and the stage stops there, so no listener or authority is
 registered and VehicleFramework refuses every player ownership change until a
 restart. `SimpleFactionsReadyEvent` says nothing about vehicles.
 
-If VehicleFramework never enables, factions run without vehicles and the log
-says so once. If it is older than 2.13, or `ownership-identity` is not
+Vehicle builds start only once the stage has finished in characters mode,
+because a finished vehicle is stamped for its builder. If VehicleFramework never
+enables, factions run without vehicles and the log says so once. If it is older than 2.13, or `ownership-identity` is not
 `characters`, only step 1 and the listeners run: claims are refused for
 non-staff, faction stamps are not written, and upkeep is still charged from the
 personal registry rows.
@@ -91,7 +92,12 @@ handovers, installation transfers and leader stamps) go through VehicleFramework
 fails. A constructed vehicle is stamped for the character that paid its
 registration fee; if VFBuilders recorded a different constructor (or, for older
 stations, the account's heir is someone else) it is stamped `char_none` and
-listed for staff.
+listed for staff. If the stamp cannot be written the vehicle stays unowned, its
+build receipt stays open and it is listed for staff.
+
+A vehicle on the staff list is held: players cannot claim or change it and
+leader stamps leave it alone until staff give it an owner (for example with
+`/vf takeover`), after which it drops off the list.
 
 Gift, berth and pool requests capture both characters when they are offered and
 refuse acceptance from any other character.
@@ -135,7 +141,8 @@ java -cp "plugins/SimpleFactions-<version>.jar:libraries/com/google/code/gson/gs
   net.tfminecraft.simplefactions.vehicles.owners.VehicleOwnerRollback . --apply
 ```
 
-It reads `vehicles/owner-migration.json` and, for each migrated vehicle whose
+It reads `vehicles/owner-migration.json`, finished or interrupted, and for each
+planned vehicle whose
 SQLite row still holds exactly the migration's owner, whitelist and whitelist
 switch, puts the original values back in the `owner` column and the payload's
 `owner`, `whitelisted` and `whitelist` keys, in one transaction. Position,
@@ -143,7 +150,7 @@ health, fuel, cargo and tickets are never touched. Changed and missing vehicles
 are listed and left alone. With `--apply` it also moves the plan aside
 (`owner-migration.json.rolled-back-<time>`) so a later upgrade plans afresh, and
 writes `vehicles/refunds-<time>.json`: every claim, build and handover fee paid
-after the migration and not refunded, with the paying character and account.
+since the plan was made and not refunded, with the paying character and account.
 The `VACUUM INTO` copy is for disaster recovery only.
 
 Under old jars, ownership changes made after the migration are lost and
@@ -159,5 +166,5 @@ Paths are relative to `plugins/SimpleFactions/`:
 | `vehicles/owner-migration.json` | The owner migration plan, its quarantine and its completion |
 | `vehicles/vehicles-6a-premigration.db` | VehicleFramework database before the migration |
 | `vehicles/vehicles_registry-6a-premigration.json` | Payer registry before the migration |
-| `vehicles/quarantine.json` | Constructed vehicles held back for staff |
+| `vehicles/quarantine.json` | Constructed vehicles held for staff |
 | `vehicles/refunds-<time>.json` | Fees to refund after a rollback |
