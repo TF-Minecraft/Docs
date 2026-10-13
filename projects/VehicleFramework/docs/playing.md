@@ -15,8 +15,6 @@ The plugin targets **Minecraft 1.21.10** and **Java 21**. `plugin.yml` requires 
 
 MythicMobs and CoreProtect are optional. MythicMobs is used only when `mythicmob` in `config.yml` names a mob. CoreProtect is used when it is installed, so block changes from vehicle explosions can be logged.
 
-The plugin declares Folia support.
-
 Item paths in the shipped configs use TLibs. `v.` is a vanilla item, `m.` is an MMOItems item, and `ia.` is an ItemsAdder item. Point those paths at items that exist on your server.
 
 ## Files
@@ -37,11 +35,12 @@ Live vehicles are stored in `data/vehicles.db`. They load when a player is near 
 | Command | Who | What it does |
 | --- | --- | --- |
 | `/vf keybinds` | Anyone in a vehicle | Lists the keys for the current state |
-| `/vf findvehicles` | Any player | Lists vehicles you own and where they are |
+| `/vf findvehicles` | Any player | Lists vehicles you own and where they are (in characters mode, the vehicles of the character you are playing) |
 | `/vf spawn <id>` | `vehicleframework.spawn` or `vf.admin` | Spawns that vehicle id at your feet |
 | `/vf ammo` | `vehicleframework.spawn` or `vf.admin` | Gives a stack of every loaded ammunition item |
 | `/vf kill <radius>` | `vehicleframework.spawn` or `vf.admin` | Removes vehicles inside that radius |
-| `/vf takeover` | `vf.admin` | Your next right-click claims that vehicle |
+| `/vf takeover [character]` | `vf.admin` | Your next right-click within 60 seconds gives that vehicle to you, or in characters mode to the named character. See [Vehicle ownership](ownership.md#claims-changes-and-takeovers) |
+| `/vf admin quarantine` | `vf.admin` | Lists vehicles the owner migration held back. See [Vehicle ownership](ownership.md) |
 | `/vf reload` | `vf.admin` | Reloads configs, templates, vehicles, ammunition, and track data |
 | `/vf track ...` | `vf.admin` | Track tools. See [Trains](using-trains.md) |
 
@@ -49,7 +48,7 @@ Live vehicles are stored in `data/vehicles.db`. They load when a player is near 
 
 ## Boarding
 
-Right-click the vehicle with an empty hand to open the seat menu. The menu is 27 slots. One slot opens ownership settings for the owner, and one slot leaves the seat, so keep the seat list short enough to fit.
+Right-click the vehicle with an empty hand to open the seat menu. The menu is 27 slots. One slot opens ownership settings for the owner (and for `vf.admin` on an owned vehicle), and one slot leaves the seat, so keep the seat list short enough to fit.
 
 Seat types:
 
@@ -63,15 +62,17 @@ Seat types:
 | `harness` | Horse, donkey, or mule hitch point. |
 | `towing` | Created by the towing block, not listed under `seats`. |
 
-The first player to use an unowned vehicle becomes the owner. `/vf findvehicles` lists what you own.
+The first player to use an unowned vehicle becomes the owner. On a server with RPCharacters the owner is the character being played, not the account; see [Vehicle ownership](ownership.md). `/vf findvehicles` lists what you own.
 
 From the seat menu, the owner can open ownership settings:
 
 - Turn the whitelist on or off.
-- Add a player by typing their name in chat (`cancel` aborts).
+- Add someone to the whitelist. With characters, this opens a picker of players within 16 blocks or aboard, and a "Type a Name" button when typed names are available. Without characters, type the player's name in chat (`cancel` aborts).
 - Remove someone from the whitelist.
 - Drop ownership.
-- Turn tickets on or off for this vehicle. On a train, tickets follow the locomotive.
+- Turn tickets on or off for this vehicle. On a train, tickets follow the locomotive, and only the locomotive's owner can change them.
+
+Controls the player may not use are hidden, and every click is checked again. A chat prompt (whitelist name, vehicle name or takeover) ends after 60 seconds, and with characters also when the player stops playing the character that started it.
 
 `allow-whitelist` and `whitelisted-by-default` in `config.yml` control whether new vehicles start with a whitelist. When the whitelist is on, other players need to be listed before the seat menu opens.
 
@@ -88,7 +89,7 @@ These paths are in `config.yml`. Change them to items on your server.
 | `destroy-item` | `v.blaze_rod` | Deletes the vehicle |
 | `ticket-item` | `v.paper` | Mints a ticket when tickets are enabled |
 
-A name tag prompts for a new name in chat.
+A name tag prompts for a new name in chat. The prompt ends after 60 seconds.
 
 A fuel item fills the tank. The fuel's `item` path must match the item, and the engine's `fuel` id must match the fuel entry. Refueling is refused outside the engine's `refuel-states`, and while the throttle is not zero, unless that fuel sets `refuel-while-running: true`.
 

@@ -11,6 +11,7 @@ The [user guide](docs/playing.md) is for server owners and people adding vehicle
 ## User guide
 
 - [Playing, commands, and upkeep](docs/playing.md)
+- [Vehicle ownership](docs/ownership.md)
 - [Model bones](docs/models.md)
 - [Vehicle configuration](docs/configuration.md)
 - [Weapons and ammunition](docs/weapons.md)
