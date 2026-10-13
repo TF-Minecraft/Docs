@@ -193,17 +193,25 @@ open station menus before changing `labels` titles or `colors.inventory_title`.
   rewritten.
 - **Heir backfill (once per server).** Stations saved before characters were
   recorded go to their account's reviewed heir, as locks and vehicles did in stage
-  6a. On a start-up where TLibs reports reviewed heirs ready, Research plans every
-  station with no recorded character to its account's legacy heir and writes the
-  plan to `plugins/Research/data/backfill-character-v1/plan.json` before changing
-  anything. Each station it fills has its original file copied to `backup/` in that
-  folder (never overwritten) and is saved atomically. `done.json` then records how
-  many stations were filled and which had no heir; once it exists, later starts do
-  nothing. If heirs are not ready, or a station cannot be backed up or saved, no
-  `done.json` is written and the backfill runs again at the next start, reusing the
-  same plan. Stations whose account has no heir are logged for staff and stay
-  unassigned: the first ready character on their owner account claims them when it
-  opens them. Stations the backfill filled belong to the heir only.
+  6a. On a start-up where TLibs reports reviewed heirs ready, Research inventories
+  the persisted station files independently of recipe and world loading. Valid
+  ownership metadata with no recorded character goes to its account's legacy heir,
+  including stations skipped for an unknown input, output or world. The plan at
+  `plugins/Research/data/backfill-character-v1/plan.json` records each station's
+  original account and fixed heir before any change. An heir on another account
+  is refused. The original station file is backed up durably to `backup/` in that
+  folder (never overwritten); only the ownership field is then written atomically,
+  preserving recipe, progress and extension fields. Loaded stations receive the
+  same ownership change.
+  `done.json` records the filled count, stations whose account had no heir, and
+  invalid, missing or changed station files skipped for staff review. These lists
+  are also logged. Once the marker exists, later starts do nothing. If heirs are
+  not ready, or a planned station cannot be read, backed up or saved, no marker is
+  written and the next start reuses the same plan. Replay checks the file's location
+  and original account and leaves a station claimed by another character alone;
+  incomplete or unreadable plans are refused. Stations whose account has no heir
+  stay unassigned: the first ready character on their owner account claims them
+  when it opens them. Stations the backfill filled belong to the heir only.
 
 Back up the complete `plugins/Research/` directory before renaming identifiers
 or migrating configuration, and stop the server cleanly before copying live
