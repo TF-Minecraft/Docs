@@ -13,6 +13,9 @@ dialog focuses one living character at a time. Its card shows a skin portrait,
 name, race, class, age, guild and when it was last played. Character tabs and
 arrows change the preview; **Play** enters the selected character, and its
 tooltip lists the playtime, pouch and bank, plus the birthday where recorded.
+All living characters stay visible in compact rows of up to three names; characters
+with the same name remain separate selections by ID. Changing the preview does
+not shift the rows or hide other characters.
 **New character** appears beside the character-name tabs. Selecting it shows a
 welcome page with one **Create character** button, which starts creation when
 slots and the switch cooldown allow it; its tooltip shows the slots used.
