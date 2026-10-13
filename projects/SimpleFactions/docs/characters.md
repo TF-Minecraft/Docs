@@ -49,6 +49,46 @@ A guild's immutable `getIncarnationId()` identifies its treasury across renames.
 `Bank.accountId()` exposes the ledger account name for transactional callers.
 Disbanding and recreating a guild with the same name gives it another incarnation.
 
+### Lock guilds
+
+`SimpleFactionsApi.lockGuild(UUID characterId)` returns the live guild that a
+character's GUILD and FACTION locks follow, as an `Optional<Guild>`:
+
+| Character | Answer |
+|---|---|
+| Alive, including revived | `getGuildByMember(characterId)`, the first matching guild. A revived character left every guild at death, so their old guild has no access until they rejoin. |
+| Dead | The guild they belonged to at death, while that incarnation still exists. |
+| Missing, deleted, unknown or on a quarantined account | Empty. |
+
+The answer is empty until `SimpleFactionsApi.ready()`; treat that as
+unavailable rather than guildless. Compare guilds by incarnation. A disbanded
+guild recreated under the same name does not inherit access, and a guild keeps
+its incarnation when it changes realm.
+
+Each death journal records `lockGuildIncarnation` when the death is captured,
+including deaths first found by the startup reconcile. It is the first guild
+`getGuildByMember` would have answered at that moment. A member moved into a
+civil war's rebel main guild records the guild untangle would return them to,
+resolved at death:
+
+| Rebel main guild member | Recorded guild |
+|---|---|
+| Moved, origin guild still in the host or among the rebel guilds | The origin guild |
+| Moved, origin guild gone | The host's main guild |
+| Not moved (joined during the war or was already a member) | The rebel main guild, which keeps its incarnation when the host absorbs it |
+
+The wanted leader is recorded like any moved member, even though untangle
+returns a living wanted leader to the main guild after an attacker victory. An
+origin guild disbanded after the death leaves the answer empty.
+
+SimpleFactions keeps the dead characters' guilds in memory. It builds that
+index at startup, after the death reconcile and before it reports ready, from
+each character's most recent journal. Two journals at the same moment give no
+answer. Journals written before the field existed use the first guild listing
+the character in their rights snapshots, without the civil-war mapping. Each
+new death updates the index, and a death outside any guild removes the
+character's entry.
+
 ## Public map data
 
 The nation export uses an explicit public projection. Leader display fields,
