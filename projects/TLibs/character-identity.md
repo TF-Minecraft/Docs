@@ -44,10 +44,14 @@ caller.
 | `deathId(UUID characterId)` | Most recent saved death ID, including after revival; empty when unknown. |
 | `characters(UUID ownerId)` | Every character on the account, as an immutable copy. Empty means the records could not be read; an empty list means the account has none. |
 | `lastPlayed(UUID ownerId)` | The character the account played most recently, dead or alive. |
+| `findByName(String name)` | Living characters whose real name equals `name`, ignoring case, as an immutable list. Masks and aliases never match. Several characters can share a name, so callers that need one character must handle more than one match. |
 | `displayName(Player)` | The name other players see now, including masks and aliases. |
 
-Without a provider, lookups return empty, `isCurrent` returns false and
-`displayName` returns the account name. That fallback is acceptable for display and
+`findByName` was added in TLibs 2.5.0. The interface has an empty default, so a
+provider built against an older TLibs finds nobody.
+
+Without a provider, lookups return empty, `findByName` returns an empty list,
+`isCurrent` returns false and `displayName` returns the account name. That fallback is acceptable for display and
 gameplay checks. Ownership and money must wait for `available()`, and must never
 treat an empty `characters` result as an account with no characters.
 
