@@ -33,7 +33,9 @@ build before deployment.
 ## Configuration and integration
 
 The [plugin manifest](https://github.com/TF-Minecraft/VFBuilders/blob/main/src/main/resources/plugin.yml)
-requires TLibs and VehicleFramework. The
+requires TLibs and VehicleFramework. VFBuilders is built against TLibs 2.4.1
+for its character session API. That API is main-thread only, so the manifest
+does not declare Folia support. The
 [entrypoint](https://github.com/TF-Minecraft/VFBuilders/blob/main/src/main/java/net/tfminecraft/vfbuilders/VFBuilders.java)
 loads `config.yml`, `stations.yml`, `categories.yml` and files under
 `plugins/VFBuilders/blueprints/`, then starts the station manager. It creates a
@@ -46,6 +48,45 @@ blueprints before players can begin construction.
 
 `/vfbuilders reload` reloads configuration and rebinds stations. It requires
 `vfbuilders.reload`, granted to operators by default.
+
+## Construction credit
+
+Each build records two identities when the player left-clicks the building
+site:
+
+- `constructorUuid` is the player's **account**.
+- `constructorCharacterId` is the character in the player's current session
+  (`Characters.currentSession(player)` filtered by `Characters.isCurrent`).
+
+A player without a current character session can still build. The character
+is then null. If the installed TLibs lacks the session API, VFBuilders logs one
+warning on the first build and records no character from then on.
+
+Projects in progress are saved in `plugins/VFBuilders/data/stations.json` with
+both fields. Saves made before the character was recorded load with a null
+character. VFBuilders does not look up heirs. SimpleFactions treats a null
+character as "resolve the account's heir, or quarantine".
+
+### API for other plugins
+
+[`BeginVehicleConstructionEvent`](https://github.com/TF-Minecraft/VFBuilders/blob/main/src/main/java/net/tfminecraft/vfbuilders/events/BeginVehicleConstructionEvent.java),
+[`VehicleConstructEvent`](https://github.com/TF-Minecraft/VFBuilders/blob/main/src/main/java/net/tfminecraft/vfbuilders/events/VehicleConstructEvent.java)
+and
+[`VehicleConstructionCancelEvent`](https://github.com/TF-Minecraft/VFBuilders/blob/main/src/main/java/net/tfminecraft/vfbuilders/events/VehicleConstructionCancelEvent.java)
+expose `UUID getConstructorCharacterId()`. The construct and cancel events
+also expose the account as `getConstructorUuid()`. The begin event carries the
+`Player`.
+
+[`ConstructionFreeze`](https://github.com/TF-Minecraft/VFBuilders/blob/main/src/main/java/net/tfminecraft/vfbuilders/api/ConstructionFreeze.java)
+providers are registered with Bukkit's `ServicesManager`. Each second, every
+station still counting down calls
+`freezeReason(UUID account, UUID character)` on each provider. The default
+implementation asks `freezeReason(UUID account)`, so account-only providers
+keep working. Override the two-argument form to freeze by character.
+
+Plugins that must also run against older VFBuilders jars should probe these
+methods by reflection before calling them, for example
+`VehicleConstructEvent.class.getMethod("getConstructorCharacterId")`.
 
 ## Validation
 
