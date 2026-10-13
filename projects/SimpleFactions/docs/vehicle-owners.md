@@ -44,9 +44,16 @@ the original owner, whitelist and ticket fields and the decided new values:
 | Vehicle | New owner |
 | --- | --- |
 | Pool or installation row | The paying faction's leader character, else `char_none` |
-| Personal row | The row's character, when the old name still belongs to that account (`player_<name>` resolves through DenarEconomy and Bukkit returns the same name) and the account plays that character |
+| Personal row | The row's character, when the old name still belongs to that account and the account plays that character |
 | No row | The reviewed heir of the account the name round-trips to |
 | `none`, `char_*` | Unchanged |
+
+An old name belongs to an account when DenarEconomy resolves `player_<name>` to it
+and the name is still that account's latest name: the name Bukkit knows for the
+account, or, when the server's user cache has forgotten it, the name DenarEconomy
+remembered last for it in `plugins/DenarEconomy/Data/player-names.json`. That
+index does not expire, so an old user cache does not quarantine vehicles, while
+a name the account has since replaced still fails.
 
 Anything else is quarantined: it keeps its old `player_` value, which nobody
 matches, and is listed by `/vf admin quarantine`. Whitelist entries move to the
@@ -134,12 +141,19 @@ lookup error refuses the claim.
 
 Roll back the whole stage 6a set together with the server stopped. For
 vehicles, run the rollback tool from the server folder, first without `--apply`
-to see what it would do:
+to see what it would do. It needs Gson 2.10 or newer and sqlite-jdbc on the
+classpath; a server's `libraries/` folder can hold several Gson versions
+(Main's has 2.8.0, which is too old), so pick the newest of each:
 
 ```sh
-java -cp "plugins/SimpleFactions-<version>.jar:libraries/com/google/code/gson/gson/<version>/gson-<version>.jar:libraries/org/xerial/sqlite-jdbc/<version>/sqlite-jdbc-<version>.jar" \
-  net.tfminecraft.simplefactions.vehicles.owners.VehicleOwnerRollback . --apply
+GSON=$(ls libraries/com/google/code/gson/gson/*/gson-*.jar | sort -V | tail -n 1)
+SQLITE=$(ls libraries/org/xerial/sqlite-jdbc/*/sqlite-jdbc-*.jar | sort -V | tail -n 1)
+java -cp "plugins/SimpleFactions-<version>.jar:$GSON:$SQLITE" \
+  net.tfminecraft.simplefactions.vehicles.owners.VehicleOwnerRollback .
 ```
+
+Add `--apply` once the dry run looks right. With an older Gson or no sqlite-jdbc
+the tool stops before reading anything and names the jar it needs.
 
 It reads `vehicles/owner-migration.json`, finished or interrupted, and for each
 planned vehicle whose
