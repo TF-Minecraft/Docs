@@ -39,7 +39,7 @@ Live vehicles are stored in `data/vehicles.db`. They load when a player is near 
 | `/vf spawn <id>` | `vehicleframework.spawn` or `vf.admin` | Spawns that vehicle id at your feet |
 | `/vf ammo` | `vehicleframework.spawn` or `vf.admin` | Gives a stack of every loaded ammunition item |
 | `/vf kill <radius>` | `vehicleframework.spawn` or `vf.admin` | Removes vehicles inside that radius |
-| `/vf takeover [character]` | `vf.admin` | Your next right-click within 60 seconds gives that vehicle to you, or to the named living character in characters mode |
+| `/vf takeover [character]` | `vf.admin` | Your next right-click within 60 seconds gives that vehicle to you, or in characters mode to the named character. See [Vehicle ownership](ownership.md#claims-changes-and-takeovers) |
 | `/vf admin quarantine` | `vf.admin` | Lists vehicles the owner migration held back. See [Vehicle ownership](ownership.md) |
 | `/vf reload` | `vf.admin` | Reloads configs, templates, vehicles, ammunition, and track data |
 | `/vf track ...` | `vf.admin` | Track tools. See [Trains](using-trains.md) |

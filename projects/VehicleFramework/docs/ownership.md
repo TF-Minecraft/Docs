@@ -40,7 +40,14 @@ Characters mode clears the whitelist and turns it off when a vehicle is claimed,
 
 Every change saves the vehicle at once. If the save fails, the vehicle keeps its previous values and the player is told nothing changed.
 
-`/vf takeover` gives the next vehicle you right-click to your current character; `/vf takeover <name>` gives it to the single living character with that real name. Taking over an unowned vehicle counts as a claim; taking over an owned one is a takeover. Both fire the ownership events, and the click is checked again for `vf.admin` and an unchanged character session.
+`/vf takeover` gives the next vehicle you right-click to your current character. In characters mode you can name someone else:
+
+- `/vf takeover <name>` gives it to the single living character with that real name. Everything after `takeover` is the name, so names with spaces work (`/vf takeover Kira of the Vale`). It needs the typed-name lookup from TLibs 2.5.0; no match and several matches get the same refusal.
+- `/vf takeover id:<uuid>` (or just the UUID) gives it to that character, living or dead, and works without the typed-name lookup. Use it when a name is ambiguous.
+
+Tab completion offers `id:` and the real names of characters being played online. A blank, malformed or unknown target is refused with a message; in `names` mode a takeover is always for yourself.
+
+Taking over an unowned vehicle counts as a claim; taking over an owned one is a takeover. Both fire the ownership events, and the click is checked again for `vf.admin` and an unchanged character session.
 
 While SimpleFactions is installed (even if it failed to enable), a player without `vf.admin` can change ownership only once SimpleFactions has registered its `VehicleOwnershipAuthority`.
 
