@@ -50,6 +50,8 @@ Live vehicles are stored in `data/vehicles.db`. They load when a player is near 
 
 Right-click the vehicle with an empty hand to open the seat menu. The menu is 27 slots. One slot opens ownership settings for the owner (and for `vf.admin` on an owned vehicle), and one slot leaves the seat, so keep the seat list short enough to fit.
 
+Wardrobe skin changes refresh the Minecraft client. VehicleFramework reattaches your current seat on the next server tick so the vehicle stays visible and you remain aboard. Recovery is skipped if you have left the seat, disconnected, died, changed worlds, or the vehicle has been removed.
+
 Seat types:
 
 | Type | Who uses it |
