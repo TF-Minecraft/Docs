@@ -182,3 +182,4 @@ Paths are relative to `plugins/SimpleFactions/`:
 | `vehicles/vehicles_registry-6a-premigration.json` | Payer registry before the migration |
 | `vehicles/quarantine.json` | Constructed vehicles held for staff |
 | `vehicles/refunds-<time>.json` | Fees to refund after a rollback |
+| `vehicles/estates/<deathId>.json` | Vehicle moves for one estate; see [Estates](estates.md#vehicles) |

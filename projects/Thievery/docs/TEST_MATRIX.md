@@ -130,6 +130,13 @@ ItemsAdder must not grant inspection access.
 | L20 | A double chest whose halves have two owners cannot be rotated or picked and appears in `/thievery locks quarantine` until `/thievery locks setowner` fixes it |
 | L21 | Restart with RPCharacters failing to load: locks stay frozen ("Locks are starting up"), owned chests stay shut, key holders open doors, nothing in `plugins/Thievery/data` changes; the next good restart migrates |
 | L22 | First boot on an old store: `Lock migration:` log line with counts and duration, `migrations/backup/locks-0001.zip`, a completed `journal-0001.json`, `data-version` in each store; a second boot changes nothing |
+| L23 | Decided estate, restart: the dead owner's PRIVATE and PUBLIC chests, displays and doors go to the property recipient, GUILD and FACTION ones to the death guild's leader, states and thief cooldowns kept; `Estate <deathId> … locks DONE` in the log and `/estate show` lists the moved paths |
+| L24 | A double chest of the dead owner's moves as a whole; a door's owner passes but the old keys still open it |
+| L25 | Waiting guild part: GUILD chests stay with the dead owner and keep opening for the death guild; after a leader is chosen, the next restart moves them |
+| L26 | Furniture of a dead owner with a decided estate passes to the recipient on the first interaction after the decision |
+| L27 | Force the estate planner to fail (for example by stopping RPCharacters' estate service): the log shows the planner warning, locks still reach normal operation, the estate shows RETRY |
+| L28 | `/thievery locks setowner <dead or missing character's UUID>` is refused |
+| L29 | `tools/thievery_rollback.py --estate-only --apply` with the server stopped restores only the estate moves and keeps the journals and `data-version` |
 
 ## Robbery
 

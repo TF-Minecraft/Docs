@@ -10,7 +10,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 Research builds with Java **21** against
 `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT`. Install the pinned TLibs
-`2.3.0` and RPCharacters `2.16.0` release artifacts with the shared dependency
+`2.6.0` and RPCharacters `2.16.0` release artifacts with the shared dependency
 installer. The build also prepares checksum-verified MMOCore `1.13.1-SNAPSHOT` and
 MythicLib `1.7.1-SNAPSHOT` inputs from the private ServerAssets repository.
 

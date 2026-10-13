@@ -14,6 +14,7 @@ This section is the product and technical reference for **ProvinceSystem**. Tech
    - [cosmetics/skins.md](cosmetics/skins.md) - skins upload and review
    - [cosmetics/drinks.md](cosmetics/drinks.md) - BreweryX drink builder
    - [characters/creator.md](characters/creator.md) - web character creator
+   - [characters/wills-estates.md](characters/wills-estates.md) - wills on Profile, memorials and estates
    - [identity/tfmcweb.md](identity/tfmcweb.md) - Discord link, tokens, gate
    - [integrations/patreon.md](integrations/patreon.md) - Patreon supporter linking, entitlement and operations
    - [identity/auth-security.md](identity/auth-security.md) - Discord sign-in, feature codes and staff access

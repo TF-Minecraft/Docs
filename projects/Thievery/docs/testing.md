@@ -37,6 +37,13 @@ quarantine retry, stragglers, an exception mid-pass, every replay case and
 `data-version`), the guard freeze in each data manager and handler, fail-closed
 parsing, access for characters, alts, dead owners and server locks, double chests,
 block hoppers and hopper minecarts, target keys and the staff lock commands.
+Estate tests (`EstateLockPassTest`, `TLibsLockEstatesTest`) cover every record and
+lock state mapping, waiting and frozen parts, double chests, files the migration
+claims in the same pass, a planner failure that still reaches normal operation, the
+report from the state after the pass, the runtime answer for later revisions, a
+crashed estate pass replayed while the estate still applies and after it no longer
+does, and the old-jar journal case. `LockStartupTest` runs one estate end to end
+through the real TLibs facade with mocked services.
 `FactionFixture` gives each mocked player a character whose ID is their account
 UUID; `plays(player, id)` switches it, and its `guilds` field stands in for
 SimpleFactions' `lockGuild`. A JUnit extension starts every test with locks in
@@ -47,6 +54,8 @@ with `python3 -m unittest discover -s tools -p 'test_*.py'` and in CI after the 
 build. They build a fixture laid out as the migration writes it, with two journals,
 and cover the dry run, newest-first restores across both passes, changed, missing and
 mismatched files, marker removal, and journals or archives that cannot be trusted.
+Estate fixtures add `--estate-only` (estate entries only, markers kept), entries
+skipped at replay, and estate entries an older jar rewrote without their kind.
 
 Hands-up inspection tests exercise consent, independent item copies and live
 refresh, full-view click and drag cancellation, creative inventory events,

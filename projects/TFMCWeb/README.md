@@ -28,6 +28,18 @@ patreon:
 
 LuckPerms storage is shared, so set `apply-ranks: true` on exactly one server; leave it false elsewhere. See the [Patreon integration guide](../ProvinceSystem/docs/integrations/patreon.md) for the writer setup and operations.
 
+## Realm on gateway requests
+
+`ProvinceSystemGateway` adds this server's `realm.id` to allow-listed plugin routes. A request that already names `realm_id` (in the query, or at the top level of the JSON body) keeps its own value, so a plugin that sends its realm is never overridden. The gateway does not check that value, so callers must send `TFMCWeb.getRealmId()`, never a literal realm.
+
+| Method | Route | `realm_id` goes in |
+|---|---|---|
+| GET | `/characters/plugin/pending`, `/skins/plugin/approved`, `/drinks/plugin/pending-apply`, `/characters/plugin/lore-items/pending`, `/characters/plugin/wills/pending` | query |
+| PUT | `/characters/plugin/roster`, `/characters/plugin/rpc-player-meta` | body |
+| POST | `/wars/declare-codes/validate`, `/wars/declare-codes/redeem`, `/characters/plugin/wills/applied` | body |
+
+RPCharacters sends `realm_id=TFMCWeb.getRealmId()` itself on the will pull and ack; the allow-list is a second guard. Other routes pass through unchanged.
+
 ## Build and dependencies
 
 Run Maven with **JDK 21** from the source checkout. The POM sets `maven.compiler.release=21` and resolves `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT` with `provided` scope from the PaperMC Maven repository. The plugin descriptor declares `api-version: 1.21.10`.

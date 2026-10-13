@@ -100,8 +100,9 @@ still be the most recently played. Revival retains the previous death record; a
 subsequent death generates a new ID.
 
 The RPCharacters `CharacterPermakillEvent` remains cancellable and fires before
-mutation. The shared `CharacterDeathEvent` fires only after an atomic character
-file save records `DEAD`, the inactive flag and death metadata. Save failure
+mutation. The shared `CharacterDeathEvent` fires only after a durable (fsynced)
+character file save records `DEAD`, the inactive flag and death metadata, and
+after the death's [estate record](estates-and-wills.md) is written. Save failure
 restores the in-memory status, disconnects the player and emits no shared death
 event. The event includes the killer's account and current character when known.
 
@@ -114,7 +115,9 @@ disconnects the player, and the death's own follow-up, such as the roster push
 and the caller's result, still runs.
 
 `Characters.deathId(characterId)` returns the latest saved death ID, including
-for offline characters. Revival retains it; another death replaces it. A legacy
+for offline characters. Revival retains it; another death replaces it. A revive
+saves the character as alive durably, then fires the shared
+`CharacterRevivedEvent` with the previous death ID; a failed save fires nothing. A legacy
 DEAD record without a death ID uses a deterministic UUID derived from
 `rpcharacters:legacy-death:<characterId>`, stable across restarts without
 rewriting the original record. Quarantined or unknown records return empty.

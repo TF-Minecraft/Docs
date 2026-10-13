@@ -85,6 +85,10 @@ saved ID across revival and assigns a new one for the next death. Older deceased
 records without a saved ID use a deterministic legacy key based on their character
 UUID; a later saved death supersedes that key.
 
+`CharacterRevivedEvent(character, previousDeathId)` fires after a dead character has
+been saved as alive again, and not if that save fails. It was added in TLibs 2.6.0
+with the [estate API](estates.md); delivery is not durable either.
+
 None of these events can be cancelled.
 
 ## Provider obligations
