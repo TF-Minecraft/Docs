@@ -37,7 +37,10 @@ for rehearsals (`0.05` is three minutes).
 Deaths from before death records were kept have a stable death ID derived from the character ID and no
 death time. The reconcile at startup, and every hour after, gives every dead character's latest death
 a record if it has none; such legacy deaths fall due one wait after the reconcile that found them.
-The reconcile also reopens a cancelled record whose character is still dead with that death.
+The reconcile also reopens a cancelled record whose character is still dead with that death, and
+closes the estate of a character that is readable and no longer dead with that death (a revive whose
+estate update failed after the alive save): an open or held estate is cancelled, a decided one is
+marked revived so no participant acts for a living character.
 
 ## The decision
 
@@ -60,8 +63,9 @@ dead character. Property means private and public locks, doors, personal vehicle
 stations and the stored body.
 
 Some answers make the decision wait rather than guess, and it is tried again every minute: the dead
-character's or the heir's account cannot be read, SimpleFactions has not answered, or it cannot say
-whether the realm still exists. RPCharacters and SimpleFactions start in a cycle, so decisions due at
+character's or the heir's account cannot be read, SimpleFactions has not answered (or gave no answer
+at all), or it cannot say whether the realm still exists. An estate whose lookup throws is logged and
+tried again; it never stops the other estates from being decided. RPCharacters and SimpleFactions start in a cycle, so decisions due at
 startup usually wait for SimpleFactions; they run again when SimpleFactions enables and when it fires
 its ready event. If SimpleFactions started late, Thievery has already made its lock pass, and the
 locks move at the next restart. An estate that has waited six hours is logged and shows under
@@ -76,7 +80,8 @@ each participant's answer with the revision it answered.
 ## Participants
 
 Participants register with TLibs. RPCharacters calls each one right after the decision, then every hour
-for any that answered "retry" or has not answered the latest revision. A participant that is "blocked"
+for any that answered "retry" or has not answered the latest revision. Answers count only for the
+estate's current revision; an answer for any other revision is logged and ignored. A participant that is "blocked"
 is listed for staff and not called again until staff clear it. A participant that moves things at
 restart (Thievery) answers "at restart" until its startup pass reports. Each answer is stored with its
 counts and the IDs of the records it moved, and the owner's website roster is updated.
@@ -119,6 +124,8 @@ logged with stack hashes in `collections.log`, which is how staff restore a lost
 If the recipient dies before collecting, the collection follows the recipient's own estate: it is
 re-addressed to that estate's property recipient when it is decided. While that estate's property is
 waiting or frozen, the collection is parked for staff, who take it with `/estate collect <deathId>`.
+Staff can also take a collection whose recipient is no longer alive and whose own estate will never
+re-address it (reverted, or no estate at all).
 
 ## Revival
 
@@ -145,7 +152,9 @@ account, including the player's own. Only the testator's account can change the 
 the testator is alive. Nobody is told they were named.
 
 The will lives on the character file as `will-heir`, `will-revision`, `will-updated-at-ms` and
-`will-last-request`; each change bumps the revision and is saved durably. An older RPCharacters drops
+`will-last-request`; each change bumps the revision and is saved durably. An in-game change keeps
+the last website request ID, so a website request whose acknowledgement was lost still replays as
+`applied` after a later in-game change. An older RPCharacters drops
 these keys on its next save, so back up `characterdata/` before rolling back.
 
 In game, `/will` or the **Will** button on the Character Info screen opens a dialog for the character
@@ -163,31 +172,34 @@ game since the page was opened), `invalid heir`, `invalid` (unknown character or
 `character dead`. A request whose ID is already the character's `will-last-request` is answered
 `applied` again, so a lost acknowledgement is safe. A request for an account that cannot be read, or
 whose owner is still joining, waits for a later pull. Without a realm from TFMCWeb nothing is pulled;
-a failed pull or acknowledgement backs off up to ten minutes.
+a failed pull or acknowledgement backs off up to ten minutes. A request that throws while it is
+applied stays pending and does not stop the rest of the batch.
 
 ## Website roster
 
 Each roster row carries `died_at`, `death_id`, `will_heir_id`, `will_heir_name`, `will_revision` and,
 when the latest death has a record, an `estate` object: state, due and decided times, revision, the
 record's last write time, the heir's name, the recipient of each part, the money moved (from
-DenarEconomy's answer) and each participant's answer and counts. RPCharacters pushes the owner's
+DenarEconomy's answer) and each participant's answer and counts (DenarEconomy's own counts are not
+sent; the memorial shows money only as the amount moved). RPCharacters pushes the owner's
 roster on death, decision, revision, revive, collection and every participant answer that changes the
 record, so the memorial updates while the owner is offline.
 
 ## Staff commands
 
 All staff commands need `rpchar.estate.admin` (operators by default) and are written to `audit.log`.
-An estate can be named by death ID, by character ID (its latest death) or by the dead character's name.
+An estate can be named by death ID, by character ID (its latest death) or by the dead character's name,
+including names of several words before further arguments.
 
 | Command | Effect |
 |---|---|
 | `/estate list [open\|held\|waiting\|frozen\|retry\|postponed\|empty]` | One line per estate: state, due time, recipients and each participant's answer. Estates that hold nothing appear only under `empty`. |
-| `/estate show <estate>` | One estate in full: will, cause, killer, postponement, recipients, every participant's answer with counts and moved IDs ("awaiting restart" for Thievery), the body collection, and before the decision what each participant says the character holds. |
+| `/estate show <estate>` | One estate in full: will, cause, killer, postponement, recipients, every participant's answer with counts and moved IDs ("awaiting restart" for Thievery), the body collection, and what each participant says the character still holds (such as letters held back). |
 | `/estate hold <estate>` / `/estate release <estate>` | Stop an open estate's clock, or restart it with the time that was left. |
-| `/estate decide <estate> --no-guild` | Decide a due estate without SimpleFactions' answer, as if the character had no guild. |
+| `/estate decide <estate> --no-guild` | Decide a due estate without SimpleFactions' answer, as if the character had no guild. If the attempt still waits for another reason, the override is withdrawn. |
 | `/estate assign <estate> <money\|property\|guildlocks\|all> <character>` | Give waiting or frozen parts to a living character (by name or ID; money goes to its bank). Makes a new revision and calls every participant again. |
 | `/estate assign <estate> money guild <name\|incarnation>` | Send frozen money to a live guild's treasury. When two guilds share the name, use the incarnation ID. |
-| `/estate collect <estate>` | Take a collection parked for staff into your own inventory, one batch at a time. |
+| `/estate collect <estate>` | Take a collection parked for staff, or one whose recipient can never collect it, into your own inventory, one batch at a time. |
 | `/estate retry <estate> <participant>` | Clear a blocked answer once the cause is fixed, and call the participant again. |
 | `/estate waive <estate> <participant> <note>` | Record a blocked participant as handled by hand, so it no longer holds back a revive. |
 | `/estate revert <estate>` | Stop every further movement for a decided estate. Nothing is moved back. |
