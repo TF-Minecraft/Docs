@@ -35,8 +35,8 @@ tfminecraft.net/
   /map/[mapId]   Interactive maps
   /profile       Characters, skin and drink wardrobes, custom items, linked accounts
                  ?tab=skins&skin=new upload, &skin=<id> status (drinks alike)
-                 ?tab=characters&character=<id> sheet
-  /character/*   Character creator, kits, wardrobe (/character redirects to /profile)
+                 ?tab=characters&character=<id> sheet, &view=kits its kits
+  /character/*   Character creator, kit item editor, wardrobe (/character redirects to /profile)
   /admin         Staff player, activity, rail and permission tools
   /map/editor    Staff map title editor (?map= required)
 ```
