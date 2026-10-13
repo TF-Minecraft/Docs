@@ -18,7 +18,8 @@ Names and clues use single-line fields; description uses a multiline field.
 Age uses a slider bounded by the chosen race. Description also includes optional gender. Real-life age attestation
 uses an explicit **Yes** or **No** choice followed by **Next**.
 
-The name screen contains one name field and its preview. Donors can open
+The name screen contains one name field. Players with name-colour access also
+get a preview and can open
 **Edit colours** to choose default, solid, gradient or custom hex colours within
 their existing rank allowance (up to eight stops). Solid colour uses one picker;
 gradient uses two; custom uses one space-separated hex field for longer gradients.
@@ -72,7 +73,9 @@ available, including dependent traits. Newly available or invalidated required
 steps must be confirmed before **Create character** can finish. Final validation
 checks the name, class, birthday, description, clues, stage gates, trait
 restrictions and attribute spending. Slot availability is rechecked before the
-character is added to the roster. The coloured name shows the chosen appearance;
+character is added to the roster. If the last slot is taken while reviewing, the
+wizard keeps the draft open with an inline error; it can be edited or retried
+when a slot is available. The coloured name shows the chosen appearance;
 there is no separate hex-colour row. Back/Create occupy the action row without
 empty spacer buttons.
 
