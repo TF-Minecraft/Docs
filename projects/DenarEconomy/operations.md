@@ -24,10 +24,12 @@ Every money command acts on the character the player is playing now. A player wi
 | `/deco give <player> <amount> [bank\|pouch]` | Console, operators or `denareconomy.give` | Credits the bank (the default) or pouch of the character an online player is playing. |
 | `/deco legacy` | Console, operators or `denareconomy.admin` | Lists pre-ledger money that has not reached a character yet. |
 | `/deco legacy assign <account> <character>` | Console, operators or `denareconomy.admin` | Moves an account's legacy money to one of that account's characters. |
+| `/deco account <character name\|id>` | Console, operators or `denareconomy.admin` | Shows any character's pouch and bank and its last 20 postings, dead or alive. |
+| `/deco move <from account> <to account> <cents> <note>` | Console, operators or `denareconomy.admin` | Moves whole cents between two ledger accounts as a staff correction. |
 
 Money amounts must be positive and use at most two decimal places. `deposit` and `withdraw` first fire the cancellable `PlayerBankPulseEvent`, so another plugin can refuse banking at that moment. Coins that leave the pouch as items (`pay`, `toitem`) go to the mint account, and coins that come back (`topouch`, pickups) come from it. `pay`, `toitem` and PvP pouch drops spawn or hand over every coin in the same tick as the debit, so a shutdown straight afterwards cannot leave money debited but undelivered.
 
-Tab completion only offers `give`, `reload` and `legacy` to senders who can use them.
+Tab completion only offers `give`, `reload`, `legacy`, `account` and `move` to senders who can use them.
 
 ## Crediting a player with `/deco give`
 
@@ -38,6 +40,12 @@ The console always passes the permission check; a player needs operator status o
 `/deco legacy` lists every account whose pre-ledger money is still waiting, with the account UUID, last known name, and pouch and bank amounts. Most accounts move to their reviewed heir automatically (see [the legacy claim](ledger.md#legacy-money)); the list shows those that have no heir yet.
 
 `/deco legacy assign <account uuid> <character uuid>` moves both amounts to the chosen character's pouch and bank. The character must belong to that account. The move is the account's one claim operation, `claim:<account>`, so it cannot run twice: an account with nothing left answers "has no unclaimed legacy money". Each assignment is logged with the sender, account and character.
+
+## Checking and correcting accounts
+
+`/deco account <name|id>` takes a character ID or a name, ignoring case. A name matches living characters and any other character that has a ledger account; when several share it, the command lists them with their IDs and status, and staff repeat it with the ID. It shows the pouch and bank and the last 20 postings, so estate sweeps (`estate:<deathId>`) and staff corrections are visible.
+
+`/deco move <from> <to> <cents> <note>` takes full account IDs, such as `char:<character>:bank` or `guild:<incarnation>`, and a positive whole number of cents. It posts operation `staff:move:<random UUID>` with reason `staff:move <note>`. The `staff:` reason lets it take money from a dead character, for example to hand back what an estate moved after a forced revive. It refuses to take a `guild:` treasury below zero; character, legacy and tax holding accounts cannot go below zero anyway. A refused or unavailable move answers "The move was not applied" with the result and changes nothing. Each applied move is logged with the sender, amount, both accounts, operation ID and note.
 
 ## Coins in the world
 
