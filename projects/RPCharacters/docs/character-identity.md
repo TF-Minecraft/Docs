@@ -3,7 +3,7 @@
 [RPCharacters](../README.md) · [TLibs API](../../TLibs/character-identity.md)
 
 RPCharacters provides TLibs' `CharacterIdentity` service through Bukkit's
-`ServicesManager`. The build pins TLibs 2.4.1; install that release or a compatible
+`ServicesManager`. The build pins TLibs 2.5.0; install that release or a compatible
 newer one before RPCharacters. Consumers use the `Characters` facade rather than
 reading RPCharacters files or waiting a fixed number of ticks after login.
 
@@ -36,7 +36,12 @@ Login also compares loaded character IDs against the directory. An account whose
 records cannot be loaded completely is disconnected before admission or saves.
 
 `CharacterInfo.name` is the real, plain character name. `displayName(player)` uses
-the current mask and temporary alias rules. The playtime field is the existing
+the current mask and temporary alias rules.
+
+`findByName(name)` first overlays every loaded account, then scans the in-memory
+directory, so it reads no files. It returns every `ALIVE` character whose real name
+equals the trimmed `name`, ignoring case. Dead and missing characters, aliases,
+masks and temporary aliases never match, and unavailable accounts are skipped. The playtime field is the existing
 `online-playtime-seconds` counter, with no visibility filtering.
 
 ## Sessions and readiness
@@ -125,7 +130,7 @@ covering the whole account.
 
 Run `mvn clean verify` with Java 21 and pinned dependencies installed. The unit
 suite checks directory corruption and duplicates, skipped stray entries, the
-legacy `lastPlayed` fallback, immutable snapshots, live updates, delayed
+legacy `lastPlayed` fallback, name lookups, immutable snapshots, live updates, delayed
 readiness, reconnects, repeated-character switches, event order, quit and
 shutdown cleanup, cancelled and inactive deaths, distinct death IDs after
 revival, failed saves, and activation failures after a committed death or
