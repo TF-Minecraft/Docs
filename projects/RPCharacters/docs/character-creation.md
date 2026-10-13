@@ -38,12 +38,14 @@ Affected attributes appear as a compact current/result line, for example
 draft's race, saved traits and current ticks; single-pick replacement removes
 the old choice's contribution. A removable checked trait's tooltip previews
 unticking it. These previews do not change the character or allocate points.
-Point costs use a separate colour. Attribute choices show the
-point cost beside each rank and exclude ranks that exceed the entire budget.
-**Check points** reports what remains; **Balanced** fills a valid allocation for
-review. Only **Next** commits the allocation, which must use the whole budget.
-Age and attribute inputs change locally. Clicking a choice updates its marker
-and availability through a guarded callback, replacing the dialog directly.
+Point costs use a separate colour. Attribute allocation uses aligned **− / +**
+controls beside each purchased rank. The remaining-point counter updates after
+each click; hover shows the upgrade cost or refund. Unaffordable upgrades and
+rank limits are disabled with an explanation. **Reset** clears the allocation;
+**Balanced** fills a valid allocation for review. Only **Next** commits the
+allocation, which must use the whole budget. The age slider changes locally.
+Clicking a choice or attribute control updates the screen through a guarded
+callback, replacing the dialog directly without moving the controls.
 
 **Back** and **Next** occupy a separate navigation row below the form. **Next**
 validates and saves the current step, including dependencies, conflicts and
