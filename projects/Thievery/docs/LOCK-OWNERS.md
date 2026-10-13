@@ -91,7 +91,8 @@ list is in `plugins/Thievery/migrations/quarantine.json`.
 (both halves of a double chest), locked door, lockable armour stand or item frame, or
 lockable furniture piece you look at within 5 blocks. It keeps the lock state, except
 that an unreadable record becomes PRIVATE and a lock given to `server` always becomes
-PRIVATE, as server placements are; the reply says so. Staff without a character cannot
+PRIVATE, as server placements are; the reply says so. A door keeps its key, which
+still opens it after it is given to `server`. Staff without a character cannot
 enter the world when character bodies are on, so this is how they make a server lock.
 The thief cooldowns of an unreadable container are kept when they can still be read. A UUID must be a known character
 ID, dead characters included. A name must match exactly one living character; names
