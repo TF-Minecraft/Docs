@@ -135,7 +135,7 @@ ItemsAdder must not grant inspection access.
 | L25 | Waiting guild part: GUILD chests stay with the dead owner and keep opening for the death guild; after a leader is chosen, the next restart moves them |
 | L26 | Furniture of a dead owner with a decided estate passes to the recipient on the first interaction after the decision |
 | L27 | Force the estate planner to fail (for example by stopping RPCharacters' estate service): the log shows the planner warning, locks still reach normal operation, the estate shows RETRY |
-| L28 | `/thievery locks setowner <dead character's UUID>` is refused |
+| L28 | `/thievery locks setowner <dead or missing character's UUID>` is refused |
 | L29 | `tools/thievery_rollback.py --estate-only --apply` with the server stopped restores only the estate moves and keeps the journals and `data-version` |
 
 ## Robbery

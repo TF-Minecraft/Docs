@@ -104,14 +104,33 @@ move together. A bare owner value of the dead character's that the migration mar
 in the same pass moves at the next restart, and so do the chests beside it.
 
 After the pass, Thievery reports each decided estate to RPCharacters from what is
-left on disk. It answers DONE, with counts per store and every moved file path, only
-when the dead owner holds nothing more in a part that goes to a character. If locks
-remain to be moved it answers that they move at restart, and if the estate planner
-failed it answers RETRY. Between restarts Thievery answers "at restart" whenever an
-estate gains a part going to a character for which the dead owner still held locks,
-so a revive of that estate waits for a restart. The log line
+left on disk. It answers DONE only when the dead owner holds nothing more in a part
+that goes to a character. DONE carries counts (`locks` for containers and displays,
+`doors` for doors) and every moved file path from all journals. If locks remain to
+be moved it answers that they move at restart, and if the estate planner failed it
+answers RETRY. Each estate is reported on its own, so one failed report does not
+hold up the others. The log line
 `Estate <deathId> (revision N): locks DONE, … moved in all, … still with the testator.`
 records each report.
+
+Between restarts Thievery moves nothing. When RPCharacters asks again, for example
+after a waiting part gets a recipient, Thievery answers from that boot's pass: DONE
+if the dead owner held no locks in any part that now goes to a character, otherwise
+"at restart", so a revive of that estate waits for a restart. A decision whose estate
+no longer applies (revived, reverted or a newer revision) gets RETRY. One case is
+not seen until the next boot: a lock of the dead owner's that someone rotated
+between a GUILD or FACTION state and PRIVATE or PUBLIC after the boot counts under its
+old part, so DONE can be reported while that lock still names the dead owner. The
+next boot moves it.
+
+Furniture is not part of these counts. A piece passes on its first interaction after
+the decision, which may be long after DONE, and its move is recorded only in the
+server log (`Estate: furniture lock at <world_x_y_z> passed from <old> to <new>.`).
+To restore furniture by hand, search the log for those lines.
+
+Thievery does not list a character's locks for the will screen or `/estate show`
+before the decision, because counting them needs a scan of every lock file, which
+happens only at startup. Those screens therefore leave locks out.
 
 Estates need TLibs 2.6.0. On an older TLibs Thievery logs a warning, takes no part in
 estates and a dead owner keeps their locks.
@@ -134,8 +153,8 @@ PRIVATE, as server placements are; the reply says so. A door keeps its key, whic
 still opens it after it is given to `server`. Staff without a character cannot
 enter the world when character bodies are on, so this is how they make a server lock.
 The thief cooldowns of an unreadable container are kept when they can still be read. A UUID must be a known living
-character's ID; a dead character is refused, because their locks pass through their
-estate. A name must match exactly one living character; names
+character's ID; a dead or missing character is refused, because nobody can play
+them and a dead character's locks pass through their estate. A name must match exactly one living character; names
 need TLibs 2.5.0, and without it use the UUID. A door whose record has lost its key or
 its strength cannot be repaired this way, so the lock is never weakened: break the
 door in Creative to remove it. Fixed records leave the quarantine list straight away.
