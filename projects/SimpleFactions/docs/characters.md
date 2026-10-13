@@ -105,6 +105,9 @@ See [the character identity API](../../TLibs/README.md) and
 Warbands and battle roster IDs remain Minecraft account UUIDs for live combat.
 Each enrollment also captures its character reference. Rejoining restores only
 that character's former participation; switching characters does not inherit it.
+Persisted memberships, leadership and invitations require that recorded
+character's current session. Reviewed legacy expansion and held-slot recovery
+are described in [warband character authority](warbands.md).
 `BattleStartedEvent.getParticipants()` and `BattleEndedEvent.getParticipants()`
 return the captured character references, including participants who have since
 disconnected. `getParticipantIds()` remains available for account-scoped callers.
