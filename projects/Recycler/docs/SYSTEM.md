@@ -11,7 +11,9 @@ Player-facing recycling station at ItemsAdder furniture `iaf(tfmc:recycling_stat
 3. Click item in player inventory to deposit into the station (one stack max for stackables).
 4. Right side previews scaled outputs; left side shows input at slot 10.
 5. Click confirm (slot 0, `ia.mcicons:icon_confirm`) to recycle.
-6. Close without confirm returns the escrowed item.
+6. Close without confirm queues the owning character's item; free inventory slots receive refunds and full inventory retains the remainder.
+
+The station requires a living current character. See [character returns and recovery](OWNERSHIP.md) for switching, inheritance and held inventory intents.
 
 ## GUI layout (fixed slots)
 
@@ -160,8 +162,8 @@ Matched via `TLibs ItemChecker`. The listed amounts are scaled by `return_rates.
 ## Confirm flow
 
 1. Validate escrow + non-zero yield.
-2. Set `session.confirmed = true` (so close handler does not return input).
-3. Clear escrow file.
+2. Check the initiating session again and persist consumed input with planned output evidence.
+3. Set `session.confirmed = true` (so close handler does not queue input).
 4. `player.closeInventory()` immediately so outputs can be picked up in the world.
 5. Play processing VFX at station block.
 6. Spawn each output with Research-style kick-out (`ResultSpawnEffects` pattern): upward velocity, crit trail, staggered ticks.

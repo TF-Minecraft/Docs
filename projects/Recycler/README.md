@@ -8,6 +8,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - [docs/SYSTEM.md](docs/SYSTEM.md)
+- [Character returns and recovery](docs/OWNERSHIP.md)
 
 ## Builds and releases
 
