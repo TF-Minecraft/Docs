@@ -142,7 +142,29 @@ open station menus before changing `labels` titles or `colors.inventory_title`.
 - **TLibs.** TLibs builds and matches every item path, formats text, and supplies
   shared character identity and session events through RPCharacters' provider.
   Research needs TLibs 2.3.0 or newer; with an older TLibs it logs a severe
-  error and disables itself.
+  error and disables itself. Estates need TLibs 2.6.0 (see below); on 2.3.0 to
+  2.5.0 Research runs normally and logs that stations of dead characters stay
+  with them.
+- **Estates.** With TLibs 2.6.0, Research is the `research` participant in
+  RPCharacters estates. When a dead character's estate is decided, every station
+  whose recorded character is the dead one goes to the estate's property
+  recipient (the will heir, or the death guild's leader): the station file's
+  owner account and character are both rewritten, so the recipient's character
+  carries on the project with its progress. A recipient on the same account keeps
+  the account and takes the character. Waiting or frozen property leaves the
+  stations with the dead character, unusable, until staff assign it. Moves happen
+  only while the character is still dead with that death and the estate is
+  decided at the current revision; a revived character keeps what had not moved.
+  Before changing any station, Research writes
+  `plugins/Research/data/estates/<deathId>.json` listing the stations it will move
+  and the recipient, and marks each one moved; a crash between stations is
+  finished at the next settle. The outcome sent to the estate lists every moved
+  station's `<world>_<x>_<y>_<z>` key, which `/estate show` displays; to undo a move
+  by hand, give those stations whose owner is still the recipient back to the dead
+  character. A station that fails to save keeps its old owner and is retried. The
+  will screen and `/estate show` list the character's stations. Research settles
+  decided estates on the first tick after start-up and every hour, and reports
+  only changed answers. Stations without a recorded character are never moved.
 - **`ResearchCompleteEvent`.** Listen for
   `net.tfminecraft.research.event.ResearchCompleteEvent`, which fires
   synchronously after the result spawns and cannot be cancelled. It exposes
@@ -157,7 +179,9 @@ open station menus before changing `labels` titles or `colors.inventory_title`.
   the owner account and character, input, output, result path, product
   reveal, aspect points and states, tested items, and row order.
 - Station files are written when a project starts, after each confirmed
-  experiment, and on a normal plugin disable. They are deleted when a project
+  experiment, when an estate moves the station, and on a normal plugin disable.
+  Each write goes to a temporary file that is flushed and then moved over the
+  station file, so a crash leaves the old or the new file whole. They are deleted when a project
   completes, is scrapped, or its block is broken.
 - On start, files that reference an unknown input, output, or world are skipped
   with a warning and left on disk. A missing or stale row order is reshuffled.
