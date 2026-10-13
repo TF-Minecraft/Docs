@@ -71,8 +71,8 @@ a few short labels, for the will screen and staff. The default is `Holdings.NONE
 
 A participant acts only while `Estates.guardHolds(decision)` holds: the testator is
 `DEAD` with the decision's `deathId`, and that estate is `DECIDED`, not reverted,
-at the decision's revision. A revival, a later death, a staff revert or a newer
-revision all fail the guard. Participants leave `WAITING` and `FROZEN` parts where
+with exactly this decision as its current one. A revival, a later death, a staff
+revert or a newer revision all fail the guard. Participants leave `WAITING` and `FROZEN` parts where
 they are and must be idempotent: settling the same revision twice moves nothing
 twice, and a plugin whose moves touch more than one store keeps its own journal and
 replays it at boot.
@@ -108,12 +108,13 @@ them with `Characters.info`.
 | `decision(deathId)` | The current decision for that death, decided or reverted, or empty. |
 | `decided()` | Every `DECIDED` estate at its current revision, as an immutable list; reverted estates are left out. |
 | `stateOf(characterId)` | `OPEN`, `HELD`, `CANCELLED`, `DECIDED` or `REVERTED` for the character's latest death, or empty. |
-| `participants()` | Every registered participant, as an immutable list. |
+| `participants()` | Every registered participant, as an immutable list. Call every one; the order is not part of the contract. |
 | `fallback()` | The registered `EstateFallback`, or empty. |
 
 The facade looks services up on every call, so it follows registration and
 unregistration without any work from the caller. Without an estate service,
-lookups return empty, `decided()` returns an empty list and reports are dropped.
+lookups return empty, `decided()` returns an empty list and reports are dropped. A
+service that answers `null` is read the same way.
 
 ## Events
 
