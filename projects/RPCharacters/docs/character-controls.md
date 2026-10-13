@@ -11,6 +11,9 @@ selection dialog. `/rpcharacter select` reopens it while selecting; while playin
 it returns you to selection after you stand still for five seconds. Each character has
 its own items and progression. `/linkdiscord` remains available in selection.
 
+See [in-game character creation](character-creation.md) for the dialog wizard,
+Back/Next, draft resumption and review editing.
+
 ## Mail recipient visibility
 
 `/rpcharacter mail` toggles whether your active character appears in BirdMessenger’s recipient list; `/rpcharacter mail off` hides it and `/rpcharacter mail on` restores it. Characters are listed by default, and the setting persists across logouts and restarts. Already-sent mail still arrives.
