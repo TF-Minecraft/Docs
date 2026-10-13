@@ -19,7 +19,34 @@ compatibility alias; ordinary verification already enforces the same gate.
 
 These tests do not establish live Paper behaviour or correct client rendering.
 
-## Paper integration helper
+## Isolated Paper character ownership fixture
+
+Build the verified plugin into the local Maven repository, then build the
+[loopback ownership probe](https://github.com/TF-Minecraft/CompanionPets/tree/main/integration-tests/ownership):
+
+```sh
+tfmc-mvn -o -B clean install
+tfmc-mvn -o -B -f integration-tests/ownership/pom.xml clean package
+```
+
+Run only in a fresh disposable Paper 1.21.10 server with TLibs 2.6.0, loopback
+address `127.0.0.1`, port `25583` and offline mode. Connect `S6PetProbe` using an
+offline protocol client. The probe registers a synthetic character provider;
+never install it on Main or Dev. It checks actual native follower movement for A,
+same-account A→B isolation, active training cleanup, real native owner-assist goals under `native-combat: true`, swimming/self-defense safety, held/unknown
+owners and reattachment. It writes
+`plugins/CompanionPetsOwnershipProbe/result.json`, logs
+`OWNERSHIP_PROOF PASS` only after every check, and stops its disposable server.
+Its README documents setup and the actual older-TLibs classloader check.
+
+## Legacy provider integration helper
+
+The broader helper below predates character ownership. CI retains its compilation
+gate, but its random account/proxy-player and raw native follower fixtures need a
+character-aware update before it can validate current ownership. Use the isolated
+ownership probe above for character isolation evidence.
+
+
 
 The [helper source](https://github.com/TF-Minecraft/CompanionPets/tree/main/integration-tests)
 runs once, starting 240 server ticks after enabling, then disables itself when

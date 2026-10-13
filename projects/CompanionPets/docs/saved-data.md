@@ -16,9 +16,11 @@ plugin stops. Each save writes a temporary file and replaces the main file;
 | `pets.yml.bak` | The previous valid save. Never activated automatically. |
 | `pet-deletions.log` | Durable journal of terminal deletions. |
 | `pets-recovery-required` | Marker present while the plugin runs; removed after a successful final save. |
+| `ownership-migrations/` | Immutable source copies, planned ownership bytes and completion receipts. |
+| `estates/` | Exact death/revision ownership intents and cumulative transfer receipts. |
 | `staff-audit.yml.log` | Private log of [staff interventions](staff.md#audit). |
 
-Back up all these files together before manually editing saved data.
+Back up all these files together before manually editing saved data. Character ownership, migration and stopped-server rollback are described in the [ownership guide](ownership.md). External edits during a writer session are detected and held instead of overwritten.
 
 ## Damaged or missing saves
 

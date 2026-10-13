@@ -10,9 +10,10 @@ root aliases. Running `/companionpets` shows help and examples.
 | `reload` | Reload config and refresh models. Provider problems are logged automatically. |
 | `moment <affection/bark/mischief/dig/belly>` | Trigger a moment while looking at your pet; normal care and animation conditions apply. |
 | `testpet <type> [name...]` | Spawn a normal pet with every compatible trick learned. No special marker, pause state or cleanup category. |
-| `list <player> [pet name...]` | Open that player's pets or a selected pet's read-only profile. Console gets readable names. |
-| `find <player> [pet name...]` | Show Pet House, current or last-known location, and missing or duplicate bodies for that player's pets, without loading chunks. |
-| `create <player> type=<type> name=<name...> [option=value ...]` | Create a new saved replacement in the owner's Pet House. |
+| `list unassigned` | Show pets and Pet Houses held for ownership review without assigning them. |
+| `list <character> [pet name...]` | Open that character's pets or a selected pet's read-only profile. Console gets readable names. |
+| `find <character> [pet name...]` | Show Pet House, current or last-known location, and missing or duplicate bodies for that character's pets, without loading chunks. |
+| `create <character> type=<type> name=<name...> [option=value ...]` | Create a new saved replacement in the owner's Pet House. |
 | `egg <type/all> [online-player] [1..64]` | Give configured eggs; omit the recipient in game to receive them yourself. |
 
 ```text
@@ -25,7 +26,7 @@ root aliases. Running `/companionpets` shows help and examples.
 /companionpets moment belly
 ```
 
-## Browsing players and pets
+## Browsing characters and pets
 
 Tab completion suggests player names first, then only that player's pet names.
 Names can contain spaces. Duplicate pet names are never resolved arbitrarily:
@@ -55,8 +56,7 @@ addition to configured default tricks. `tricks=all` teaches every compatible
 enabled trick; `tricks=none` adds no extra tricks. Defaults: needs 100, bond 0,
 male, new age, generated personality.
 
-An explicitly supplied owner UUID is still accepted for reconstruction of an
-unknown or offline player; ordinary browsing and completion use player names.
+Specify a known character UUID or a unique single-token living character name. Dead character UUIDs are available for inspection; creation requires a living character. An online account name selects its current ready character. Unknown and ambiguous characters are refused; an arbitrary account UUID cannot create property.
 Creation validates options before writing and checks Pet House capacity. The owner
 takes the created pet out through their Pet House menu.
 
