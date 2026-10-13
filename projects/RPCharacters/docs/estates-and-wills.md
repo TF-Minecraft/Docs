@@ -92,7 +92,10 @@ and letters are covered in their plugins' guides.
 ## The stored body
 
 The body participant moves the dead character's whole stowed body: inventory, armour, offhand and
-ender chest. After a death that left a grave, the stowed inventory is already empty, so only the ender
+ender chest. Inventory items that graves keep out of a grave stay in the stripped body too: the
+`excluded-slots`, `excluded-slot-items` and `excluded-items` of `graves.yml` and the grave insurance
+ticket. On TFMC that keeps MMOInventory's "Ring Slot" placeholders (diamond hoes in slots 9–12) with
+the body, while real accessories in those slots pass. After a death that left a grave, the stowed inventory is already empty, so only the ender
 chest passes; after a death without a grave, or a kill of a character not being played, everything
 does. It runs only with character bodies enabled, and only when the property goes to a character;
 waiting or frozen property leaves the body untouched until staff assign it.
