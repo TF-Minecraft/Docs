@@ -64,12 +64,59 @@ current character.
 RPCharacters provides character sessions through the TLibs character API, as well
 as the opted-in recipient list, head textures and flight destinations.
 BirdMessenger requires TLibs 2.3.0 or newer; sending and delivery wait until
-RPCharacters has registered its sessions.
+RPCharacters has registered its sessions. Estates need TLibs 2.6.0; on an older
+TLibs letters for dead characters simply keep waiting.
+
+## Letters after a death
+
+New letters record the character that wrote them (`sender-character`) as well as
+the account, both in flight and in the pending queue, and keep the mail's ID.
+
+With TLibs 2.6.0, BirdMessenger is the `birdmessenger` participant in
+RPCharacters estates. When a dead character's estate is decided, the letters
+waiting in its pending queue move once, while the character is still dead with
+that death and the estate is decided at the current revision:
+
+- **With a will heir**, every waiting letter, including the dead character's own
+  unsent letters, is re-keyed to the heir's character and account and delivered
+  as ordinary mail when the heir is next played.
+- **Without a will**, each letter goes back to whoever wrote it:
+  - a letter that records its writer's character goes into that character's
+    queue and arrives with the `returned-recipient-died` message ("Returned: the
+    recipient has died");
+  - an older letter that records only the writer's account goes into
+    `returned_mail.yml` and arrives with the `returned-to-sender` message at that
+    account's next character session, whichever character is played;
+  - a letter whose writing character is dead or unknown, a letter with no
+    sender, and the dead character's own unsent letters stay in its queue.
+    `/estate show` lists them with their writer's character name, and staff deal
+    with them by hand. A held letter goes back on its own if its writer is
+    revived. Only moved letters are counted in the estate result.
+
+Letters still in flight are left alone; they land in the dead character's queue
+and the hourly reconcile moves them. Each moved letter keeps a stored ID (letters
+queued before IDs were kept get one, saved, before anything moves), and
+`plugins/BirdMessenger/estates/<deathId>.yml` lists every ID the estate has
+planned before the queue changes. The outcome sent to the estate carries every
+moved letter's ID, which `/estate show` displays; to undo a move by hand, find
+those IDs in the receiving queues. The will screen and `/estate show` list a
+character's waiting letters and who wrote them. BirdMessenger settles decided
+estates on the first tick after start-up and every hour, and reports only
+changed answers. A move is all or nothing: if a queue cannot be saved, every
+queue is put back as it was and the estate is told to try again within the hour.
 
 ## Mail recovery
 
-Mail is stored in `plugins/BirdMessenger/in_flight_mail.yml` and
-`plugins/BirdMessenger/pending_mail.yml`.
+Mail is stored in `plugins/BirdMessenger/in_flight_mail.yml`,
+`plugins/BirdMessenger/pending_mail.yml` and, for letters returned to an account,
+`plugins/BirdMessenger/returned_mail.yml`. Each file is written whole: a flushed
+temporary file replaces it, so a crash leaves the old or the new file. An estate
+move saves `returned_mail.yml`
+before it drops the letter from `pending_mail.yml`; if the server stops in between,
+the next start keeps the account's copy and drops the other, logging a warning.
+An older BirdMessenger ignores `returned_mail.yml` (keep it for re-upgrading) and
+drops the new `id`, `sender-character` and `recipient-died` keys from the queue
+when it next saves, so returned letters then arrive as ordinary mail.
 
 If a mail file or one of its entries cannot be decoded, BirdMessenger preserves
 the original file beside it as `<filename>.corrupt-<uuid>` before later saves can
