@@ -86,8 +86,8 @@ is listed for staff and not called again until staff clear it. A participant tha
 restart (Thievery) answers "at restart" until its startup pass reports. Each answer is stored with its
 counts and the IDs of the records it moved, and the owner's website roster is updated.
 
-RPCharacters' own participant is `rpcharacters-body`, below. Money, vehicles, locks, shops, stations
-and letters are covered in their plugins' guides.
+RPCharacters' own participant is `rpcharacters-body`, below. Other holdings are covered in each
+participating plugin's guide.
 
 ## The stored body
 

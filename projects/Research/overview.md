@@ -231,9 +231,11 @@ deleting only `done.json` cannot replace its fixed plan.
 2. Find the unresolved station key in the startup log or
    `data/backfill-character-v1/done.json`, then its matching JSON file under
    `data/stations/`.
-3. Verify the account's reviewed migration heir in RPCharacters and confirm that
-   the heir's owning account matches the station's `owner_uuid`. Without a
-   verified matching identity, leave the station unassigned for staff review.
+3. Verify the account's reviewed migration heir using
+   [RPCharacters' heir manifest and reviewed overrides](../RPCharacters/docs/character-bodies.md),
+   and confirm that the heir's owning account matches the station's `owner_uuid`.
+   If no reviewed matching heir exists, keep the station unassigned until one
+   has been reviewed; do not substitute the active character.
 4. Set only that station's `owner_character_id` to the reviewed character's
    canonical UUID. Preserve `owner_uuid`, all recipe/progress/extension fields,
    and the immutable backfill plan, completion marker and backups. Validate the
