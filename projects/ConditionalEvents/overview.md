@@ -16,15 +16,17 @@ Events:
 
 The scope only matters for events with `one_time` or a `cooldown` that involve a player. Other events have nothing to keep and run as upstream: join messages, `server_start`, `player_pre_join`, and commands without a cooldown.
 
-An event that keeps per-character data runs only while a character is in play, so not at join before a character is chosen, in the selection room, or after the session has ended on quit. Use `data_scope: account` for join and leave events that keep data. A run belongs to the character it started for: if that character leaves before a delayed action is due, for example during `wait_ticks`, the rest of the actions, including action groups it calls with `execute_action_group`, are dropped, and the run's one-time flag and cooldown are undone so the character can earn it again. The undo skips anything a later run or a staff reset changed since. With `retain_player_data_until_restart: false`, a player who logs out mid-run has already been saved, so the marks stay; Main keeps player data until restart. Any `data_scope` value other than `character` or `account` logs a warning and counts as `character`.
+An event that keeps per-character data runs only while a character is in play, so not at join before a character is chosen, in the selection room, or after the session has ended on quit. Use `data_scope: account` for join and leave events that keep data. A run belongs to the character it started for: if that character leaves before a delayed action is due, for example during `wait_ticks`, the rest of the actions, including action groups it calls with `execute_action_group`, are dropped, and the run's one-time flag and cooldown are undone so the character can earn it again. The undo skips anything a later run or a staff reset changed since. Any `data_scope` value other than `character` or `account` logs a warning and counts as `character`.
 
 Keep anything a character learns or earns per character, such as Codex unlocks, since [Codex](../Codex/overview.md) keeps a journal per character. Use `data_scope: account` for supporter perks and other account rewards. The supporter EXP booster is `/tfmc booster` in TFMCCore and is per account.
 
 ## Stored data
 
-Each account's file, `plugins/ConditionalEvents/players/<account>.yml`, keeps account events under `events` and per-character events under `characters.<character>.events`. Old per-account data does not record which character ran an event, so no character inherits it: events that are per character start fresh for every character, and their old account-level entries stay in the file, unused.
+Each account's file, `plugins/ConditionalEvents/players/<account>.yml`, keeps account events under `events` and per-character events under `characters.<character>.events`. As a one-off, on an account's first character session after the change, its old account-level entries for events that are now per character move to its most-played living character (else its most-played character), the same character [Codex](../Codex/overview.md) copies the old journal to, pinned in `plugins/TLibs/legacy-recipients/<account>.txt`. An event done once stays done, and the later cooldown start wins. The file records `seeded-to: <character>` so this happens once; if RPCharacters cannot list the account's characters yet, it waits for a later session. Every other character starts these events fresh. Account-scoped events keep their data on the account.
 
-`/ce reset <player> <event|all>` and `/ce reset * <event|all>` clear the account and every character.
+Player data stays in memory from an account's first login until the server restarts; this copy has no `retain_player_data_until_restart` setting, and an old key is ignored. Player files are written through a temporary file, and a failed save is logged and retried by the next save.
+
+`/ce reset <player> <event|all>` and `/ce reset * <event|all>` clear the account and every character. `/ce reset *` resets accounts in memory there, and rewrites only the files of accounts not loaded since the last restart.
 
 ## Events on Main
 
