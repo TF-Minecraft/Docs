@@ -58,7 +58,7 @@ since the last startup is not detected.
 | Variable | Meaning |
 | --- | --- |
 | `SERVER_MAIN_DIR`, `SERVER_DEV_DIR` | A folder inside the backend container holding the server's `plugins` and `logs` folders. Unset: the server's card says the site is not set up to read it. |
-| `SERVERS_GITHUB_TOKEN` | A read-only GitHub token. Falls back to `PATCHNOTES_GITHUB_TOKEN`. With a token, each check makes about 80 requests (releases, then each latest release against its default branch) every 10 minutes. Without one, GitHub allows 60 requests an hour, so releases (about 40 requests) are fetched hourly and not compared with the branch. |
+| `SERVERS_GITHUB_TOKEN` | A read-only GitHub token. Falls back to `PATCHNOTES_GITHUB_TOKEN`. With a token, releases are read every 10 minutes through about 11 GraphQL queries, in groups of eight repositories, each followed by a comparison of those repositories' latest releases with their default branches. Without one, GraphQL isn't available and GitHub allows 60 REST requests an hour, so releases (about 40 requests) are read hourly and not compared with the branch. |
 | `SERVERS_GITHUB_ORG` | The organisation to read. Defaults to `TF-Minecraft`. |
 
 Mount the folders read-only in the host's `docker-compose.override.yml`:
@@ -77,7 +77,9 @@ services:
 ```
 
 Jar hashes are cached until a file's size or modification time changes, so a
-check after the first reads only the logs.
+check after the first reads only the logs. Only the first check after the
+backend starts waits for GitHub. After that, expired releases are shown while
+they are read again in the background.
 
 ## Restart and release controls
 
@@ -114,7 +116,8 @@ The helper must be able to read every jar. A jar moved into `plugins` keeps
 its own permissions, so make it `0644` first; otherwise every plan for that
 server, and every Main update plan, stops with "A plugin jar can’t be read".
 The release inventory is cached for ten minutes with a GitHub token, or one
-hour without one. A failed refresh prevents a release plan.
+hour without one. A release plan waits for an expired inventory to be read
+again, and a failed read prevents the plan.
 
 Main upgrades also require the target release's exact bytes to be on Dev,
 with its version enabled without a subsequent enable failure or disable at
