@@ -94,7 +94,6 @@ consumer set. Source builds must pass clean verification before publication.
 | [Magic](projects/Magic/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [MarketBlock](projects/MarketBlock/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [MusicalInstruments](projects/MusicalInstruments/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [PermCleaner](projects/PermCleaner/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Recycler](projects/Recycler/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Research](projects/Research/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [RPCharacters](projects/RPCharacters/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
