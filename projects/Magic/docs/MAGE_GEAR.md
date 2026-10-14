@@ -49,6 +49,109 @@ cannot hit the old orbs, and the station's part choices and any pending over-tie
 confirmation are cleared, so it must choose and confirm again. A player without an
 active character is told so and cannot start a run.
 
+Deposited weapons belong to the full account and character that prepared or
+rested them. Abort and material-refund actions require that character or
+`magic.admin`. Charging and empty-hand ejection remain public to active living
+characters. An ownerless legacy station retains its public behavior; an active
+ownerless run records its initiating character for abort checks. A malformed or
+unresolved owner never becomes the visiting character's property.
+
+Menus, over-tier confirmations and runs capture their initiating session. A late
+callback checks the occupancy ID, original item and full owner before writing.
+Ending an outgoing session can finish its already-paid run, including after the
+session becomes noncurrent, without changing a replacement station or a newer
+session's menu.
+
+## Property storage and inheritance
+
+`data/gear-stations.yml` remains authoritative. Original row keys, root metadata,
+unknown fields, explicit nulls, unloaded worlds and unsupported item records
+survive saves and restarts. Character-owned rows add an `occupancy-id`, explicit
+`ownership` envelope and `effect-state`; new or updated weapons use exact Paper
+`item-bytes`. The original legacy item map and account attribution remain raw.
+Unresolved ownership or unreadable data is held for review.
+
+Legacy account owners migrate only after the reviewed heir directory is ready,
+using its exact account-matching character reference. Plans fix that recipient;
+a changed heir mapping never redirects a retry. Missing or malformed owners are
+kept separately from legitimately ownerless stations. TLibs 2.6.0 supplies the
+character ownership and estate APIs. On an older API, character gear actions and
+migration remain unavailable until the supported APIs are installed.
+
+Estate participant `magic-gear` transfers deposited gear and queued returns.
+It waits for every orb run touching the testator's gear, including public runs
+started by someone else. It checks the current estate decision before each
+publication and records exact death, source, recipient, revision and decision.
+Newer decisions move only untouched property; a partial older publication is
+blocked for recovery. Immutable source archives and independent receipts retain
+cumulative moved IDs through waiting or frozen decisions. Restoring a completed
+source, losing receipt IDs or altering a captured envelope blocks further moves.
+Every completed revision, including zero-item outcomes, also has independent
+full-decision evidence and its remaining source IDs. The same revision cannot
+absorb newly discovered property; a newer estate decision is required. Globally
+duplicate return operation IDs are held, including delivered or interrupted
+evidence. An exact pair belonging to one unfinished fixed publication can resume
+only that captured plan.
+Inheritance does not apply acquisition limits.
+
+Magic profiles, focus, resonance and progression never participate in this
+transfer. Crafting costs, bypass permissions and other account policies retain
+their existing behavior.
+
+## Interrupted effects and queued refunds
+
+Deposits, charges and releases persist intent before changing inventory or
+spawning world output. Abort refunds are queued under
+`data/gear-returns/<character UUID>/<operation UUID>.json`. Rested weapons return
+as the original item; fresh crafts refund their recorded materials. Delivery
+uses empty storage slots, retains any remainder and retries for the owning
+character when its next valid session starts. A full inventory does not discard
+the queued remainder or hand it to an incoming character.
+
+A fresh craft with a missing, malformed or overflowing recorded material payment
+cannot automatically refund today's recipe. Its weapon and raw record stay on
+the station for staff review; it can still be charged and publicly ejected after
+attunement. An explicit empty cost map remains a known material bypass.
+
+An interrupted deposit, charge, world release or inventory delivery is held with
+its evidence for staff review. Restart does not blindly repeat or discard it.
+Paper inventory/player saves, world item storage and Magic files are separate
+durability domains: this is not an arbitrary-crash exactly-once guarantee.
+Public ejection and missing-furniture cleanup still drop the weapon into the
+world; a crash between that effect and its acknowledgment requires staff to
+compare the held record, player/world data and recovery evidence.
+
+## Offline ownership recovery
+
+Stop Paper before using
+[`tools/gear-ownership.py`](https://github.com/TF-Minecraft/Magic/blob/main/tools/gear-ownership.py).
+Python 3 and PyYAML are required for this offline tool; plugin dependencies are
+unchanged. Preview legacy migration or estate journals:
+
+```sh
+python3 tools/gear-ownership.py --data /path/to/plugins/Magic/data --kind migration
+python3 tools/gear-ownership.py --data /path/to/plugins/Magic/data --kind estates
+```
+
+Apply only one previewed run/death UUID, with a new backup directory outside
+Magic's data folder:
+
+```sh
+python3 tools/gear-ownership.py --data /path/to/plugins/Magic/data --kind estates \
+  --journal <death-UUID> --apply --backup /path/to/new-gear-recovery
+```
+
+The tool preflights the whole selected journal, full references, captured
+decisions, raw payload semantics, original archives, receipts and current rows.
+It rejects conflicting, progressed or ambiguous effects before restoring
+ownership. It saves and verifies gear-only recovery bytes first, preserves
+unrelated station rows and archives rolled-back journals and receipts. Untouched
+planned records are no-ops. Restore errors require preserving the backup and
+keeping Paper stopped for manual recovery. The tool never replays physical
+effects or changes profiles/focus. Do not downgrade a progressed station to an
+older JAR: the retained legacy item map may precede its newer authoritative item
+bytes.
+
 ## Staff weapon commands
 
 `/magic weapon give <player> <staff|wand|sword> <element> <aura> <part> [part...]`
