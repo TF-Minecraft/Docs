@@ -49,6 +49,132 @@ cannot hit the old orbs, and the station's part choices and any pending over-tie
 confirmation are cleared, so it must choose and confirm again. A player without an
 active character is told so and cannot start a run.
 
+Deposited weapons belong to the full account and character that prepared or
+rested them. Abort and material-refund actions require the station's current
+owning character or `magic.admin`. Charging and empty-hand ejection remain public to active living
+characters. An ownerless legacy station retains public charging and ejection;
+its active run records the initiating character. Abort returns require the
+station's full character owner, including when staff act. Ownerless or unresolved
+property stays on the station for review.
+
+Menus, over-tier confirmations and runs capture their initiating session. A late
+callback checks the occupancy ID, original item and full owner before writing.
+Ending an outgoing session can finish its already-paid run, including after the
+session becomes noncurrent, without changing a replacement station or a newer
+session's menu.
+
+## Property storage and inheritance
+
+`data/gear-stations.yml` remains authoritative. Original row keys, root metadata,
+unknown fields, explicit nulls, unloaded worlds and unsupported item records
+survive saves and restarts. Character-owned rows add an `occupancy-id`, explicit
+`ownership` envelope and `effect-state`; new or updated weapons use exact Paper
+`item-bytes`. The original legacy item map and account attribution remain raw.
+Unresolved ownership or unreadable data is held for review.
+A row with an unparseable location retains its raw data without blocking deposits
+at unrelated valid coordinates. Known held coordinates remain reserved; duplicate
+occupancy IDs or valid occupied coordinates still hold the inventory.
+
+Legacy account owners migrate only after the reviewed heir directory is ready,
+using its exact account-matching character reference. Plans fix that recipient;
+a changed heir mapping never redirects a retry. Missing or malformed owners are
+kept separately from legitimately ownerless stations. TLibs 2.6.0 supplies the
+character ownership and estate APIs. On an older API, character gear actions and
+migration remain unavailable until the supported APIs are installed.
+Participant startup failures with present APIs log the underlying cause at
+`SEVERE`, separately from the missing-API warning.
+
+Estate participant `magic-gear` transfers deposited gear and queued returns.
+It waits for every orb run touching the testator's gear, including public runs
+started by someone else. It checks the current estate decision before each
+publication and records exact death, source, recipient, revision and decision.
+Newer decisions move only untouched property; a partial older publication is
+blocked for recovery. Immutable source archives and independent receipts retain
+cumulative moved IDs through waiting or frozen decisions. Restoring a completed
+source, losing receipt IDs or altering a captured envelope blocks further moves.
+Every completed revision, including zero-item outcomes, also has independent
+full-decision evidence and its remaining source IDs. The same revision cannot
+absorb newly discovered property; a newer estate decision is required. Globally
+duplicate return operation IDs are held, including delivered or interrupted
+evidence. An exact pair belonging to one unfinished fixed publication can resume
+only that captured plan.
+Inheritance does not apply acquisition limits.
+
+Magic profiles, focus, resonance and progression never participate in this
+transfer. Crafting costs, bypass permissions and other account policies retain
+their existing behavior.
+
+## Interrupted effects and queued refunds
+
+Deposits, charges and releases persist intent before changing inventory or
+spawning world output. Abort refunds are queued under
+`data/gear-returns/<character UUID>/<operation UUID>.json`. Rested weapons return
+as the original item; fresh crafts refund their recorded materials. Delivery
+always targets the station's owning character, even after a staff abort. Immediate
+delivery uses only that recipient's captured session; staff aborts for another
+character queue the property for its owner. Delivery uses empty storage slots,
+retains any remainder and retries for the owning
+character when its next valid session starts. A full inventory does not discard
+the queued remainder or hand it to an incoming character.
+
+A fresh craft with a missing, malformed or overflowing recorded material payment
+cannot automatically refund today's recipe. Its weapon and raw record stay on
+the station for staff review; it can still be charged and publicly ejected after
+attunement. An explicit empty cost map remains a known material bypass. After
+release is acknowledged, its empty abort return is recorded as delivered without
+granting items. Older empty pending returns are acknowledged through the owning
+character's checked delivery path; held returns remain held.
+
+An interrupted deposit, charge, world release or inventory delivery is held with
+its evidence for staff review. Restart does not blindly repeat or discard it.
+Runtime scans and the offline return inventory preserve regular `magic-*.tmp`
+staging files without treating them as committed records. The recovery backup
+retains their bytes. Temporary-looking directories or symlinks and malformed
+committed records still hold operations for review.
+Paper inventory/player saves, world item storage and Magic files are separate
+durability domains: this is not an arbitrary-crash exactly-once guarantee.
+Public ejection and missing-furniture cleanup still drop the weapon into the
+world; a crash between that effect and its acknowledgment requires staff to
+compare the held record, player/world data and recovery evidence.
+
+## Offline ownership recovery
+
+Stop Paper before using
+[`tools/gear-ownership.py`](https://github.com/TF-Minecraft/Magic/blob/main/tools/gear-ownership.py).
+Python 3 and PyYAML are required for this offline tool; plugin dependencies are
+unchanged. Preview legacy migration or estate journals:
+
+```sh
+python3 tools/gear-ownership.py --data /path/to/plugins/Magic/data --kind migration
+python3 tools/gear-ownership.py --data /path/to/plugins/Magic/data --kind estates
+```
+
+Apply only one previewed run/death UUID, with a new backup directory outside
+Magic's data folder:
+
+```sh
+python3 tools/gear-ownership.py --data /path/to/plugins/Magic/data --kind estates \
+  --journal <death-UUID> --apply --backup /path/to/new-gear-recovery
+```
+
+The tool preflights the whole selected journal, full references, captured
+decisions, raw payload semantics, original archives, receipts and current rows.
+It rejects conflicting, progressed or ambiguous effects before restoring
+ownership. It saves and verifies gear-only recovery bytes first, preserves
+unrelated station rows and archives rolled-back journals and receipts. Untouched
+planned records are no-ops. Restore errors require preserving the backup and
+keeping Paper stopped for manual recovery. The tool never replays physical
+effects or changes profiles/focus.
+
+Never start an older Magic JAR against data this version has used. Older JARs
+ignore `effect-state`, character ownership and `data/gear-returns/`. A released
+migrated station still retains its legacy `item` map, so it reappears and can be
+ejected again, or drops the weapon again when its furniture is gone. Inherited
+stations revert to the original account's abort/refund authority, and queued
+refunds stop being delivered. Roll back only by restoring the complete offline
+pre-upgrade checkpoint, including Magic data, worlds and player data. A JAR-only
+or plugin-folder-only rollback is not supported.
+
 ## Staff weapon commands
 
 `/magic weapon give <player> <staff|wand|sword> <element> <aura> <part> [part...]`

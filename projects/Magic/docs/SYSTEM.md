@@ -126,7 +126,7 @@ or alias. Sacrifice lore keeps the victim's character name from the moment of th
 
 ## Dependencies
 
-- **TLibs** (required, 2.3.0 or newer) - shared identity/session API, item refs, formatHex, inventory scanning
+- **TLibs** (required; 2.3.0 or newer to load, 2.6.0 for character-owned mage gear and estates) - shared identity/session API, item refs, formatHex, inventory scanning
 - **ItemsAdder** (required) - `ia.` icons in gui.yml / elements
 - **RPCharacters** (required, 2.16.0 or newer) - identity provider, character Focus pool, character head, injury and permadeath APIs
 - **InteractibleFurniture** (required) - pedestals
