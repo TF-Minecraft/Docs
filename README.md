@@ -52,6 +52,7 @@ Choose a project to open its technical documentation and source repository link.
 | [BreedingBuddies](projects/BreedingBuddies/README.md) | Farm animal ownership, daily care, inherited genetics, and mount breeding. |
 | [Codex](projects/Codex/README.md) | Lore discoveries that each character keeps in its own journal. |
 | [CompanionPets](projects/CompanionPets/README.md) | Companion pet hatching, care, training, and play. |
+| [ConditionalEvents](projects/ConditionalEvents/README.md) | Configured actions for game events, with data per account or per character. |
 | [Games](projects/Games/README.md) | Tabletop games, card games, and wagering. |
 | [GeigerCounters](projects/GeigerCounters/README.md) | Geiger counter treasure hunts with proximity signals and tiered loot. |
 | [Magic](projects/Magic/README.md) | Magic, resonance, artifacts, and shrines. |
