@@ -20,7 +20,7 @@ Use the character scope for anything a character learns or earns, such as Codex 
 
 ## Stored data
 
-Each account's file, `plugins/ConditionalEvents/players/<account>.yml`, keeps account events under `events` and per-character events under `characters.<character>.events`. When a character session starts, any account-level data for events now set to the character scope moves to the account's RPCharacters heir, the same character that received the account's money, body and Codex discoveries. An event done once stays done, and the later cooldown start wins. The server log records each move as `Moved <n> per-character event records of account <account> to character <character>`.
+Each account's file, `plugins/ConditionalEvents/players/<account>.yml`, keeps account events under `events` and per-character events under `characters.<character>.events`. When a character session starts, any account-level data for events now set to the character scope moves to the account's RPCharacters heir (or, if that heir has since been deleted, its most-played living character), the same character that received the account's money, body and Codex discoveries. An event done once stays done, and the later cooldown start wins. The server log records each move as `Moved <n> per-character event records of account <account> to character <character>`.
 
 `/ce reset <player> <event|all>` and `/ce reset * <event|all>` clear the account and every character.
 

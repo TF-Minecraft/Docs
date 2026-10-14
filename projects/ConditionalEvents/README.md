@@ -23,7 +23,7 @@ JaCoCo requires 100% line coverage of `net.tfminecraft.conditionalevents.charact
 
 ## Runtime and configuration
 
-The manifest requires TLibs and loads after RPCharacters, which provides character sessions. Event types, conditions, actions and variables are configured as in upstream ConditionalEvents; see the [upstream wiki](https://ajneb97.gitbook.io/conditionalevents). This copy has no update checker or bStats reporting, and an old `Config.update_notification` key is ignored.
+The manifest requires TLibs. RPCharacters provides character sessions; it is not a load dependency, because SimpleFactions loads after ConditionalEvents and RPCharacters after SimpleFactions. Event types, conditions, actions and variables are configured as in upstream ConditionalEvents; see the [upstream wiki](https://ajneb97.gitbook.io/conditionalevents). This copy has no update checker or bStats reporting, and an old `Config.update_notification` key is ignored.
 
 ## Guides
 
