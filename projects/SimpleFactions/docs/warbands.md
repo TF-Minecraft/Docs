@@ -14,6 +14,12 @@ An offline named character must resolve through the identity registry with the
 same owning account. Unknown records do not create membership. Dummy members
 and pending leader placeholders do not acquire reviewed heir references.
 
+An account whose member slot belongs to another or an unresolved character
+cannot join or create a second warband until that slot is released. Release it
+through the recorded character's permitted `/warband leave` or `/warband delete`
+action, an online kick by its leader, or a reviewed staff offline edit. A
+character switch does not release another character's slot.
+
 Invitations survive persistence and target their recorded character. Menus and
 delayed spawn callbacks recheck character authority; spawn callbacks also retain
 the initiating session generation. Session-end cleanup uses the captured outgoing
@@ -48,9 +54,11 @@ synced. Interrupted publication reuses those recipients without consulting a
 changed heir map. Changed source, corrupt backup/plan or unsupported metadata
 holds the file for review; loading, pruning and saving cannot replace it.
 
-The heir capability is probed before linking its new methods. Older TLibs without
-that API leaves legacy slots unassigned and performs no migration write. This
-does not provide character authority through an account fallback. Existing valid
+Production SimpleFactions requires TLibs 2.4.1 or newer to enable. The heir
+capability is probed before linking its new methods. The isolated TLibs 2.3.0
+classloading test proves that the loader leaves legacy slots unassigned without
+a migration write when that API is absent; it is not a supported production
+version. No account fallback supplies character authority. Existing valid
 character references can still be used when the basic identity API is available.
 
 ## Held records and recovery
@@ -64,6 +72,18 @@ The production loader retries a file held after a failed read only at startup.
 After repairing it while stopped, restart the Minecraft application to reload
 the warband; a successful validated read clears the hold. There is no command
 that clears or retries these file holds in a running server.
+
+A failed save also holds a loaded warband for the rest of the session: member,
+leader and invitation roles are disabled, and its members disappear from battle
+player lists until safe repair and a validated reload at restart. Death cleanup
+uses the same preserving writer; a refused or failed save leaves its death
+journal step incomplete. After the warband safely reloads at restart, death
+reconciliation replays that step with its original character and successor.
+
+If a campaign-side warband file is held and unavailable to the roster loader,
+signup for that side remains blocked with `Warband identity is held for staff
+review` until the file is repaired while stopped and the application restarts.
+The roster cannot overwrite that file or enrol players into a substitute roster.
 
 For a reviewed manual assignment, cleanly stop the Minecraft application and
 back up the whole SimpleFactions data directory. Verify the original account and
@@ -119,8 +139,10 @@ Use Java 21 and run `tfmc-mvn -o -B clean verify` in the SimpleFactions worktree
 The production line gate covers same-account character isolation, invitations,
 recorded rejoin and outgoing cleanup, current-session deferred work, held-file
 protection, raw/null preservation, interrupted publication and fixed-plan replay,
-source/backup/output conflicts, and actual TLibs 2.3.0 classloading. CI installs
-the old release through the pinned `.github/compatibility/tlibs-2.3.xml` fixture;
+death-save failure/restart replay, survivor roles after autosave, account-slot
+join/create rejection, source/backup/output conflicts, and actual TLibs 2.3.0
+classloading. CI installs the old release through the pinned
+`.github/compatibility/tlibs-2.3.xml` fixture;
 local builds need that JAR in their Maven repository too.
 
 Run the offline restore checks with isolated synthetic documents:
