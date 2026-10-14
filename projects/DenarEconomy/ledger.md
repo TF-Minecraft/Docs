@@ -96,4 +96,23 @@ Choose operation IDs so that a retry reuses the same ID. Derive the ID from the 
 
 **Events.** `PlayerEarnMoneyEvent` fires after a taxable earning or trade has applied, with the earner's account name, the gross amount and `getCharacter()`. It can fire again when an operation is retried, and changing its amount no longer affects tax. `PlayerBankPulseEvent` fires before `/deco deposit` and `/deco withdraw`, and `PlayerDepositMaterialsEvent` fires on a main-hand right click with an item; both carry `getCharacter()` and fire only for a player with a current character.
 
-**Older calls.** `OfflineModifier.apply/change/balance`, `MoneyManager.addMoney/addMoneyToAccount/changeBal/doTaxes/getBalance`, `PlayerManager.get` and the per-player `Database` methods still compile. They act only on an online player's current character: changes post from the mint with reason `api` and never overdraw, and `doTaxes` returns the policy's tax. Amounts that are not finite or do not fit in whole cents are refused before any posting. For an offline player or one without a character they refuse (false, zero or nothing) and log the first caller of each method with a stack trace. `PlayerManager.get` returns read-only balances whose `Account` mutators throw `UnsupportedOperationException`. Move callers to `Denars`; these methods are kept for one release.
+**Removed account APIs.** Account-addressed balance and mutation calls are removed:
+
+| Removed calls | Replacement |
+| --- | --- |
+| `OfflineModifier.apply/change/balance`; `MoneyManager.changeBal` | `Denars.post/transfer/balance` with explicit character accounts |
+| `MoneyManager.addMoney/addMoneyToAccount/doTaxes/getBalance` | `Denars.earn/taxFor/balance` with a captured `CharacterRef` |
+| `PlayerManager.get`; `DenarEconomy.getPlayerManager()` | `Denars.active/balance` |
+| `Database.savePlayerData/loadPlayerData/getPlayerBalance`; `LegacyCalls` | The `Denars` API above |
+
+Capture the character or session when an action begins. A deferred callback must
+keep that identity; resolving the account's active character again can pay a
+different character after a switch. Store the operation ID before effects and
+reuse it on retries.
+
+`OfflineModifier.load/playerId/remember` still provide account name lookup.
+`Database.hasPlayerData(UUID)` still checks whether the player is online with an
+active character, and ledger totals and rankings remain available. The legacy
+`PlayerData`/`Account` file readers, imported archives, reviewed heirs and ledger
+operation history remain required for migration and recovery. Removing an API
+does not authorize deleting that data.
