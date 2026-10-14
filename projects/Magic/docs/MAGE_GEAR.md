@@ -175,6 +175,42 @@ refunds stop being delivered. Roll back only by restoring the complete offline
 pre-upgrade checkpoint, including Magic data, worlds and player data. A JAR-only
 or plugin-folder-only rollback is not supported.
 
+### Exact empty legacy save before upgrading
+
+Magic 0.5.2 can save an empty station file as zero bytes. Import that specific
+legacy representation only with Paper stopped, the deployment lock held, a
+complete checkpoint, and retained logs/ledger proving that character-ownership
+Magic has never run against this data. Run the reviewed tool pinned by commit
+and file SHA-256. The producer JAR must be the allowlisted 0.5.2 release.
+
+```sh
+python3 tools/gear-ownership.py --legacy-empty-import \
+  --data /path/to/plugins/Magic/data --legacy-jar /path/to/magic-0.5.2.jar
+```
+
+Preview writes nothing and returns `ELIGIBLE_REQUIRES_LINEAGE_ATTESTATION` with
+the baseline digest and file metadata. Put that exact digest and the fresh
+checkpoint/lineage evidence in an attestation file, then apply:
+
+```sh
+python3 tools/gear-ownership.py --legacy-empty-import \
+  --data /path/to/plugins/Magic/data --legacy-jar /path/to/magic-0.5.2.jar \
+  --apply --expect-baseline <baseline-HEX> --attest /path/to/lineage.txt \
+  --backup /path/to/new-external-recovery
+```
+
+Apply retains the zero source, attestation, tool hash and plan/result in the new
+verified backup, then publishes exactly `stations: {}` followed by a newline
+with the original mode. It refuses other content, links, history, sibling or
+staging evidence and changed metadata; it is not a generic blank-file repair.
+It cannot combine with `--kind` or `--journal`. Exact canonical replay returns
+`ALREADY_CANONICAL` without another backup. On `REFUSED` or
+`PUBLISHED_UNCONFIRMED`, keep Paper stopped and preserve the evidence; preview
+again before deciding what to do. A retained staging file needs staff review.
+An old 0.5.2 run before the first 0.6.0 Start rewrites the empty file to zero,
+requiring a fresh checkpoint and preview. After any 0.6.0 Start, the complete
+checkpoint rollback rule above still applies.
+
 ## Staff weapon commands
 
 `/magic weapon give <player> <staff|wand|sword> <element> <aura> <part> [part...]`
