@@ -44,6 +44,8 @@ All paths below are beneath `plugins/Archaeo/`.
 | `ownership/superseded/<operation ID>.yml` | Exact obsolete estate intent, archived only while the source still equals its before snapshot. |
 | `ownership/completions/<death UUID>/<revision>.yml` | Full decision acknowledgement, cumulative moved IDs/count and retained source ownership. |
 | `ownership/placements/<operation UUID>.yml` | Camp occupancy, kit and world-effect evidence; retained after completion. |
+| `ownership/conflicts/<operation UUID>.yml` | Held or stale runtime progress, last checked source and current disk evidence; manual recovery only. |
+| `ownership/reconciled-conflicts/<operation UUID>.yml` | Unchanged conflict evidence archived after explicit offline reconciliation; retained for review and excluded from automatic rollback. |
 
 Startup inventories every raw dossier before publishing any migration. IDs must
 match filenames and be unique across the complete inventory. Duplicate/nontext
@@ -94,6 +96,38 @@ holds the dossier for reviewed recovery. Such a dossier remains in the raw
 inventory and estate holdings even if it cannot enter the runtime cache. Gameplay
 writes compare the current file with the exact loaded source; conflicting external
 edits are retained. Known transient write failures permit only a checked retry.
+
+A changed or missing dossier holds that site; healthy neighbours can still save.
+An unreadable whole inventory stays unavailable until a complete retry succeeds.
+Reload retains unchanged live site instances and promptly loads a released site.
+Sampling cancels if its captured site has been replaced.
+
+Before removing held dirty progress from the flush queue, Archaeo writes an
+immutable conflict snapshot containing the captured runtime, raw overlay, last
+checked source and current disk bytes (or its read error). It never overwrites
+the conflicting source or replays that progress automatically. Snapshot-associated
+dossiers stay held across reload/restart, including their possible ownership,
+camp limits and occupied chunks. Failed snapshot
+writes retain the captured object in memory and refuse site reload; staff must
+restore storage and obtain durable evidence before shutting down. `/archaeo reload`
+reports this refusal instead of claiming that sites reloaded. Staff deletion
+checks and removes the dossier before purging camp blocks or tagged items; a
+held, changed, missing or undeletable dossier refuses those effects.
+
+Resolve a runtime conflict only while Paper is stopped and after a complete
+backup. Inspect every snapshot whose `file` names the dossier: `source` is the
+last checked text, `runtime` is the captured model, `captured` retains its raw
+overlay, and `current`/`current-error` record disk evidence. Compare these with
+the current dossier, world and affected inventories. Reconcile legitimate progress
+and effects into the current dossier without dropping unknown fields or changing
+character references contrary to reviewed estate decisions; never copy the
+captured overlay over newer data wholesale. Record the staff decision and the
+before/after hashes with the backup. Only after validating that reconciliation,
+move each original snapshot unchanged from `ownership/conflicts/` to
+`ownership/reconciled-conflicts/`, retaining the same UUID filename. Do not edit
+or delete evidence merely to resume play. Next startup validates the archive and
+dossier; any remaining active conflict snapshot keeps the site held. Transient
+estate holds without runtime-conflict evidence can still release normally.
 
 ## Estate handover
 
@@ -156,12 +190,14 @@ python3 tools/site-ownership.py --data /path/to/plugins/Archaeo
 ```
 
 The report inventories raw dossiers, live and superseded journals, completion
-records and placements. Apply restores only
+records, placements and runtime conflicts. Apply restores only
 an unchanged, completed migration whose exact current bytes match its captured
 before/after snapshot and which has no estate or placement history. Superseded intents and revision
 completion records remain manual estate evidence. It preserves
-new, deleted, changed, held and incomplete records for manual review. Invalid
-journal/completion/placement metadata or duplicate/unreadable inventory blocks all changes.
+new, deleted, changed, held and incomplete records for manual review. A dossier
+with runtime conflict evidence also remains manual, even if its current bytes
+match a completed migration. Invalid journal/completion/placement/conflict metadata
+or duplicate/unreadable inventory blocks all changes.
 
 Use a new backup directory outside the plugin data folder:
 
@@ -174,8 +210,15 @@ The tool copies the complete current plugin tree, verifies SHA-256 hashes and
 forces the backup before restoring any original bytes. It archives completed
 migration journals under `ownership/rolled-back/journals/` using no-clobber links.
 The immutable source and fixed plans remain. Review the JSON report and backup
-before selecting compatible plugin versions and restarting; starting this build
-again can reapply reviewed migration plans.
+before restarting; starting this build again can reapply reviewed migration plans.
+
+Archaeo 2.0.7 and earlier can read a schema-2 dossier as legacy data and drop its
+character references on the first save. Do not start those versions while any
+schema-2 dossier remains, including new, changed or held sites that the selective
+recovery tool preserves. A successful selective rollback does not establish
+downgrade compatibility. Fix forward, or restore a coherent reviewed pre-upgrade
+backup of the JAR and plugin data after assessing the progress and property that
+would be lost; retain current dossiers and all recovery evidence separately.
 
 Any restore/archive I/O interruption requires staying offline and reviewing the
 full backup plus surviving intent/archive. There is no automatic estate,
