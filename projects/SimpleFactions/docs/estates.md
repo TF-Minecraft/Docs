@@ -145,7 +145,7 @@ stays until the recipient pays. Storage is free while property waits or is
 frozen. The pause also lasts while the vehicles participant is not registered
 (VehicleFramework older than 2.13 or not in characters mode). For decided character
 property, the pause ends when registration and infrastructure recover and the
-vehicle moves, or when staff revert or cancel the estate, or the payer is revived.
+vehicle moves, or when staff revert the estate, or the payer is revived.
 Staff cannot reassign character property. If staff revert an estate, the vehicle
 stays with the dead owner and upkeep applies as before, even if its property was
 frozen.
