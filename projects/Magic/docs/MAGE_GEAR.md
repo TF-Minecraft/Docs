@@ -52,9 +52,10 @@ active character is told so and cannot start a run.
 Deposited weapons belong to the full account and character that prepared or
 rested them. Abort and material-refund actions require that character or
 `magic.admin`. Charging and empty-hand ejection remain public to active living
-characters. An ownerless legacy station retains its public behavior; an active
-ownerless run records its initiating character for abort checks. A malformed or
-unresolved owner never becomes the visiting character's property.
+characters. An ownerless legacy station retains public charging and ejection;
+its active run records the initiating character. Abort returns require the
+station's full character owner, including when staff act. Ownerless or unresolved
+property stays on the station for review.
 
 Menus, over-tier confirmations and runs capture their initiating session. A late
 callback checks the occupancy ID, original item and full owner before writing.
@@ -70,6 +71,9 @@ survive saves and restarts. Character-owned rows add an `occupancy-id`, explicit
 `ownership` envelope and `effect-state`; new or updated weapons use exact Paper
 `item-bytes`. The original legacy item map and account attribution remain raw.
 Unresolved ownership or unreadable data is held for review.
+A row with an unparseable location retains its raw data without blocking deposits
+at unrelated valid coordinates. Known held coordinates remain reserved; duplicate
+occupancy IDs or valid occupied coordinates still hold the inventory.
 
 Legacy account owners migrate only after the reviewed heir directory is ready,
 using its exact account-matching character reference. Plans fix that recipient;
@@ -77,6 +81,8 @@ a changed heir mapping never redirects a retry. Missing or malformed owners are
 kept separately from legitimately ownerless stations. TLibs 2.6.0 supplies the
 character ownership and estate APIs. On an older API, character gear actions and
 migration remain unavailable until the supported APIs are installed.
+Participant startup failures with present APIs log the underlying cause at
+`SEVERE`, separately from the missing-API warning.
 
 Estate participant `magic-gear` transfers deposited gear and queued returns.
 It waits for every orb run touching the testator's gear, including public runs
@@ -104,7 +110,10 @@ Deposits, charges and releases persist intent before changing inventory or
 spawning world output. Abort refunds are queued under
 `data/gear-returns/<character UUID>/<operation UUID>.json`. Rested weapons return
 as the original item; fresh crafts refund their recorded materials. Delivery
-uses empty storage slots, retains any remainder and retries for the owning
+always targets the deposited character, even after a staff abort. Immediate
+delivery uses only that recipient's captured session; staff aborts for another
+character queue the property for its owner. Delivery uses empty storage slots,
+retains any remainder and retries for the owning
 character when its next valid session starts. A full inventory does not discard
 the queued remainder or hand it to an incoming character.
 
@@ -115,6 +124,9 @@ attunement. An explicit empty cost map remains a known material bypass.
 
 An interrupted deposit, charge, world release or inventory delivery is held with
 its evidence for staff review. Restart does not blindly repeat or discard it.
+Runtime scans preserve regular `magic-*.tmp` staging files without treating them
+as committed records. Temporary-looking directories or symlinks and malformed
+committed records still hold operations for review.
 Paper inventory/player saves, world item storage and Magic files are separate
 durability domains: this is not an arbitrary-crash exactly-once guarantee.
 Public ejection and missing-furniture cleanup still drop the weapon into the
