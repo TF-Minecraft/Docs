@@ -190,7 +190,8 @@ python3 tools/gear-ownership.py --legacy-empty-import \
 
 Preview writes nothing and returns `ELIGIBLE_REQUIRES_LINEAGE_ATTESTATION` with
 the baseline digest and file metadata. Put that exact digest and the fresh
-checkpoint/lineage evidence in an attestation file, then apply:
+checkpoint/lineage evidence in an attestation file, then apply using the same
+`--data` path through the same mount:
 
 ```sh
 python3 tools/gear-ownership.py --legacy-empty-import \
@@ -199,10 +200,12 @@ python3 tools/gear-ownership.py --legacy-empty-import \
   --backup /path/to/new-external-recovery
 ```
 
-Apply retains the zero source, attestation, tool hash and plan/result in the new
-verified backup, then publishes exactly `stations: {}` followed by a newline
-with the original mode. It refuses other content, links, history, sibling or
-staging evidence and changed metadata; it is not a generic blank-file repair.
+Apply first retains the zero source, attestation and plan (including the tool
+hash) in the new verified backup. It then publishes exactly `stations: {}`
+followed by a newline with the original mode, owner and group. Only after
+publication verifies does it write the successful result. It refuses other
+content, links, history, sibling or staging evidence and changed metadata; it
+is not a generic blank-file repair.
 It cannot combine with `--kind` or `--journal`. Exact canonical replay returns
 `ALREADY_CANONICAL` without another backup. On `REFUSED` or
 `PUBLISHED_UNCONFIRMED`, keep Paper stopped and preserve the evidence; preview
