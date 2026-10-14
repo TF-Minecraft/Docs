@@ -142,11 +142,17 @@ restoring a whole old snapshot would discard later progress. Do not restore a
 queued item that has already been delivered or consumed. Retain all recovery
 images and receipts; never make old and new queues authoritative together.
 
-If a live migration journal's retained legacy file is missing, every Recycler
-queue write is held and the tool refuses migration rollback. After confirming
-that no older JAR delivered it, restore its exact bytes from
-`ownership/backups/<before-hash>.bin`; the backup alone cannot prove it is safe
-to deliver again.
+If a live migration journal's retained legacy file is missing, deposits,
+refunds, deliveries and restart recovery are held, and the tool refuses
+migration rollback. Estate settlement and other legacy migrations can continue;
+follow the operation ID through estate receipts to its current character copy.
+After confirming that no older JAR delivered it, restore its exact bytes from
+`ownership/backups/<before-hash>.bin`. If an older JAR did deliver it, stop Paper,
+archive the current copy and its receipts, record that delivery and set any
+undelivered character copy to `cancelled` with a reason before restoring the
+legacy bytes. Reconcile already delivered copies manually. The restored legacy
+file is inert in this version and must stay outside the old queue on downgrade.
+The backup alone cannot prove that another delivery is safe.
 
 If apply fails after restoring some records, the report's `applied` paths name
 the completed actions alongside the original error. Preserve the backup and
