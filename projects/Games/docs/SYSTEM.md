@@ -17,6 +17,9 @@ All paths under `plugins/Games/` on the server.
 | `games.yml` | Per-game rules, layout, blackjack min/max / auto-dealer defaults, [hand card limits](#hand-card-limits). Live auto/mint/shuffle live on the table ([GUILD_TABLES.md](GUILD_TABLES.md)) |
 | `help.yml` | The rule books `/games help` opens, one section per book, pages written by hand |
 | `Data/tables/` | Gson for placed tables |
+| `migrations/table-ownership/` | Immutable original bytes and reviewed legacy-owner plans |
+| `estates/tables/` | Guarded private-table transfer intents and receipts |
+| `ownership-active` | Running/recovery marker; clean, unheld shutdown removes it |
 
 ### Hand card limits
 
@@ -36,6 +39,7 @@ games/
     deck/                         # shoe shuffle draw
     display/                      # ProtocolLib ItemDisplay + motion
     layout/                       # stack, fan, pot offsets
+    ownership/                    # character authority, raw migration and estates
     table/                        # placed deck, seats, persist
     select/                       # closest token on look ray
     wager/                        # denar and item transactions
@@ -108,9 +112,9 @@ Ace file and IA id is `_1` or `1`, not 14. Ace-high ranking is a poker flag, not
 
 `TLibs`, `ItemsAdder`, `ProtocolLib` and `DenarEconomy` are required. RPCharacters softdepend (character names and voice). SimpleFactions softdepend (guild auto cap + bank; [GUILD_TABLES.md](GUILD_TABLES.md)). SF does not depend on Games.
 
-The build pins TLibs **2.4.0**, DenarEconomy **0.3.0**, SimpleFactions **4.0.0** and RPCharacters **2.16.0**. Names use the shared
+The build pins TLibs **2.6.0**, DenarEconomy **0.3.0**, SimpleFactions **4.0.0** and RPCharacters **2.16.0**. Names use the shared
 character identity service; voice still uses RPCharacters' chat API. Deploy the
-pinned providers with Games and restart to activate them.
+pinned dependencies and compatible character/estate providers with Games and restart to activate them. Private table authority, migration and property settlement are described in [OWNERSHIP.md](OWNERSHIP.md).
 
 ## Displayed names
 
@@ -127,4 +131,4 @@ name. A null or blank display, an incompatible identity API, or a failing
 provider also falls back to the account name; only integration failures log a
 warning, once per server start. Offline players use their last known account
 name, or `-` when unavailable. Names are presentation only: player UUIDs, wagers,
-payouts and table ownership do not depend on them.
+payouts and table ownership do not depend on displayed names. Private owners and wagers use separate recorded character references.

@@ -26,10 +26,11 @@ Staff auto needs `games.autodealer.staff`. It is not the default for a normal pl
 On place, store:
 
 - `ownerPlayer` (placer UUID)
+- `ownerCharacterId` (captured placer character, `ownerIdentityVersion: 2`)
 - `ownerGuildId` (guild id at place time, or null for a personal table)
 - `ownerGuildIncarnation` (the owning guild's permanent UUID)
 
-Guild membership and leadership use the active character. Editing or picking up a guild table requires that character to lead the captured guild incarnation, or staff permission. The placer account alone gives no guild-table rights. The account remains the host of a personal table.
+Guild membership and leadership use the active character. Editing or picking up a guild table requires that character to lead the captured guild incarnation, or staff permission. The placer account alone gives no guild-table rights. A personal non-mint table uses its full recorded owner character; a nonguild staff-mint table retains staff authority. Guild metadata takes precedence over mint/counting flags for ownership classification. Mode edits preserve the separate owner record. See [OWNERSHIP.md](OWNERSHIP.md) for migration, session guards and private-property inheritance.
 
 The captured incarnation selects the `guild:<uuid>` Denars account. A deleted guild's later namesake cannot use its tables, bank or expansion slots. Missing guilds, unavailable faction services and unresolved incarnations refuse funding; tray settlement retains the table and chips for review instead of dropping money through a failure fallback.
 
@@ -77,11 +78,11 @@ Not during a live round.
 Right-click shoe (existing claim path):
 
 - Already this player: **unset** dealer.
-- Empty seat, human table: **set** if the player is in `ownerGuildId` (or staff). No guild on the table: placer / staff only.
+- Empty seat, human table: **set** if the player is in `ownerGuildId` (or staff). No guild/non-mint table: recorded owner character / staff only. Staff-mint mode requires the existing staff permission.
 - Guild auto, between rounds: **takeover** - become human dealer, `autoDealer=false`, tray and guild ownership stay.
 - Staff auto: guild members **cannot** takeover. Staff can turn mint off from options (when not live) or pick up the table.
 
-Leave-distance still does not clear dealer. Logout / pickup still does (existing).
+Leave-distance still does not clear dealer. Logout, character session end and pickup clear it. Pending estate transfers prevent new claims while captured work settles.
 
 ## Options GUI
 
