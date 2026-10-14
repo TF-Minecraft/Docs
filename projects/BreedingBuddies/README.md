@@ -31,7 +31,7 @@ versions. In Bash:
 
 The token needs Contents read access to TF-Minecraft/ServerAssets; CI supplies
 it from `DEPS_TOKEN`. See [build dependencies](../../PIPELINES.md#build-dependencies).
-`mvn clean verify` also runs the unit tests in `src/test/java`. The JAR is
+`tfmc-mvn -o -B clean verify` also runs the unit tests in `src/test/java`. The JAR is
 written to `target/breedingbuddies-<version>.jar`; nothing is shaded into it.
 
 At runtime, `plugin.yml` requires MMOItems, MythicLib and TLibs. Gameplay checks on a
