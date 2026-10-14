@@ -81,6 +81,20 @@ An invalid legacy `selected` pointer alone does not hold project inheritance
 when its original invalid pointer bytes remain recorded and unchanged; missing
 or conflicting pointer evidence and every other held record still require review.
 
+An already-open editor or library can keep reading its current character's
+projects during an ownership hold. Opening a menu or dialog and admitting a
+change still check the current ownership journals. Estate reconciliation checks
+current journals before an operation first makes a backup, writes a plan or
+publishes a transfer; its pass snapshot is used only to identify operations with
+no effects. Edits and recordings already accepted for the captured character
+finish saving before that character's studio can transfer, including during
+session end and clean shutdown.
+
+Each change still reads and hashes every current journal. Before a future Main
+rollout, measure the retained history: at most 1,000 journals and a warmed scan
+around 10 ms are the deployment gate. A larger or slower history needs a separate
+exact-byte design and review before Main activation.
+
 Inspect journals and unassigned legacy paths from the source checkout:
 
 ```sh
