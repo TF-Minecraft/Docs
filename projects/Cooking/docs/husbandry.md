@@ -137,7 +137,9 @@ ready character. New heir/estate entry points are capability-probed before their
 bridge classes load: an older provider retains legacy slots or dead characters'
 property instead of guessing a current character.
 
-The boot task and hourly reconcile wait for `Characters.legacyHeirsReady()`.
+The boot task waits for `Characters.legacyHeirsReady()` and retries pending
+migration every minute. Identical pending warnings are suppressed; after
+publication, immutable held plans are checked and reported hourly.
 Each original account slot maps only through its reviewed `legacyHeir`; a dead
 reviewed heir remains the migration recipient. One SQLite transaction copies all
 legacy owner columns into the immutable archive, verifies its count, writes the
@@ -160,7 +162,12 @@ ownership transfer.
 All slots, recipient merges and receipts for one estate revision commit in one
 SQLite transaction. `husbandry_estate_intents` records the full decision identity,
 revision and from/to refs; `husbandry_estate_slots` records IDs and before/after
-roles. Exact `Estates.guardHolds` checks before mutation and before commit reject
+roles. The decision text is Cooking's fixed rendering of all twelve TLibs 2.6.0 fields,
+independent of runtime record text. Future fields require an explicit versioned
+encoding upgrade that continues validating these captured receipts; unknown
+recipient kinds block without writing ownership or receipt rows.
+
+Exact `Estates.guardHolds` checks before mutation and before commit reject
 revival, re-death, changed recipients and newer revisions. Repeated settlement
 reports the cumulative moved IDs without moving them again, including later WAITING/FROZEN revisions. Raw source/recipient
 rows, including unknown nullable or BLOB fields, remain in
@@ -208,7 +215,8 @@ since migration. To restore the original account slots for an old Cooking JAR:
 python3 tools/husbandry-ownership-rollback.py /path/to/plugins/Cooking/Data/husbandry.db --apply --backup /path/to/husbandry-before-rollback.db
 ```
 
-The tool refuses to overwrite a backup, makes a verified SQLite backup including
+The tool creates its new recovery file exclusively with mode `0600`, refuses to
+overwrite a backup, makes a verified SQLite backup including
 committed WAL pages, and restores only archived account slots whose animal still
 exists. It never resurrects a deleted animal. Current animal progress/snapshots
 and the character tables/journals remain preserved; old Cooking ignores the
@@ -307,7 +315,7 @@ A forced stop can kill the server before it saves chunks, so an owned animal tha
 
 - Every minute, on chunk unload and on disable, each loaded **owned** animal is serialized into the `snapshots` table (one row per animal, cascading from `animals`).
 - At start, after the saved-chunk scan, an owned animal found in no saved chunk of its world and under no logged-out rider (`playerdata` `RootVehicle`) is lost. If it has a snapshot, Cooking spawns it again at the captured position with its UUID, name, coat, gear, owners and stats, and logs `Restored lost animal …`. If the entity turns up with its chunk first, nothing is spawned. If the spawn is refused, it stays `Missing` and is retried at the next start.
-- Without a snapshot, the row and owners are deleted and `Dropped ghost animal …` is logged.
+- Without a snapshot, the row and owners are deleted and `Dropped ghost animal …` is logged. An incomplete estate intent prevents ghost deletion: the record stays `Missing` for staff review, retaining existing animal, owner and snapshot rows and account capacity. The scan continues with other animals and counts these records as held.
 - A scan that could not read some chunk or player file restores and drops nothing.
 - Death deletes the snapshot with the row. Any other removal except a chunk unload or a rider logging out (plugin removal, discard) deletes the snapshot too, so a deliberately removed animal is not brought back.
 - `restore-lost-animals: false` turns restoring off; lost animals are then dropped as ghosts.
