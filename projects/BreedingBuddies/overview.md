@@ -391,8 +391,13 @@ offline characters. Every fanout plan includes existing recipient and emptied
 former-owner files; it durably writes the intent first and forces each atomically
 replaced file and directory before acknowledging completion. Each output must
 still match its captured before state or the desired after state. A conflicting
-post-plan edit stays held instead of being overwritten. Routine saves use the
-same journal so a crash cannot make the next boot choose an arbitrary copy.
+post-plan edit stays held instead of being overwritten. Changed routine saves use
+the same journal so a crash cannot make the next boot choose an arbitrary copy.
+Unchanged saves skip journal creation only after checking the archived source,
+current file inventory and bytes, held-record evidence and pending journals.
+Any unfinished token effect still requires retained publication evidence.
+Completed journals remain available; there is no automatic pruning, so storage
+and journal scans still grow with actual changes.
 Version 1 journals bind their kind to their envelope and validate every desired document against captured source bytes and canonical rows before publishing. Unsupported paths/versions, extra or omitted animals, changed unrelated estate state, inconsistent slots and duplicate JSON keys at any nesting depth stay BLOCKED without rewriting their bytes. Held IDs require independent preservation evidence; a changed hold map cannot hide an ordinary source row. Journals freeze full unfinished token-effect snapshots and validate their fixed identity/session/item/animal-before fields. A later reviewed completion can release that animal without invalidating a historical estate receipt. Keep the original fixed effect fields and any captured owner-publication evidence when recording that resolution. Every destination is checked again immediately before its write.
 
 Autosave and `savedata` are skipped while a daily change is queued; disable saves
@@ -437,6 +442,9 @@ estate staff retry/waive workflow; do not clear a journal to force a new recipie
 
 ### Offline rollback
 
+This prepares legacy account files for reinstalling the old account-based JAR.
+It does not switch JARs or make the current character-aware JAR use legacy data;
+the migration manifest and character data remain authoritative for that JAR.
 Use normal deployment downtime before preview/apply. From the source checkout:
 
 ```sh
@@ -452,7 +460,8 @@ This avoids resurrecting animals or silently discarding subsequent progress.
 
 A permitted apply refuses an existing/overlapping backup path, copies the entire
 data directory, verifies every file's SHA-256 and forces the recovery image before
-restoring the unchanged account source documents. Character data, unknown fields
+restoring the unchanged account source documents as exact UTF-8 bytes, including
+original line endings. Character data, unknown fields
 and journals remain available. The old JAR reads account files; reinstalling it
 alone can expose obsolete ownership/progress. Keep the recovery image and review
 any old-version writes before upgrading again. Source/archive contraction is a
@@ -484,11 +493,13 @@ restart, failure after individual fanout publications and edits to later destina
 pre-publication token I/O refusal and post-debit receipt holds, strict estate guards,
 co-owner merges, cumulative replay, completed-receipt/source restoration conflicts, valid-JSON journal tampering, nested duplicate keys and conservative rollback conflicts. The
 existing zero-missed production-line gate remains enabled. Actual older TLibs
-classloader probes prove optional API isolation. A synthetic real Paper fixture
-with unchanged production authority/menu/mount classes proves mounted A-to-B
-isolation, stale menu refusal and resolved co-owner access with a held sibling.
-Actual older TLibs also passed that probe. The controlled entrypoint/provider
-proves those hooks, not full plugin startup or RPCharacters selection/body flow.
+classloader probes check optional API isolation. Synthetic real Paper checks
+should exercise mounted A-to-B isolation, stale menu refusal and resolved
+co-owner access with a held sibling, using current production classes and the
+same farm-type configuration initialization as normal startup. Retain per-class
+byte comparisons; fixture results do not carry forward to changed bytecode.
+A controlled entrypoint/provider checks those hooks, not full plugin startup
+or RPCharacters selection/body flow.
 
 ### Operational caveats
 
