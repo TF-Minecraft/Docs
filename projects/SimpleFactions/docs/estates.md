@@ -9,7 +9,10 @@ while vehicles wait for an estate.
 
 Estates need TLibs 2.6.0 or newer. SimpleFactions checks for the estate API
 once. On an older TLibs it enables as usual and takes no part in estates.
-Estate errors are logged and never put faction money into recovery.
+The bridge isolates estate API probing, calls and registration from financial
+failures. An unavailable API disables estate integration; registration errors
+are logged. A failed vehicle registry write during an estate move still follows
+the ordinary financial fail-closed path and disables SimpleFactions.
 
 See [Character membership and migration](characters.md) for death cleanup and
 [Vehicle owners](vehicle-owners.md) for the vehicle stores.
@@ -40,8 +43,10 @@ dead character. RPCharacters checks.
 Journals written before 4.2.0 have no `lockGuildRealm`. For those, the realm is
 the one realm whose saved rights plan lists the guild. If no plan or several
 plans list it, the realm is unknown, and RPCharacters treats it as gone.
-SimpleFactions 4.1.0 drops `lockGuildRealm` when it rewrites a journal, and the
-same fallback applies after upgrading again.
+SimpleFactions 4.1.0 drops `lockGuildRealm` when it rewrites a journal, and a
+payment rewrite can also drop the audit-only `closedBy` field. The stored-plan
+realm fallback still applies after upgrading again; closed cleanup steps remain
+unreplayed.
 
 ## Revived and re-dead characters
 
@@ -110,8 +115,10 @@ A replay after a crash looks at the row and owner as they are now:
 If the owner write fails for any reason other than a missing vehicle, the
 previous row is put back and the participant retries. If the vehicle is
 missing or cannot be read on three checks at least an hour apart, it is listed
-for staff (BLOCKED). The row is not put back, so upkeep never falls on the dead
-owner. The participant's own hourly run leaves a listed vehicle alone. Staff fix
+for staff (BLOCKED). This also covers a vehicle destroyed after an earlier failed
+step, when both its owner metadata and registry row are gone. The row is not put
+back, so upkeep never falls on the dead owner. The participant's own hourly run
+leaves a listed vehicle alone. Staff fix
 the vehicle and run `/estate retry <deathId> simplefactions-vehicles`, which
 reads it once more, or handle it by hand and waive it. A vehicle planned for a
 recipient other than the decision's is also listed, never reported as moved.
@@ -136,9 +143,12 @@ the vehicle has not moved yet. Settlement marks no new unpaid day for it, and
 the hourly upkeep does not damage it. An unpaid day marked before the death
 stays until the recipient pays. Storage is free while property waits or is
 frozen. The pause also lasts while the vehicles participant is not registered
-(VehicleFramework older than 2.13 or not in characters mode), until staff
-assign or revert the estate. If staff revert an estate, the vehicle stays with
-the dead owner and upkeep applies as before, even if its property was frozen.
+(VehicleFramework older than 2.13 or not in characters mode). For decided character
+property, the pause ends when registration and infrastructure recover and the
+vehicle moves, or when staff revert the estate, or the payer is revived.
+Staff cannot reassign character property. If staff revert an estate, the vehicle
+stays with the dead owner and upkeep applies as before, even if its property was
+frozen.
 
 ## Files
 

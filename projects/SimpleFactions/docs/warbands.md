@@ -83,10 +83,11 @@ player lists until safe repair and a validated reload at restart. Death cleanup
 uses the same preserving writer; a refused or failed death-cleanup save disables
 all SimpleFactions features and leaves its death journal step incomplete. A
 persistent file conflict needs stopped repair before restart can recover; restart
-alone can fail again. A held file excluded by the loader, including one represented
-only by an inert campaign-side shell at startup, keeps an existing warband step
-pending without rewriting the file while other death steps can continue. Already
-loaded warbands still propagate a rejected death save. After the warband safely
+alone can fail again. A held warband with no successfully saved state—an unloaded
+file, an inert campaign-side shell at startup, or a new warband whose first save
+failed—keeps an existing warband step pending without rewriting the file while
+other death steps can continue. Warbands with saved state still propagate a
+rejected preserving death save and disable SimpleFactions. After the warband safely
 reloads at restart, death reconciliation replays that step with its original
 character and successor.
 
