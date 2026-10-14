@@ -37,7 +37,12 @@ python3 tools/ownership-rollback.py /path/to/plugins/CompanionPets plan-0001 --a
 
 The first command previews. Applying is accepted only while the current file exactly matches the migration's planned hash and the immutable archive verifies. `pets.pre-rollback.yml` preserves the current file. Any gameplay, estate or later migration changes produce a conflict; reconcile them manually rather than overwriting them. Never remove `pet-deletions.log` to resurrect deleted pets.
 
-An older JAR alone is not a rollback: it cannot enforce character ownership and discards unknown fields during saves. Restore/convert the matching legacy data while stopped, then use the corresponding JAR. Restoring an old source copy can discard subsequent care, grants, item state and estates; the preview deliberately refuses that case.
+An older JAR alone is not a rollback: it cannot enforce character ownership and
+discards unknown fields during saves. Once `pets.yml` has changed, the migration
+tool refuses rollback. Stay on the character-aware JAR and fix forward, or review
+the care, grants, item state and estates that would be lost before restoring a
+complete pre-upgrade snapshot and its corresponding JAR while stopped. There is
+no automatic conversion of later character data into the old format.
 
 ## Verification boundaries
 

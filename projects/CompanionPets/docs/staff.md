@@ -28,16 +28,18 @@ root aliases. Running `/companionpets` shows help and examples.
 
 ## Browsing characters and pets
 
-Tab completion suggests player names first, then only that player's pet names.
-Names can contain spaces. Duplicate pet names are never resolved arbitrarily:
+Tab completion suggests owning characters' display names, then that character's
+pet names. Creation also offers online account names. The character argument is
+one token: use its character UUID when its name contains spaces or is ambiguous.
+Pet names can contain spaces. Duplicate pet names are never resolved arbitrarily:
 select the pet from `list` to view its identity internally. There is no player
-inventory: select the owner using command completion.
+inventory.
 
 The selected pet's staff inventory shares the normal pet profile: species,
 name, sex, age, needs, bond, personality, favourite toy and learned tricks. It
 is read-only, including its trick inventory; renaming, calling, Pet House and
-release actions are omitted. No UUIDs or audit snapshots are required or shown
-in command help, completion or pet cards. Menu layout and navigation are
+release actions are omitted. Character UUIDs can identify owners in commands;
+pet cards do not expose audit snapshots. Menu layout and navigation are
 described in the [gameplay guide](gameplay.md#menus).
 
 ## Creating pets
