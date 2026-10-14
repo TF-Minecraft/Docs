@@ -78,7 +78,7 @@ Choose a project to open its technical documentation and source repository link.
 | [GunsAndGadgets](projects/GunsAndGadgets/README.md) | Configurable firearms, ammunition, and gadgets. |
 | [Infestations](projects/Infestations/README.md) | Province infestations, ambient monsters, and lure raids. |
 | [SimpleFactions](projects/SimpleFactions/README.md) | Nations, diplomacy, taxation, and ProvinceSystem map integration. |
-| [TFMCSpiders](projects/TFMCSpiders/README.md) | Procedurally animated, staff-operated spiders. |
+| [Spiders](projects/Spiders/README.md) | Procedurally animated, staff-operated spiders. |
 | [TrialRooms](projects/TrialRooms/README.md) | Keyed dungeon rooms, levelled MythicMobs encounters, and rarity-rolled loot. |
 | [VehicleFramework](projects/VehicleFramework/README.md) | Configurable vehicles, movement physics, turrets, and weapons. |
 | [VFBuilders](projects/VFBuilders/README.md) | Vehicle construction stations and blueprints for VehicleFramework. |

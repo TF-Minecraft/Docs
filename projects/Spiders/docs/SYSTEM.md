@@ -1,6 +1,6 @@
-# TFMCSpiders - Behaviour, commands and tools
+# Spiders - Behaviour, commands and tools
 
-TFMCSpiders draws procedurally animated Cinderweaver spiders and mimics with
+Spiders draws procedurally animated Cinderweaver spiders and mimics with
 vanilla display entities. Spiders are staff-operated test entities: they have no
 health, loot, eggs, nests or hostile AI, and pounces and hits do no damage.
 
