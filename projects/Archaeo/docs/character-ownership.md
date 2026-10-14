@@ -55,10 +55,38 @@ Every historical director, excavator, worker and prospect actor must resolve via
 `Characters.legacyHeir` after `legacyHeirsReady`. Missing historical worker or
 sample identity can hold the entire dossier, even when its director is known.
 The fixed mapping records unresolved entries; no later active character replaces
-them automatically. Staff must review the original evidence and assign the fixed
-mapping explicitly while offline. Never delete a held site or treat it as absent
-property. Held locations block overlapping creation; unlocatable held dossiers
-conservatively block new occupancy until reviewed.
+them automatically. Never delete a held site or treat it as absent property.
+Held locations block overlapping creation; unlocatable held dossiers conservatively
+block new occupancy until reviewed.
+
+To resolve a missing heir in an existing fixed plan:
+
+1. Stop Paper cleanly and back up the complete `plugins/Archaeo/` directory.
+2. Inspect `ownership/plans/<site UUID>.yml`. Proceed only if this plan has never
+   produced a journal: if any live or archived journal names the dossier in its
+   `file` field, leave the plan unchanged for manual recovery. The current legacy
+   dossier must exactly match both the plan's `source` text and
+   `ownership/source/<site UUID>.yml`.
+3. Verify each missing account's
+   [reviewed RPCharacters heir](../../RPCharacters/docs/character-bodies.md).
+   Replace only that account's null `legacy-map` value with its full reference,
+   using canonical UUIDs. For example, this mapping entry has the format:
+
+   ```yaml
+   legacy-map:
+     11111111-1111-4111-8111-111111111111:
+       account: 11111111-1111-4111-8111-111111111111
+       character: 22222222-2222-4222-8222-222222222222
+   ```
+
+   The `account` must match its legacy key, and the reviewed character must belong
+   to that account. Keep `version: 1`, `source`, every other mapping entry and the
+   exact historical actor key set unchanged. Never edit the immutable original,
+   current dossier or a journal to choose an heir. Without a reviewed heir, leave
+   the null entry and dossier held.
+4. Restart after checking the YAML. Archaeo validates the fixed mapping and writes
+   a migration journal before publishing the character dossier. Any unresolved
+   actor or conflicting evidence keeps the dossier held for staff recovery.
 
 Unknown maps, row fields, typed binary scalars and explicit nulls survive migration
 and routine saves/restarts. A recognized field that the runtime cannot preserve
