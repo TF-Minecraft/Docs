@@ -35,10 +35,13 @@ the account may join warbands only on that side, so a player cannot leave a
 warband, switch character and fight for the enemy. Other characters may still
 fight for the same side.
 
-The tie is checked on campaign battle signups, `/raid join` and automatic raid
-defender enrollment, which skips a tied account. It is stored per war in
-`Wars/war_<id>.json` as `accountCoalitions`, mapping account UUIDs to
-`aggressor` or `defender`, and survives restarts.
+The tie applies to every warband of an active war: campaign battle warbands and
+raid warbands from the muster onwards. It is checked when joining one through
+`/warband join`, the warband list, `/raid join` or a rejoin after quitting, and
+automatic raid defender enrollment skips a tied account. At startup, members
+already enrolled in a war's warbands are tied to their side. Ties are stored
+per war in `Wars/war_<id>.json` as `accountCoalitions`, mapping account UUIDs
+to `aggressor` or `defender`.
 
 ## Legacy expansion
 
