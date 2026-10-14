@@ -8,6 +8,12 @@ Each character has its own journal in `plugins/Codex/characters/<character>.yml`
 
 Between characters, for example in the selection room, a player has no journal. Discoveries, rewards and `/codex` entries wait until a character is in play.
 
+## Out-of-character reference
+
+An entry any of the account's characters has found, alive or dead, stays unlocked in `/codex`, and its click actions (sub-pages) still work. Its hover text then names the living characters who can use it in character, the played character first: "Aldric and Mira can use this in character." If only dead characters found it, the line reads "No living character can use this in character." When the played character has not found the entry itself, a further line says "Aldric knows this only out of character." These three lines are `knownInCharacterBy`, `knownInCharacterByNobody` and `knownOutOfCharacterOnly` in `messages.yml`, and Codex adds them to existing files.
+
+Codex reads the other characters' journals when a session starts, since they cannot change while the account plays someone else, and again after `/codex reset *`. Category progress, completion rewards and placeholders count only the played character's own discoveries.
+
 A journal file records `owner` (the account UUID), `name` (the account name when last saved) and, for each category, whether it is completed and its discoveries as `id;date;millis`.
 
 ## Discoveries from before characters
