@@ -14,7 +14,7 @@ Events:
     data_scope: character
 ```
 
-A per-character event runs only while a character is in play. It does not run at join before a character is chosen, in the selection room, or after the session has ended on quit, so use the account scope for join and leave events. Per-account events behave as before. Any other `data_scope` value logs a warning and counts as `account`.
+A per-character event runs only while a character is in play, and never for events without a player such as `player_pre_join` or `server_start`. It belongs to the character it started for: if that character leaves before a delayed action is due, for example during `wait_ticks`, the rest of the actions are dropped and the run's one-time flag and cooldown are undone, so the character can earn it again. It does not run at join before a character is chosen, in the selection room, or after the session has ended on quit, so use the account scope for join and leave events. Per-account events behave as before. Any other `data_scope` value logs a warning and counts as `account`.
 
 Use the character scope for anything a character learns or earns, such as Codex unlocks, since [Codex](../Codex/overview.md) keeps a journal per character. Keep supporter perks and other account rewards per account. The supporter EXP booster is `/tfmc booster` in TFMCCore and is per account.
 

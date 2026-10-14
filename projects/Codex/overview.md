@@ -4,7 +4,7 @@
 
 ## Journals per character
 
-Each character has its own journal in `plugins/Codex/characters/<character>.yml`. Codex opens it when the character's session starts and saves it when the session ends, whether by switching, quitting, death or shutdown. It also saves open journals every `player_data_save` seconds. A new character starts with an empty journal, so it discovers places and lore again and earns their rewards again, such as the Player EXP for a point of interest.
+Each character has its own journal in `plugins/Codex/characters/<character>.yml`. Codex opens it when the character's session starts and saves it when the session ends, whether by switching, quitting, death or shutdown. It also saves open journals every `player_data_save` seconds. If a journal cannot be written when its session ends, Codex logs an error, keeps it in memory and retries with every save; the character gets it back if it returns first. A new character starts with an empty journal, so it discovers places and lore again and earns their rewards again, such as the Player EXP for a point of interest.
 
 Between characters, for example in the selection room, a player has no journal. Discoveries and rewards wait until a character is in play, and `/codex` answers `noCharacterInPlay` ("Choose a character to open the Codex.") instead of opening.
 
