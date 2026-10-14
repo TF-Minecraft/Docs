@@ -50,8 +50,8 @@ confirmation are cleared, so it must choose and confirm again. A player without 
 active character is told so and cannot start a run.
 
 Deposited weapons belong to the full account and character that prepared or
-rested them. Abort and material-refund actions require that character or
-`magic.admin`. Charging and empty-hand ejection remain public to active living
+rested them. Abort and material-refund actions require the station's current
+owning character or `magic.admin`. Charging and empty-hand ejection remain public to active living
 characters. An ownerless legacy station retains public charging and ejection;
 its active run records the initiating character. Abort returns require the
 station's full character owner, including when staff act. Ownerless or unresolved
@@ -120,12 +120,16 @@ the queued remainder or hand it to an incoming character.
 A fresh craft with a missing, malformed or overflowing recorded material payment
 cannot automatically refund today's recipe. Its weapon and raw record stay on
 the station for staff review; it can still be charged and publicly ejected after
-attunement. An explicit empty cost map remains a known material bypass.
+attunement. An explicit empty cost map remains a known material bypass. After
+release is acknowledged, its empty abort return is recorded as delivered without
+granting items. Older empty pending returns are acknowledged through the owning
+character's checked delivery path; held returns remain held.
 
 An interrupted deposit, charge, world release or inventory delivery is held with
 its evidence for staff review. Restart does not blindly repeat or discard it.
-Runtime scans preserve regular `magic-*.tmp` staging files without treating them
-as committed records. Temporary-looking directories or symlinks and malformed
+Runtime scans and the offline return inventory preserve regular `magic-*.tmp`
+staging files without treating them as committed records. The recovery backup
+retains their bytes. Temporary-looking directories or symlinks and malformed
 committed records still hold operations for review.
 Paper inventory/player saves, world item storage and Magic files are separate
 durability domains: this is not an arbitrary-crash exactly-once guarantee.
@@ -160,9 +164,16 @@ ownership. It saves and verifies gear-only recovery bytes first, preserves
 unrelated station rows and archives rolled-back journals and receipts. Untouched
 planned records are no-ops. Restore errors require preserving the backup and
 keeping Paper stopped for manual recovery. The tool never replays physical
-effects or changes profiles/focus. Do not downgrade a progressed station to an
-older JAR: the retained legacy item map may precede its newer authoritative item
-bytes.
+effects or changes profiles/focus.
+
+Never start an older Magic JAR against data this version has used. Older JARs
+ignore `effect-state`, character ownership and `data/gear-returns/`. A released
+migrated station still retains its legacy `item` map, so it reappears and can be
+ejected again, or drops the weapon again when its furniture is gone. Inherited
+stations revert to the original account's abort/refund authority, and queued
+refunds stop being delivered. Roll back only by restoring the complete offline
+pre-upgrade checkpoint, including Magic data, worlds and player data. A JAR-only
+or plugin-folder-only rollback is not supported.
 
 ## Staff weapon commands
 
