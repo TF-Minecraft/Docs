@@ -145,10 +145,15 @@ reviewed heir remains the migration recipient. One SQLite transaction copies all
 legacy owner columns into the immutable archive, verifies its count, writes the
 fixed plan, inserts resolved character slots and writes completion. The archive
 includes committed WAL content through SQLite itself and cannot cascade away
-when an animal dies. SQL failures and runtime exceptions roll back the archive,
-plan and ownership publication together. Under TLibs 2.6.0, a JVM `Error` inside
-the transaction can commit partial rows instead; an unfinished migration then
-requires staff repair using the preserved archive and legacy rows.
+when an animal dies. TLibs **2.6.1** rolls back the archive, plan and ownership
+publication together on any transaction body failure, including a JVM `Error`.
+An uncertain rollback discards the connection; a clean server restart reopens
+husbandry storage.
+Verify that TLibs 2.6.1 is loaded before running ownership migrations; Cooking's
+compilation pin remains 2.6.0, with the same public API. Under TLibs **2.6.0 and
+earlier**, a JVM `Error` inside the transaction can commit partial rows instead.
+An unfinished migration written under those providers still requires staff repair
+using the preserved archive and legacy rows; upgrading TLibs does not repair it.
 Missing heirs, malformed identities, unknown roles and
 conflicting slots remain recorded for staff; another character never claims them
 by opening a menu. Animal rows, snapshots, care, genes, timers and unknown columns
@@ -185,8 +190,11 @@ and character references must agree with the recorded decision.
 Completed IDs must also agree with the preserved source archive for that
 death/revision; missing or changed receipt IDs cannot authorize another transfer.
 
-SQL failures, runtime exceptions and process interruption roll back the
-transaction. The TLibs 2.6.0 JVM-error boundary above also applies to estates.
+TLibs **2.6.1** rolls back transaction body failures, including a JVM `Error`;
+process interruption rolls back uncommitted SQLite work. An uncertain rollback
+also requires a clean server restart. Under TLibs **2.6.0 and earlier**,
+a JVM `Error` can leave partial estate rows; upgrading the provider does not
+repair those existing rows.
 A retained incomplete intent
 or conflicting same-revision receipt is BLOCKED for review; affected ownership
 writers refuse changes while resolved co-owners can still care for or ride their
