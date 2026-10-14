@@ -95,23 +95,31 @@ and routine saves/restarts. A recognized field that the runtime cannot preserve
 holds the dossier for reviewed recovery. Such a dossier remains in the raw
 inventory and estate holdings even if it cannot enter the runtime cache. Gameplay
 writes compare the current file with the exact loaded source; conflicting external
-edits are retained. Known transient write failures permit only a checked retry.
+edits are retained. An unreadable dossier at its own save boundary becomes a
+held conflict, preserving dirty progress and the actual read error in a snapshot.
+Known transient write failures permit only a checked retry; restore storage and
+flush that progress successfully before shutdown.
 
 Unexpected runtime additions, edits, removals or individual unreadable files hold
 the affected names and refuse new-dossier creation and estate inventory operations
 until re-inventoried. Checked healthy existing sites can still save their progress.
-A failed directory listing, or unreadable raw data during the full startup
-preflight, keeps the whole inventory unavailable until a complete retry succeeds.
+A failed directory listing keeps the whole inventory unavailable. Hourly retry,
+`/archaeo reload` and restart re-run the full preflight: an individually unreadable
+file then makes the whole inventory unavailable until it is readable and a
+complete retry succeeds. Healthy dirty progress is flushed before that preflight;
+restore readability promptly.
 Reload retains unchanged live site instances and promptly loads a released site.
 Sampling cancels if its captured site has been replaced.
 
 A refused first save with no checked source and no published file drops only that
 unpublished creation from the cache and flush queue; it creates no conflict
 snapshot or phantom holding. A file already published before failure remains
-protected. A dossier known absent through validated active conflict evidence stays
-held and reserves its recorded chunks, but does not count as a new inventory
-mutation on every retry. Unrelated creation and estates can proceed when the
-remaining inventory is unchanged. Reappearance or another unexpected change
+protected. Any validated active conflict whose current dossier is verifiably
+absent stays held and reserves its recorded chunks, regardless of whether its
+snapshot recorded present bytes, absence or a read error. It does not count as
+another inventory mutation on every retry. Unrelated creation and estates can proceed when the
+remaining inventory and possible ownership permit it. An unknown read-error frame
+still protects every character, including after deletion. Reappearance or another unexpected change
 still requires re-inventory.
 
 Before removing held dirty progress from the flush queue, Archaeo writes an
@@ -152,8 +160,10 @@ restoring an old source blindly is not reconciliation. If an older snapshot has
 both `source: null` and `current: null`, establish from backups, logs, world and
 inventories that no dossier was published and no effects occurred before recording
 that decision and archiving it unchanged. Inconclusive cases remain held.
-`current-error` means the file could not be read, not that it is absent: restore
-readability and inspect its actual contents first.
+`current-error` means the file could not be read, not that it was absent. Current
+absence needs a separate filesystem check. Restore a reviewed dossier and
+readability, then inspect its actual contents and reconcile progress/effects;
+deletion alone never resolves or discards the read-error evidence.
 
 ## Estate handover
 

@@ -45,7 +45,8 @@ Python 3 and PyYAML:
 python3 -m unittest discover -s tools -p 'test_site_ownership.py'
 ```
 
-The 14 recovery fixtures cover exact CRLF originals, unknown binary/null fields, verified full backups,
+The 18 recovery fixtures cover exact CRLF originals, unknown binary/null fields, verified full backups,
 semantic corruption, invalid later journals, gameplay drift and retained
-estate/placement evidence. See [ownership and recovery](character-ownership.md)
+estate/placement evidence, including active and archived runtime conflicts.
+See [ownership and recovery](character-ownership.md)
 for the operator procedure.
