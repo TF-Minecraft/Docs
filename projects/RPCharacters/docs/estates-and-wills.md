@@ -86,8 +86,8 @@ is listed for staff and not called again until staff clear it. A participant tha
 restart (Thievery) answers "at restart" until its startup pass reports. Each answer is stored with its
 counts and the IDs of the records it moved, and the owner's website roster is updated.
 
-RPCharacters' own participant is `rpcharacters-body`, below. Money, vehicles, locks, shops, stations
-and letters are covered in their plugins' guides.
+RPCharacters' own participant is `rpcharacters-body`, below. Other holdings are covered in each
+participating plugin's guide.
 
 ## The stored body
 
@@ -161,8 +161,8 @@ the last website request ID, so a website request whose acknowledgement was lost
 these keys on its next save, so back up `characterdata/` before rolling back.
 
 In game, `/will` or the **Will** button on the Character Info screen opens a dialog for the character
-being played. It shows the heir, what the estate holds today (from each participant) and that pets and
-animals are not included yet. **Name an heir** takes a name; one match asks for confirmation with name,
+being played. It shows the heir and what the estate holds today, including pets and animals when their
+ownership systems take part in estates. **Name an heir** takes a name; one match asks for confirmation with name,
 race, short ID and "on your account" where it applies, several matches give a list to choose from, and
 characters played by players within 16 blocks are offered as buttons. Every click checks that the same
 character is still being played; the buttons work once and expire after ten minutes.
