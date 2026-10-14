@@ -69,8 +69,10 @@ Every part must report `SUCCESSFULLY_LOADED`. A failed multipart request or its
 fallback also has a 180-second timeout. Decline or discard fails the attempt
 without another automatic prompt. Minecraft may disconnect a player who refuses
 a required pack. Fallback success counts only after that entire pack loads.
-Each required attempt uses fresh pack UUIDs, and a disconnected player's late
-responses cannot complete a newer attempt.
+A connection's first required request uses stable pack UUIDs built from each
+pack's hash. Minecraft caches downloads by UUID and hash, so an unchanged pack
+loads from the client's cache on later joins. Retries on the same connection use
+fresh UUIDs, and late responses to an earlier attempt cannot complete a newer one.
 
 Core publishes `loading`, `ready` or `failed` under Bukkit player metadata
 `tfmccore:required-pack`, owned by the current Core plugin instance. This is
