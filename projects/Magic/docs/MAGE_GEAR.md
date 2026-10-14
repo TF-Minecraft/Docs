@@ -110,7 +110,7 @@ Deposits, charges and releases persist intent before changing inventory or
 spawning world output. Abort refunds are queued under
 `data/gear-returns/<character UUID>/<operation UUID>.json`. Rested weapons return
 as the original item; fresh crafts refund their recorded materials. Delivery
-always targets the deposited character, even after a staff abort. Immediate
+always targets the station's owning character, even after a staff abort. Immediate
 delivery uses only that recipient's captured session; staff aborts for another
 character queue the property for its owner. Delivery uses empty storage slots,
 retains any remainder and retries for the owning
