@@ -27,6 +27,19 @@ reference after that session has become noncurrent. Rejoining restores only its
 recorded character. Raid muster deduplication remains account-wide and is not
 cleared by switching characters or leaving a warband.
 
+## War sides
+
+A war ties each Minecraft account to the coalition of its first warband
+signup, whichever character made it. Until that war ends, every character on
+the account may join warbands only on that side, so a player cannot leave a
+warband, switch character and fight for the enemy. Other characters may still
+fight for the same side.
+
+The tie is checked on campaign battle signups, `/raid join` and automatic raid
+defender enrollment, which skips a tied account. It is stored per war in
+`Wars/war_<id>.json` as `accountCoalitions`, mapping account UUIDs to
+`aggressor` or `defender`, and survives restarts.
+
 ## Legacy expansion
 
 Warband files live under `plugins/SimpleFactions/Warbands/warband_<id>.json`.
