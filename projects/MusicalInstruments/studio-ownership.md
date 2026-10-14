@@ -7,7 +7,10 @@ project library, selected project, pending takes and editing authority. Switchin
 characters or leaving finishes the outgoing take using its captured character,
 stops private previews and closes studio menus. Delayed menu/dialog responses
 check the initiating session; a response from an earlier session cannot edit the
-incoming character's project or consume its disc.
+incoming character's project or consume its disc. A running take refuses another
+recording, project changes, deletion or selection until `/music stop`; the
+recording guard uses the player account while its saved project retains the
+captured character authority.
 
 The original song author and author account remain on the project. Inheriting a
 project grants editing authority without changing that attribution. Published
@@ -69,7 +72,14 @@ interrupted runs to resume the same planned recipient. Original account files
 remain retained and inert. A recipient with a selected project keeps that
 selection; migration supplies the legacy selection only when none is present.
 Unsupported, corrupt or identity-mismatched records are held. A conflicting
-recipient project is not overwritten.
+recipient project is not overwritten. Readable migration failures hold only
+their planned character and do not stop later accounts from migrating; one
+initial attempt logs all account failures, and the hourly task retries them.
+Unreadable or malformed ownership journals still refuse all studio edits and
+transfers; a missing captured authority envelope is never treated as unrelated. Estates wait for their account’s migration to complete.
+An invalid legacy `selected` pointer alone does not hold project inheritance
+when its original invalid pointer bytes remain recorded and unchanged; missing
+or conflicting pointer evidence and every other held record still require review.
 
 Inspect journals and unassigned legacy paths from the source checkout:
 
@@ -98,6 +108,11 @@ are receipts and are not redirected automatically when staff later change a
 recipient. A newer decision can replace an untouched plan. If any output was
 published under an older decision, that partial transfer stays BLOCKED for staff
 recovery. Affected libraries refuse conflicting edits while an intent is pending.
+An unfinished operation reserves its project IDs against every other migration
+or estate journal before a new transfer makes backups or publishes. Exact own
+recovery and unrelated transfers remain possible. A recorded published target
+that disappears stays BLOCKED for staff recovery; it is never recreated from
+the retained source as though its earlier publication had no effect.
 Every entry, including historical completed receipts, validates its captured
 death, full source/recipient references and integral revision. A previously
 transferred project that reappears at its source blocks every revision, including
@@ -144,6 +159,13 @@ recovery directory before the first restore or removal. It restores exact
 original source bytes, removes only the unchanged planned copy, and archives
 fully restored journals under `ownership/rolled-back/`.
 Changed or missing copies produce conflicts and remain preserved for staff.
+Estate chains can require multiple checked passes: journals are tried by mtime,
+and an older journal updated later may be visited before its newer transfer is
+restored. After a pass makes progress, run preview again; apply newly restorable
+journals with a fresh recovery directory. Continue only while preview identifies
+new safe restorations. Reconcile remaining unchanged conflicts manually, and
+finish every estate chain before applying legacy migration rollback. There is
+no automatic ordering or repeated-apply loop.
 Projects created after migration are listed and retained; an older jar cannot
 read their character namespace, so staff must reconcile them separately.
 Published editions and account quota logs are never rolled back by this tool.
@@ -170,7 +192,10 @@ Tests cover two characters on one account; noncurrent outgoing-session cleanup;
 late save routing; publication quota isolation; exact published bytes; unknown
 fields through migration, editing and restart; inherited overflow; repeated
 migration/estate settlement; unavailable identity; and failures before/after
-destination publication and source removal. Stale revisions hold partially
+destination publication and source removal; distinct account/character recording
+guards; cross-death and migration reservations; same-stat reopened journals;
+published-target disappearance; account migration isolation; exact retained
+pointer evidence; and multipass estate-chain rollback. Stale revisions hold partially
 published files instead of completing an obsolete handover.
 
 Ownership transfers operate only on durable project files. Publishing or copying
