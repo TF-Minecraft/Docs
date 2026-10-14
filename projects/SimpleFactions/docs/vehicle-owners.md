@@ -35,6 +35,14 @@ enables, factions run without vehicles and the log says so once. If it is older 
 non-staff, faction stamps are not written, and upkeep is still charged from the
 personal registry rows.
 
+The fallback claim guard selects the modern `VehicleOwnershipChangeEvent` when
+available and blocks non-staff `CLAIM` actions. Older VehicleFramework versions
+use a separate legacy-event bridge, loaded only after its class probe succeeds.
+This lets the same SimpleFactions build run with VehicleFramework before and
+after removal of `VehicleOwnerClaimedEvent`. Other ownership reasons keep their
+existing checks. Upgrade SimpleFactions first if the two plugins are installed
+across separate restarts; a coordinated stopped installation is preferred.
+
 ## Owner migration
 
 The first start in characters mode records a plan before it changes anything.

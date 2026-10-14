@@ -82,8 +82,18 @@ Events:
 | --- | --- |
 | `VehicleOwnershipEditCheckEvent` | Before an ownership-menu button is shown and again on every click. A pure check: `deny()` hides or refuses the control. An empty reason means opening the menu. |
 | `VehicleOwnershipChangeEvent` | Before a player's change is written. Cancellable. Carries the vehicle actually changed (the locomotive for tickets), the reason (`CLAIM`, `CLEAR`, `TAKEOVER`, `WHITELIST_ADD`, `WHITELIST_REMOVE`, `WHITELIST_TOGGLE`, `TICKETS_TOGGLE`), an operation ID, the acting character, a staff flag, and the target character or raw whitelist entry. |
-| `VehicleOwnerClaimedEvent` | After the change event, for claims only. Still cancellable; kept for older listeners. |
 | `VehicleOwnershipChangedEvent` | After the write, with the same operation ID, the outcome and the values before and after. For a player change it always fires once the change event has fired, including when the change was cancelled or the save failed. For `setOwnership` it fires only on `OK`. |
+
+`VehicleOwnerClaimedEvent` is removed. A listener that vetoes a claim must handle
+`VehicleOwnershipChangeEvent` with reason `CLAIM`; the matching post-event still
+reports `success == false` when the claim is cancelled, under the same operation
+ID. Install the SimpleFactions release with the modern claim guard before
+upgrading VehicleFramework: older SimpleFactions releases name the removed event.
+
+Standalone `names` mode remains supported. Legacy `player_` values and held
+ownership records remain readable; removing the event does not release or delete
+them. The TFMC integration requires `characters` mode and a ready SimpleFactions
+ownership authority.
 
 Services, looked up on every call:
 
