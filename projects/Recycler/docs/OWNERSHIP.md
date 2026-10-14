@@ -128,7 +128,11 @@ The tool preflights every record in a journal before restoring any of its rows.
 It checks paths, full references, captured decisions and planned hashes. It preserves current
 bytes, restores exact original documents only if planned copies remain unchanged,
 and archives fully restored journals under `ownership/rolled-back/`. Changed or
-missing copies remain conflicts. New character queues and inventory effects
+missing previously published copies remain conflicts. An untouched `planned`
+migration with its original legacy source intact can roll back without a
+character copy. A migration referenced by a live estate journal remains a
+conflict until that estate is safely rolled back; unreadable estate evidence
+also blocks migration rollback. New character queues and inventory effects
 need manual reconciliation: an old JAR cannot read the character namespace, and
 restoring a whole old snapshot would discard later progress. Do not restore a
 queued item that has already been delivered or consumed. Retain all recovery
@@ -136,7 +140,9 @@ images and receipts; never make old and new queues authoritative together.
 
 Before starting any older Recycler JAR, move every `escrow/` and
 `pending_returns/` file whose migration journal was not archived under
-`ownership/rolled-back/migration/` out of `data/` into the recovery folder.
+`ownership/rolled-back/migration/` out of `data/` into a separate legacy holding
+folder outside `data/`. Keep it separate from the tool's verified backup, which
+already contains copies of the original legacy files.
 Match each journal's `source` path to its legacy file; a missing or conflicting
 journal does not prove rollback succeeded. Older JARs move escrow into the old
 pending queue, then deliver and delete those files when the account joins. Leaving
