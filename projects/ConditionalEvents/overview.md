@@ -22,7 +22,7 @@ Keep anything a character learns or earns per character, such as Codex unlocks, 
 
 ## Stored data
 
-Each account's file, `plugins/ConditionalEvents/players/<account>.yml`, keeps account events under `events` and per-character events under `characters.<character>.events`. Old per-account data does not record which character ran an event, so no character inherits it: events that are per character start fresh for every character, and their old account-level entries stay in the file, unused.
+Each account's file, `plugins/ConditionalEvents/players/<account>.yml`, keeps account events under `events` and per-character events under `characters.<character>.events`. As a one-off, on an account's first character session after the change, its old account-level entries for events that are now per character move to its most-played living character (else its most-played character), the same character [Codex](../Codex/overview.md) copies the old journal to. An event done once stays done, and the later cooldown start wins. The file records `seeded-to: <character>` so this happens once; if RPCharacters cannot list the account's characters yet, it waits for a later session. Every other character starts these events fresh. Account-scoped events keep their data on the account.
 
 `/ce reset <player> <event|all>` and `/ce reset * <event|all>` clear the account and every character.
 
