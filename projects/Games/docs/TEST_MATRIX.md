@@ -143,11 +143,13 @@ Run automated checks with `tfmc-mvn -o -B --no-transfer-progress clean verify`. 
 See [OWNERSHIP.md](OWNERSHIP.md) for source paths, compatibility probes and the conservative rollback procedure.
 
 - [ ] Character A owns a private table; same-account B cannot edit, deal, host or confirm A's old menu/placement arm, including a missed session-end event and an A-to-B-to-A session renewal.
+- [ ] A's synchronous session-end cleanup refunds its captured stakes and idle private float into A's outgoing body, preserving total value and producing no world drops. A different recorded character, an active successor, a dead body or insufficient space holds all value for review; matching partial stacks count as available room.
+- [ ] Ending-session authority cannot fund a new source leg or survive into a deferred payout. Ordinary quit cleanup followed by the end event does not pay twice. A captured taxed payout retains the full wager and tax envelope and conserves inventory plus ledger value.
 - [ ] Staff edits opened before a table changes owner cannot apply or restore the old owner, including queued chat and an owner changing back.
 - [ ] Guild-plus-mint, nonguild mint, human private and automatic private tables follow their separate authority and inheritance classification.
 - [ ] Legacy missing/null mode fields and explicit mint/non-mint values use the same raw/runtime classification; frozen mode survives layout changes, loading and publication interruption without recapturing owner or changing money.
 - [ ] An unready reviewed-heir service makes no migration or empty estate receipt; later readiness resolves raw unloaded rows without discarding settings or unknown nulls.
-- [ ] Duplicate JSON fields/IDs, invalid owner/guild/float UUIDs and external file replacement stay untouched and held before new money or ownership publication.
+- [ ] Duplicate JSON fields/IDs and invalid owner/guild/float UUIDs stay untouched and held. External file replacement or deletion is detected before money effects, pickup or a save/estate publication and during deferred loading, including matching size and modification time; a held table refuses new money.
 - [ ] A live private table receives a durable pending estate intent: new activity is refused, captured work can settle, and only idle ownership moves without touching floats, wagers or unknown fields.
 - [ ] Restart resumes the exact current decision; changed historical envelope/receipt IDs, partial stale transfers and a restored completed source block every later recipient mode.
 - [ ] Empty CHARACTER/WAITING/FROZEN completions record exact revision evidence; same-revision new ownership or changed decisions block, newer guarded revisions can consider untouched new property, and retained completions preserve cumulative moved IDs.
