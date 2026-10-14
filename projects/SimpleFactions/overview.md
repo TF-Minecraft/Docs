@@ -71,8 +71,9 @@ as plain text without RPCharacters' name colours.
 Their fallback and foreign-view privacy rules are described in the
 [espionage guide](docs/espionage.md#rosters).
 
-- **Member prestige:** uses actual online-playtime seconds from the ready character,
-  or the offline account's last-played character. Unknown members contribute no playtime.
+- **Member prestige:** each account is one member in total, split by recent play
+  (see [member prestige](docs/characters.md#member-prestige)). Playtime prestige
+  uses each member character's own online seconds; unknown members contribute none.
 - **Mercenary companies:** with a provider available, founding or joining requires a
   ready, living character with the `mercenary` trait. Pending characters cannot start
   new mercenary work. Existing membership checks all living characters belonging to
