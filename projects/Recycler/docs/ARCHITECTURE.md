@@ -40,7 +40,7 @@ net.tfminecraft.recycler/
   manager/
     RecyclerManager.java     # Listener: station, GUI lifecycle
     InventoryManager.java    # GUI build + preview
-    EscrowManager.java       # crash-safe held items
+    EscrowManager.java       # character queues + inventory intents
 
   gui/
     RecyclerGuiHolder.java
@@ -80,21 +80,19 @@ Resolution flow:
 
 The GUI is **not** the source of truth for the input item.
 
-1. On accept: remove from player inventory, store in `EscrowManager`, write `data/escrow/<uuid>.json` immediately.
-2. On cancel/close/quit: return from escrow, delete file.
-3. On confirm: clear escrow first, then consume and spawn outputs.
-4. On disable: return all online players; offline entries move to `data/pending_returns/`.
-5. On join: deliver any pending return file.
+1. Capture the current living character/session in the menu.
+2. Persist a stable deposit intent before removing inventory, then acknowledge its committed escrow.
+3. Close/take-out queues the original character's refund; free inventory slots receive checked batches.
+4. Session end queues captured ownership and closes the outgoing menu without using incoming inventory.
+5. Confirm retains consumed-input/output evidence before the existing staggered world drops.
+6. Restart retains ambiguous effects for staff and recovers committed escrow to pending.
+
+See [character returns and recovery](OWNERSHIP.md) for durable formats, reviewed
+migration, estates, inventory/world crash limits and offline rollback.
 
 ## Dependencies
 
 - **Required:** TLibs, ItemsAdder (station block + icons)
-- **Soft:** AdvancedCrafting, Magic, GunsAndGadgets, GemInfusion, MMOItems
+- **Soft:** RPCharacters, AdvancedCrafting, Magic, GunsAndGadgets, GemInfusion, MMOItems
 
 AdvancedCrafting, Magic, and GunsAndGadgets providers require stamped provenance from those plugins. The alloy scrap provider needs AdvancedCrafting 2.2.5 or newer (`ScrapProvenance.readInputs`). Magic, GunsAndGadgets and goldsmithing need the craft-input stamps from Magic 0.4.7, GunsAndGadgets 2.0.6 and GemInfusion 2.2.5. Admin escrow tooling: `/recycler escrow list|return`.
-
-## What not to add yet
-
-- One file per GUI slot
-- Hardcoded item ids outside yaml
-- Putting the escrow item only in the chest inventory without disk backup
