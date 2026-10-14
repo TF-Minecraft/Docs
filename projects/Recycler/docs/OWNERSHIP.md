@@ -142,6 +142,10 @@ restoring a whole old snapshot would discard later progress. Do not restore a
 queued item that has already been delivered or consumed. Retain all recovery
 images and receipts; never make old and new queues authoritative together.
 
+If apply fails after restoring some records, the report's `applied` paths name
+the completed actions alongside the original error. Preserve the backup and
+live journal for reconciliation; a partial apply does not prove rollback completed.
+
 Before starting any older Recycler JAR, move every `escrow/` and
 `pending_returns/` file whose migration journal was not archived under
 `ownership/rolled-back/migration/` out of `data/` into a separate legacy holding
