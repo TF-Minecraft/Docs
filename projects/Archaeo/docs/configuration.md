@@ -18,7 +18,7 @@ copy a separate `plugin.yml` into the server's plugin data folder.
 ## Install the TFMC configuration
 
 1. Stop the Minecraft server and back up its existing `plugins/Archaeo/` folder.
-2. Install the Archaeo JAR in `plugins/` and the external item definitions needed
+2. Install TLibs and the Archaeo JAR in `plugins/` and the external item definitions needed
    by the preset. Check its MMOItems and ItemsAdder IDs against the packs you
    actually load; the optional generic pack uses some different IDs.
 3. Copy all seven files from `ServerAssets/configs/Archaeo/` into
@@ -32,3 +32,6 @@ copy a separate `plugin.yml` into the server's plugin data folder.
 Do not subsequently overwrite this `config.yml` with the optional generic pack
 preset. Make TFMC adjustments in ServerAssets; keep generic plugin defaults in
 Archaeo. Updating a JAR does not replace existing server configuration files.
+
+Character authority, held dossiers, estate handover and reversible storage are
+covered in [Character ownership and recovery](character-ownership.md).

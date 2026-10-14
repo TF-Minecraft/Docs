@@ -39,8 +39,8 @@ Use the **establishment kit** (stick, or `ARCHAEO_ESTABLISH`) only after
 confirmation. Aim at a **neighbour chunk**, not the ruin chunk. A preview of
 the camp follows your look; rotate until it sits on valid ground, then confirm.
 
-You become **director**. By default you may direct one open excavation at a
-time. The radar ignores this ruin from now on.
+Your selected character becomes **director**. By default each character may
+direct one open excavation at a time. The radar ignores this ruin from now on.
 
 The camp chunk is locked while the dig is active. The dig prism is the ruin
 chunk (and its depth bands), not the tents. Building the camp does not spend
@@ -49,7 +49,9 @@ the work day.
 Open the **board** at camp for the dossier, roster, finds list, and **Show
 limits** (glowing bars of the prism, for you only, a few seconds).
 
-The director adds workers by name. Only people on the roster may Hand Pick.
+The director adds workers by an unambiguous character name or character UUID.
+Only roster characters may Hand Pick; switching characters closes old menus and
+ends pending work.
 This is not a land claim plugin.
 
 ## 4. Dig (hear, then release)
