@@ -125,8 +125,10 @@ Owned animals found inside a chunk area have their days out reset to 0. Mounts
 (any horse-like entity) need no stable and always count as having slept in one.
 Any other owned animal not found in an area counts as having slept outside and
 gains one day out. When days out exceed `maxIrlDaysOut`, the animal becomes
-`ESCAPED`, loses all owners and joins the unowned list, where anyone can tame
-it.
+`ESCAPED`, loses its resolved character owners and joins the unowned list.
+Without held slots, anyone can tame it again. Unresolved legacy owner slots and
+raw extension metadata remain; an unresolved escaped animal still refuses token
+claims until staff review.
 
 ### The daily change
 
@@ -221,6 +223,9 @@ The menus open for owners, unowned tracked animals and holders of
 the `inventoryName` title. Each menu captures the opening session and refuses
 removal after switching. Outgoing session cleanup closes its captured menu and
 dismounts the outgoing player even when that session is already noncurrent.
+Session start only ejects a player from a configured or known animal they cannot
+ride; unavailable animal data does not eject them from unrelated boats or
+minecarts. Session end retains its existing dismount behavior for every vehicle.
 
 ### Anvil renaming
 
@@ -506,7 +511,9 @@ all legacy copy representations, raw/null preservation through normal saves and
 restart, failure after individual fanout publications and edits to later destinations,
 idle-save byte preservation, same-call gameplay pruning and interrupted replay,
 inert done journals, removal failures, token publication binding, configured-species
-removal with persisted ownership/held guards, pre-publication token I/O refusal
+removal with persisted ownership/held guards, registered event dispatch for
+unrelated entity interactions and session-start vehicles, unavailable-store
+breeding scope and escape raw/held-slot preservation, pre-publication token I/O refusal
 and post-debit receipt holds, strict estate guards,
 co-owner merges, cumulative replay, completed-receipt/source restoration conflicts, valid-JSON journal tampering, nested duplicate keys and conservative rollback conflicts. The
 existing zero-missed production-line gate remains enabled. Actual older TLibs
