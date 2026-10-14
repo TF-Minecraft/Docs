@@ -22,3 +22,8 @@ no other plugin has cancelled the slot change.
 
 Maven consumers declare `net.tfminecraft.musicalinstruments:musicalinstruments`
 with `provided` scope and use the shared installer.
+
+## Recording studio ownership
+
+See [character projects and recovery](studio-ownership.md) for library isolation,
+legacy migration, estates, compatibility, and offline rollback.
