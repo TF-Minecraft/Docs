@@ -45,7 +45,8 @@ the one realm whose saved rights plan lists the guild. If no plan or several
 plans list it, the realm is unknown, and RPCharacters treats it as gone.
 SimpleFactions 4.1.0 drops `lockGuildRealm` when it rewrites a journal, and a
 payment rewrite can also drop the audit-only `closedBy` field. The stored-plan
-realm fallback still applies after upgrading again; closed journals remain inert.
+realm fallback still applies after upgrading again; closed cleanup steps remain
+unreplayed.
 
 ## Revived and re-dead characters
 
