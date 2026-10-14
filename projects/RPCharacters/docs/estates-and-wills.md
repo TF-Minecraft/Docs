@@ -1,9 +1,10 @@
 # Estates and wills
 
-When a character dies for good, what it owned passes on 24 hours later. RPCharacters keeps the clock,
-decides who receives each part and records the result; the plugins that hold the property move it.
-A character can name an heir in a will, in game or on the website. This guide covers the estate
-record, the decision, revival, the stored body, wills and the staff tools.
+When a character dies for good, what it owned passes on 24 hours later, or 7 days later when it has
+no living heir and no guild. RPCharacters keeps the clock, decides who receives each part and records
+the result; the plugins that hold the property move it. A character can name an heir in a will, in
+game or on the website. This guide covers the estate record, the decision, revival, the stored body,
+wills and the staff tools.
 
 Estates need TLibs 2.6.0. On an older TLibs the plugin still enables and deaths still save, but no
 estate is created; once TLibs is updated, the hourly reconcile creates the missing records.
@@ -33,6 +34,13 @@ repair the file and restart.
 
 The wait is `estates.wait-hours` in `config.yml`, 24 by default and read at startup. Fractions work
 for rehearsals (`0.05` is three minutes).
+
+A death with no living will heir and no guild would freeze, so it waits longer:
+`estates.guildless-wait-hours`, 168 (7 days) by default and never shorter than `wait-hours`. When such
+an estate falls due, its due time moves out by the difference and the estate stays open, so a revive in
+that time still cancels it. The audit log records the move and the website shows the new date. Time on
+staff hold counts on top. `/estate decide <deathId> --no-guild` is not held. Legacy deaths count from
+their record.
 
 Deaths from before death records were kept have a stable death ID derived from the character ID and no
 death time. The reconcile at startup, and every hour after, gives every dead character's latest death
