@@ -50,6 +50,7 @@ Choose a project to open its technical documentation and source repository link.
 | [ActivityTF](projects/ActivityTF/README.md) | Daily activity tasks, weekly progress, and player rewards. |
 | [BirdMessenger](projects/BirdMessenger/README.md) | Bird-delivered letters and interactive mailboxes. |
 | [BreedingBuddies](projects/BreedingBuddies/README.md) | Farm animal ownership, daily care, inherited genetics, and mount breeding. |
+| [Codex](projects/Codex/README.md) | Lore discoveries that each character keeps in its own journal. |
 | [CompanionPets](projects/CompanionPets/README.md) | Companion pet hatching, care, training, and play. |
 | [Games](projects/Games/README.md) | Tabletop games, card games, and wagering. |
 | [GeigerCounters](projects/GeigerCounters/README.md) | Geiger counter treasure hunts with proximity signals and tiered loot. |

@@ -52,7 +52,7 @@ The same player must wait 24 hours by default before striking a character again 
 
 ## Codex rarity
 
-`%rpcharacters_codex_percent_<category>:<discovery>%` is the nearest whole percent of Codex accounts that have unlocked that entry. `%rpcharacters_codex_holders_<category>:<discovery>%` is the count. An unknown category or entry is blank. The figure refreshes about once a minute from Codex's saved files, using live Codex data for players who are online.
+`%rpcharacters_codex_percent_<category>:<discovery>%` is the nearest whole percent of Codex journals that have unlocked that entry. `%rpcharacters_codex_holders_<category>:<discovery>%` is the count. [TFMC Codex](../../Codex/overview.md) keeps a journal per character, so these count characters; with upstream Codex they count accounts. An unknown category or entry is blank. The figure refreshes about once a minute from Codex's saved files, using live Codex data for characters being played.
 
 ## Armour takes time
 
