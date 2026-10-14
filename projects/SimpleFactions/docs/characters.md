@@ -41,7 +41,7 @@ living characters by how long each was played over the last
 `member-share-window-days` (30) UTC days, including characters outside any
 faction. An account with no play in that window splits by lifetime playtime,
 and evenly when that is zero too. A member with no share adds neither headcount
-nor playtime, so an alt that is never played adds nothing. Dead characters take
+nor playtime, so an alt that is not played adds nothing. Dead characters take
 no share. A member the character directory cannot place, or that is missing
 from its account's character list, counts as one head.
 
