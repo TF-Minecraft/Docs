@@ -18,9 +18,10 @@ for runtime, build, and validation conventions.
 - [Pet types and ModelEngine](docs/models.md) — bodies, eggs, animation clips, and
   model authoring
 - [Staff commands](docs/staff.md) — commands, permissions, and audit
+- [Character ownership, migration and estates](docs/ownership.md)
 - [Saved data and recovery](docs/saved-data.md) — persistence files, backups, and
   recovery after a failed save
-- [Testing](docs/testing.md) — automated coverage and the dev-only Paper helper
+- [Testing](docs/testing.md) — automated coverage and isolated Paper fixtures
 - [Default configuration](https://github.com/TF-Minecraft/CompanionPets/blob/main/src/main/resources/config.yml)
 - [Plugin commands and permissions](https://github.com/TF-Minecraft/CompanionPets/blob/main/src/main/resources/plugin.yml)
 
@@ -29,17 +30,19 @@ for runtime, build, and validation conventions.
 Build the source repository with Java **21** and Maven:
 
 ```sh
-mvn clean verify
+python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned
+tfmc-mvn -o -B clean verify
 python3 .github/scripts/plugin-artifact.py --jar target/companionpets-main-SNAPSHOT.jar --version main-SNAPSHOT
 ```
 
 The build uses `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT` with
-`provided` scope. No private jars or shared TFMC plugin artifacts are required.
+`provided` scope. TLibs 2.6.0 is a provided shared plugin dependency; no private jars are required.
 The plugin entry point is `net.tfminecraft.companionpets.PetsPlugin`.
 
-The descriptor soft-depends on MythicMobs, ModelEngine, ItemsAdder, MMOItems, and
-MythicLib so that they load first when installed; none of them is required. The
-plugin calls their APIs by reflection: MythicMobs and ModelEngine supply bodies
+The descriptor requires TLibs and soft-depends on RPCharacters, MythicMobs, ModelEngine, ItemsAdder, MMOItems, and
+MythicLib so that they load first when installed. Property actions need a ready
+character provider. The optional presentation/item integrations use reflection:
+MythicMobs and ModelEngine supply bodies
 and models (`integration/`), and MMOItems and ItemsAdder supply interaction items
 and eggs (`item/ItemBridge.java`). MythicLib is only a load-order dependency.
 CompanionPets has no runtime dependency on Archaeo, Cooking, or MCPets.
@@ -51,11 +54,11 @@ verification; the `coverage` profile is only a compatibility alias.
 
 ## Testing on a Paper server
 
-The source repository includes a dev-only
-[integration helper](docs/testing.md#paper-integration-helper)
-that runs once against a real Paper server with the configured providers and
-reports `COMPANIONPETS_INTEGRATION PASS` or `FAIL` in the log. It does not
-establish correct rendering in a Minecraft client.
+The source repository includes an
+[isolated ownership fixture](docs/testing.md#isolated-paper-character-ownership-fixture)
+that runs against a fresh loopback Paper server and reports `OWNERSHIP_PROOF PASS`
+or `FAIL`. It proves native follow/session isolation; client rendering needs a
+separate in-game check.
 
 ## Builds and releases
 
