@@ -30,7 +30,7 @@ This project also demonstrates cross-language integration through **ProvinceSyst
 ## Technical Overview
 - Runtime target: TFMC Minecraft **1.21.10**; follow the [shared platform baseline](../../PLATFORM.md).
 - Build with JDK 21 and Maven. The POM targets Java 21 bytecode (`maven.compiler.release=21`) and resolves `io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT` with `provided` scope.
-- The Maven API dependencies pin **TLibs 2.3.0** and **RPCharacters 2.16.0**. Install the
+- The Maven API dependencies pin **TLibs 2.6.0** and **RPCharacters 2.16.0**. Install the
   POM's shared plugin versions with the checksum-verifying installer, then prepare the
   authorised private dependencies and build from the SimpleFactions checkout:
 
@@ -50,7 +50,7 @@ for credentials, dependency records and the shared workflow.
 SimpleFactions reads character identity through TLibs' shared service. RPCharacters
 provides that service and remains optional at runtime; its direct API is still used
 for office attributes, chat integration and the lore calendar. SimpleFactions requires
-TLibs 2.3.0 or newer and disables itself if the shared API is unavailable. A connected
+TLibs 2.4.1 or newer and disables itself if the shared API is unavailable. A connected
 player whose character is still loading has no ready session. Online lookups wait for
 that session rather than substituting an offline character.
 

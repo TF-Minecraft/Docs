@@ -8,6 +8,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 - [Overview](overview.md)
 - [Character membership and migration](docs/characters.md)
+- [Warband character authority and recovery](docs/warbands.md)
 - [Treasuries and financial recovery](docs/treasuries.md)
 - [Vehicle owners](docs/vehicle-owners.md)
 - [Estates](docs/estates.md)
