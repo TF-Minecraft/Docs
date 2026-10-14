@@ -97,17 +97,32 @@ inventory and estate holdings even if it cannot enter the runtime cache. Gamepla
 writes compare the current file with the exact loaded source; conflicting external
 edits are retained. Known transient write failures permit only a checked retry.
 
-A changed or missing dossier holds that site; healthy neighbours can still save.
-An unreadable whole inventory stays unavailable until a complete retry succeeds.
+Unexpected runtime additions, edits, removals or individual unreadable files hold
+the affected names and refuse new-dossier creation and estate inventory operations
+until re-inventoried. Checked healthy existing sites can still save their progress.
+A failed directory listing, or unreadable raw data during the full startup
+preflight, keeps the whole inventory unavailable until a complete retry succeeds.
 Reload retains unchanged live site instances and promptly loads a released site.
 Sampling cancels if its captured site has been replaced.
+
+A refused first save with no checked source and no published file drops only that
+unpublished creation from the cache and flush queue; it creates no conflict
+snapshot or phantom holding. A file already published before failure remains
+protected. A dossier known absent through validated active conflict evidence stays
+held and reserves its recorded chunks, but does not count as a new inventory
+mutation on every retry. Unrelated creation and estates can proceed when the
+remaining inventory is unchanged. Reappearance or another unexpected change
+still requires re-inventory.
 
 Before removing held dirty progress from the flush queue, Archaeo writes an
 immutable conflict snapshot containing the captured runtime, raw overlay, last
 checked source and current disk bytes (or its read error). It never overwrites
 the conflicting source or replays that progress automatically. Snapshot-associated
 dossiers stay held across reload/restart, including their possible ownership,
-camp limits and occupied chunks. Failed snapshot
+camp limits and occupied chunks. Estate settlement blocks before any transfer or
+completion for a held possible owner, including FROZEN/WAITING decisions; an
+unreadable or unidentified conflict frame conservatively protects every character.
+Failed snapshot
 writes retain the captured object in memory and refuse site reload; staff must
 restore storage and obtain durable evidence before shutting down. `/archaeo reload`
 reports this refusal instead of claiming that sites reloaded. Staff deletion
@@ -128,6 +143,17 @@ move each original snapshot unchanged from `ownership/conflicts/` to
 or delete evidence merely to resume play. Next startup validates the archive and
 dossier; any remaining active conflict snapshot keeps the site held. Transient
 estate holds without runtime-conflict evidence can still release normally.
+
+If the current dossier is missing and `source` contains a previously checked
+record, restore a reviewed dossier from the complete backup or that checked
+source, then reconcile captured progress, world/items and current estate authority
+before archiving evidence. Preserve all unknown fields and newer valid changes;
+restoring an old source blindly is not reconciliation. If an older snapshot has
+both `source: null` and `current: null`, establish from backups, logs, world and
+inventories that no dossier was published and no effects occurred before recording
+that decision and archiving it unchanged. Inconclusive cases remain held.
+`current-error` means the file could not be read, not that it is absent: restore
+readability and inspect its actual contents first.
 
 ## Estate handover
 
