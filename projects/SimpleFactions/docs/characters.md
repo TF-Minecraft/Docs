@@ -33,19 +33,22 @@ RPCharacters and DenarEconomy data before a coordinated cutover or rollback.
 ## Member prestige
 
 The Members prestige line has a headcount part, `(heads + 4)^1.8 + 5`, and a
-playtime part, where each member character adds `2^(online hours / 100)` up to
-`max-prestige-playtime-exponent`.
+playtime part, where each counted member character adds `2^(online hours / 100)`
+with the exponent capped at `max-prestige-playtime-exponent` (32 at the default 5).
 
 Each account adds at most one head in total. It is split between the account's
 living characters by how long each was played over the last
 `member-share-window-days` (30) UTC days, including characters outside any
 faction. An account with no play in that window splits by lifetime playtime,
-and evenly when that is zero too. Dead characters take no share. A member the
-character directory cannot place counts as one head.
+and evenly when that is zero too. A member with no share adds neither headcount
+nor playtime, so an alt that is never played adds nothing. Dead characters take
+no share. A member the character directory cannot place, or that is missing
+from its account's character list, counts as one head.
 
 SimpleFactions credits the current character of each online player every
 minute and saves the counts to `Cache/recent-playtime.json`. An unreadable file
-is left in place and not overwritten until a later load succeeds.
+is left in place and not overwritten until it loads at a later startup; counts
+from that run are lost, with a warning at shutdown.
 
 ## Plugin APIs
 
