@@ -18,6 +18,16 @@ between Main and Dev by version. Each row shows the plugin's latest release
 beside the version each server runs, dimmed when it matches that release.
 Hovering a version shows the jar's file name.
 
+Under each latest release, a mark compares it with the repository's default
+branch (`main`, or `master` for CoreProtect) and links to GitHub's comparison:
+
+| Mark | Meaning |
+| --- | --- |
+| `= main` | The release is the branch's latest commit. |
+| `main +3` | The branch has 3 commits since the release: merged work that is not released yet. Commits that only change docs or CI count too. |
+| `Off main` | The release has commits that aren't on the branch, such as a tag on a feature branch. |
+| No mark | There is no GitHub token, or GitHub couldn't compare them. |
+
 A plugin is any active repository in the organisation whose published
 releases carry a jar. Drafts and pre-releases are ignored. Each server copy
 gets these labels:
@@ -48,7 +58,7 @@ since the last startup is not detected.
 | Variable | Meaning |
 | --- | --- |
 | `SERVER_MAIN_DIR`, `SERVER_DEV_DIR` | A folder inside the backend container holding the server's `plugins` and `logs` folders. Unset: the server's card says the site is not set up to read it. |
-| `SERVERS_GITHUB_TOKEN` | A read-only GitHub token. Falls back to `PATCHNOTES_GITHUB_TOKEN`. Each check makes about 40 requests: with a token, releases are fetched every 10 minutes; without one, GitHub allows 60 requests an hour, so they are fetched hourly. |
+| `SERVERS_GITHUB_TOKEN` | A read-only GitHub token. Falls back to `PATCHNOTES_GITHUB_TOKEN`. With a token, each check makes about 80 requests (releases, then each latest release against its default branch) every 10 minutes. Without one, GitHub allows 60 requests an hour, so releases (about 40 requests) are fetched hourly and not compared with the branch. |
 | `SERVERS_GITHUB_ORG` | The organisation to read. Defaults to `TF-Minecraft`. |
 
 Mount the folders read-only in the host's `docker-compose.override.yml`:
