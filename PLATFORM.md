@@ -101,12 +101,16 @@ consumer set. Source builds must pass clean verification before publication.
 | [TFMCCore](projects/TFMCCore/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [TFMCWeb](projects/TFMCWeb/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Thievery](projects/Thievery/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [TFMCSpiders](projects/TFMCSpiders/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [TLibs](projects/TLibs/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [TrialRooms](projects/TrialRooms/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [VehicleFramework](projects/VehicleFramework/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [VFBuilders](projects/VFBuilders/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Woodworking](projects/Woodworking/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [WorldBorder](projects/WorldBorder/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+
+TFMCSpiders is written in Kotlin with `kotlin-maven-plugin` (JVM target 21) and keeps
+its sources in `src/main/kotlin/net/tfminecraft/tfmcspiders/`.
 
 ProvinceSystem is a web/backend project. ServerAssets contains configurations,
 models, resource packs, and private build inputs. Neither produces a plugin jar.
