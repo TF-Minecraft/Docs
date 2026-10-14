@@ -124,6 +124,10 @@ python3 tools/recycler-ownership.py --data /path/to/plugins/Recycler/data --kind
 python3 tools/recycler-ownership.py --data /path/to/plugins/Recycler/data --kind migration --apply --backup /path/to/new-migration-recovery
 ```
 
+Chained estates can require more than one estates pass. Repeat with a new recovery
+folder while another pass archives further journals; if no progress is possible,
+preserve the remaining evidence for manual reconciliation before migration.
+
 The tool preflights every record in a journal before restoring any of its rows.
 It checks paths, full references, captured decisions and planned hashes. It preserves current
 bytes, restores exact original documents only if planned copies remain unchanged,
@@ -142,14 +146,16 @@ Before starting any older Recycler JAR, move every `escrow/` and
 `pending_returns/` file whose migration journal was not archived under
 `ownership/rolled-back/migration/` out of `data/` into a separate legacy holding
 folder outside `data/`. Keep it separate from the tool's verified backup, which
-already contains copies of the original legacy files.
+holds current copies only for restored records, and from the complete pre-apply
+archive. A conflicting journal's tool backup may contain only its journal.
 Match each journal's `source` path to its legacy file; a missing or conflicting
 journal does not prove rollback succeeded. Older JARs move escrow into the old
 pending queue, then deliver and delete those files when the account joins. Leaving
 retained sources there can duplicate items already delivered, consumed or
 inherited. Restore a legacy file to the old queue only after confirming its
-character return was never delivered, consumed or moved and was safely rolled
-back. Keep unresolved files outside both authoritative queues for manual review.
+character return was never delivered or consumed, and its migration and any
+estate moves were safely rolled back. Keep unresolved files outside both
+authoritative queues for manual review.
 
 ## Verification
 
