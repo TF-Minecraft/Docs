@@ -142,6 +142,12 @@ restoring a whole old snapshot would discard later progress. Do not restore a
 queued item that has already been delivered or consumed. Retain all recovery
 images and receipts; never make old and new queues authoritative together.
 
+If a live migration journal's retained legacy file is missing, every Recycler
+queue write is held and the tool refuses migration rollback. After confirming
+that no older JAR delivered it, restore its exact bytes from
+`ownership/backups/<before-hash>.bin`; the backup alone cannot prove it is safe
+to deliver again.
+
 If apply fails after restoring some records, the report's `applied` paths name
 the completed actions alongside the original error. Preserve the backup and
 live journal for reconciliation; a partial apply does not prove rollback completed.
@@ -160,6 +166,9 @@ inherited. Restore a legacy file to the old queue only after confirming its
 character return was never delivered or consumed, and its migration and any
 estate moves were safely rolled back. Keep unresolved files outside both
 authoritative queues for manual review.
+
+Before starting this version again after a partial rollback, return each held
+legacy file unchanged to its journal's `source` path.
 
 ## Verification
 
