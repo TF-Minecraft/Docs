@@ -60,6 +60,11 @@ null or invalid member/invite entries remain visible in those documents even
 when they grant no runtime role. The faction `/f admin quarantine` commands do
 not assign warband slots.
 
+The production loader retries a file held after a failed read only at startup.
+After repairing it while stopped, restart the Minecraft application to reload
+the warband; a successful validated read clears the hold. There is no command
+that clears or retries these file holds in a running server.
+
 For a reviewed manual assignment, cleanly stop the Minecraft application and
 back up the whole SimpleFactions data directory. Verify the original account and
 the chosen character's owning account against RPCharacters' reviewed records.
