@@ -58,7 +58,7 @@ since the last startup is not detected.
 | Variable | Meaning |
 | --- | --- |
 | `SERVER_MAIN_DIR`, `SERVER_DEV_DIR` | A folder inside the backend container holding the server's `plugins` and `logs` folders. Unset: the server's card says the site is not set up to read it. |
-| `SERVERS_GITHUB_TOKEN` | A read-only GitHub token. Falls back to `PATCHNOTES_GITHUB_TOKEN`. With a token, releases are read every 10 minutes through about 11 GraphQL queries, in groups of eight repositories, each followed by a comparison of those repositories' latest releases with their default branches. Without one, GraphQL isn't available and GitHub allows 60 REST requests an hour, so releases (about 40 requests) are read hourly and not compared with the branch. |
+| `SERVERS_GITHUB_TOKEN` | A read-only GitHub token. Falls back to `PATCHNOTES_GITHUB_TOKEN`. With a token, releases are read every 10 minutes through about 13 GraphQL queries, in groups of eight repositories, each followed by a comparison of those repositories' latest releases with their default branches. Without one, GraphQL isn't available and GitHub allows 60 REST requests an hour, so releases (about 40 requests) are read hourly and not compared with the branch. |
 | `SERVERS_GITHUB_ORG` | The organisation to read. Defaults to `TF-Minecraft`. |
 
 Mount the folders read-only in the host's `docker-compose.override.yml`:
