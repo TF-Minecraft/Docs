@@ -16,9 +16,9 @@ entity carries only the neutered and nerfed flags.
 ### Farm animal types
 
 An entity type is a farm animal when it is a top-level key in `bundles.yaml`.
-The defaults are `HORSE` and `COW`. Only farm animals can be tamed. Types added
-by `/breedingbuddies reload` take effect at once; removed types stay active
-until the server restarts.
+The defaults are `HORSE` and `COW`. Only configured farm animals can be tamed.
+Types added or removed by `/breedingbuddies reload` take effect at once; known
+stored animals retain their ownership guards after a type is removed.
 
 ### Ownership and taming
 
@@ -28,6 +28,9 @@ or removal rights until explicitly granted its own slot. Tame/share/menu actions
 require a current session matching that account. Missing identity, stale sessions
 and held animal records refuse actions; staff permission retains its existing
 inspection/interaction privileges with a ready session, without a riding bypass.
+Known stored animals and specific held records retain interaction and mount
+protection if their species is removed from configuration. Unrelated entities
+are outside these ownership guards.
 
 
 1. Rename the taming item in an anvil. The plugin stores the rename text on the
@@ -370,7 +373,7 @@ Data is written as JSON beneath `plugins/BreedingBuddies/Data/`:
 | `ownership/source.json` | Fixed archive of every original legacy document, including top-level and nested unknown/null fields. |
 | `ownership/legacy-heirs.json` | Fixed reviewed account-to-character/null mapping, written before the migration intent and reused after failure. |
 | `ownership/migration.json` | Versioned canonical agreed animal rows, fixed character slots, held conflicts and original documents. |
-| `ownership/journals/*.json` | Full expected-before/desired-after documents, canonical rows and durable completion for migration, gameplay saves and estate fanout. |
+| `ownership/journals/*.json` | Full expected-before/desired-after documents, canonical rows and durable completion. Plain gameplay journals are removed after durable completion; migration, estate and token-linked journals are kept. A crash before removal can leave an inert completed gameplay journal. |
 | `ownership/token-effects/*.json` | Stable operation IDs, captured sessions/refs, exact token bytes, animal before/after and owner journal, with prepared/debit-prepared/done status. |
 | `stablechunks.json` | Array of chunk areas with `daysAbandoned` and `chunks` (`world`, `x`, `z`). |
 
@@ -393,11 +396,16 @@ replaced file and directory before acknowledging completion. Each output must
 still match its captured before state or the desired after state. A conflicting
 post-plan edit stays held instead of being overwritten. Changed routine saves use
 the same journal so a crash cannot make the next boot choose an arbitrary copy.
-Unchanged saves skip journal creation only after checking the archived source,
-current file inventory and bytes, held-record evidence and pending journals.
-Any unfinished token effect still requires retained publication evidence.
-Completed journals remain available; there is no automatic pruning, so storage
-and journal scans still grow with actual changes.
+Unchanged saves without active or unfinished token effects write nothing after
+checking the archived source, exact output keys, current file inventory and
+bytes, token receipts and held-record evidence.
+Only a ready store can save; pending publication must recover before readiness.
+An unfinished token effect still requires checked publication. A publish call
+removes only its own plain gameplay journal after its completion is durable;
+migration, estate and token-linked journals and all token receipts remain.
+Removal failures can leave an inert completed journal and do not undo publication.
+Kept journals are full snapshots, so the folder grows with token acquisitions
+and estate transfers; boot and the hourly estate check read them all.
 Version 1 journals bind their kind to their envelope and validate every desired document against captured source bytes and canonical rows before publishing. Unsupported paths/versions, extra or omitted animals, changed unrelated estate state, inconsistent slots and duplicate JSON keys at any nesting depth stay BLOCKED without rewriting their bytes. Held IDs require independent preservation evidence; a changed hold map cannot hide an ordinary source row. Journals freeze full unfinished token-effect snapshots and validate their fixed identity/session/item/animal-before fields. A later reviewed completion can release that animal without invalidating a historical estate receipt. Keep the original fixed effect fields and any captured owner-publication evidence when recording that resolution. Every destination is checked again immediately before its write.
 
 Autosave and `savedata` are skipped while a daily change is queued; disable saves
@@ -442,9 +450,12 @@ estate staff retry/waive workflow; do not clear a journal to force a new recipie
 
 ### Offline rollback
 
-This prepares legacy account files for reinstalling the old account-based JAR.
-It does not switch JARs or make the current character-aware JAR use legacy data;
-the migration manifest and character data remain authoritative for that JAR.
+This prepares legacy account files for the pre-character build in the `d6fa922`
+source lineage; that lineage has no published JAR. It does not switch builds or
+make a character-ownership build use legacy data. Character data, journals,
+receipts and the migration manifest remain authoritative and are not moved,
+renamed or deleted. Starting a character-ownership build again resumes the
+existing character store and does not migrate again.
 Use normal deployment downtime before preview/apply. From the source checkout:
 
 ```sh
@@ -464,11 +475,14 @@ restoring the unchanged account source documents as exact UTF-8 bytes, including
 original line endings. Character data, unknown fields
 and journals remain available. The old JAR reads account files; reinstalling it
 alone can expose obsolete ownership/progress. Keep the recovery image and review
-any old-version writes before upgrading again. Source/archive contraction is a
-separate later migration.
+any old-version writes before upgrading again. After any writes by the
+pre-character build, the character store refuses to open until staff review.
+Source/archive contraction is a separate later migration.
 
 New tame/co-own acquisitions write token evidence before checked ownership
-publication, then arm the debit before touching the item/entity. A known failure
+publication, then arm the debit before touching the item/entity. The receipt’s
+`ownerJournal` names its own kept token-linked journal. An unavailable store or
+a publication unbound to that token holds the animal before debit. A known failure
 before ownership publication leaves the token and entity name intact. Receipt
 failure after a debit, changed captured session/payload, or an unfinished receipt
 on restart holds that animal for staff; no token is automatically replayed or
@@ -490,7 +504,10 @@ Tests cover same-account characters, stale/wrong-account sessions and menus,
 switching before deferred mount inheritance, resolved/held co-owner rights,
 all legacy copy representations, raw/null preservation through normal saves and
 restart, failure after individual fanout publications and edits to later destinations,
-pre-publication token I/O refusal and post-debit receipt holds, strict estate guards,
+idle-save byte preservation, same-call gameplay pruning and interrupted replay,
+inert done journals, removal failures, token publication binding, configured-species
+removal with persisted ownership/held guards, pre-publication token I/O refusal
+and post-debit receipt holds, strict estate guards,
 co-owner merges, cumulative replay, completed-receipt/source restoration conflicts, valid-JSON journal tampering, nested duplicate keys and conservative rollback conflicts. The
 existing zero-missed production-line gate remains enabled. Actual older TLibs
 classloader probes check optional API isolation. Synthetic real Paper checks
