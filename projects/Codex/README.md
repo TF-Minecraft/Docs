@@ -20,7 +20,7 @@ JaCoCo requires 100% line coverage of `net.tfminecraft.codex.character`, the TFM
 
 ## Runtime and configuration
 
-The manifest requires TLibs. RPCharacters provides character sessions and must run with `character-bodies` enabled; it loads after Codex, because it reads Codex for its placeholders. WorldGuard, PlaceholderAPI, MythicMobs and Residence are optional. Categories, discoveries, rewards and menus are configured as in upstream Codex; see the [upstream wiki](https://ajneb97.gitbook.io/codex).
+The manifest requires TLibs. RPCharacters provides character sessions; it loads after Codex, because it reads Codex for its placeholders. WorldGuard, PlaceholderAPI, MythicMobs and Residence are optional. Categories, discoveries, rewards and menus are configured as in upstream Codex; see the [upstream wiki](https://ajneb97.gitbook.io/codex).
 
 This copy has no MySQL storage, update checker or bStats reporting. Old `mysql_database` and `update_notify` keys in `config.yml` are ignored.
 
