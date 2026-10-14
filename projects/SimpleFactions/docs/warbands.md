@@ -35,6 +35,10 @@ IDs, UUID fields and the supported `character-identity-version`. It preserves
 unknown fields and explicit nulls, including nested fields in character records,
 through migration, ordinary saves and restarts.
 
+Autosave prunes unreferenced warband files, even when a faction band stays loaded.
+That band's next save creates a fresh file and cannot retain unknown fields from
+the already deleted file. Held files are never pruned.
+
 With reviewed heirs ready, absent account slots resolve only through
 `Characters.legacyHeir`. Existing references remain fixed. A missing heir becomes
 an explicit null slot; malformed or conflicting case aliases grant no authority.
@@ -76,9 +80,18 @@ that clears or retries these file holds in a running server.
 A failed save also holds a loaded warband for the rest of the session: member,
 leader and invitation roles are disabled, and its members disappear from battle
 player lists until safe repair and a validated reload at restart. Death cleanup
-uses the same preserving writer; a refused or failed save leaves its death
-journal step incomplete. After the warband safely reloads at restart, death
+uses the same preserving writer; a refused or failed death-cleanup save disables
+all SimpleFactions features until restart and leaves its death journal step
+incomplete. A held, unloaded file keeps an existing warband step pending while
+other death steps can continue. After the warband safely reloads at restart, death
 reconciliation replays that step with its original character and successor.
+
+During stopped repair, check `plugins/SimpleFactions/deaths/` for members who died
+while the warband was held. A death captured while its band was unloaded has no
+warband target in its `online` step, so repair and restart cannot replay that
+member's warband cleanup. Review and remove the dead character's slot manually,
+including any leadership assignment, preserving unrelated slots and raw fields.
+Keep an audit of the decision alongside the repair backup.
 
 If a campaign-side warband file is held and unavailable to the roster loader,
 signup for that side remains blocked with `Warband identity is held for staff
