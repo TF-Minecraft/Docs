@@ -2,7 +2,7 @@
 
 [Source repository](https://github.com/TF-Minecraft/ConditionalEvents) · [All projects](../../README.md)
 
-TFMC's copy of [Ajneb97/ConditionalEvents](https://github.com/Ajneb97/ConditionalEvents): configured actions for Minecraft events, with once-only and cooldown data per account or per character.
+TFMC's copy of [Ajneb97/ConditionalEvents](https://github.com/Ajneb97/ConditionalEvents): configured actions for Minecraft events, with once-only and cooldown data per character by default, or per account.
 
 TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
 
