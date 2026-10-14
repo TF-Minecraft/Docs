@@ -20,7 +20,9 @@ Publication timestamps in `studio/editions/<account UUID>.log` and the short
 publication cooldown remain account-wide. Switching characters or inheriting
 another author's project does not reset them. An inherited library may exceed
 36 projects; every inherited project remains available, and creating another
-project waits until the character has fewer than 36.
+project waits until the character has fewer than 36. The library menu shows only
+the first 36. Use `/music projects` to list all project IDs and
+`/music open <project-id>` to open a project beyond those menu slots.
 
 ## Requirements and storage
 
@@ -76,8 +78,9 @@ python3 tools/studio-ownership.py \
   --studio /path/to/plugins/MusicalInstruments/studio --kind migration
 ```
 
-The JSON report lists held files, publication states, conflicts, character
-projects created after the plan, and legacy paths with no completed mapping.
+The JSON report lists held files, publication states, conflicts and character
+projects created after the plan. `unassigned_legacy` lists legacy paths with no
+migration journal yet; incomplete journals appear under `journals`.
 Do not edit a source archive to choose an heir; fix the reviewed mapping before
 its first plan, or recover a previously planned transfer by hand.
 
