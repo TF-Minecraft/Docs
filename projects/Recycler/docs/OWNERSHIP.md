@@ -30,8 +30,8 @@ Paths are relative to `plugins/Recycler/data/`:
   decisions/revisions, source/output expectations and cumulative move receipts.
 - `ownership/backups/<SHA-256>.bin`: immutable original documents.
 - `ownership/unassigned/`: retained evidence for unrecognized legacy filenames.
-- `escrow/` and `pending_returns/`: retained inert legacy sources; the current
-  runtime never delivers directly from these account filenames.
+- `escrow/` and `pending_returns/`: retained legacy sources, inert for this
+  version. Older JARs deliver directly from these account filenames.
 
 Inventory intent is written and synced before an effect. `depositing` records the
 input slot, exact stack and initiating session before removal. Only successful
@@ -133,6 +133,17 @@ need manual reconciliation: an old JAR cannot read the character namespace, and
 restoring a whole old snapshot would discard later progress. Do not restore a
 queued item that has already been delivered or consumed. Retain all recovery
 images and receipts; never make old and new queues authoritative together.
+
+Before starting any older Recycler JAR, move every `escrow/` and
+`pending_returns/` file whose migration journal was not archived under
+`ownership/rolled-back/migration/` out of `data/` into the recovery folder.
+Match each journal's `source` path to its legacy file; a missing or conflicting
+journal does not prove rollback succeeded. Older JARs move escrow into the old
+pending queue, then deliver and delete those files when the account joins. Leaving
+retained sources there can duplicate items already delivered, consumed or
+inherited. Restore a legacy file to the old queue only after confirming its
+character return was never delivered, consumed or moved and was safely rolled
+back. Keep unresolved files outside both authoritative queues for manual review.
 
 ## Verification
 
