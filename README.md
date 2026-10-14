@@ -90,7 +90,6 @@ Choose a project to open its technical documentation and source repository link.
 | Project | What it does |
 | --- | --- |
 | [CoreProtect](projects/CoreProtect/README.md) | TFMC-maintained CoreProtect source for block logging, rollbacks, and anti-griefing on Minecraft servers. |
-| [PermCleaner](projects/PermCleaner/README.md) | Permission inspection and cleanup with LuckPerms integration. |
 | [ProvinceSystem](projects/ProvinceSystem/README.md) | TFMC web hub with interactive political maps, character creation, cosmetics, and identity services. |
 | [ServerAssets](projects/ServerAssets/README.md) | Private plugin dependencies, configurations, models, and resource packs. |
 | [TFMCCore](projects/TFMCCore/README.md) | Shared gameplay systems, server utilities, and plugin integrations. |
