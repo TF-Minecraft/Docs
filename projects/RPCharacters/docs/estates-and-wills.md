@@ -182,7 +182,9 @@ their labels on hover (past twelve, grouped by kind, such as `Chest ×200`), and
 are IDs show the count alone. Money comes from the
 character's ledger accounts. The stored body is not a row; **How wills work** explains
 `/estate collect`. Guild and faction locks appear under **Goes elsewhere**, with the guild's living
-leader, else the realm's, else "the next leader".
+leader, else the realm's; for the guild's own leader, "the next leader, else" the realm's leader. A
+character without a guild leaves them to the heir too. A named heir whose account cannot be read
+shows the estate waiting, as the estate itself postpones.
 
 Without a living heir (none named, dead or unreadable) the dialog says what would happen if the
 character died for good today, reading SimpleFactions as it is now: money to the guild's treasury,
@@ -195,9 +197,9 @@ reads the guild recorded at the death.
 within 16 blocks as clickable names with faces, and takes a typed name for anyone else. One match asks
 for confirmation with name, race, short ID and "on your account" where it applies; several matches give
 a list to choose from. **How wills work** shows the rules in six lines. Every click checks that the same
-character is still being played; buttons and links work once and expire after ten minutes. A portrait
-that arrives within five seconds repaints the main screen if it is still open, otherwise it is cached
-for the next open.
+character is still being played; buttons and links work once and expire after ten minutes. When the
+heir's bust is not cached, the first screen waits up to 1.5 seconds for it; a later portrait is only
+cached for the next open, so it never reopens or replaces a screen.
 
 On the website, the owner changes or revokes the will on the Profile page. RPCharacters pulls waiting
 requests for its own realm every 15 seconds and acknowledges each one with the realm in the body. A
