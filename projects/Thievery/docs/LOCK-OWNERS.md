@@ -137,7 +137,12 @@ brackets when it is not the first world and ` (guild)` or ` (faction)` for those
 states. Lock files store no block type or world, so Thievery learns them when a
 lock's chunk loads (or when the will screen lists it) and keeps them in
 `plugins/Thievery/owned-lock-kinds.json`, written at most once a minute and on
-shutdown and reloaded after the startup lock pass. A lock never seen in a loaded
+shutdown (in the background, except at shutdown) and reloaded after the startup
+lock pass. A world seen only from a chunk load is a guess: an earlier world in
+server order (the main world first) with a fitting block replaces it, and it is
+dropped when its block no longer fits. Only a save or delete at the block fixes the
+world for good. Removing one half of a double chest clears its neighbour's partner
+link. A lock never seen in a loaded
 chunk reads `Container` or `Door`, and the two halves of a double chest may be
 listed separately until one is seen. The file only names blocks: deleting it
 costs nothing but re-learning, and it never changes ownership or estates. Halves
