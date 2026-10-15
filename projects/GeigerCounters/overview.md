@@ -301,6 +301,8 @@ admin:
   # ... 12 more, each documenting its own placeholders
 ```
 
+On a collection, `found-source` and `dead-geiger` are sent as one line with a space between them, each keeping its own colours. A blank one is left out.
+
 Console log lines stay hardcoded in English, so logs and bug reports remain readable whatever this file is translated to.
 
 Upgrading? Messages are migrated automatically — out of `config.yml` and into the `player:`/`admin:` split, customisations preserved. `config-version` in `config.yml` tracks which migrations have run. Version 6 adds the source distances and the `bar` section, and lowers `detection.max-detection-distance` to `source.reroll-distance` if it was higher. Existing messages are never overwritten, so on any upgraded server `player.found-source` (if it says the source has moved) and `admin.usage`, `source-located`, `move-usage`, `move-invalid-coords` and `move-success` need updating by hand to the new wording and the `%player%` placeholder.
