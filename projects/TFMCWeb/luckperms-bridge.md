@@ -21,6 +21,13 @@ the group it adds, or any group that group inherits, is outside the admin groups
 and the age of the last snapshot.
 
 
+While the bridge runs it also publishes the server's command list for the staff
+panel's Commands tab: every registered command with its plugin, aliases and
+permission, and whether each LuckPerms group's permissions allow it on this server
+(Bukkit's defaults count where LuckPerms has no node). It reads the list a minute
+after starting, checks each minute, and uploads when it changes or every ten
+minutes.
+
 Set `LUCKPERMS_READ_ONLY=1` on a website that must never queue writes. The backend also refuses new changes without a recent applying bridge poll.
 
 See the [website protocol and permission policy](../ProvinceSystem/docs/integrations/luckperms.md), [plugin configuration](https://github.com/TF-Minecraft/TFMCWeb/blob/main/src/main/resources/config.yml), and [bridge implementation](https://github.com/TF-Minecraft/TFMCWeb/tree/main/src/main/java/net/tfminecraft/tfmcweb/luckperms).

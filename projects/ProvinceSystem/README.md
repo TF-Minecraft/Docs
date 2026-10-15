@@ -13,7 +13,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 - [Architecture](docs/architecture.md)
 - [Accounts, authentication and security](docs/identity/auth-security.md)
 - [CoreProtect activity and movement](docs/integrations/coreprotect.md)
-- [LuckPerms staff panel](docs/integrations/luckperms.md)
+- [LuckPerms staff panel and Commands tab](docs/integrations/luckperms.md)
 - [Rail network](docs/integrations/rail.md)
 - [Server plugin versions and restart controls](docs/integrations/servers.md)
 - [Patreon integration](docs/integrations/patreon.md) and [backend protocol](docs/integrations/patreon-backend.md)

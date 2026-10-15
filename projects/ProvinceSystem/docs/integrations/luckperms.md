@@ -135,3 +135,58 @@ are told to check the player); a late result still settles it. A change not fetc
 bridge is gone. New changes are refused with `bridge_offline` unless the bridge polled in the
 last 60 s, and always on a site with `LUCKPERMS_READ_ONLY=1` (dev.tfminecraft.net, whose server
 shares LuckPerms with Main).
+
+## Commands tab
+
+`/admin/commands` lists every command the server knows, grouped by plugin, and
+which LuckPerms groups may use it. It has two views: a table of commands against
+groups, and one group at a time with the commands it may use, those it gains over
+the group before it, and the permissions set on the group itself. Mods and above
+can see it (`view_luckperms`).
+
+Access is worked out on the server from the command's own Bukkit permission
+only. Plugins may still refuse a command when it runs, and Brigadier requirements
+or a plugin's own rules may hide it from tab completion. The tab marks a command
+that exposes no Bukkit permission as "no permission set"; unless its plugin hides
+it some other way, every player is offered it.
+
+Groups are shown in three sections. A track's last group is a staff rank, the
+groups before it on the track are its steps (hidden until asked for), and every
+other group is a player rank. Each section is in weight order.
+
+### Protocol
+
+`PUT /luckperms/plugin/commands` (JSON, at most 8 MiB, primary key):
+
+```json
+{
+  "server": "main",
+  "generated_at": 1792076432,
+  "hash": "<sha-256 hex of groups/plugins/commands>",
+  "groups": ["commoner", "default", "staff"],
+  "plugins": [{"name": "Essentials", "version": "2.22.0"}],
+  "commands": [{
+    "plugin": "Essentials",
+    "name": "me",
+    "aliases": ["eme"],
+    "description": "Describes an action in the context of the player.",
+    "usage": null,
+    "permission": "essentials.me",
+    "shadowed": false,
+    "access": "yyy"
+  }]
+}
+```
+
+`access` has one `y` (allowed) or `n` per entry of `groups`, or is `null` when the
+command has no permission. `shadowed` means another plugin owns the plain label, so
+this command only runs as `/<plugin>:<name>`. The site checks the shape, replaces its
+stored list (`lp_commands`) and answers `{"ok": true, "commands": <count>}`; a
+malformed list is refused with `400 bad_commands`.
+
+`GET /admin/luckperms/commands` returns `status` (`server`, `generated_at`,
+`received_at`, and `fresh` while the list arrived in the last 30 minutes, else
+`null` before the first list), `groups` in display order with `kind`
+(`rank`, `staff` or `step`), `track`, `members`, `parents` and the group's own
+permission nodes from the mirror, and `plugins` with their commands, each `access`
+reordered to match `groups`.
