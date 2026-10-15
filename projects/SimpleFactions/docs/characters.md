@@ -177,7 +177,8 @@ guild, in the same save, using the leaderless-guild fields (`dead leader`,
 leader as "Name (dead)", and the realm keeps its land, treasury, army and
 installations. While it is held:
 
-- the daily settlement charges no army or installation upkeep, shrinks no
+- the daily settlement charges no army upkeep (mercenary company slots
+  included) or installation upkeep, shrinks no
   regiment, downgrades no installation, sheds no province over the cap and sells
   no branch to cover a shortfall;
 - its pool and installation vehicles are charged no upkeep, take no new unpaid
