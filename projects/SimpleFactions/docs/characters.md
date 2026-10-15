@@ -204,9 +204,12 @@ gives it back; then it removes every other realm's relation, trade agreement and
 treaty with the realm and saves those realms; then it removes the realm and its
 file. Its ledger treasury remains. A failed step is tried again
 every hour, and a new realm that took the same name in the meantime is left alone.
-From the end of the week until the closure is finished, estate lookups for the
-realm are unavailable, so estates wait rather than paying into a realm about to
-close.
+Once a closure has begun it always finishes: staff `forcejoin` and `forceleader`
+are refused for that realm.
+
+While the realm is held, and until its closure is finished, estate lookups for it
+are unavailable, so RPCharacters postpones the estates of deaths in it. They pass
+once staff take the realm on or it closes; a revive cancels the dead leader's.
 
 An older SimpleFactions jar drops the held fields on its next save and leaves the
 realm empty with no leader and no closing date. Back up `Data/` before rolling back.

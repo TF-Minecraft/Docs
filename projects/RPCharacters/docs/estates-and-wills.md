@@ -36,12 +36,7 @@ The wait is `estates.wait-hours` in `config.yml`, 24 by default and read at star
 for rehearsals (`0.05` is three minutes).
 
 A death with no living will heir and no guild would freeze, so it waits longer:
-`estates.guildless-wait-hours`, 168 (7 days) by default and never shorter than `wait-hours`. A death in a
-realm's own (ruling) guild while the realm has no living leader waits the same time, heir or not: that is
-a realm whose last member died, which SimpleFactions holds for 7 days, or a vacant seat. If the realm
-still has no leader when that wait ends, the estate is postponed ("the realm has no leader") for up to one
-more wait from that first postponement, so it passes once the held realm is taken on or closed, including
-a death SimpleFactions only recorded later. When such
+`estates.guildless-wait-hours`, 168 (7 days) by default and never shorter than `wait-hours`. When such
 an estate falls due, its due time moves out by the difference and the estate stays open, so a revive in
 that time still cancels it. The audit log records the move and the website shows the new date. Time on
 staff hold counts on top. `/estate decide <deathId> --no-guild` is not held. Legacy deaths count from
@@ -79,7 +74,9 @@ stations and the stored body.
 
 Some answers make the decision wait rather than guess, and it is tried again every minute: the dead
 character's or the heir's account cannot be read, SimpleFactions has not answered (or gave no answer
-at all), or it cannot say whether the realm still exists. An estate whose lookup throws is logged and
+at all), or it cannot say whether the realm still exists. SimpleFactions does not answer for a realm it
+is holding after its last member died, so such an estate waits until the realm is taken on or closed,
+and a revive cancels it. An estate whose lookup throws is logged and
 tried again; it never stops the other estates from being decided. RPCharacters and SimpleFactions start in a cycle, so decisions due at
 startup usually wait for SimpleFactions; they run again when SimpleFactions enables and when it fires
 its ready event. If SimpleFactions started late, Thievery has already made its lock pass, and the
