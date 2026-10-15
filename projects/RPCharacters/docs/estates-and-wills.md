@@ -174,12 +174,34 @@ the last website request ID, so a website request whose acknowledgement was lost
 `applied` after a later in-game change. An older RPCharacters drops
 these keys on its next save, so back up `characterdata/` before rolling back.
 
-In game, `/will` opens a dialog for the character
-being played. It shows the heir and what the estate holds today, including pets and animals when their
-ownership systems take part in estates. **Name an heir** takes a name; one match asks for confirmation with name,
-race, short ID and "on your account" where it applies, several matches give a list to choose from, and
-characters played by players within 16 blocks are offered as buttons. Every click checks that the same
-character is still being played; the buttons work once and expire after ten minutes.
+In game, `/will` opens a dialog for the character being played. With a living heir it shows the
+heir's bust (their worn wardrobe skin, loaded from the website like the character select screen), race, whether they are one of the player's characters and
+when they were named, then what the heir would get today. Each kind of holding is one row with a vanilla
+item icon and a count; vehicles, locks, shops, research stations, letters, dig sites and pets list
+their labels on hover (past twelve, grouped by kind, such as `Chest ×200`), and kinds whose labels
+are IDs show the count alone. Money comes from the
+character's ledger accounts. The stored body is not a row; **How wills work** explains
+`/estate collect`. Guild and faction locks appear under **Goes elsewhere**, with the guild's living
+leader, else the realm's; for the guild's own leader, "the next leader, else" the realm's leader. A
+character without a guild leaves them to the heir too. A named heir whose account cannot be read
+shows the estate waiting, as the estate itself postpones.
+
+Without a living heir (none named, or the heir has died) the dialog says what would happen if the
+character died for good today, reading SimpleFactions as it is now: money to the guild's treasury,
+property to the guild's living leader with their face where it can be drawn (waiting for a leader
+when the guild has none, or when the character leads it and nobody takes over), letters back to their
+writers, and a note for a character who leads the guild, a leaderless guild or no guild (7 days, then
+staff). When SimpleFactions cannot answer, it states the rules without names. The estate itself still
+reads the guild recorded at the death.
+
+**Change heir** or **Name an heir** lists the player's other living characters and characters played
+within 16 blocks as clickable names with faces, and takes a typed name for anyone else. One match asks
+for confirmation with name, race, short ID and "on your account" where it applies; several matches give
+a list to choose from. **How wills work** shows the rules in six lines. Every click checks that the same
+character is still being played; buttons and links work once and expire after ten minutes. The heir's
+bust is fetched when a character starts playing and when an heir is named, and cached; a screen that
+opens before it arrives shows a placeholder, and the arrival only fills the cache, so it never opens
+or replaces a screen.
 
 On the website, the owner changes or revokes the will on the Profile page. RPCharacters pulls waiting
 requests for its own realm every 15 seconds and acknowledges each one with the realm in the body. A
@@ -211,7 +233,7 @@ including names of several words before further arguments.
 | Command | Effect |
 |---|---|
 | `/estate list [open\|held\|waiting\|frozen\|retry\|postponed\|empty]` | One line per estate: state, due time, recipients and each participant's answer. Estates that hold nothing appear only under `empty`. |
-| `/estate show <estate>` | One estate in full: will, cause, killer, postponement, recipients, every participant's answer with counts and moved IDs ("awaiting restart" for Thievery), the body collection, and what each participant says the character still holds (such as letters held back). |
+| `/estate show <estate>` | One estate in full: will, cause, killer, postponement, recipients, every participant's answer with counts and moved IDs ("awaiting restart" for Thievery), the body collection, and what each participant says the character still holds (such as letters held back), with at most ten labels per participant and a count of the rest. |
 | `/estate hold <estate>` / `/estate release <estate>` | Stop an open estate's clock, or restart it with the time that was left. |
 | `/estate decide <estate> --no-guild` | Decide a due estate without SimpleFactions' answer, as if the character had no guild. If the attempt still waits for another reason, the override is withdrawn. |
 | `/estate assign <estate> <money\|property\|guildlocks\|all> <character>` | Give waiting or frozen parts to a living character (by name or ID; money goes to its bank). Makes a new revision and calls every participant again. |
