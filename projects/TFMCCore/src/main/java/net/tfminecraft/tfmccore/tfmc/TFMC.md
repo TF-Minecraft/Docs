@@ -24,7 +24,9 @@ Before this, `/tfmc` was served by AACommandsFiller (suggestions only) with Cond
 
 ### Promote and demote
 
-`helper-tracks` in `tfmc.yml` lists the LuckPerms tracks lowest first (`helper`, `helper+`, `staff`) with a promote and a demote permission for each. A player's highest track is the last one whose promote or demote permission they hold, and `promote` and `demote` always act on it. Each is offered only when the player holds that step's permission on that track. On every track, the `_player` group grants the promote permission and the `_inactive` group grants the demote permission. The active group inherits both.
+`helper-tracks` in `tfmc.yml` lists the LuckPerms tracks lowest first (`helper`, `helper+`, `staff`) with a promote and a demote permission for each. A player's highest track is the last one that holds one of their own global groups, and `promote` and `demote` always act on it. Each is offered only when the player holds that step's permission on that track. Membership decides the track because the active `helper+`, `staff_inactive` and `staff` groups hold `*`, which matches every track's permissions. A step never adds a player to a track they are not on.
+
+On each track, the `_player` group grants the promote permission and the `_inactive` group grants the demote permission. The active group inherits both.
 
 ### Disabled by default
 
