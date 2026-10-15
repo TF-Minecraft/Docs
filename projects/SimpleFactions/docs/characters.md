@@ -185,8 +185,8 @@ guild, makes them leader and saves the realm durably. A new offer replaces the
 old one; an offer to a character who dies is withdrawn.
 
 Estates treat a leaderless guild as live with no leader: money goes to its
-treasury, and property and guild locks wait until a leader is appointed (see
-[estates](estates.md)).
+treasury, guild locks go to the realm leader, and property waits until a leader
+is appointed (see [estates and wills](../../RPCharacters/docs/estates-and-wills.md#the-decision)).
 
 The hourly reconcile removes a leaderless guild that has had no members for 30
 days. Estate parts still waiting for its leader then follow the rules for a

@@ -58,16 +58,18 @@ character died in, and fixes four parts:
 | Case | Money | Property | Guild locks | Letters |
 |---|---|---|---|---|
 | Heir; guild live with a leader | heir's bank | heir | leader | heir |
-| Heir; guild live, no leader | heir's bank | heir | waiting | heir |
-| Heir; guild gone, or no guild | heir's bank | heir | heir | heir |
+| Heir; guild live, no leader | heir's bank | heir | realm leader, else waiting | heir |
+| Heir; guild gone | heir's bank | heir | realm leader, else heir | heir |
+| Heir; no guild | heir's bank | heir | heir | heir |
 | No heir; guild live with a leader | guild treasury | leader | leader | senders |
-| No heir; guild live, no leader | guild treasury | waiting | waiting | senders |
-| No heir; guild gone, realm live | realm treasury | frozen | frozen | senders |
+| No heir; guild live, no leader | guild treasury | waiting | realm leader, else waiting | senders |
+| No heir; guild gone, realm live | realm treasury | frozen | realm leader, else frozen | senders |
 | No heir; guild and realm gone | frozen | frozen | frozen | senders |
 | No heir; no guild | frozen | frozen | frozen | senders |
 
-The heir counts only if it is alive when the estate passes. A leader counts only if alive and not the
-dead character. Property means private and public locks, doors, personal vehicles, shops, Research
+Guild locks always go to a leader first: the death guild's, else the leader of the realm the guild
+belonged to at death (its ruling guild's leader). The heir counts only if it is alive when the estate
+passes. A leader or realm leader counts only if alive and not the dead character. Property means private and public locks, doors, personal vehicles, shops, Research
 stations and the stored body.
 
 Some answers make the decision wait rather than guess, and it is tried again every minute: the dead
@@ -80,8 +82,10 @@ locks move at the next restart. An estate that has waited six hours is logged an
 `/estate list postponed`.
 
 The decision is written once and never worked out again. Waiting parts are checked every hour: when
-the death guild has a living leader they go to that leader; when the guild is gone, guild locks go to
-the heir if there is one and everything else waiting is frozen. Each such change, and each staff
+the death guild has a living leader they go to that leader; while it has none, waiting guild locks go
+to a living realm leader; when the guild is gone, guild locks go to the realm leader, else the heir,
+and everything else waiting is frozen. Guild locks already given to a realm leader stay with them when
+the guild later gets a leader. Each such change, and each staff
 assignment, is a new revision. RPCharacters calls every participant again for it, and the record keeps
 each participant's answer with the revision it answered.
 
