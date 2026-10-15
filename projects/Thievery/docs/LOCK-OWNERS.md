@@ -134,9 +134,13 @@ and delete keeps it current, so a listing reads no files. Counts are `locks`
 (private and public records, doors and furniture) and `guild-locks` (guild and
 faction records). Each label reads `<Kind> at x y z`, adding the world in
 brackets when it is not the first world and ` (guild)` or ` (faction)` for those
-states. Lock files store no block type or world, so a block is named only once
-its chunk has been loaded since the restart; until then it reads `Container` or
-`Door`, and the two halves of a double chest may be listed separately. Halves
+states. Lock files store no block type or world, so Thievery learns them when a
+lock's chunk loads (or when the will screen lists it) and keeps them in
+`plugins/Thievery/owned-lock-kinds.json`, written at most once a minute and on
+shutdown and reloaded after the startup lock pass. A lock never seen in a loaded
+chunk reads `Container` or `Door`, and the two halves of a double chest may be
+listed separately until one is seen. The file only names blocks: deleting it
+costs nothing but re-learning, and it never changes ownership or estates. Halves
 that go to different estate parts (one guild, one private) are always listed and
 counted apart. Every save and delete re-reads the file into the index, so a write
 whose directory sync failed after the file changed is still reflected.
