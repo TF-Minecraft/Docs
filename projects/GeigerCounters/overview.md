@@ -30,13 +30,13 @@ Hold a **Geiger Counter** item and the world starts talking back. Each character
 
 A repeating task checks every online player in the source world. For each player holding a Geiger Counter while playing a character:
 
-1. If the character has no source, one is placed at a random spot between `source.min-distance` and `source.max-distance` from them, inside the configured area and passing the spawn filters. The same happens when the character is more than `source.reroll-distance` from their source, for example after travelling or teleporting away.
+1. If the character has no source, one is placed at a random spot between `source.min-distance` and `source.max-distance` from them, inside the configured area and passing the spawn filters. The same happens when the character is more than `source.reroll-distance` from their source, for example after travelling or teleporting away. A character so far outside the area that no part of that ring lies inside it gets no new source and keeps any old one.
 2. The horizontal distance to the source is calculated (Y is ignored, so the signal works across terrain height).
 3. That distance is mapped to a particle configuration — ring count (1–3) from distance thresholds, and a color interpolated along a two-stage gradient (dark purple → purple far away, purple → white up close).
 4. The rings spawn around the player, and the signal bar is updated.
 5. Within collection distance (20 blocks by default), the source is collected automatically: a tier is rolled by weight, a random item from that tier is granted, and the counter is swapped for its dead version. The character has no source until they next hold a live counter.
 
-Sources are stored in `plugins/geiger_counter/sources.yml`, keyed by character ID, so a restart keeps every hunt where it was. Sources untouched for 30 days are dropped when the plugin loads. A player in the character selection room has no character and gets no reading.
+Sources are stored in `plugins/geiger_counter/sources.yml`, keyed by character ID, so a restart keeps every hunt where it was. A player in the character selection room has no character and gets no reading.
 
 ### Signal bar
 
@@ -303,7 +303,7 @@ admin:
 
 Console log lines stay hardcoded in English, so logs and bug reports remain readable whatever this file is translated to.
 
-Upgrading? Messages are migrated automatically — out of `config.yml` and into the `player:`/`admin:` split, customisations preserved. `config-version` in `config.yml` tracks which migrations have run. Version 6 adds the source distances and the `bar` section, and lowers `detection.max-detection-distance` to `source.reroll-distance` if it was higher. Customised messages are kept as they are, so an older `found-source` that says the source has moved needs editing by hand.
+Upgrading? Messages are migrated automatically — out of `config.yml` and into the `player:`/`admin:` split, customisations preserved. `config-version` in `config.yml` tracks which migrations have run. Version 6 adds the source distances and the `bar` section, and lowers `detection.max-detection-distance` to `source.reroll-distance` if it was higher. Customised messages are kept as they are, so on servers that edited them, `player.found-source` (if it says the source has moved) and `admin.usage`, `source-located`, `move-usage`, `move-invalid-coords` and `move-success` need updating by hand to the new wording and the `%player%` placeholder.
 
 **Item path formats**
 
