@@ -288,7 +288,7 @@ All chat text lives in a separate **`messages.yml`**, split into what players se
 # PLAYER - seen by anyone hunting a source
 player:
   found-source: "&#AA00FFYou found the arcane source!"
-  signal-bar: "&#AA00FFArcane signal"
+  signal-bar: "&#AA00FFArcane Signal"
   dead-geiger: "&7Your detector is spent."
   limit-reached: "&cYou have already collected %max% sources in %window%. Try again in %time%."
 
