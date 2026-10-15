@@ -6,9 +6,10 @@ identify its money. Recreating a disbanded guild gives it a different account.
 `Bank.getWealth()` is a read-only denar view. Guild debt remains signed, and
 moving or removing a bank does not transfer its balance.
 
-DenarEconomy reads only on the main thread. Income previews that calculate off
-it, such as branch upgrades and law or treaty estimates, use every guild's
-balance as it was when the menu opened.
+DenarEconomy and TLibs character identity read only on the main thread. Income
+previews that calculate off it, such as branch upgrades and law or treaty
+estimates, use every guild's balance and each realm's espionage stability
+(including a dead Spymaster's vacancy) as they were when the menu opened.
 
 Legacy treasury balances and accumulated citizen tax are imported once using
 `import-guild:<incarnation>` and `import-tax:<incarnation>` operation IDs.
