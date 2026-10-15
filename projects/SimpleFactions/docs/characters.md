@@ -180,6 +180,8 @@ installations. While it is held:
 - the daily settlement charges no army or installation upkeep, shrinks no
   regiment, downgrades no installation, sheds no province over the cap and sells
   no branch to cover a shortfall;
+- its pool and installation vehicles are charged no upkeep, take no new unpaid
+  day and no upkeep damage; an unpaid marker from before the death stays;
 - it pays no overlord tax or tribute; trade, tariffs, loans and war reparations
   carry on as usual;
 - its outstanding invitations are cleared and nobody can join it with
@@ -188,17 +190,19 @@ installations. While it is held:
 
 If the dead character is revived, it rejoins the realm's main guild as its leader,
 on the revive event or at the next hourly check. That happens only while the realm
-has no members and the character has joined no other realm; a failed save keeps
-the realm held and the next hour tries again. Staff can hand the realm to someone
+has no members, the character has joined no other realm and the closure has not
+begun; a failed save keeps the realm held and the next hour tries again. Staff can hand the realm to someone
 else with `/faction forcejoin <faction> <character>` followed by
 `/faction forceleader <faction> <character>`; filling the seat ends the hold.
 
 The hourly check closes a held realm once it has had no members for 7 days and is
 not at war. The week starts when SimpleFactions records the death, which for a
-death it missed is the reconcile that found it. A member stops the clock and
-leaving starts it again. Closing first removes every other realm's relation,
-trade agreement and treaty with the realm and saves those realms, then removes
-the realm and its file; its ledger treasury remains. A failed step is tried again
+death it missed is the reconcile that found it. Letting a member in stops the clock at
+once; the next hourly check after the realm is empty again starts a new week.
+Closing first saves the realm with `closing since`, from when a revive no longer
+gives it back; then it removes every other realm's relation, trade agreement and
+treaty with the realm and saves those realms; then it removes the realm and its
+file. Its ledger treasury remains. A failed step is tried again
 every hour, and a new realm that took the same name in the meantime is left alone.
 From the end of the week until the closure is finished, estate lookups for the
 realm are unavailable, so estates wait rather than paying into a realm about to

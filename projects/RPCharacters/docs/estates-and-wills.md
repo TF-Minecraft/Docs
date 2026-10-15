@@ -40,7 +40,8 @@ A death with no living will heir and no guild would freeze, so it waits longer:
 realm's own (ruling) guild while the realm has no living leader waits the same time, heir or not: that is
 a realm whose last member died, which SimpleFactions holds for 7 days, or a vacant seat. If the realm
 still has no leader when that wait ends, the estate is postponed ("the realm has no leader") for up to one
-more wait, so it passes once the held realm is taken on or closed. When such
+more wait from that first postponement, so it passes once the held realm is taken on or closed, including
+a death SimpleFactions only recorded later. When such
 an estate falls due, its due time moves out by the difference and the estate stays open, so a revive in
 that time still cancels it. The audit log records the move and the website shows the new date. Time on
 staff hold counts on top. `/estate decide <deathId> --no-guild` is not held. Legacy deaths count from
