@@ -30,6 +30,26 @@ Staff commands:
 Assignments take effect on the next startup. Back up faction data together with
 RPCharacters and DenarEconomy data before a coordinated cutover or rollback.
 
+Quarantine completion offers unresolved record IDs cached by migration and staff
+reads/writes. After editing `quarantine.json` externally, run
+`/faction admin quarantine list` or restart to refresh that snapshot. Character
+UUIDs are entered manually.
+
+## Command completion
+
+Faction, guild, company, mercenary, battle and warband suggestions match the
+current token without regard to case. Multiword character, faction and company
+names complete only their remaining suffix after earlier words have been typed.
+Where an admin company command consumes one token, use its guild ID for a
+multiword company name.
+
+Membership, leadership, company enrollment and leaderless-guild choices follow
+the applicable command context. Console faction completion offers supported
+staff tools; gameplay actions require a player. Free-text and numeric slots have
+no usage placeholders. Existing title RGB/province values and finite espionage
+presets remain available. Literal `<culture>` and `<religion>` values are refused
+by their setters.
+
 ## Member prestige
 
 The Members prestige line has a headcount part, `(heads + 4)^1.8 + 5`, and a

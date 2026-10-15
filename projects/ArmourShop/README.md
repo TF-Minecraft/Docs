@@ -22,6 +22,11 @@ Required plugins declared by the manifest: TLibs, ItemsAdder, TFMCWeb.
 
 Startup loads `config.yml`, `categories.yml`, `base-sets.yml`, `permission-groups.yml` and `Categories/`, then starts pack pulling and catalog sync. `/armourshop` provides the shop and admin subcommands. `armourshop.admin` defaults to operators; grant it explicitly to other administrators. Follow the integration guides below for the gateway, approval and ItemsAdder pack workflow.
 
+For administrators, `/armourshop token delete` completes active unused token codes
+from an asynchronous cache with a 30-second TTL. The initial request can be empty
+until refresh completes; remote changes can take one cache interval to appear.
+`listtokens` also provides clickable deletion actions.
+
 ## Guides
 
 - [Web integration and pack generation](../ProvinceSystem/docs/integrations/armourshop.md)

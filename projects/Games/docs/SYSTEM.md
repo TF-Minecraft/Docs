@@ -103,10 +103,16 @@ Ace file and IA id is `_1` or `1`, not 14. Ace-high ranking is a poker flag, not
 | Command | Permission | Behavior |
 |---------|------------|-------|
 | `/games help [game]` | `games.help` (default true) | Opens a rule book from `help.yml`. No game id opens the index |
-| `/games reload` | `games.admin.reload` | Reload configuration |
+| `/games reload` | `games.admin` and `games.admin.reload` | Reload configuration |
 | `/games place` | `games.admin` | Place a table without a deck item |
 | `/games bet ...` | `games.bet` | Blackjack betting; `check`, `call`, `fold`, `raise` and `allin` for poker |
 | `/games poker ...` | `games.bet` | Poker [tournament](HOLDEM.md#tournaments) settings and actions |
+
+`/games poker kick` completes online tournament registrants when the player can
+edit the nearby poker table and its enabled tournament is neither live nor paying.
+`/games deal table board|dealer` completes `back` directly after the pile or after
+a positive card count. Suggestions match the current prefix without regard to
+case. `reload` is omitted when its dedicated permission is denied.
 
 ## Dependencies
 

@@ -134,6 +134,10 @@ open station menus before changing `labels` titles or `colors.inventory_title`.
 | `/research reload` | Reload all configuration and content. Requires `research.admin`, which defaults to operators. |
 | `station.permission` | Optional permission to use stations. When set, Research ignores clicks from players without it, and the block behaves normally. |
 
+Tab completion offers `reload` only to authorized senders and matches the
+current argument prefix without case sensitivity. Later arguments have no
+suggestions.
+
 ## Integrations
 
 - **RPCharacters Focus.** Mental points are the RPCharacters Focus pool for the player's

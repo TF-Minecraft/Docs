@@ -25,6 +25,15 @@ pack assets stay in [Archaeo](https://github.com/TF-Minecraft/Archaeo). TFMC-spe
 settings and lore catalogs live in private
 [ServerAssets](https://github.com/TF-Minecraft/ServerAssets/tree/main/configs/Archaeo).
 
+## Staff command completion
+
+Multiword site names complete only their remaining suffix for ruin `info`, `tp`,
+`set-interest`, `close` and `delete`. The optional `give tool`/`give pick` slot
+offers configured tools and online player shorthand. Names that resolve as tools
+use the explicit fourth recipient slot instead. `ruin camps` offers known
+standing-camp director UUIDs and safe unique single-token names alongside site
+serials and valid online shorthand.
+
 ## Builds and releases
 
 See the [shared pipeline guide](../../PIPELINES.md). Pull requests and pushes to `main` verify the source; only pull requests publish dated development JARs. Numeric `v*` tags supply the release version and create draft releases with checksums.

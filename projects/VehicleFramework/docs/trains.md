@@ -89,6 +89,12 @@ One spline per track (no stored sections). A **stroke** is one lay with the conf
 - `/vf track resync` applies rail item paths and `display-y-offset` from `trains.yml` to loaded chunks (throttled). Switches follow `/vf reload` and chunk load without this command.
 - `/vf track dump` appends a network snapshot to `logs/track.log` (`DUMP`, `SPLINE`, `PT` every 32 along `s`, then `JUNCTION` frogs including `thrown`). The same dump runs on plugin load. `JUNCTION_DROP` is written if a junction JSON is skipped (`no-stem` / `no-branch`) or cancelled as incomplete. On load and after lay/dig/delete, non-loop splines up to 16 blocks long that lie entirely on a longer spline in the same world are removed automatically (duplicate overlays and stray stubs).
 
+`/vf track info`, `particles` and `bind` complete optional explicit track UUIDs
+from the player's current world, alongside `delete` and `clearance`. The optional
+forms still support their nearest-track default. All explicit suggestion lists
+match the current prefix. Permitted console senders can complete `/vf reload`,
+`/vf admin quarantine` and `/vf track resync`.
+
 ## Persistence
 
 ### Spline

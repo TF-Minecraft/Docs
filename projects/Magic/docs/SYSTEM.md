@@ -138,3 +138,11 @@ or alias. Sacrifice lore keeps the victim's character name from the moment of th
 | `/resonance` | `magic.use` | Opens resonance profile GUI |
 | `/magic reload` | `magic.admin` | Reload configs |
 | `/magic open` | `magic.admin` | Open GUI (bypasses character check) |
+
+`/resonance` (alias `/res`) has no argument suggestions. `/magic` completion
+follows sender context; console sees only executable branches. Weapon giving
+offers chargeable elements and missing open part categories for the selected
+core. Artifact roll/give rarity choices follow the selected type's brackets and
+the configured random pool. Artifact path completion covers finite single-token
+grammar and registered values while preserving earlier text; numeric caps remain
+manual input.

@@ -27,6 +27,12 @@ reference after that session has become noncurrent. Rejoining restores only its
 recorded character. Raid muster deduplication remains account-wide and is not
 cleared by switching characters or leaving a warband.
 
+`/warband join` completes warband IDs only when the player's current character
+can join them, including invitation, faction and campaign-side checks. Completion
+checks eligibility without enrolling the player or binding a war side. Delete
+completion follows leader/staff authority, and all candidates match the current
+prefix.
+
 ## War sides
 
 A war ties each Minecraft account to the coalition of its first warband

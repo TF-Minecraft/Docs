@@ -393,6 +393,10 @@ Players (no permission node):
 
 Staff with `cooking.admin`, including the console, can run `/animals <player>` for someone who has joined. This read-only account view aggregates distinct animals across that account's resolved character slots. A player without that permission cannot list another player's animals.
 
+Staff target completion includes online players and known offline names still in
+Bukkit's cache. Saved names load at registration and update on joins; expired
+cache names are omitted. Husbandry numeric presets match the current prefix.
+
 The last location is written when the animal loads, on the one-minute tick while loaded, on unload, and on plugin disable if the entity is still present. Listing refreshes a loaded animal from the live entity before printing.
 
 Requires `cooking.admin`:

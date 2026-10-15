@@ -81,6 +81,11 @@ Players with `geiger.limit.bypass` are never limited.
 | `/geiger droplist [name]` | Show available lists, or switch and save the active list |
 | `/geiger reload` | Reload `config.yml` |
 
+`limits`/`resetlimits` and their singular aliases complete known previously played
+offline names as well as online players. The name snapshot loads at enable and
+updates on joins. `locate` and `move` complete online players only. Suggestions
+match the current prefix without regard to case.
+
 | Permission | Default | Grants |
 |---|---|---|
 | `geiger.admin` | op | Access to `/geiger` |

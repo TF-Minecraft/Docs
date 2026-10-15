@@ -28,9 +28,11 @@ root aliases. Running `/companionpets` shows help and examples.
 
 ## Browsing characters and pets
 
-Tab completion suggests owning characters' display names, then that character's
-pet names. Creation also offers online account names. The character argument is
-one token: use its character UUID when its name contains spaces or is ambiguous.
+Tab completion suggests resolvable single-token character names, using character
+UUIDs for multiword, duplicate or reserved names, then that character's pet names.
+Unresolved owners are omitted. Creation requires a living identity and also offers
+online account names when they resolve to that same current character.
+`list unassigned` is included in completion. The character argument is one token.
 Pet names can contain spaces. Duplicate pet names are never resolved arbitrarily:
 select the pet from `list` to view its identity internally. There is no player
 inventory.

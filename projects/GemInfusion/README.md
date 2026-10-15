@@ -39,6 +39,9 @@ the permission configured in `goldsmithing.yml`, defaulting to
 `professions.goldsmith` (false by default); administrators bypass that gameplay
 check.
 
+Command completion requires `geminfusion.admin`. Console is offered `reload`;
+players can also complete `select` and matching jewelry project IDs.
+
 ## Guides
 
 - [Goldsmithing and finishing rules](goldsmithing.md)

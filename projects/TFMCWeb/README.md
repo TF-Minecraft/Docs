@@ -12,6 +12,12 @@ The entrypoint is `net.tfminecraft.tfmcweb.TFMCWeb`. TLibs is a required plugin;
 
 `ProvinceSystemGateway` provides the shared web transport. The plugin loads `config.yml`, maintains a link cache, starts the notice poller, and registers `/linkdiscord`, `/unlinkdiscord`, `/web`, `/token`, `/warning` and `/patreon`. `/patreon` shows supporter status, starts Patreon authorization when unlinked, and supports `/patreon unlink`. Configure the API URL, plugin key and realm using the identity guide below; permission defaults and exact command syntax live in `plugin.yml`.
 
+`/token create` completes enabled scopes allowed by either the regular or staff
+creation permission; a staff skin scope remains available when regular skin
+creation is disabled. `/warning` completes online targets for permitted staff,
+then leaves the reason as free text. `/linkdiscord` and `/unlinkdiscord` take no
+arguments and have no argument suggestions.
+
 The `patreon:` config block enables supporter status and maps tier keys to LuckPerms groups:
 
 ```yaml

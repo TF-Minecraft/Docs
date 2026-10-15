@@ -366,6 +366,10 @@ declares no permission defaults, so the node is operator-only unless granted.
 `breedingbuddies.use` also lets a player interact with others' animals, open any
 tracked animal's menu and neuter adult mounts they own.
 
+`spawnanimal` completion offers spawnable animal types configured in the loaded
+`bundles.yaml`, including changes after reload. Numeric presets for `spawnanimal`
+and `spawnmount` match the current prefix; other valid numbers can be typed.
+
 ## Persistence
 
 Data is written as JSON beneath `plugins/BreedingBuddies/Data/`:

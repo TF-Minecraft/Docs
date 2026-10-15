@@ -26,6 +26,24 @@ ___
 
 ---
 
+## Tab completion
+
+Completion works through `/co`, `/core` and `/coreprotect`, with canonical command
+names filtered by permission and sender context. `consumer pause|resume` is a
+console action; preview apply/cancel choices appear only for an active preview.
+`network-debug` also requires its configuration setting.
+`near` requires a player or command-block location and either lookup permission;
+console completion omits it.
+
+Lookup and rollback parameters support inline values, separated values and comma
+continuations, preserving the current parameter prefix. Action choices follow the
+command's supported actions and lookup permissions. User exclusions can complete
+online names; entity choices use the loaded identifier cache.
+Purge completion offers its supported time, radius, include and `#optimize`
+arguments, including after earlier parameters. Teleport completes loaded world
+names, or `wid:<id>` for worlds whose names contain spaces; coordinates remain
+manual input. Suggestions match the current prefix without regard to case.
+
 ## Command Details
 
 *Detailed command information is listed below.*

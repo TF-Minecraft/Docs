@@ -48,6 +48,9 @@ carried furniture and saves loaded chunks.
 `interactiblefurniture.debug`. Both permissions default to operators. The command
 also exposes `/if nested attach` and `/if nested detach` for nested furniture.
 
+Tab completion follows those permissions and the current prefix. Console can
+complete `reload`; debug and nested-furniture actions require a player.
+
 ## Builds and releases
 
 See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.

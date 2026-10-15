@@ -31,6 +31,13 @@ the project and loses its deposited materials. Players can inspect progress
 with the branding tool or cancel unfinished work for a full material refund.
 Station progress persists across server restarts.
 
+## Commands
+
+`woodworking.admin` is required for command completion. Console can complete
+`/woodworking reload`; player administrators can also complete `select` and
+matching project IDs. Suggestions match the current prefix without case
+sensitivity.
+
 ## Builds and releases
 
 See the [shared pipeline guide](../../PIPELINES.md) for development artifacts, release tags, and dependency access.

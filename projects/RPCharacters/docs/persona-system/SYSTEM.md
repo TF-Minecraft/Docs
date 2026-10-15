@@ -60,6 +60,14 @@ namecolour, gender, description, temporary alias and hidden-character controls.
 Channel commands come from `chat.yml`. `/channel` selects the default channel;
 `/channeltoggle` controls visibility. `/roll` supports numeric and attribute rolls.
 
+Persona and staff argument suggestions follow their execution permissions.
+Dynamic chat labels carry the channel's configured `use-perm`; configuration
+synchronization refreshes online players' command trees. `/channel` suggests
+enabled, loaded channels the player can use. Manually entered IDs and aliases
+require that same use permission before the active preference changes.
+`/channeltoggle` suggests enabled,
+loaded toggle targets without requiring permission to speak in them.
+
 Channel permissions, character requirements and recipient rules are enforced by
 the chat services. Masks affect eligible chat/profile views; account-name channels
 and safe TAB identity have separate rules. Profiles enforce target and permission
