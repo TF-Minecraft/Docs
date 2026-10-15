@@ -50,7 +50,7 @@ cannot reopen a selector after playing, starting creation or reconnecting.
 
 Play restores the chosen character's progression and body before publishing its
 ready session. Dismissing the dialog does not admit the player into gameplay;
-`/rpcharacter select` reopens it. Players can use character creation and Discord
+`/rpcharacter menu` reopens it. Players can use character creation and Discord
 linking while selecting. Other commands, movement, damage, item transfers and
 ordinary chat remain blocked. Players in selection are hidden from each other
 and from players in the game worlds. Permanent-death respawns are hidden before
@@ -103,7 +103,7 @@ count. Signed player chat and disguised chat from `/say` or `/me` remain untouch
 Selection and creation errors appear in their dialogs. When Discord linking is
 required, **Link Discord to play** opens the readable chat-based linking flow;
 new messages remain visible there, while previously queued ordinary messages
-still wait for Play. `/rpcharacter select` returns to the menu. Already-received
+still wait for Play. `/rpcharacter menu` returns to selection. Already-received
 chat fades normally when returning from gameplay. Minecraft's resource-pack
 consent screen and progress notification remain visible; this needs no pack
 changes or client mod.
@@ -124,7 +124,7 @@ character can be chosen. Failures after progression restoration starts retain
 their activation evidence for manual recovery; reward commands may already have
 run, so blindly repeating that restoration is unsafe.
 
-While playing, `/rpcharacter select` returns the player to selection without
+While playing, `/rpcharacter menu` returns the player to selection without
 disconnecting. They must stand still for `character-bodies.return-seconds`
 (default 5); moving, teleporting, mounting, taking damage or any refusal below
 cancels it. Starting character creation while playing does the same. It is

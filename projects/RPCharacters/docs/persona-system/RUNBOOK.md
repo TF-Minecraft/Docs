@@ -75,7 +75,7 @@ Check permissions against the current commands and configuration:
 - [ ] Name colour: tier limits from `permission-groups.yml` (0 default, 1 noble, 2 gilded, 20 ascended); multi-hex gradient supported
 - [ ] Admin `/rpcharacter override ... namecolour` bypasses tier limits and persists through rank changes (`name-colour-staff`)
 - [ ] Default description template with `{continent}` — vowel races produce **An** (not **Aan**)
-- [ ] Character Info GUI (ender pearl) shows display, gender, age, and description
+- [ ] Staff Character Info GUI (`/rpcharacter menu <player>`, ender pearl) shows display, gender, age, and description
 
 ### Character switch cooldown
 

@@ -7,9 +7,15 @@ Commands and configuration below describe the bundled defaults on `main`. Server
 ## Character selection
 
 With [separate bodies](character-bodies.md) enabled, login opens the character
-selection dialog. `/rpcharacter select` reopens it while selecting; while playing,
+selection dialog. `/rpcharacter menu` reopens it while selecting; while playing,
 it returns you to selection after you stand still for five seconds. Each character has
 its own items and progression. `/linkdiscord` remains available in selection.
+
+Under each character's card, **Background**, **Traits** and **Clues** show their
+details on hover. **End character** asks twice, then kills the character for good
+and moves it to Memorials; only staff can revive it. Staff use
+`/rpcharacter menu <player>` for the chest view of another player's characters,
+where they can revive dead ones.
 
 See [in-game character creation](character-creation.md) for the dialog wizard,
 Back/Next, draft resumption and review editing.
@@ -24,7 +30,7 @@ Focus is a shared, regenerating per-character resource used by Research and Magi
 
 ## Class picks
 
-`/class`, `/rpcharacter class` and the Class button in Character Info open the base-class window. `/subclass`, `/rpcharacter subclass` and the Subclasses button open a separate window showing only the active character's class family, in place of MMOCore class points.
+`/class` and `/rpcharacter class` open the base-class window. `/subclass`, `/rpcharacter subclass` and the Subclasses button open a separate window showing only the active character's class family, in place of MMOCore class points.
 
 A character's first class and first subclass are free. Other picks are priced like the class creation stage: free during its lock-time (5 days), then the `paid-changes` class rule (100, 1000, 3000 denars). `class-selection.change-cost` is used only when there is no class rule. `infinite-points: true` makes every pick free, for the tutorial server. A class picked above a skill-slot level still gets the slots its exp table unlocks.
 

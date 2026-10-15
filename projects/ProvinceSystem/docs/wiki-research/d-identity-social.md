@@ -50,7 +50,7 @@ RPCharacters is the roleplay-character backbone of the server: it makes each pla
 2. **`/rpcharacter create`** — checks for a free character slot, then starts the staged creator.
 3. **Stage flow** (`stages.yml`, in file order): welcome → age gate (OOC 18+) → info → name (typed in chat) → class info → class selection → race selection → character age → trait GUIs (homeland, cataclysm, reclamation, motivation, gift, virtue, combat, physical, celestial) → attributes → personality → evil archetype → permanent injury → prosthetic → description (typed in chat) → clue entry (typed) → wardrobe → summary.
    Navigation: `/rpcharacter next`, `back`, `help`, `cancel`.
-4. **After creation**, `/rpcharacter menu` opens a 27-slot chest GUI listing characters (`profile.yml`: `character-slots: [10,11,12,13,14]`, `extended-character-slots: [19,20,21,22,23]`, `dead-slot: 16`). Switching characters is on a per-rank cooldown.
+4. **After creation**, `/rpcharacter menu` returns you to the character selection room, where you switch characters or end one. Switching characters is on a per-rank cooldown.
 5. **Starter kit:** `/rpcharacter kit starter`.
 6. **Talking:** plain typing goes to your default channel (`chat.yml` `default: rp`). Explicit commands `/rp`, `/shout`, `/yell` (`/y`), `/whisper` (`/wh`), `/looc`, `/ooc`, `/me`, `/scene` are registered at runtime from `chat.yml` `channels.*.commands` via reflection into the Bukkit CommandMap (`chat\ChatCommandRegistry.java:26-50`). `/channel <id>` changes the default; `/channeltoggle <id>` hides/shows a channel.
 7. **Rolling:** `/roll`, `/roll <max> [+/-mod]`, or `/roll <attribute>` (d20 + that attribute's modifier). **Survival gamemode only** (`roll\RollManager.java:24-26`).
@@ -95,7 +95,7 @@ RPCharacters is the roleplay-character backbone of the server: it makes each pla
 | `/rpcharacter create` | — | Starts character creation | Requires a free character slot |
 | `/rpcharacter next` / `back` / `help` / `cancel` | — | Creation-stage navigation | Only while a creator is active |
 | `/rpcharacter edit [entry]` | — | Re-opens the creation editor / a specific entry | |
-| `/rpcharacter menu` | — | Opens your character menu GUI | With a player arg it needs `rpcharacters.admin` |
+| `/rpcharacter menu` | — | Returns you to character selection | With a player arg, staff get that player's chest GUI (`rpcharacters.admin`) |
 | `/rpcharacter kit <id>` | — | Claims a kit (e.g. `starter`) | |
 | `/rpcharacter clues` | — | Opens your character's clue GUI | With a player arg it needs `rpcharacters.admin` |
 | `/rpcharacter wardrobe [slot]` | — | Wardrobe GUI, or equips `base`/`extra_1`/`extra_2`/name | |

@@ -64,7 +64,7 @@ character world, discarding a draft returns to selection; playing a character
 or disconnecting leaves the menus. Normal chat cannot submit creation fields.
 `/rpcharacter create` no longer starts creation. Navigation commands are retained
 for existing-character editing and staff previews; a native draft uses its
-screen controls. `/rpcharacter select` can recover the current menu.
+screen controls. `/rpcharacter menu` can recover the current menu.
 
 ## Review and finish
 
