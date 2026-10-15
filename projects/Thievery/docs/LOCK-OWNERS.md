@@ -136,7 +136,10 @@ faction records). Each label reads `<Kind> at x y z`, adding the world in
 brackets when it is not the first world and ` (guild)` or ` (faction)` for those
 states. Lock files store no block type or world, so a block is named only once
 its chunk has been loaded since the restart; until then it reads `Container` or
-`Door`, and the two halves of a double chest may be listed separately.
+`Door`, and the two halves of a double chest may be listed separately. Halves
+that go to different estate parts (one guild, one private) are always listed and
+counted apart. Every save and delete re-reads the file into the index, so a write
+whose directory sync failed after the file changed is still reflected.
 
 Estates need TLibs 2.6.0. On an older TLibs Thievery logs a warning, takes no part in
 estates and a dead owner keeps their locks.

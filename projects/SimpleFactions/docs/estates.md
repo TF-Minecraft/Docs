@@ -91,10 +91,11 @@ a vehicle moves, a gate checks four things:
 - it is not held back in `/vf admin quarantine`.
 
 For the will screen and `/estate show`, the participant lists each of the
-character's vehicles by VehicleFramework's name and where it is now, such as
-`Passenger Car at 512 64 -230`, adding the world in brackets when it is not
-the first world. When VehicleFramework cannot name it, the type ID is written as
-words (`Simple locomotive`).
+character's vehicles from VehicleFramework's memory only, so opening the screen
+reads no stored snapshots. A vehicle out in the world shows its name and place,
+such as `Passenger Car at 512 64 -230`, adding the world in brackets when it is
+not the first world. A stored vehicle shows its type's name. When VehicleFramework
+cannot name it, the type ID is written as words (`Simple locomotive`).
 
 A vehicle that fails the gate makes the participant answer RETRY. Unlike a
 player handover there is no fee, no slot check and no battle lock. An inherited
