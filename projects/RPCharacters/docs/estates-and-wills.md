@@ -178,7 +178,8 @@ In game, `/will` opens a dialog for the character being played. With a living he
 website like the character select screen), race, whether they are one of the player's characters and
 when they were named, then what the heir would get today. Each kind of holding is one row with a vanilla
 item icon and a count; vehicles, locks, shops, research stations, letters, dig sites and pets list
-their labels on hover, and kinds whose labels are IDs show the count alone. Money comes from the
+their labels on hover (past twelve, grouped by kind, such as `Chest ×200`), and kinds whose labels
+are IDs show the count alone. Money comes from the
 character's ledger accounts. The stored body is not a row; **How wills work** explains
 `/estate collect`. Guild and faction locks appear under **Goes elsewhere**, with the guild's living
 leader, else the realm's, else "the next leader".
@@ -228,7 +229,7 @@ including names of several words before further arguments.
 | Command | Effect |
 |---|---|
 | `/estate list [open\|held\|waiting\|frozen\|retry\|postponed\|empty]` | One line per estate: state, due time, recipients and each participant's answer. Estates that hold nothing appear only under `empty`. |
-| `/estate show <estate>` | One estate in full: will, cause, killer, postponement, recipients, every participant's answer with counts and moved IDs ("awaiting restart" for Thievery), the body collection, and what each participant says the character still holds (such as letters held back). |
+| `/estate show <estate>` | One estate in full: will, cause, killer, postponement, recipients, every participant's answer with counts and moved IDs ("awaiting restart" for Thievery), the body collection, and what each participant says the character still holds (such as letters held back), with at most ten labels per participant and a count of the rest. |
 | `/estate hold <estate>` / `/estate release <estate>` | Stop an open estate's clock, or restart it with the time that was left. |
 | `/estate decide <estate> --no-guild` | Decide a due estate without SimpleFactions' answer, as if the character had no guild. If the attempt still waits for another reason, the override is withdrawn. |
 | `/estate assign <estate> <money\|property\|guildlocks\|all> <character>` | Give waiting or frozen parts to a living character (by name or ID; money goes to its bank). Makes a new revision and calls every participant again. |
