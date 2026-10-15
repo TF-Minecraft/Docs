@@ -95,6 +95,9 @@ expose `UUID getConstructorCharacterId()`. The construct and cancel events
 also expose the account as `getConstructorUuid()`. The begin event carries the
 `Player`.
 
+Cancellation listeners must read the blueprint and constructor from the event's
+getters; the station's queued job has already been cleared durably.
+
 [`ConstructionFreeze`](https://github.com/TF-Minecraft/VFBuilders/blob/main/src/main/java/net/tfminecraft/vfbuilders/api/ConstructionFreeze.java)
 providers are registered with Bukkit's `ServicesManager`. Each second, every
 station still counting down calls
