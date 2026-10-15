@@ -235,6 +235,8 @@ word of a name, it inserts only the missing suffix. `assign` offers parts whose
 recipients are waiting or frozen, and `guild` only for frozen money. `retry`
 offers blocked participant IDs; `waive` requires a blocked answer for the current
 revision. All suggestions match the current prefix without regard to case.
+`collect` and its argument suggestions are player-only; console retains the
+other permitted staff commands.
 
 | Command | Effect |
 |---|---|

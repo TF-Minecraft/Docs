@@ -16,7 +16,9 @@ Unknown names are omitted. Offline returns still wait for the recorded character
 to become current; completion does not deliver them or read queue files/profiles.
 A maintained index tracks pending owners as queues change, without periodic
 history scans. Joining updates a pending owner's cached name by UUID, replacing
-the old name and retaining the current name after logout.
+the old name and retaining the current name after logout and later queue changes.
+Transient queue read failures retain the last validated pending owner until a
+normal read recovers; invalid or deleted records remove their index entry.
 
 Refunds use free storage slots and split oversized stacks into batches up to the
 material's stack size. Full inventory leaves the remainder queued; refunds do

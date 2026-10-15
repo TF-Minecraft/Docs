@@ -169,7 +169,9 @@ take a numeric SimpleFactions province ID or `here` for the player's province.
 Both permissions default to operators, and `infestations.admin` grants
 `infestations.admin.reload`. The reload permission also works on its own.
 `set` completion offers eligible uninfested land provinces and terrain-compatible
-groups; `clear` offers active infestation IDs. `here` is suggested only to players.
+groups; `clear` offers active infestation IDs. `here` is suggested only when the
+player is in valid land eligible for that action: uninfested for `set`, actively
+infested for `clear`.
 Suggestions follow the current prefix. Reloading re-reads `Data/infestations.json`, removes stray lure
 furniture and text displays, recounts loaded ambient mobs, and re-exports the
 map data.

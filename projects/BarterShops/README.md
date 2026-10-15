@@ -103,8 +103,9 @@ Staff with `bartershops.admin` resolve a blocked shop in game:
 
 Tab completion offers IDs with retained unfinished trades, including unreadable
 records, followed by matching `clear` and `--confirm` keywords on their valid
-paths. The ID index loads at startup and follows trade changes; manual file edits
-appear at restart or when the record is inspected.
+paths. The ID index loads canonical filenames at startup and follows trade
+changes; manual file edits appear at restart or when the record is inspected.
+A directory traversal failure logs a warning and retains any IDs already found.
 
 The shop ID is the file name in `Data/` and `trades/`. The command reads the
 record's state and asks the ledger for the posting's result:

@@ -29,7 +29,8 @@ settings and lore catalogs live in private
 
 Multiword site names complete only their remaining suffix for ruin `info`, `tp`,
 `set-interest`, `close` and `delete`. The optional `give tool`/`give pick` slot
-offers configured tools and online player shorthand. `ruin camps` offers known
+offers configured tools and online player shorthand. Names that resolve as tools
+use the explicit fourth recipient slot instead. `ruin camps` offers known
 standing-camp director UUIDs and safe unique single-token names alongside site
 serials and valid online shorthand.
 

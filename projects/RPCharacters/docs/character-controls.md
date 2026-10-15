@@ -33,8 +33,8 @@ Focus is a shared, regenerating per-character resource used by Research and Magi
 `/class` and `/rpcharacter class` open the base-class window. `/subclass`, `/rpcharacter subclass` and the Subclasses button open a separate window showing only the active character's class family, in place of MMOCore class points.
 
 Staff `/rpcharacter setclass` completion uses registered MMOCore class IDs.
-Admin `injure` and `permakill` routes complete a target's single-token character
-slug, or its UUID when the slug cannot be used safely. The `permanent` modifier
+Admin `injure` and `permakill` routes complete a target's living character
+single-token slug, or its UUID when the slug cannot be used safely. The `permanent` modifier
 belongs to `injure`. `/class`, `/subclass`, `/players` and `/will` have no argument
 suggestions. Wardrobe completion includes usable slot IDs and unambiguous aliases.
 
