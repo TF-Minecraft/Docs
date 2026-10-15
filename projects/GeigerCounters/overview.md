@@ -6,19 +6,21 @@
 ![Paper](https://img.shields.io/badge/Paper-1.21.10-blue)
 ![Maven](https://img.shields.io/badge/Build-Maven-red?logo=apachemaven&logoColor=white)
 
-Built for the [TFMC](https://www.patreon.com/c/TFMCRP) roleplay server, where it runs in production as a server-wide scavenger-hunt event mechanic.
+Built for the [TFMC](https://www.patreon.com/c/TFMCRP) roleplay server, where each character hunts their own source near them.
 
 ---
 
 ## What It Does
 
-Hold a **Geiger Counter** item and the world starts talking back: particle rings around you shift in color and count based on how close you are to a hidden radioactive source. Walk it down, collect the source, and a weighted loot table decides your prize — anywhere from common food to mythical skin scrolls. The counter burns out, the source relocates, and the hunt begins again.
+Hold a **Geiger Counter** item and the world starts talking back. Each character has their own hidden radioactive source, placed 150–500 blocks from where they first hold a live counter. A signal bar at the top of the screen fills as they close in and peaks when they face the source, while particle rings and clicks track the distance. Walk it down, collect the source, and a weighted loot table decides the prize, anywhere from common food to mythical skin scrolls. The counter burns out, and the next live counter places a new source near wherever the character is then.
 
 | | |
 |---|---|
-| **Signal tracking** | Particle rings guide players toward a randomly placed source — more rings and brighter colors mean closer |
+| **A source per character** | Each character hunts their own source near them; RPCharacters supplies the character, and without it each account has one |
+| **Signal bar** | A boss bar that fills with closeness and peaks when the player faces the source, so turning on the spot shows the way |
+| **Signal tracking** | Particle rings guide players toward their source — more rings and brighter colors mean closer |
 | **Tiered rewards** | 6 rarity levels (Common → Mythical) with fully weighted drop chances |
-| **Self-resetting hunt** | Collecting the source relocates it to a new random spot in the search area |
+| **Self-resetting hunt** | After a collection the next live counter places a new source near the character |
 | **Consumable gameplay** | The Geiger Counter "runs out of charge" on success, becoming a **Dead Geiger Counter** |
 | **Geiger clicking** | The counter clicks faster the closer the source gets — audible signal, not just visual |
 | **Per-player drop limits** | A player may claim at most *x* drops per *y* time window, so loot stays scarce |
@@ -26,12 +28,19 @@ Hold a **Geiger Counter** item and the world starts talking back: particle rings
 
 ## How It Works
 
-A repeating task checks every online player. For each player holding a Geiger Counter:
+A repeating task checks every online player in the source world. For each player holding a Geiger Counter while playing a character:
 
-1. The horizontal distance to the radioactive source is calculated (Y is ignored, so the signal works across terrain height).
-2. That distance is mapped to a particle configuration — ring count (1–3) from distance thresholds, and a color interpolated along a two-stage gradient (dark purple → purple far away, purple → white up close).
-3. The rings spawn around the player as a live "signal strength" readout.
-4. Within collection distance (20 blocks by default), the source is collected automatically: a tier is rolled by weight, a random item from that tier is granted, the counter is swapped for its dead version, and the source moves to a fresh random location.
+1. If the character has no source, one is placed at a random spot between `source.min-distance` and `source.max-distance` from them, inside the configured area and passing the spawn filters. The same happens when the character is more than `source.reroll-distance` from their source, for example after travelling or teleporting away.
+2. The horizontal distance to the source is calculated (Y is ignored, so the signal works across terrain height).
+3. That distance is mapped to a particle configuration — ring count (1–3) from distance thresholds, and a color interpolated along a two-stage gradient (dark purple → purple far away, purple → white up close).
+4. The rings spawn around the player, and the signal bar is updated.
+5. Within collection distance (20 blocks by default), the source is collected automatically: a tier is rolled by weight, a random item from that tier is granted, and the counter is swapped for its dead version. The character has no source until they next hold a live counter.
+
+Sources are stored in `plugins/geiger_counter/sources.yml`, keyed by character ID, so a restart keeps every hunt where it was. Sources untouched for 30 days are dropped when the plugin loads. A player in the character selection room has no character and gets no reading.
+
+### Signal bar
+
+The bar's fill is closeness times a facing factor. Closeness falls from 1 at the source to 0 at `bar.range` blocks. The facing factor is 1 when the player looks straight at the source and drops to `1 - bar.facing-weight` when they face directly away, so a player can turn on the spot, find the peak and walk that way. Only yaw counts. MMOCore uses the action bar for health and mana, so this is a boss bar at the top of the screen.
 
 ### Sound
 
@@ -43,7 +52,7 @@ Default is `block.note_block.hat` at 0.5 clicks/sec on the edge of detection ran
 
 `limits` caps how often a single player may claim the source: `drops` collections per `time` window. The window slides — each collection frees up again exactly `time` after it happened, so `drops: 3` with `time: 12h` works out to 6 per day.
 
-Collection stamps are stored in `plugins/geiger_counter/drop-limits.yml`, so a restart cannot be used to wipe the limit. A limited player still tracks and sees the signal, but collecting does nothing: the source stays where it is, so somebody else can still claim it, and the player is told when their next slot opens.
+Limits count per account, so switching character does not add collections. Collection stamps are stored in `plugins/geiger_counter/drop-limits.yml`, so a restart cannot be used to wipe the limit. A limited player still tracks and sees the signal, but collecting does nothing: the source stays where it is, and the player is told when their next slot opens.
 
 Players with `geiger.limit.bypass` are never limited.
 
@@ -51,8 +60,8 @@ Players with `geiger.limit.bypass` are never limited.
 
 | Command | Description |
 |---|---|
-| `/geiger locate` | Print the current source coordinates |
-| `/geiger move [x z]` | Move the source to a random spot, or to specific coordinates (coords tab-complete to your position and the area corners) |
+| `/geiger locate [player]` | Print the source of the player's current character, or your own |
+| `/geiger move <player> [x z]` | Clear the source so a new one is placed near them on their next hold, or move it to specific coordinates (coords tab-complete to your position and the area corners) |
 | `/geiger limits <player>` | Show the player's remaining drops and time until the next one |
 | `/geiger resetlimits <player>` | Clear the player's drop history |
 | `/geiger droplist [name]` | Show available lists, or switch and save the active list |
@@ -77,7 +86,8 @@ src/main/java/net/tfminecraft/geigercounters/
 ├── handlers/
 │   ├── GeigerClickPlayer.java         # Distance → click rate, rolled per tick
 │   ├── ParticleRenderer.java          # Distance → ring count + color gradient rendering
-│   └── SourceHandler.java             # Source placement, collection, reward rolls
+│   ├── SignalBar.java                 # Closeness × facing → boss bar
+│   └── SourceHandler.java             # Per-character sources: placement, sources.yml, collection, rewards
 ├── hooks/
 │   └── WorldGuardHook.java            # Optional WorldGuard region lookups
 ├── managers/
@@ -87,6 +97,7 @@ src/main/java/net/tfminecraft/geigercounters/
 │   ├── TierReward.java                # Reward tier: weight + item pool
 │   └── ItemReward.java                # Single reward: item path + amount
 ├── utils/
+│   ├── Hunters.java                   # Player → current character ID (account without RPCharacters)
 │   └── Utils.java                     # Shared helpers
 └── validators/
     ├── GeigerValidator.java           # Is this item a Geiger Counter? (TLibs paths)
@@ -103,7 +114,7 @@ classDiagram
     class GeigerManager {
         +initialize() void
         -checkAllPlayers() void
-        -handlePlayerWithGeiger(player, source) void
+        -handlePlayerWithGeiger(player, hunter, slot) boolean
     }
 
     class GeigerConfiguration {
@@ -118,8 +129,8 @@ classDiagram
     }
 
     class SourceHandler {
-        +moveSourceToRandomLocation() void
-        +tryCollectSource(player, distance) void
+        +placeNear(hunter, origin) CompletableFuture
+        +tryCollectSource(player, hunter, distance, slot) void
         -giveReward(player) void
     }
 
@@ -147,7 +158,7 @@ classDiagram
 1. Drop `geigercounters-<version>.jar` into your server's `plugins/` folder
 2. Install **TLibs** (required). **MMOItems** / **ItemsAdder** are optional item sources
 3. Restart the server
-4. Configure `plugins/geiger_counter/config.yml` and `messages.yml` — the source spawns at a random location within the configured area
+4. Configure `plugins/geiger_counter/config.yml` and `messages.yml` — sources are placed near each character inside the configured area
 
 ### Requirements
 
@@ -155,7 +166,8 @@ classDiagram
 |---|---|
 | [Paper](https://papermc.io/) 1.21.10 (TFMC baseline) | Yes |
 | Java | See the [shared baseline](../../PLATFORM.md); compiler release is 21 |
-| [TLibs](../TLibs/README.md) | Yes |
+| [TLibs](../TLibs/README.md) 2.6.1+ | Yes |
+| [RPCharacters](../RPCharacters/README.md) | Optional — without it each account has one source |
 | [MMOItems](https://www.spigotmc.org/resources/mmoitems-premium.39267/) | Optional |
 | [ItemsAdder](https://itemsadder.com/) | Optional |
 | [WorldGuard](https://enginehub.org/worldguard) 7.0+ | Optional — needed only for the region blacklist |
@@ -163,10 +175,10 @@ classDiagram
 ## Usage
 
 1. Obtain a **Geiger Counter** item (via TLibs/MMOItems/ItemsAdder)
-2. Hold it — particle rings appear, showing signal strength
-3. Follow the signal: more rings and lighter colors mean you're getting closer
+2. Hold it — your source is placed 150–500 blocks away, and the signal bar and particle rings appear
+3. Turn until the bar peaks, then walk that way; the bar and the rings grow as you close in
 4. Get within **20 blocks** (default) to collect the source automatically
-5. Receive a reward rolled from the tiered loot pool; the counter becomes a **Dead Geiger Counter** and the source relocates
+5. Receive a reward rolled from the tiered loot pool; the counter becomes a **Dead Geiger Counter**, and your next live counter starts a new hunt near you
 
 ### Reading the signal
 
@@ -176,7 +188,8 @@ classDiagram
 | **2 rings** | Within 300 blocks — close |
 | **1 ring** | Beyond 300 blocks — far |
 | **White** | Very close (0–200 blocks) |
-| **Purple → dark purple** | Far away (200–2500 blocks) |
+| **Purple → dark purple** | Far away (200–1000 blocks) |
+| **Fuller bar** | Closer, or facing more squarely towards the source |
 | **Fast clicking** | Rate rises from 0.5/sec at the edge of range to 18/sec at the source |
 
 ## Configuration
@@ -184,13 +197,16 @@ classDiagram
 ```yaml
 # Source location settings
 source:
-  world: world            # World where source spawns
-  top-left:               # Search area corner 1
+  world: world            # World where sources spawn; counters only read here
+  top-left:               # Sources stay inside this area, corner 1
     x: -1000.0
     z: -1000.0
-  bottom-right:           # Search area corner 2
+  bottom-right:           # Corner 2
     x: 1000.0
     z: 1000.0
+  min-distance: 150.0     # New sources sit this far from the character...
+  max-distance: 500.0     # ...up to this far
+  reroll-distance: 1000.0 # Further than this, the source is placed again near them
   spawn-filters:                    # Where the source may NOT spawn
     max-attempts: 50                # Re-rolls (async chunk loads) before falling back
     reject-liquid: true             # No water / lava / waterlogged ground
@@ -204,11 +220,17 @@ source:
 # Detection settings
 detection:
   collection-distance: 20.0           # Distance to collect source (blocks)
-  max-detection-distance: 2500.0      # Maximum detection range
+  max-detection-distance: 1000.0      # Maximum detection range
   close-range-threshold: 200.0        # Distance threshold for color shift
   ring-thresholds:
     three-rings: 100.0    # 3 rings when closer than this
     two-rings: 300.0      # 2 rings when closer than this (else 1)
+
+# Signal bar
+bar:
+  enabled: true
+  range: 750.0            # Distance at which the bar reads empty
+  facing-weight: 0.6      # 0 = distance only, 1 = facing only
 
 # Geiger clicking sound
 sound:
@@ -263,24 +285,25 @@ Named reward pools live under `drops.lists.<name>.tiers`. `/geiger droplist <nam
 All chat text lives in a separate **`messages.yml`**, split into what players see and what only `/geiger` operators see:
 
 ```yaml
-# PLAYER - seen by anyone hunting the source
+# PLAYER - seen by anyone hunting a source
 player:
-  found-source: "&#AA00FFYou have found the source of Arcane Radiation! ..."
+  found-source: "&#AA00FFYou have found the source of Arcane Radiation!"
+  signal-bar: "&#AA00FFArcane signal"
   dead-geiger: "&7Your Arcane Trace Detector has run out of fuel."
   limit-reached: "&cYou have already collected %max% sources in %window%. Try again in %time%."
 
 # ADMIN - only ever seen by whoever runs /geiger
 admin:
-  usage: "&eUsage: /geiger <locate|move [x z]|...>"
-  source-located: "&aRadioactive source is at X = %x% Z = %z% (world: %world%)"
-  move-success: "&aRadioactive source moved to X = %x% Z = %z%"
+  usage: "&eUsage: /geiger <locate [player]|move <player> [x z]|...>"
+  source-located: "&a%player%'s source is at X = %x% Z = %z% (world: %world%)"
+  move-success: "&a%player%'s source moved to X = %x% Z = %z%"
   limits-status: "&a%player% has %remaining%/%max% drops left per %window%."
   # ... 12 more, each documenting its own placeholders
 ```
 
 Console log lines stay hardcoded in English, so logs and bug reports remain readable whatever this file is translated to.
 
-Upgrading? Messages are migrated automatically — out of `config.yml` and into the `player:`/`admin:` split, customisations preserved. `config-version` in `config.yml` tracks which migrations have run.
+Upgrading? Messages are migrated automatically — out of `config.yml` and into the `player:`/`admin:` split, customisations preserved. `config-version` in `config.yml` tracks which migrations have run. Version 6 adds the source distances and the `bar` section, and lowers `detection.max-detection-distance` to `source.reroll-distance` if it was higher. Customised messages are kept as they are, so an older `found-source` that says the source has moved needs editing by hand.
 
 **Item path formats**
 
@@ -311,7 +334,7 @@ python3 ../tlibs/tools/install-plugins.py --pom pom.xml --mode pinned
 mvn clean verify
 ```
 
-Use JDK 21, Maven and Python 3. The shared installer verifies the pinned release checksum; see [TLibs dependency setup](../TLibs/README.md). Install the matching `me.plugins:tlibs:2.0.0` artifact as described in the [shared baseline](../../PLATFORM.md), then run `mvn clean verify`. Paper API, WorldGuard API and bStats resolve from Maven; MMOItems is not a direct build dependency. The artifact is written to `target/`.
+Use JDK 21, Maven and Python 3. The shared installer verifies the pinned release checksum; see [TLibs dependency setup](../TLibs/README.md). Install the matching `me.plugins:tlibs:2.6.1` artifact as described in the [shared baseline](../../PLATFORM.md), then run `mvn clean verify`. Paper API, WorldGuard API and bStats resolve from Maven; MMOItems is not a direct build dependency. The artifact is written to `target/`.
 
 ## Source build metadata
 
