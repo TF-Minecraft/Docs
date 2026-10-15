@@ -197,9 +197,10 @@ reads the guild recorded at the death.
 within 16 blocks as clickable names with faces, and takes a typed name for anyone else. One match asks
 for confirmation with name, race, short ID and "on your account" where it applies; several matches give
 a list to choose from. **How wills work** shows the rules in six lines. Every click checks that the same
-character is still being played; buttons and links work once and expire after ten minutes. When the
-heir's bust is not cached, the first screen waits up to 1.5 seconds for it; a later portrait is only
-cached for the next open, so it never reopens or replaces a screen.
+character is still being played; buttons and links work once and expire after ten minutes. The heir's
+bust is fetched when a character starts playing and when an heir is named, and cached; a screen that
+opens before it arrives shows a placeholder, and the arrival only fills the cache, so it never opens
+or replaces a screen.
 
 On the website, the owner changes or revokes the will on the Profile page. RPCharacters pulls waiting
 requests for its own realm every 15 seconds and acknowledges each one with the realm in the body. A
