@@ -1,6 +1,6 @@
 # GeigerCounter
 
-**A Minecraft server plugin that turns exploration into a treasure hunt — track a hidden radioactive source by particle signal and claim tiered loot.**
+**A Minecraft server plugin that turns exploration into a treasure hunt — track a buried cache by its signal, dig it up and claim tiered loot.**
 
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
 ![Paper](https://img.shields.io/badge/Paper-1.21.10-blue)
@@ -12,15 +12,16 @@ Built for the [TFMC](https://www.patreon.com/c/TFMCRP) roleplay server, where ea
 
 ## What It Does
 
-Hold a **Geiger Counter** item and the world starts talking back. Each character has their own hidden radioactive source, placed 150–500 blocks from where they first hold a live counter. A signal bar at the top of the screen fills as they close in and peaks when they face the source, while particle rings and clicks track the distance. Walk it down, collect the source, and a weighted loot table decides the prize, anywhere from common food to mythical skin scrolls. The counter burns out, and the next live counter places a new source near wherever the character is then.
+Hold a **Geiger Counter** item and the world starts talking back. Each character has their own cache, buried 3–6 blocks deep and 300–600 blocks from where they first hold a live counter. A signal bar at the top of the screen fills as they close in and peaks when they face the cache, while particle rings and clicks track the distance. Within 12 blocks the reading switches to show how close the cache itself is, so they can find where to dig. Only the hunter sees the cache, as a chest, and only while holding a live counter. Opening it burns out the counter and shows a weighted prize, anywhere from common food to mythical skin scrolls. The next live counter buries a new cache near wherever the character is then.
 
 | | |
 |---|---|
-| **A source per character** | Each character hunts their own source near them; RPCharacters supplies the character, and without it each account has one |
-| **Signal bar** | A boss bar that fills with closeness and peaks when the player faces the source, so turning on the spot shows the way |
+| **A source per character** | Each character hunts their own cache near them; RPCharacters supplies the character, and without it each account has one |
+| **Buried caches** | The cache is sealed in natural ground and shown as a chest to its hunter alone; they dig down and open it by hand |
+| **Signal bar** | A boss bar that fills with closeness and peaks when the player faces the source, so turning on the spot shows the way; close by it shows where to dig |
 | **Signal tracking** | Particle rings guide players toward their source — more rings and brighter colors mean closer |
 | **Tiered rewards** | 6 rarity levels (Common → Mythical) with fully weighted drop chances |
-| **Self-resetting hunt** | After a collection the next live counter places a new source near the character |
+| **Self-resetting hunt** | After a cache is opened the next live counter buries a new one near the character |
 | **Consumable gameplay** | The Geiger Counter "runs out of charge" on success, becoming a **Dead Geiger Counter** |
 | **Geiger clicking** | The counter clicks faster the closer the source gets — audible signal, not just visual |
 | **Per-player drop limits** | A player may claim at most *x* drops per *y* time window, so loot stays scarce |
@@ -30,29 +31,40 @@ Hold a **Geiger Counter** item and the world starts talking back. Each character
 
 A repeating task checks every online player in the source world. For each player holding a Geiger Counter while playing a character:
 
-1. If the character has no source, one is placed at a random spot between `source.min-distance` and `source.max-distance` from them, inside the configured area and passing the spawn filters. The same happens when the character is more than `source.reroll-distance` from their source, for example after travelling or teleporting away. A character so far outside the area that no part of that ring lies inside it gets no new source and keeps any old one.
+1. If the character has no source, a cache is buried at a random spot between `source.min-distance` and `source.max-distance` from them, inside the configured area and passing the spawn filters (see [Buried caches](#buried-caches)). The same happens when the character is more than `source.reroll-distance` from their source, for example after travelling or teleporting away. A character so far outside the area that no part of that ring lies inside it gets no new source and keeps any old one.
 2. The horizontal distance to the source is calculated (Y is ignored, so the signal works across terrain height).
 3. That distance is mapped to a particle configuration — ring count (1–3) from distance thresholds, and a color interpolated along a two-stage gradient (dark purple → purple far away, purple → white up close).
-4. The rings spawn around the player, and the signal bar is updated.
-5. Within collection distance (20 blocks by default), the source is collected automatically: a tier is rolled by weight, a random item from that tier is granted, and the counter is swapped for its dead version. The character has no source until they next hold a live counter.
+4. The rings spawn around the player, and the signal bar and clicks are updated. Within `detection.pinpoint-range` (12 blocks, measured in 3D so depth counts) they give the close reading instead.
+5. Within 32 blocks the player's client is sent a chest at the cache block.
+6. Clicking the chest opens it: a tier is rolled by weight, a random item from that tier is put in an "Arcane Cache" chest window, and the counter is swapped for its dead version. Anything still in the window when it closes, or when the server stops, goes to the player. The character has no source until they next hold a live counter.
 
-Sources are stored in `plugins/geiger_counter/sources.yml`, keyed by character ID, so a restart keeps every hunt where it was. A player in the character selection room has no character and gets no reading.
+Sources are stored in `plugins/geiger_counter/sources.yml`, keyed by character ID, so a restart keeps every hunt where it was. Sources from versions before buried caches lack the `buried` flag and are dropped on load, so their hunters get a buried cache on the next hold. A player in the character selection room has no character and gets no reading.
+
+### Buried caches
+
+A cache sits `source.burial.min-depth` to `max-depth` blocks (3–6 by default) under the ground. The ground is the top block in the column with leaves ignored; tree trunks are followed down to the soil they grow in. The surface spawn filters check the ground over the cache, and the cache is then only accepted if its block and all six neighbours are natural ground: stone and its variants, dirt, grass, sand, gravel, clay, terracotta, sandstone, snow blocks and ores. So a cache never shows in a cave and never lands in or under a build. The column is kept one block inside its chunk, so all of these checks read the chunk that is already loaded.
+
+The server keeps the real ground block. The chest exists only on the hunter's client, sent with a block change while they hold a live counter within 32 blocks and resent every second, since a chunk reload or someone else digging there replaces it. Other players see the ground and cannot open it, and the hunter sees the ground again when they put the counter away. Clicking the chest with either button is cancelled before other plugins act on the real block, and breaking it outright (creative mode) is refused.
+
+If another plugin refuses the hunter's dig within 3 blocks of their cache, for example a WorldGuard region or a SimpleFactions installation, the cache could never be reached. It is buried again near the hunter, and they are told with `player.cache-protected`.
 
 ### Signal bar
 
 The bar's fill is closeness times a facing factor. Closeness falls from 1 at the source to 0 at `bar.range` blocks. The facing factor is 1 when the player looks straight at the source and drops to `1 - bar.facing-weight` when they face directly away, so a player can turn on the spot, find the peak and walk that way. Only yaw counts. MMOCore uses the action bar for health and mana, so this is a boss bar at the top of the screen.
 
+Within `detection.pinpoint-range` the bar takes the `player.signal-bar-close` title and shows closeness to the cache alone: empty at the edge of the range, full on the cache, with no facing factor.
+
 ### Sound
 
 The counter clicks. Distance controls the click **rate**, not the pitch — that is what a real Geiger–Müller tube does, and it keeps the audio readable as a signal on its own. Clicks are rolled per tick against a probability rather than fired on a fixed interval, so their spacing is irregular the way decay events are; evenly spaced clicks just sound like a metronome.
 
-Default is `block.note_block.hat` at 0.5 clicks/sec on the edge of detection range, ramping to 18/sec at the source. Only the holder hears it. Any sound event ID works — preview them at [minecraftsounds.com](https://minecraftsounds.com).
+Default is `block.note_block.hat` at 0.5 clicks/sec on the edge of detection range, ramping to 18/sec at the source. Within `detection.pinpoint-range` the rate starts again from `min-rate` at the edge of that range and climbs in a straight line to `max-rate` on the cache, so the clicks slow down on arrival and then speed up as the player digs closer. Only the holder hears it. Any sound event ID works — preview them at [minecraftsounds.com](https://minecraftsounds.com).
 
 ### Drop limits
 
 `limits` caps how often a single player may claim the source: `drops` collections per `time` window. The window slides — each collection frees up again exactly `time` after it happened, so `drops: 3` with `time: 12h` works out to 6 per day.
 
-Limits count per account, so switching character does not add collections. Collection stamps are stored in `plugins/geiger_counter/drop-limits.yml`, so a restart cannot be used to wipe the limit. A limited player still tracks and sees the signal, but collecting does nothing: the source stays where it is, and the player is told when their next slot opens.
+Limits count per account, so switching character does not add collections. Collection stamps are stored in `plugins/geiger_counter/drop-limits.yml`, so a restart cannot be used to wipe the limit. A limited player still tracks the signal and sees the chest, but opening it does nothing: the cache stays where it is, and the player is told when their next slot opens.
 
 Players with `geiger.limit.bypass` are never limited.
 
@@ -60,8 +72,8 @@ Players with `geiger.limit.bypass` are never limited.
 
 | Command | Description |
 |---|---|
-| `/geiger locate [player]` | Print the source of the player's current character, or your own |
-| `/geiger move <player> [x z]` | Clear the source so a new one is placed near them on their next hold, or move it to specific coordinates (coords tab-complete to your position and the area corners) |
+| `/geiger locate [player]` | Print the cache block of the player's current character, or your own |
+| `/geiger move <player> [x z]` | Clear the source so a new one is buried near them on their next hold, or bury it under specific coordinates (coords tab-complete to your position and the area corners) |
 | `/geiger limits <player>` | Show the player's remaining drops and time until the next one |
 | `/geiger resetlimits <player>` | Clear the player's drop history |
 | `/geiger droplist [name]` | Show available lists, or switch and save the active list |
@@ -84,10 +96,12 @@ src/main/java/net/tfminecraft/geigercounters/
 │   ├── Messages.java                   # messages.yml lookup + placeholder filling
 │   └── GeigerConfiguration.java       # config.yml loading: area, ranges, colors, rewards
 ├── handlers/
+│   ├── BuriedChest.java               # Client-side chest at the cache, clicks on it, protected digs
+│   ├── CacheMenu.java                 # Chest window holding the reward, emptied to the player on close
 │   ├── GeigerClickPlayer.java         # Distance → click rate, rolled per tick
 │   ├── ParticleRenderer.java          # Distance → ring count + color gradient rendering
-│   ├── SignalBar.java                 # Closeness × facing → boss bar
-│   └── SourceHandler.java             # Per-character sources: placement, sources.yml, collection, rewards
+│   ├── SignalBar.java                 # Closeness × facing → boss bar, close reading near the cache
+│   └── SourceHandler.java             # Per-character caches: burial, sources.yml, opening, rewards
 ├── hooks/
 │   └── WorldGuardHook.java            # Optional WorldGuard region lookups
 ├── managers/
@@ -101,7 +115,7 @@ src/main/java/net/tfminecraft/geigercounters/
 │   └── Utils.java                     # Shared helpers
 └── validators/
     ├── GeigerValidator.java           # Is this item a Geiger Counter? (TLibs paths)
-    └── SpawnLocationFilter.java       # Is this a legal spot for the source?
+    └── SpawnLocationFilter.java       # Is this a legal spot for the source? Is the cache sealed in natural ground?
 ```
 
 ```mermaid
@@ -114,7 +128,18 @@ classDiagram
     class GeigerManager {
         +initialize() void
         -checkAllPlayers() void
-        -handlePlayerWithGeiger(player, hunter, slot) boolean
+        -handlePlayerWithGeiger(player, hunter, revealed) boolean
+        +open(player) void
+        +groundProtected(player) void
+    }
+
+    class BuriedChest {
+        +show(player, cache) void
+        +retain(showing) void
+    }
+
+    class CacheMenu {
+        +open(player, reward) void
     }
 
     class GeigerConfiguration {
@@ -130,8 +155,8 @@ classDiagram
 
     class SourceHandler {
         +placeNear(hunter, origin) CompletableFuture
-        +tryCollectSource(player, hunter, distance, slot) void
-        -giveReward(player) void
+        +open(player, hunter, slot) void
+        -rollReward(player) ItemStack
     }
 
     class GeigerValidator {
@@ -143,6 +168,9 @@ classDiagram
     GeigerManager --> GeigerValidator : creates
     GeigerManager --> ParticleRenderer : creates
     GeigerManager --> SourceHandler : creates
+    GeigerManager --> BuriedChest : creates
+    BuriedChest --> GeigerManager : clicks
+    SourceHandler --> CacheMenu : opens
     GeigerConfiguration --> TierReward : contains
     TierReward --> ItemReward : contains
 ```
@@ -175,10 +203,10 @@ classDiagram
 ## Usage
 
 1. Obtain a **Geiger Counter** item (via TLibs/MMOItems/ItemsAdder)
-2. Hold it — your source is placed 150–500 blocks away, and the signal bar and particle rings appear
+2. Hold it — your cache is buried 300–600 blocks away, and the signal bar and particle rings appear
 3. Turn until the bar peaks, then walk that way; the bar and the rings grow as you close in
-4. Get within **20 blocks** (default) to collect the source automatically
-5. Receive a reward rolled from the tiered loot pool; the counter becomes a **Dead Geiger Counter**, and your next live counter starts a new hunt near you
+4. Within **12 blocks** the bar reads "dig close by" and fills as you get nearer the cache itself; walk around to find where it peaks, then dig down with the counter in your off-hand
+5. Click the chest you uncover to open it and take the reward; the counter becomes a **Dead Geiger Counter**, and your next live counter starts a new hunt near you
 
 ### Reading the signal
 
@@ -191,6 +219,7 @@ classDiagram
 | **Purple → dark purple** | Far away (200–1000 blocks) |
 | **Fuller bar** | Closer, or facing more squarely towards the source |
 | **Fast clicking** | Rate rises from 0.5/sec at the edge of range to 18/sec at the source |
+| **"Dig close by"** | Within 12 blocks of the cache; the bar and clicks restart low and peak on the cache |
 
 ## Configuration
 
@@ -204,9 +233,12 @@ source:
   bottom-right:           # Corner 2
     x: 1000.0
     z: 1000.0
-  min-distance: 150.0     # New sources sit this far from the character...
-  max-distance: 500.0     # ...up to this far
-  reroll-distance: 1000.0 # Further than this, the source is placed again near them
+  min-distance: 300.0     # New caches sit this far from the character...
+  max-distance: 600.0     # ...up to this far
+  reroll-distance: 1000.0 # Further than this, the cache is buried again near them
+  burial:                 # Blocks of ground over the cache
+    min-depth: 3
+    max-depth: 6
   spawn-filters:                    # Where the source may NOT spawn
     max-attempts: 50                # Re-rolls (async chunk loads) before falling back
     reject-liquid: true             # No water / lava / waterlogged ground
@@ -219,8 +251,8 @@ source:
 
 # Detection settings
 detection:
-  collection-distance: 20.0           # Distance to collect source (blocks)
   max-detection-distance: 1000.0      # Maximum detection range
+  pinpoint-range: 12.0                # Close reading within this many blocks (3D)
   close-range-threshold: 200.0        # Distance threshold for color shift
   ring-thresholds:
     three-rings: 100.0    # 3 rings when closer than this
@@ -289,23 +321,26 @@ All chat text lives in a separate **`messages.yml`**, split into what players se
 player:
   found-source: "&#AA00FFYou found the arcane source!"
   signal-bar: "&#AA00FFArcane Signal"
+  signal-bar-close: "&#AA00FFArcane Signal &7- dig close by"
+  cache-title: "&#AA00FFArcane Cache"
+  cache-protected: "&7This ground is warded. The signal fades and settles somewhere else."
   dead-geiger: "&7Your detector is spent."
   limit-reached: "&cYou have already collected %max% sources in %window%. Try again in %time%."
 
 # ADMIN - only ever seen by whoever runs /geiger
 admin:
   usage: "&eUsage: /geiger <locate [player]|move <player> [x z]|...>"
-  source-located: "&a%player%'s source is at X = %x% Z = %z% (world: %world%)"
-  move-success: "&a%player%'s source moved to X = %x% Z = %z%"
+  source-located: "&a%player%'s cache is buried at X = %x% Y = %y% Z = %z% (world: %world%)"
+  move-success: "&a%player%'s cache buried at X = %x% Y = %y% Z = %z%"
   limits-status: "&a%player% has %remaining%/%max% drops left per %window%."
   # ... 12 more, each documenting its own placeholders
 ```
 
-On a collection, `found-source` and `dead-geiger` are sent as one line with a space between them, each keeping its own colours. A blank one is left out.
+When a cache is opened, `found-source` and `dead-geiger` are sent as one line with a space between them, each keeping its own colours. A blank one is left out.
 
 Console log lines stay hardcoded in English, so logs and bug reports remain readable whatever this file is translated to.
 
-Upgrading? Messages are migrated automatically — out of `config.yml` and into the `player:`/`admin:` split, customisations preserved. `config-version` in `config.yml` tracks which migrations have run. Version 6 adds the source distances and the `bar` section, and lowers `detection.max-detection-distance` to `source.reroll-distance` if it was higher. Existing messages are never overwritten, so on any upgraded server `player.found-source` (if it says the source has moved) and `admin.usage`, `source-located`, `move-usage`, `move-invalid-coords` and `move-success` need updating by hand to the new wording and the `%player%` placeholder.
+Upgrading? Messages are migrated automatically — out of `config.yml` and into the `player:`/`admin:` split, customisations preserved. `config-version` in `config.yml` tracks which migrations have run. Version 6 adds the source distances and the `bar` section, and lowers `detection.max-detection-distance` to `source.reroll-distance` if it was higher. Existing messages are never overwritten, so on any upgraded server `player.found-source` (if it says the source has moved) and `admin.usage`, `source-located`, `move-usage`, `move-invalid-coords` and `move-success` need updating by hand to the new wording and the `%player%` placeholder. Version 7 adds `source.burial` and `detection.pinpoint-range`, moves `source.min-distance` and `max-distance` from 150 and 500 to 300 and 600 where they were still at those defaults, and removes `detection.collection-distance`. On an upgraded server `admin.source-located` and `admin.move-success` need `%y%` added by hand.
 
 **Item path formats**
 

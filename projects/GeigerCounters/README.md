@@ -2,7 +2,7 @@
 
 [Source repository](https://github.com/TF-Minecraft/GeigerCounters) · [All projects](../../README.md)
 
-A hidden source per character, tracked by a signal bar, particles and sound, with weighted loot and per-account collection limits.
+A cache buried near each character that only they can see, tracked by a signal bar, particles and sound and dug up by hand, with weighted loot and per-account collection limits.
 
 TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
 
