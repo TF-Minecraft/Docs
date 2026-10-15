@@ -67,6 +67,24 @@ both fields. Saves made before the character was recorded load with a null
 character. VFBuilders does not look up heirs. SimpleFactions treats a null
 character as "resolve the account's heir, or quarantine".
 
+Accepted construction is saved immediately. Progress is checkpointed every 30
+seconds while a build is queued, and completion, cancellation and station removal
+also save the queue. Interrupted shutdowns can add up to 30 seconds of repeated
+building time. Snapshots replace the previous file atomically and do not remove
+timer displays. If the initial save fails, construction is cancelled through the
+normal material and registration-fee refund path.
+
+A queued project's optional `outputUuid` records the vehicle created during
+completion. Recovery checks VehicleFramework's stored rows, including destroyed
+vehicles, before spawning another output. The output must be saved before the
+station clears its job. Keep a backup of `stations.json` before upgrading; before
+downgrading, resolve any projects with `outputUuid` because older VFBuilders
+versions ignore that field. Accepted-start and output-recovery messages identify
+the station and build in the server log. This recovery protects saved jobs; it
+does not reconstruct jobs that were never saved. Inventory, registration fees
+and the station file are separate stores, so a process failure during their
+handoff can still require staff reconciliation.
+
 ### API for other plugins
 
 [`BeginVehicleConstructionEvent`](https://github.com/TF-Minecraft/VFBuilders/blob/main/src/main/java/net/tfminecraft/vfbuilders/events/BeginVehicleConstructionEvent.java),
