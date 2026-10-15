@@ -61,6 +61,10 @@ src/main/java/net/tfminecraft/surgery/
 | `/surgery accept` | Patient | Begin the operation |
 | `/surgery deny` | Patient | Decline |
 
+Tab completion is player-only. Players see matching consent actions and, when
+permitted to operate, matching visible patient names. Console receives no
+suggestions.
+
 ### A procedure
 
 1. Examine with the **stethoscope**. This names the procedure and, for a septic wound, starts the fever.

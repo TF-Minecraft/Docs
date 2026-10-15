@@ -116,6 +116,10 @@ requests cannot replace the join request while it is loading. Only the required
 attempt changes its readiness state.
 
 The failure dialog's Retry uses `tfmccore:tcore packretry <player>` from console.
+
+For administrators, `/tcore pack` and `/tcore packretry` complete online player
+names matching the current prefix. No further argument is suggested after the
+target.
 Console or `tfmccore.admin` may also run it directly; it only retries a failed
 attempt on the same connection. It never bypasses an active load or readiness.
 

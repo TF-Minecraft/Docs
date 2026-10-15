@@ -126,8 +126,10 @@ an automatic item-for-money transaction.
 | --- | --- | --- |
 | `/tr resetcooldowns` | `trialrooms.admin` | Set every cooling-down spawner to one second remaining. |
 
-`/tr` is player-only and has no tab completion. `plugin.yml` declares no
-permissions, so `trialrooms.admin` falls back to the operator default.
+`/tr` is player-only. Players with `trialrooms.admin` can complete
+`resetcooldowns` using an empty or matching argument prefix; later arguments
+have no suggestions. `plugin.yml` declares no permissions, so
+`trialrooms.admin` falls back to the operator default.
 
 ## Persistence and shutdown
 

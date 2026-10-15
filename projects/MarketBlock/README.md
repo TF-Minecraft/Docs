@@ -8,6 +8,11 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 See the [shared API versions](../../PLATFORM.md#shared-api-versions) for the matching provider dependency set.
 
+## Commands
+
+`/marketblock` completion offers permitted actions and matching configured trade
+IDs. Editing actions require a player; console can complete `reload`.
+
 ## Character payments
 
 A sale credits the seller's current character pouch through DenarEconomy 0.3.0.

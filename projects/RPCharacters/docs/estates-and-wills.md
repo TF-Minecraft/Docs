@@ -230,6 +230,12 @@ All staff commands need `rpchar.estate.admin` (operators by default) and are wri
 An estate can be named by death ID, by character ID (its latest death) or by the dead character's name,
 including names of several words before further arguments.
 
+Tab completion uses loaded estate death IDs or character names. After the first
+word of a name, it inserts only the missing suffix. `assign` offers parts whose
+recipients are waiting or frozen, and `guild` only for frozen money. `retry`
+offers blocked participant IDs; `waive` requires a blocked answer for the current
+revision. All suggestions match the current prefix without regard to case.
+
 | Command | Effect |
 |---|---|
 | `/estate list [open\|held\|waiting\|frozen\|retry\|postponed\|empty]` | One line per estate: state, due time, recipients and each participant's answer. Estates that hold nothing appear only under `empty`. |

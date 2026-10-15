@@ -20,6 +20,10 @@ Run `mvn clean verify` to build and run the available tests; use `mvn clean inst
 
 Startup loads `config.yml`, `ingredients.yml`, `effects-blacklist.yml`, `categories.yml` and `permission-groups.yml`, then uploads the catalog and texture assets and starts pack polling. `/drinkbuilder` requires `drinkbuilder.admin` (op by default). TLibs and TFMCWeb are required; ItemsAdder and BreweryX are declared optional. ItemsAdder supplies the custom pack integration and BreweryX receives the drink recipes. See the drinks workflow for service configuration.
 
+`/drinkbuilder pack` completes both `pull` and `reapply` when the action is
+empty, and filters them against the current prefix. `pack pull` can complete
+`force`; `pack reapply` can complete cached drink IDs.
+
 ## Guides
 
 - [Failure recovery and troubleshooting](troubleshooting.md)
