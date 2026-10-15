@@ -11,8 +11,8 @@ selection dialog. `/rpcharacter menu` reopens it while selecting; while playing,
 it returns you to selection after you stand still for five seconds. Each character has
 its own items and progression. `/linkdiscord` remains available in selection.
 
-Under each character's card, **Background**, **Traits** and **Clues** show their
-details on hover. **End character** asks twice, then kills the character for good
+Under each character's card, **Background** opens the character's background on
+its own page, and **Traits** and **Clues** show on hover. **End character** asks twice, then kills the character for good
 and moves it to Memorials; only staff can revive it. Staff use
 `/rpcharacter menu <player>` for the chest view of another player's characters,
 where they can revive dead ones.
