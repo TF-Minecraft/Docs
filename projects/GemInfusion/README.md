@@ -32,6 +32,23 @@ definitions for hits, materials, tiers, qualities and projects. It loads
 persisted stations, flushes them periodically and on shutdown, and registers
 socket/unsocket listeners.
 
+Infusion tables save their gem IDs and hit progress after each deposit or hit in
+`plugins/GemInfusion/data/infusion-stations/<world-uuid>_<x>_<y>_<z>.yml`.
+Completed batches also save the rolled items awaiting delivery. Startup restores
+unfinished batches and resumes remaining drops without requiring the player to
+be online. Tables stay occupied until delivery finishes. Autosave and shutdown
+also save active tables.
+
+A failed deposit or hit save leaves the gem or infusion token with the player and
+keeps the previous progress. Unreadable snapshots, missing worlds and unknown
+gem IDs are logged and retained; the affected table refuses new deposits until
+staff repair the snapshot or restore the missing configuration. Stop the server
+before repairing saved files; restart after restoring configuration to retry
+retained snapshots. Snapshots are flushed to disk before atomic
+replacement, then the directory is flushed. A directory flush failure after
+replacement is logged without rolling back the committed deposit. Finished
+tables retry failed snapshot deletion before accepting a new batch.
+
 `/geminfusion reload` reloads definitions and stations.
 `/geminfusion select <projectId>` selects a project on an empty table the player
 is looking at within six blocks. Both commands require `geminfusion.admin`. Goldsmithing gameplay uses
