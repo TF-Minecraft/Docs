@@ -177,8 +177,9 @@ left with no members as `empty since`, and any standing offer as
 `leader offer`; filling the seat by any route clears them all. It cannot be
 evicted or elevated, and it stays with the realm when the realm releases its
 guilds. It leaves every movement and cause it supported, at the death and again
-at each hourly check, so no independence, nationhood or civil war takes it out
-of the realm.
+at each hourly check, cannot join one (staff `/movement admin join` included),
+and is never a rebel guild when a civil war starts, so no independence,
+nationhood or civil war takes it out of the realm.
 
 The realm leader offers the seat with `/guild appoint <guild> <name>` to a
 living member of the realm who leads no guild. The guild list shows the command
