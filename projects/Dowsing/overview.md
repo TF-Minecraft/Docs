@@ -67,8 +67,10 @@ total node upkeep.
 
 The node menus expose type, production-method, upgrade, transfer, activation,
 and deletion actions when the node definition and player permissions allow
-them. Inputs are read from the node inventory and outputs are dropped at the
-node.
+them. Inputs are read from the barrel below the node and outputs are delivered
+into the hopper above it. A full hopper holds the finished cycle for a later
+retry instead of losing the output; without a hopper, outputs are dropped at
+the node.
 
 ## Persistence and shutdown
 
