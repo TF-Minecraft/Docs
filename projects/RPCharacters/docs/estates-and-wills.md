@@ -74,7 +74,9 @@ stations and the stored body.
 
 Some answers make the decision wait rather than guess, and it is tried again every minute: the dead
 character's or the heir's account cannot be read, SimpleFactions has not answered (or gave no answer
-at all), or it cannot say whether the realm still exists. An estate whose lookup throws is logged and
+at all), or it cannot say whether the realm still exists. SimpleFactions does not answer for a realm it
+is holding after its last member died, so such an estate waits until the realm is taken on or closed,
+and a revive cancels it. An estate whose lookup throws is logged and
 tried again; it never stops the other estates from being decided. RPCharacters and SimpleFactions start in a cycle, so decisions due at
 startup usually wait for SimpleFactions; they run again when SimpleFactions enables and when it fires
 its ready event. If SimpleFactions started late, Thievery has already made its lock pass, and the
