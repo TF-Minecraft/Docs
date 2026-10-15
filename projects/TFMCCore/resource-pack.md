@@ -1,13 +1,39 @@
-# Three-part resource-pack delivery
+# Multipart resource-pack delivery
 
 [TFMCCore](README.md) · [All projects](../../README.md)
 
-TFMC's pack spends substantial client reload time scanning ZIP entries. The opt-in
-multipart path partitions the completed ItemsAdder archive by whole namespaces:
-`core`, `models` (ModelEngine), and `sounds` (namespaces containing only
-`sounds.json`). Resource identifiers, bytes, overlay order and protected ZIP
-records remain unchanged. Overlay compaction (`resource-pack.compact-overlays`)
-still runs during `/iazip`.
+Most of a join's pack time is the client rebuilding its resources, not the download.
+The opt-in multipart path partitions the completed ItemsAdder archive by whole
+namespaces into five packs: `core`, `core2` and `core3`, `models` (ModelEngine), and
+`sounds` (namespaces containing only `sounds.json`). Resource identifiers, overlay
+order and protected ZIP records remain unchanged. Overlay compaction
+(`resource-pack.compact-overlays`) still runs during `/iazip`.
+
+## Why the pack is split this way
+
+A 1.21 client reads every entry of a pack ZIP once per namespace that pack holds
+each time it lists resources, and only one thread can read a ZIP at a time. Main's
+core namespaces hold 19,795 entries across 33 namespaces. The publisher sorts the core namespaces
+by entry count and splits them into the three runs with the lowest total of
+namespaces × entries, so the large namespaces sit in parts of their own and the many
+small ones share a small part. That cuts listing work about five times.
+
+The client also checks every provider of a font for every code point it knows,
+including unifont's ~60,000. ItemsAdder writes one bitmap provider per font image,
+616 in `minecraft:default` and again in `minecraft:uniform`, enough to block the
+render thread for over 2 seconds on each reload. The publisher merges one-glyph providers
+that share an image size and every other setting (height, ascent, filter) into grid
+sheets under `textures/tfmc_font_grid/` in the font's namespace. Each glyph keeps its
+exact pixels, so the client computes the same width. Glyphs are left as they are
+when their texture is not in the pack (the `mcemojis` vanilla item emojis use
+vanilla textures), an overlay replaces their texture, their code point is defined
+twice, their PNG is not 8-bit RGB, RGBA or palette, or the font contains providers
+whose code points cannot be listed (references, TrueType, unihex). On Main this
+takes 616 providers to 309.
+
+Merged fonts and their sheets are written as ordinary ZIP records; every other
+record is copied as ItemsAdder wrote it. The output is deterministic, so a restart
+republishes the same hashes and `models` and `sounds` keep theirs.
 
 The implementation is in
 [`net.tfminecraft.tfmccore.resourcepack`](https://github.com/TF-Minecraft/TFMCCore/tree/main/src/main/java/net/tfminecraft/tfmccore/resourcepack),
@@ -17,8 +43,8 @@ and the defaults are in
 ## Build and delivery
 
 The background publisher checks the completed `generated.zip` against ItemsAdder's
-cached SHA-1. It copies a snapshot, verifies the hash, writes all three parts into
-a temporary directory and atomically publishes the directory. Requests use three
+cached SHA-1. It copies a snapshot, verifies the hash, writes every part into a
+temporary directory and atomically publishes the directory. Requests use the parts'
 URLs and hashes from that single generation. An unfinished or unsupported build
 uses ItemsAdder's single-pack delivery. Packs containing `filter` metadata, ZIP64,
 or missing the expected namespace groups are not split.
@@ -104,7 +130,7 @@ Activate and verify on Dev before Main.
    activation if either setting is incompatible.
 
    ItemsAdder 4.0.18 applies its equipment-hiding loading effect once for each
-   accepted pack, but removes it only once per player. With three packs, leftover
+   accepted pack, but removes it only once per player. With several packs, leftover
    entries repeatedly hide the selected hotbar/held item after loading finishes.
    Disconnecting removes only one entry, so reconnecting may not clear it.
    Disabling `lock-player` avoids that visual/movement-lock effect; the separate
@@ -167,3 +193,10 @@ The offline prototype applied in 11–12 seconds versus 21–23 seconds for the
 compacted single ZIP on the tested CachyOS 1.21.10 client. This is application time,
 not a promise about download or total join time. Production Java output also
 passed exact resource-map comparison at 24 format boundaries.
+
+On a vanilla 1.21.10 client with Main's pack (CachyOS, 16 threads), a warm reload
+took 8.0 seconds with one core part and 616-provider fonts, of which 2.7 seconds
+blocked the render thread. The five-part layout with merged fonts took 3.0 seconds,
+with 1.1 seconds blocked; the client logged the same warnings, and every glyph's
+cell, height, ascent and filter matched. Most of the remaining block is the 247
+vanilla item emoji glyphs. Without the pack the same client reloads in 0.3 seconds.
