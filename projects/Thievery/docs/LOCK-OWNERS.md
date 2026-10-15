@@ -128,9 +128,15 @@ the decision, which may be long after DONE, and its move is recorded only in the
 server log (`Estate: furniture lock at <world_x_y_z> passed from <old> to <new>.`).
 To restore furniture by hand, search the log for those lines.
 
-Thievery does not list a character's locks for the will screen or `/estate show`
-before the decision, because counting them needs a scan of every lock file, which
-happens only at startup. Those screens therefore leave locks out.
+For the will screen and `/estate show`, Thievery lists a character's locks from
+an owner index. The startup lock pass fills it from its scan, and every lock save
+and delete keeps it current, so a listing reads no files. Counts are `locks`
+(private and public records, doors and furniture) and `guild-locks` (guild and
+faction records). Each label reads `<Kind> at x y z`, adding the world in
+brackets when it is not the first world and ` (guild)` or ` (faction)` for those
+states. Lock files store no block type or world, so a block is named only once
+its chunk has been loaded since the restart; until then it reads `Container` or
+`Door`, and the two halves of a double chest may be listed separately.
 
 Estates need TLibs 2.6.0. On an older TLibs Thievery logs a warning, takes no part in
 estates and a dead owner keeps their locks.

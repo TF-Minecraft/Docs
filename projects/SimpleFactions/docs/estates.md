@@ -90,6 +90,12 @@ a vehicle moves, a gate checks four things:
 - no vehicle payment for it awaits recovery or staff;
 - it is not held back in `/vf admin quarantine`.
 
+For the will screen and `/estate show`, the participant lists each of the
+character's vehicles by VehicleFramework's name and where it is now, such as
+`Passenger Car at 512 64 -230`, adding the world in brackets when it is not
+the first world. When VehicleFramework cannot name it, the type ID is written as
+words (`Simple locomotive`).
+
 A vehicle that fails the gate makes the participant answer RETRY. Unlike a
 player handover there is no fee, no slot check and no battle lock. An inherited
 vehicle may take the recipient's account over its slot limit. That blocks
