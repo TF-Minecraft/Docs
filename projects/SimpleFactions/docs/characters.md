@@ -148,11 +148,12 @@ or faction dissolution and remain payable to the deceased character's bank.
 Daily settlement records actual cents paid, including partial payments.
 
 An ordinary guild leader's successor is the first living remaining member in
-its original join order. Empty ordinary guilds disband. A completely empty
-realm is removed while its ledger treasury remains. If the ruling guild empties
-but another guild still has members, the realm and its treasuries remain:
-elective governments start the normal election; a nonelective ruler remains
-vacant for staff resolution. Unresolved quarantined leaders block succession
+its original join order. When no living member is left to succeed, the guild
+stays open without a leader (see [leaderless guilds](#leaderless-guilds)). A
+completely empty realm is removed while its ledger treasury remains. If the
+ruling guild empties but another guild still has members, the realm and its
+treasuries remain: elective governments start the normal election; a
+nonelective ruler remains vacant for staff resolution. Unresolved quarantined leaders block succession
 and disbanding. A later staff appointment is preserved during replay.
 
 Dead warband leaders pass leadership to the captured first living participant,
@@ -166,3 +167,49 @@ and a living seat holder is never replaced; see
 
 See [treasury recovery](treasuries.md) for journal paths and coordinated backup
 requirements.
+
+### Leaderless guilds
+
+A leaderless guild keeps its treasury, branches and settlements. Menus and the
+public map show its leader as "Name (dead)". The guild file records the dead
+leader as `dead leader`, the death time as `leaderless since`, when it was last
+left with no members as `empty since`, and any standing offer as
+`leader offer`; filling the seat by any route clears them all. It cannot be
+evicted or elevated, and it stays with the realm when the realm releases its
+guilds. It leaves every movement and cause it supported, at the death and again
+at each hourly check, cannot join one (staff `/movement admin join` included),
+and is never a rebel guild when a civil war starts, so no independence,
+nationhood or civil war takes it out of the realm.
+
+The realm leader offers the seat with `/guild appoint <guild> <name>` to a
+living member of the realm who leads no guild. The guild list shows the command
+to the realm leader, and both the realm leader and the offered character are
+reminded when they start playing that character. The offered character accepts
+with `/guild lead <guild>` or declines with `/guild decline <guild>`, through the
+chat buttons or by typing. Accepting moves the character out of their current
+guild, makes them leader and saves the realm durably. If that save fails,
+nothing changes and the offer stands (see below). A new offer replaces the old one; an offer
+to a character who dies is withdrawn. Staff can fill the seat with any living
+realm member who leads no guild, using `/guild forceleader <guild> <name>`, even
+when the guild has no members.
+
+Estates treat a leaderless guild as live with no leader: money goes to its
+treasury, guild locks go to the realm leader, and property waits until a leader
+is appointed (see [estates and wills](../../RPCharacters/docs/estates-and-wills.md#the-decision)).
+
+The hourly reconcile starts the 30-day clock when it finds a leaderless guild
+with no members, stops it when the guild has members again, and removes the
+guild once the clock runs out. Estate parts still waiting for its leader then
+follow the rules for a guild that has gone.
+
+An older SimpleFactions jar keeps a leaderless guild with a blank leader but
+drops the four fields on its next save, and its `/guild forceleader` only picks
+existing guild members, so an empty leaderless guild cannot be filled there.
+Back up `Data/` before rolling back and restore the fields from the backup when
+upgrading again.
+
+If a leadership save fails, the change is undone and saved again. When that
+second save also fails, the player is told staff may need to check the guild and
+the server log names the realm file, which may hold either state. While a
+closed guild's removal is not yet saved, estates treat the guild as unanswered
+and wait; the hourly check retries the save.
