@@ -28,8 +28,9 @@ the first 36. Use `/music projects` to list all project IDs and
 `/music open <project-id>` to open a project beyond those menu slots.
 
 `/music open` (also `/recording open`) completes the active character's saved
-project IDs. Project and selected-track snapshots warm when a character session
-starts; a cold snapshot has no candidates until its scheduled load finishes.
+project IDs. Project and selected-track snapshots load on the first applicable
+completion request, in a scheduled task. A cold snapshot has no candidates until
+that load finishes; login and character changes alone do not load studio files.
 `volume`, `mute` and `remove` complete saved track slots; `record` completes all
 configured slots. Manual file edits appear after normal project listing or a
 new character session.

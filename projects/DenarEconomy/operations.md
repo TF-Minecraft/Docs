@@ -35,9 +35,12 @@ Staff `give` and `history` completion offers online players with active
 characters. `account` completes known character names and UUIDs, inserting only
 the missing suffix of a multiword name. `move` completes known ledger account
 IDs; `legacy assign` offers unclaimed owner UUIDs, then that owner's character
-UUIDs. Ledger/directory snapshots refresh every 100 ticks (about five seconds
-at 20 TPS), so changes can take one interval to appear. Amounts and notes remain
-manual input, and `/pouch` has no argument suggestions.
+UUIDs. An applicable staff completion request schedules one snapshot rebuild
+when the cache is cold, changed or at least 100 ticks old (about five seconds at
+20 TPS). Cold snapshots have no candidates until that task finishes; cached
+results remain available during a refresh. Startup and idle ticks do not scan
+ledger or saved-player data. Amounts and notes remain manual input, and `/pouch`
+has no argument suggestions.
 
 ## Crediting a player with `/deco give`
 

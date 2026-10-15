@@ -32,6 +32,8 @@ Completion works through `/co`, `/core` and `/coreprotect`, with canonical comma
 names filtered by permission and sender context. `consumer pause|resume` is a
 console action; preview apply/cancel choices appear only for an active preview.
 `network-debug` also requires its configuration setting.
+`near` requires a player or command-block location and either lookup permission;
+console completion omits it.
 
 Lookup and rollback parameters support inline values, separated values and comma
 continuations, preserving the current parameter prefix. Action choices follow the
