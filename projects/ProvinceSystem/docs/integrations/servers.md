@@ -68,10 +68,11 @@ since the last startup is not detected.
 | `SERVERS_GITHUB_TOKEN` | A read-only GitHub token, falling back to `PATCHNOTES_GITHUB_TOKEN`. Each check discovers active repositories afresh, then reads current releases in groups of eight with at most six queries concurrently. Without a token, fresh REST reads remain available but can quickly reach GitHub’s unauthenticated limit. |
 | `SERVERS_GITHUB_ORG` | The organisation to read. Defaults to `TF-Minecraft`. |
 
-Main loads its token from `backend/.env`. Dev's staging Compose file passes
-`SERVERS_GITHUB_TOKEN` from its project-root `.env`; keep the same read-only
-token there. These secret files stay outside Git. Recreate the backend through
-the deployment workflow after changing either file.
+Main loads its token from `backend/.env`. Dev's staging Compose file loads its
+optional project-root `.env` as a backend environment file; keep only the shared
+`SERVERS_GITHUB_TOKEN` there. This works with the host's environment override.
+These secret files stay outside Git. Recreate the backend through the deployment
+workflow after changing either file.
 
 Mount the folders read-only in the host's `docker-compose.override.yml`:
 
