@@ -43,7 +43,8 @@ A failed deposit or hit save leaves the gem or infusion token with the player an
 keeps the previous progress. Unreadable snapshots, missing worlds and unknown
 gem IDs are logged and retained; the affected table refuses new deposits until
 staff repair the snapshot or restore the missing configuration. Stop the server
-before repairing saved files. Snapshots are flushed to disk before atomic
+before repairing saved files; restart after restoring configuration to retry
+retained snapshots. Snapshots are flushed to disk before atomic
 replacement, then the directory is flushed. A directory flush failure after
 replacement is logged without rolling back the committed deposit. Finished
 tables retry failed snapshot deletion before accepting a new batch.
