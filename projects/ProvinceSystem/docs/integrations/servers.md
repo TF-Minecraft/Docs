@@ -29,7 +29,10 @@ branch (`main`, or `master` for CoreProtect) and links to GitHub's comparison:
 | No mark | There is no GitHub token, or GitHub couldn't compare them. |
 
 A plugin is any active repository in the organisation whose published
-releases carry a jar. Drafts and pre-releases are ignored. Each server copy
+releases carry a jar. The latest is GitHub’s designated Latest release; if it
+has no eligible jar, the newest eligible release found in release history is
+used. Drafts and pre-releases are ignored. A later maintenance release does
+not displace a newer major unless GitHub marks it Latest. Each server copy
 gets these labels:
 
 | Label | Meaning |
@@ -37,6 +40,7 @@ gets these labels:
 | No label | The jar is the latest release's file and the server is running it. |
 | Not a release (Main) | The jar's SHA-256 matches no published release, whatever its name. |
 | Test build (Dev) | The same on Dev, where test builds are allowed. |
+| Unverified | GitHub or the check deadline prevented complete checksum verification. This is not proof of a test build. |
 | Older release | The jar is an earlier release's file. |
 | Needs restart | The server enabled a different version at its last startup, or a jar waits in `plugins/update/`. The cell shows the running version, then the version on disk. |
 | Didn't start | The last startup finished without enabling the plugin. |
@@ -45,7 +49,10 @@ gets these labels:
 
 Jars are matched to plugins by SHA-256 first, using the digests GitHub reports
 for release assets, then by the release file's name before its version (for
-example `tfmccore-`). The running version comes from the
+example `tfmccore-`) or the stable Bukkit plugin identifier. A filename or
+embedded version only selects a lookup candidate; a matching published asset
+checksum is required to identify a release. This also recognizes renamed
+older jars with their original plugin identifier. The running version comes from the
 `Enabling <name> v<version>` lines of the most recent startup in `logs/`;
 plugins that then report an enable failure or disable before startup finishes
 are excluded from the running versions.
@@ -58,8 +65,13 @@ since the last startup is not detected.
 | Variable | Meaning |
 | --- | --- |
 | `SERVER_MAIN_DIR`, `SERVER_DEV_DIR` | A folder inside the backend container holding the server's `plugins` and `logs` folders. Unset: the server's card says the site is not set up to read it. |
-| `SERVERS_GITHUB_TOKEN` | A read-only GitHub token. Falls back to `PATCHNOTES_GITHUB_TOKEN`. With a token, releases are read every 10 minutes through about 13 GraphQL queries, in groups of eight repositories, each followed by a comparison of those repositories' latest releases with their default branches. Without one, GraphQL isn't available and GitHub allows 60 REST requests an hour, so releases (about 40 requests) are read hourly and not compared with the branch. |
+| `SERVERS_GITHUB_TOKEN` | A read-only GitHub token, falling back to `PATCHNOTES_GITHUB_TOKEN`. Each check discovers active repositories afresh, then reads current releases in groups of eight with at most six queries concurrently. Without a token, fresh REST reads remain available but can quickly reach GitHub’s unauthenticated limit. |
 | `SERVERS_GITHUB_ORG` | The organisation to read. Defaults to `TF-Minecraft`. |
+
+Main loads its token from `backend/.env`. Dev's staging Compose file passes
+`SERVERS_GITHUB_TOKEN` from its project-root `.env`; keep the same read-only
+token there. These secret files stay outside Git. Recreate the backend through
+the deployment workflow after changing either file.
 
 Mount the folders read-only in the host's `docker-compose.override.yml`:
 
@@ -76,10 +88,24 @@ services:
       - SERVER_DEV_DIR=/servers/dev
 ```
 
-Jar hashes are cached until a file's size or modification time changes, so a
-check after the first reads only the logs. Only the first check after the
-backend starts waits for GitHub. After that, expired releases are shown while
-they are read again in the background.
+Every page load and **Check again** waits for a fresh check. There is no
+release-response cache, background refresh, hash memo or reuse of an earlier
+check. Local jar hashing and startup-log reads run alongside GitHub queries.
+Equal release/default-branch commit hashes avoid a comparison request;
+unequal hashes request the commit count. Missing commit information leaves
+the branch mark unknown.
+
+Older installed versions first try their exact release tags and verify the
+asset checksum. Only unmatched jars need their candidate repository’s release
+history. Release and asset pagination must finish or find the matching bytes;
+an interrupted search is Unverified, never proof that a jar is unreleased.
+
+A check has a 20-second GitHub deadline. At most two checks per backend
+process use GitHub concurrently; extra checks report busy rather than sharing
+results. Local inventory remains visible when GitHub is unavailable. Partial
+repository failures show unknown releases. A failed browser request keeps the
+previous result’s own timestamp and shows **Check failed**; an older response
+cannot replace a later successful check.
 
 ## Restart and release controls
 
@@ -115,9 +141,12 @@ disk, are not checked as changes, and are recorded in the plan as
 The helper must be able to read every jar. A jar moved into `plugins` keeps
 its own permissions, so make it `0644` first; otherwise every plan for that
 server, and every Main update plan, stops with "A plugin jar can’t be read".
-The release inventory is cached for ten minutes with a GitHub token, or one
-hour without one. A release plan waits for an expired inventory to be read
-again, and a failed read prevents the plan.
+A release plan performs its own fresh GitHub and target-server check.
+Unavailable or unverified release information prevents the plan. It passes
+the exact installed filenames and SHA-256 values to the helper, which rejects
+a changed inventory before preparing a plan. The helper still rechecks the
+approved baseline before installation. The stored plan pins the artifacts
+staff approved; it is not a cache for later panel checks.
 
 Main upgrades also require the target release's exact bytes to be on Dev,
 with its version enabled without a subsequent enable failure or disable at
@@ -290,6 +319,13 @@ unit, the console wrapper or the updater itself, or whose installer differs
 from the installed commit's; those need the administrator installer. It also
 refuses while a restart is running; a Main feature review waiting for staff
 does not block it.
+
+When deploying a website that sends the fresh-check baseline, update the
+helper to the same merged, Build-passing commit as part of the rollout. The
+new helper accepts older website requests too. A new website talking to an
+older helper refuses the update plan until the helper is updated; restart-only
+plans continue to use the existing protocol. No Minecraft restart is required
+to update the helper.
 
 The updater backs up the old modules under
 `/var/backups/tfmc-server-control/update-*` (the last ten are kept), restarts
