@@ -146,7 +146,7 @@ re-address it (reverted, or no estate at all).
 
 ## Revival
 
-Staff revive from the Character Info screen as before: the owner must be online with a free living
+Staff revive from the Character Info screen, reached through `/rpcharacter menu <player>`: the owner must be online with a free living
 slot. The revive is now a guarded transition. It saves the character as alive durably first, then
 updates the estate, fires `CharacterRevivedEvent` and pushes the website roster. If the save fails the
 character stays dead and nothing fires.
@@ -174,7 +174,7 @@ the last website request ID, so a website request whose acknowledgement was lost
 `applied` after a later in-game change. An older RPCharacters drops
 these keys on its next save, so back up `characterdata/` before rolling back.
 
-In game, `/will` or the **Will** button on the Character Info screen opens a dialog for the character
+In game, `/will` opens a dialog for the character
 being played. It shows the heir and what the estate holds today, including pets and animals when their
 ownership systems take part in estates. **Name an heir** takes a name; one match asks for confirmation with name,
 race, short ID and "on your account" where it applies, several matches give a list to choose from, and
