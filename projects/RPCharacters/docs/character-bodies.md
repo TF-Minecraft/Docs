@@ -126,11 +126,12 @@ run, so blindly repeating that restoration is unsafe.
 
 While playing, `/rpcharacter select` returns the player to selection without
 disconnecting. They must stand still for `character-bodies.return-seconds`
-(default 5); moving, teleporting, mounting, taking damage or any refusal below
-cancels it. Starting character creation while playing does the same. It is
-refused while dead or respawning, mounted, falling, creating or editing a
-character, duelling, in a `/pvp` fight, knocked out, in a started SimpleFactions
-battle or held by an evil-roleplay session. Other plugins can refuse it by
+(default 5). Turning on the spot is fine; moving or teleporting more than a
+quarter of a block, mounting, taking damage or any refusal below cancels it.
+Starting character creation while playing does the same. It is refused while
+dead or respawning, mounted, falling, creating or editing a character,
+duelling, in a `/pvp` fight, knocked out, in a started SimpleFactions battle or
+held by an evil-roleplay session. Other plugins can refuse it by
 cancelling `CharacterSelectionRequestEvent`, which fires at the start and on each
 second of the countdown; set a reason with `deny`. Use it where a logout carries
 a penalty.
