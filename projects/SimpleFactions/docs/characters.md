@@ -175,8 +175,8 @@ public map show its leader as "Name (dead)". The guild file records the dead
 leader as `dead leader`, the death time as `leaderless since`, when it was last
 left with no members as `empty since`, and any standing offer as
 `leader offer`; filling the seat by any route clears them all. It cannot be
-evicted or elevated, and when its realm releases its guilds it stays with the
-realm.
+evicted or elevated, and it stays with the realm when the realm releases its
+guilds or a movement it supported wins independence or nationhood.
 
 The realm leader offers the seat with `/guild appoint <guild> <name>` to a
 living member of the realm who leads no guild. The guild list shows the command
