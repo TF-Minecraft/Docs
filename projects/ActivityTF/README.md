@@ -6,6 +6,13 @@ ActivityTF tracks daily tasks and weekly activity rewards through gameplay event
 
 TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](../../PLATFORM.md) for runtime, build and validation conventions.
 
+## Commands
+
+Staff target completion includes known previously played players whose names are
+still in Bukkit's cache, as well as online players. Joins refresh renamed
+accounts. Each root action follows its own permission, including an explicit
+`activity.check` denial for an administrator. Suggestions match the current prefix.
+
 ## Build and integration
 
 Build with JDK 21 and `mvn clean verify`. The POM uses compiler release 21 and Paper API `1.21.10-R0.1-SNAPSHOT`; the loader API is `1.21.10`.

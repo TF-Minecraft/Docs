@@ -20,7 +20,8 @@ Load ammunition normally.
 Set it to your staff permission; a blank value disables giving. This permission
 is independent of `gunsandgadgets.reload`, which gates `/gg reload` and
 `/gg refresh`. Reload configuration with `/gg reload`. Tab completion suggests
-recipients, weapon types, and configured part IDs.
+recipients, weapon types, and enabled compatible parts for required categories
+that are still missing. It stops after a complete assembly.
 
 `/gg refresh` is player-only and force-refreshes the gun in the main hand. See
 [revision and craft provenance](docs/REVISION_SYSTEM.md) for automatic refresh

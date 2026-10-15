@@ -31,6 +31,14 @@ Money amounts must be positive and use at most two decimal places. `deposit` and
 
 Tab completion only offers `give`, `reload`, `legacy`, `account` and `move` to senders who can use them.
 
+Staff `give` and `history` completion offers online players with active
+characters. `account` completes known character names and UUIDs, inserting only
+the missing suffix of a multiword name. `move` completes known ledger account
+IDs; `legacy assign` offers unclaimed owner UUIDs, then that owner's character
+UUIDs. Ledger/directory snapshots refresh every 100 ticks (about five seconds
+at 20 TPS), so changes can take one interval to appear. Amounts and notes remain
+manual input, and `/pouch` has no argument suggestions.
+
 ## Crediting a player with `/deco give`
 
 The console always passes the permission check; a player needs operator status or `denareconomy.give`. The target must be online and playing a character; otherwise the sender sees "<player> is not online playing a character." The credit is a ledger posting from the mint with reason `staff:give`, so a dead character can still be credited. If the posting does not apply, the sender sees "Could not pay <player>. Their balance has not changed." Each successful credit is logged with the sender, amount, player name, character ID and account.

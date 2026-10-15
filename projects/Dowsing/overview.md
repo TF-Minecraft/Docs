@@ -49,6 +49,11 @@ Administrators with `dowsing.admin` can manage resource entries:
 | `/dowsing deleteresource <id>` | Delete the matching resource entry. |
 | `/dowsing reload` | Reload configuration and recalculate node benefits. |
 
+Tab completion matches the current prefix for commands, saved resource IDs and
+yield presets. The resource argument uses distinct loaded node-type resource
+labels such as `mineral`, `magic` and `farm`. New IDs are entered manually.
+Console can complete `reload`; resource creation and deletion require a player.
+
 Resource identifiers become filenames, while the resource and numeric yield are
 stored as the entry value. Treat identifiers as trusted administrator input.
 

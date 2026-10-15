@@ -177,6 +177,11 @@ need TLibs 2.5.0, and without it use the UUID. A door whose record has lost its 
 its strength cannot be repaired this way, so the lock is never weakened: break the
 door in Creative to remove it. Fixed records leave the quarantine list straight away.
 
+`setowner` completion offers `server` and current living online characters. It
+uses canonical character UUIDs for multiword or ambiguous names; single-token
+names are suggested only when they resolve uniquely. Offline character IDs remain
+usable when entered manually. All suggestions match the current prefix.
+
 ## Storage
 
 Lock files keep the owner as a bare UUID and add `ownerKind`, which is `CHARACTER`

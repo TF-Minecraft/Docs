@@ -27,6 +27,15 @@ project waits until the character has fewer than 36. The library menu shows only
 the first 36. Use `/music projects` to list all project IDs and
 `/music open <project-id>` to open a project beyond those menu slots.
 
+`/music open` (also `/recording open`) completes the active character's saved
+project IDs. Project and selected-track snapshots warm when a character session
+starts; a cold snapshot has no candidates until its scheduled load finishes.
+`volume`, `mute` and `remove` complete saved track slots; `record` completes all
+configured slots. Manual file edits appear after normal project listing or a
+new character session.
+
+Console instrument completion offers permitted `list` and `reload` actions.
+
 ## Requirements and storage
 
 Build with Java 21 for Paper 1.21.10 and the pinned TLibs 2.6.0 API. The build and

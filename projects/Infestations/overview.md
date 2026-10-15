@@ -167,9 +167,10 @@ take a numeric SimpleFactions province ID or `here` for the player's province.
 | `/lure leave` | none | Drop the player out of every lure they have joined. |
 
 Both permissions default to operators, and `infestations.admin` grants
-`infestations.admin.reload`. Because `plugin.yml` also requires
-`infestations.admin` for the command itself, the reload permission alone is not
-enough. Reloading re-reads `Data/infestations.json`, removes stray lure
+`infestations.admin.reload`. The reload permission also works on its own.
+`set` completion offers eligible uninfested land provinces and terrain-compatible
+groups; `clear` offers active infestation IDs. `here` is suggested only to players.
+Suggestions follow the current prefix. Reloading re-reads `Data/infestations.json`, removes stray lure
 furniture and text displays, recounts loaded ambient mobs, and re-exports the
 map data.
 

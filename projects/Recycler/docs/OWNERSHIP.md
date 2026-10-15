@@ -10,6 +10,11 @@ character's returns. Matching character start, normal close/take-out or
 `/recycler escrow return <online player>` can deliver that living character's
 pending queue.
 
+Staff `escrow return` completion includes recognized offline pending-owner names
+alongside online players, with case-insensitive prefix matching and deduplication.
+Unknown names are omitted. Offline returns still wait for the recorded character
+to become current; completion does not deliver them or read queue files/profiles.
+
 Refunds use free storage slots and split oversized stacks into batches up to the
 material's stack size. Full inventory leaves the remainder queued; refunds do
 not drop overflow into the world. New deposits use exact Paper item bytes,
