@@ -31,10 +31,12 @@ twice, their PNG is not 8-bit RGB, RGBA or palette, or the font contains provide
 whose code points cannot be listed (references, TrueType, unihex). Glyphs are also
 left alone when stb_image, the client's decoder, would reject their PNG, when the
 font file inflates past 4 MiB or the texture past 8 MiB, when the image exceeds
-1024 × 1024 pixels, or once the glyphs held for one build reach 16 million pixels.
+512 × 512 pixels, or once that font's merged glyphs reach 4 million pixels. Sheets
+are at most 2048 × 2048 pixels.
 Only plainly laid-out PNGs are merged (palette chunks on palette images before the
-data, one run of image data, the zlib trailer present). Once rewritten fonts and
-sheets reach 16 MiB in one build, later fonts stay as ItemsAdder wrote them.
+data, one run of image data, the zlib trailer present). Rewritten fonts and their
+sheets may total 16 MiB per build; a font that would take the total past that stays
+as ItemsAdder wrote it.
 On Main this takes 616 providers to 309.
 
 Merged fonts and their sheets are written as ordinary ZIP records; every other
