@@ -67,7 +67,8 @@ penalties. Capital and relocation recovery also repairs an interrupted change
 across faction files before those files are loaded into domain objects.
 
 Material deposits credit the captured character's bank and actual citizen tax
-holding account in one posting. Materials are removed only after `APPLIED`.
+holding account in one posting. Materials are removed only after `APPLIED`,
+and the player then sees the credited amount and any tax in chat.
 Staff physical coin withdrawals record the proposed inventory change before
 posting. An interrupted material removal or coin delivery requires staff
 reconciliation: recovery does not repeat physical delivery automatically.
