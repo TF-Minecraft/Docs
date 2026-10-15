@@ -172,8 +172,11 @@ requirements.
 
 A leaderless guild keeps its treasury, branches and settlements. Menus and the
 public map show its leader as "Name (dead)". The guild file records the dead
-leader as `dead leader`, the death time as `leaderless since` and any standing
-offer as `leader offer`; filling the seat by any route clears all three.
+leader as `dead leader`, the death time as `leaderless since`, when it was last
+left with no members as `empty since`, and any standing offer as
+`leader offer`; filling the seat by any route clears them all. It cannot be
+evicted or elevated, and when its realm releases its guilds it stays with the
+realm.
 
 The realm leader offers the seat with `/guild appoint <guild> <name>` to a
 living member of the realm who leads no guild. The guild list shows the command
@@ -181,14 +184,22 @@ to the realm leader, and both the realm leader and the offered character are
 reminded when they start playing that character. The offered character accepts
 with `/guild lead <guild>` or declines with `/guild decline <guild>`, through the
 chat buttons or by typing. Accepting moves the character out of their current
-guild, makes them leader and saves the realm durably. A new offer replaces the
-old one; an offer to a character who dies is withdrawn.
+guild, makes them leader and saves the realm durably. If that save fails,
+nothing changes and the offer stands. A new offer replaces the old one; an offer
+to a character who dies is withdrawn. Staff can fill the seat with any living
+realm member who leads no guild, using `/guild forceleader <guild> <name>`, even
+when the guild has no members.
 
 Estates treat a leaderless guild as live with no leader: money goes to its
 treasury, guild locks go to the realm leader, and property waits until a leader
 is appointed (see [estates and wills](../../RPCharacters/docs/estates-and-wills.md#the-decision)).
 
-The hourly reconcile removes a leaderless guild that has had no members for 30
-days. Estate parts still waiting for its leader then follow the rules for a
-guild that has gone. A leaderless guild that still has members stays open until
-someone is appointed or staff use `/guild forceleader`.
+The hourly reconcile starts the 30-day clock when it finds a leaderless guild
+with no members, stops it when the guild has members again, and removes the
+guild once the clock runs out. Estate parts still waiting for its leader then
+follow the rules for a guild that has gone.
+
+An older SimpleFactions jar keeps a leaderless guild with a blank leader but
+drops the three fields on its next save. Back up `Data/` before rolling back and
+restore them when upgrading again; until then, staff fill such guilds with
+`/guild forceleader`.
