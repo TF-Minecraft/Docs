@@ -176,7 +176,9 @@ leader as `dead leader`, the death time as `leaderless since`, when it was last
 left with no members as `empty since`, and any standing offer as
 `leader offer`; filling the seat by any route clears them all. It cannot be
 evicted or elevated, and it stays with the realm when the realm releases its
-guilds or a movement it supported wins independence or nationhood.
+guilds. It leaves every movement and cause it supported, at the death and again
+at each hourly check, so no independence, nationhood or civil war takes it out
+of the realm.
 
 The realm leader offers the seat with `/guild appoint <guild> <name>` to a
 living member of the realm who leads no guild. The guild list shows the command
