@@ -170,30 +170,42 @@ requirements.
 
 ### Held realms
 
-When a realm's last member dies, the realm is held rather than removed. Its main
-guild records the dead character in the same fields as a leaderless guild
-(`dead leader`, `leaderless since`, `empty since`), menus and the public map show the
-realm's leader as "Name (dead)", and the realm keeps its land, treasury, army and
+When a realm's last member dies, the realm is held rather than removed. The step
+that removes the last member also records the dead character on the realm's main
+guild, in the same save, using the leaderless-guild fields (`dead leader`,
+`leaderless since`, `empty since`). Menus and the public map show the realm's
+leader as "Name (dead)", and the realm keeps its land, treasury, army and
 installations. While it is held:
 
 - the daily settlement charges no army or installation upkeep, shrinks no
   regiment, downgrades no installation, sheds no province over the cap and sells
-  no branch to cover a shortfall; other ledger flows carry on as usual;
+  no branch to cover a shortfall;
+- it pays no overlord tax or tribute; trade, tariffs, loans and war reparations
+  carry on as usual;
+- its outstanding invitations are cleared and nobody can join it with
+  `/faction join`;
 - no realm can declare war on it.
 
 If the dead character is revived, it rejoins the realm's main guild as its leader,
 on the revive event or at the next hourly check. That happens only while the realm
-has no members and the character has joined no other realm. Staff can hand the
-realm to someone else with `/faction forcejoin <faction> <character>` followed by
+has no members and the character has joined no other realm; a failed save keeps
+the realm held and the next hour tries again. Staff can hand the realm to someone
+else with `/faction forcejoin <faction> <character>` followed by
 `/faction forceleader <faction> <character>`; filling the seat ends the hold.
 
-The hourly check closes a held realm once it has had no members for 7 days,
-counted from the death. A member stops the clock and leaving starts it again.
-Closing removes the realm and its file and every other realm's relation with it;
-its ledger treasury remains. If any part fails, the rest is tried again every hour,
-and a new realm that took the same name in the meantime is left alone. From the end
-of the week until the closure is finished, estate lookups for the realm are
-unavailable, so estates wait for it rather than paying into a realm about to close.
+The hourly check closes a held realm once it has had no members for 7 days and is
+not at war. The week starts when SimpleFactions records the death, which for a
+death it missed is the reconcile that found it. A member stops the clock and
+leaving starts it again. Closing first removes every other realm's relation,
+trade agreement and treaty with the realm and saves those realms, then removes
+the realm and its file; its ledger treasury remains. A failed step is tried again
+every hour, and a new realm that took the same name in the meantime is left alone.
+From the end of the week until the closure is finished, estate lookups for the
+realm are unavailable, so estates wait rather than paying into a realm about to
+close.
+
+An older SimpleFactions jar drops the held fields on its next save and leaves the
+realm empty with no leader and no closing date. Back up `Data/` before rolling back.
 
 ### Leaderless guilds
 

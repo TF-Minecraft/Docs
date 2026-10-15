@@ -38,8 +38,9 @@ for rehearsals (`0.05` is three minutes).
 A death with no living will heir and no guild would freeze, so it waits longer:
 `estates.guildless-wait-hours`, 168 (7 days) by default and never shorter than `wait-hours`. A death in a
 realm's own (ruling) guild while the realm has no living leader waits the same time, heir or not: that is
-a realm whose last member died, which SimpleFactions holds for 7 days, or a vacant seat. Keep the setting
-at 168 or more so such an estate passes after the held realm is taken on or closed. When such
+a realm whose last member died, which SimpleFactions holds for 7 days, or a vacant seat. If the realm
+still has no leader when that wait ends, the estate is postponed ("the realm has no leader") for up to one
+more wait, so it passes once the held realm is taken on or closed. When such
 an estate falls due, its due time moves out by the difference and the estate stays open, so a revive in
 that time still cancels it. The audit log records the move and the website shows the new date. Time on
 staff hold counts on top. `/estate decide <deathId> --no-guild` is not held. Legacy deaths count from
