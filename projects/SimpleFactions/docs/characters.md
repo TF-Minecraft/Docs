@@ -185,7 +185,7 @@ reminded when they start playing that character. The offered character accepts
 with `/guild lead <guild>` or declines with `/guild decline <guild>`, through the
 chat buttons or by typing. Accepting moves the character out of their current
 guild, makes them leader and saves the realm durably. If that save fails,
-nothing changes and the offer stands. A new offer replaces the old one; an offer
+nothing changes and the offer stands (see below). A new offer replaces the old one; an offer
 to a character who dies is withdrawn. Staff can fill the seat with any living
 realm member who leads no guild, using `/guild forceleader <guild> <name>`, even
 when the guild has no members.
@@ -200,6 +200,13 @@ guild once the clock runs out. Estate parts still waiting for its leader then
 follow the rules for a guild that has gone.
 
 An older SimpleFactions jar keeps a leaderless guild with a blank leader but
-drops the three fields on its next save. Back up `Data/` before rolling back and
-restore them when upgrading again; until then, staff fill such guilds with
-`/guild forceleader`.
+drops the four fields on its next save, and its `/guild forceleader` only picks
+existing guild members, so an empty leaderless guild cannot be filled there.
+Back up `Data/` before rolling back and restore the fields from the backup when
+upgrading again.
+
+If a leadership save fails, the change is undone and saved again. When that
+second save also fails, the player is told staff may need to check the guild and
+the server log names the realm file, which may hold either state. While a
+closed guild's removal is not yet saved, estates treat the guild as unanswered
+and wait; the hourly check retries the save.
