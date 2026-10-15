@@ -148,11 +148,12 @@ or faction dissolution and remain payable to the deceased character's bank.
 Daily settlement records actual cents paid, including partial payments.
 
 An ordinary guild leader's successor is the first living remaining member in
-its original join order. Empty ordinary guilds disband. A completely empty
-realm is removed while its ledger treasury remains. If the ruling guild empties
-but another guild still has members, the realm and its treasuries remain:
-elective governments start the normal election; a nonelective ruler remains
-vacant for staff resolution. Unresolved quarantined leaders block succession
+its original join order. When no living member is left to succeed, the guild
+stays open without a leader (see [leaderless guilds](#leaderless-guilds)). A
+completely empty realm is removed while its ledger treasury remains. If the
+ruling guild empties but another guild still has members, the realm and its
+treasuries remain: elective governments start the normal election; a
+nonelective ruler remains vacant for staff resolution. Unresolved quarantined leaders block succession
 and disbanding. A later staff appointment is preserved during replay.
 
 Dead warband leaders pass leadership to the captured first living participant,
@@ -166,3 +167,28 @@ and a living seat holder is never replaced; see
 
 See [treasury recovery](treasuries.md) for journal paths and coordinated backup
 requirements.
+
+### Leaderless guilds
+
+A leaderless guild keeps its treasury, branches and settlements. Menus and the
+public map show its leader as "Name (dead)". The guild file records the dead
+leader as `dead leader`, the death time as `leaderless since` and any standing
+offer as `leader offer`; filling the seat by any route clears all three.
+
+The realm leader offers the seat with `/guild appoint <guild> <name>` to a
+living member of the realm who leads no guild. The guild list shows the command
+to the realm leader, and both the realm leader and the offered character are
+reminded when they start playing that character. The offered character accepts
+with `/guild lead <guild>` or declines with `/guild decline <guild>`, through the
+chat buttons or by typing. Accepting moves the character out of their current
+guild, makes them leader and saves the realm durably. A new offer replaces the
+old one; an offer to a character who dies is withdrawn.
+
+Estates treat a leaderless guild as live with no leader: money goes to its
+treasury, and property and guild locks wait until a leader is appointed (see
+[estates](estates.md)).
+
+The hourly reconcile removes a leaderless guild that has had no members for 30
+days. Estate parts still waiting for its leader then follow the rules for a
+guild that has gone. A leaderless guild that still has members stays open until
+someone is appointed or staff use `/guild forceleader`.
