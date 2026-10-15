@@ -287,9 +287,9 @@ All chat text lives in a separate **`messages.yml`**, split into what players se
 ```yaml
 # PLAYER - seen by anyone hunting a source
 player:
-  found-source: "&#AA00FFYou have found the source of Arcane Radiation!"
+  found-source: "&#AA00FFYou found the arcane source!"
   signal-bar: "&#AA00FFArcane signal"
-  dead-geiger: "&7Your Arcane Trace Detector has run out of fuel."
+  dead-geiger: "&7Your detector is spent."
   limit-reached: "&cYou have already collected %max% sources in %window%. Try again in %time%."
 
 # ADMIN - only ever seen by whoever runs /geiger
@@ -300,6 +300,8 @@ admin:
   limits-status: "&a%player% has %remaining%/%max% drops left per %window%."
   # ... 12 more, each documenting its own placeholders
 ```
+
+On a collection, `found-source` and `dead-geiger` are sent as one line with a space between them, each keeping its own colours. A blank one is left out.
 
 Console log lines stay hardcoded in English, so logs and bug reports remain readable whatever this file is translated to.
 
