@@ -150,7 +150,7 @@ Daily settlement records actual cents paid, including partial payments.
 An ordinary guild leader's successor is the first living remaining member in
 its original join order. When no living member is left to succeed, the guild
 stays open without a leader (see [leaderless guilds](#leaderless-guilds)). A
-completely empty realm is removed while its ledger treasury remains. If the
+realm whose last member died is held for a week (see [held realms](#held-realms)). If the
 ruling guild empties but another guild still has members, the realm and its
 treasuries remain: elective governments start the normal election; a
 nonelective ruler remains vacant for staff resolution. Unresolved quarantined leaders block succession
@@ -167,6 +167,33 @@ and a living seat holder is never replaced; see
 
 See [treasury recovery](treasuries.md) for journal paths and coordinated backup
 requirements.
+
+### Held realms
+
+When a realm's last member dies, the realm is held rather than removed. Its main
+guild records the dead character in the same fields as a leaderless guild
+(`dead leader`, `leaderless since`, `empty since`), menus and the public map show the
+realm's leader as "Name (dead)", and the realm keeps its land, treasury, army and
+installations. While it is held:
+
+- the daily settlement charges no army or installation upkeep, shrinks no
+  regiment, downgrades no installation, sheds no province over the cap and sells
+  no branch to cover a shortfall; other ledger flows carry on as usual;
+- no realm can declare war on it.
+
+If the dead character is revived, it rejoins the realm's main guild as its leader,
+on the revive event or at the next hourly check. That happens only while the realm
+has no members and the character has joined no other realm. Staff can hand the
+realm to someone else with `/faction forcejoin <faction> <character>` followed by
+`/faction forceleader <faction> <character>`; filling the seat ends the hold.
+
+The hourly check closes a held realm once it has had no members for 7 days,
+counted from the death. A member stops the clock and leaving starts it again.
+Closing removes the realm and its file and every other realm's relation with it;
+its ledger treasury remains. If any part fails, the rest is tried again every hour,
+and a new realm that took the same name in the meantime is left alone. From the end
+of the week until the closure is finished, estate lookups for the realm are
+unavailable, so estates wait for it rather than paying into a realm about to close.
 
 ### Leaderless guilds
 
