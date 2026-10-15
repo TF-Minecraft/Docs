@@ -43,7 +43,7 @@ The seat value is the mount bone of the player who aims and fires. Keybinds on t
 | `delay` | Ticks after the key press before the shot leaves. The animation starts immediately |
 | `accepted-ammunition` | Ammunition ids this weapon loads |
 | `bones` | One or more `exit.exitalign` vectors. Each one needs its own round |
-| `damage` | `type(amount)` multipliers for hits on the weapon |
+| `damage` | `type(amount)` multipliers for hits on the weapon. `FALL` defaults to 0, so landing does not damage weapons |
 
 At 0% weapon health, reload time scales up by `weapon-degraded-reload-multiplier` in `config.yml` (default 2). The scale is linear between full health and empty.
 
