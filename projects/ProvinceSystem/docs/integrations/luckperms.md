@@ -144,10 +144,11 @@ groups, and one group at a time with the commands it may use, those it gains ove
 the group before it, and the permissions set on the group itself. Mods and above
 can see it (`view_luckperms`).
 
-Access is worked out on the server from the command's own permission only.
-Plugins may still refuse a command for other reasons when it runs. A command with
-no permission is offered to every player in tab completion; the tab marks these
-as "no permission set".
+Access is worked out on the server from the command's own Bukkit permission
+only. Plugins may still refuse a command when it runs, and Brigadier requirements
+or a plugin's own rules may hide it from tab completion. The tab marks a command
+that exposes no Bukkit permission as "no permission set"; unless its plugin hides
+it some other way, every player is offered it.
 
 Groups are shown in three sections. A track's last group is a staff rank, the
 groups before it on the track are its steps (hidden until asked for), and every
