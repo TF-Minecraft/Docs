@@ -28,8 +28,11 @@ exact pixels, so the client computes the same width. Glyphs are left as they are
 when their texture is not in the pack (the `mcemojis` vanilla item emojis use
 vanilla textures), an overlay replaces their texture, their code point is defined
 twice, their PNG is not 8-bit RGB, RGBA or palette, or the font contains providers
-whose code points cannot be listed (references, TrueType, unihex). On Main this
-takes 616 providers to 309.
+whose code points cannot be listed (references, TrueType, unihex). Glyphs are also
+left alone when stb_image, the client's decoder, would reject their PNG, when the
+font file inflates past 4 MiB or the texture past 8 MiB, when the image exceeds
+1024 × 1024 pixels, or once the glyphs held for one build reach 16 million pixels.
+On Main this takes 616 providers to 309.
 
 Merged fonts and their sheets are written as ordinary ZIP records; every other
 record is copied as ItemsAdder wrote it. The output is deterministic, so a restart
@@ -64,8 +67,8 @@ without `/iazip`. It detects later rebuilds automatically. It does not itself
 rebuild ItemsAdder's content on restart. Configuration changes below require a
 restart; `/tcore reload config` does not restart the HTTP listener.
 
-After `/iazip`, ItemsAdder's automatic send is replaced with the matching three
-parts once publication completes. No `/tfmc pack` or reconnect is needed.
+After `/iazip`, ItemsAdder's automatic send is replaced with every matching part
+once publication completes. No `/tfmc pack` or reconnect is needed.
 ItemsAdder still selects the recipients, so `--apply-to self` and `--apply-to none`
 retain their meaning. `/iatexture` uses the same bridge. Only the configured
 ItemsAdder pack UUID in the play phase is intercepted; other packs and login
@@ -164,11 +167,13 @@ Activate and verify on Dev before Main.
 5. Restart the server and verify the published-generation log, HTTP hashes, real
    joining, reconnecting, and `/iazip` regeneration.
 
-Parts are kept under `plugins/TFMCCore/resource-pack/parts-v1/<source-sha1>/`.
+Parts are kept under `plugins/TFMCCore/resource-pack/parts-v2/<source-sha1>/`.
+Each layout of the split has its own folder, so an older layout of the same
+ItemsAdder build (`parts-v1` held three parts) never blocks publishing.
 Published generations are immutable and retained so in-flight clients can finish
 an older download. They occupy approximately one full pack per rebuild; remove
-old generations during maintenance when no clients are downloading them. The
-original ItemsAdder archive is never overwritten.
+old generations, and old layout folders, during maintenance when no clients are
+downloading them. The original ItemsAdder archive is never overwritten.
 
 ## Rollback
 
