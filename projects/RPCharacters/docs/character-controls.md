@@ -20,6 +20,30 @@ where they can revive dead ones.
 See [in-game character creation](character-creation.md) for the dialog wizard,
 Back/Next, draft resumption and review editing.
 
+## Wardrobe plushies
+
+Staff use `/plushie <character name or UUID> [1|2|3]` to receive one player-head
+plushie named `<Character> Plushie`. For example, `/plushie grinkle 1` uses
+Grinkle's Base skin; `2` uses Skin 2 and `3` uses Skin 3. Omitting the number
+selects Base. Names match exactly, ignoring case, and can contain spaces; use
+the character UUID when two living characters share a name. Name lookup includes
+offline characters. The permission is `rpchar.plushie.give`, granted to operators
+by default.
+
+The selected outfit must be unlocked, filled and signed. The command reads it
+from ProvinceSystem without equipping it, reconciling slots or changing mask
+state. It gives nothing if the lookup fails, the outfit is unavailable, the
+inventory is full, or the sender changes characters while it loads. Issued heads
+contain the captured texture, so later skin or outfit changes do not alter them.
+Repeated copies with the same character name and texture use the same profile
+data. Placing and breaking a head can discard its item name; the saved texture
+is independent of the player's current skin.
+
+This requires ProvinceSystem's authenticated read-only
+`GET /characters/plugin/wardrobe/{player_uuid}/{character_id}/slots/{slot}` route,
+with `slot` set to `base`, `extra_1` or `extra_2`. Update the site before activating
+the RPCharacters build that provides the command.
+
 ## Mail recipient visibility
 
 `/rpcharacter mail` toggles whether your active character appears in BirdMessenger’s recipient list; `/rpcharacter mail off` hides it and `/rpcharacter mail on` restores it. Characters are listed by default, and the setting persists across logouts and restarts. Already-sent mail still arrives.
