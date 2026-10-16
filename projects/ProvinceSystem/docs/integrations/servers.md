@@ -316,7 +316,8 @@ services:
 Mount the directory, not the individual socket. Both sockets have mode
 `0660`, owned by `tfmc-server-control` with group `tfmc-control` (gid 996):
 the unit adds the helper to that group and sets
-`SERVER_CONTROL_SOCKET_GROUP=tfmc-control`. The website backends run as
+`SERVER_CONTROL_SOCKET_GROUP=tfmc-control`. Create the group before installing the
+unit (`groupadd --system tfmc-control`); the helper exits at start if it is missing. The website backends run as
 `tfmc` and get the group through `group_add` (see
 [Host Compose overrides](../../DEPLOY.md#host-compose-overrides)). Without
 `SERVER_CONTROL_SOCKET_GROUP` the sockets are `0600`. A read-only

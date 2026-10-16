@@ -113,7 +113,8 @@ services:
 
 `backend/.env` reaches the container only through Compose: www's base file loads it with `env_file`, and Dev's
 override does the same because its `environment: !override` replaces the base list. `.dockerignore` keeps `.env`
-files out of images.
+files out of images, so a local `docker-compose.staging.yml` run gets only the settings it lists. Files the plugins
+sync to the site go to `backend/src/data/plugin-assets/`, inside the data mount.
 
 ## Keys and secrets
 
