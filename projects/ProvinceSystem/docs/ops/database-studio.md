@@ -24,13 +24,16 @@ the browser's local storage per database.
 
 ## Reading
 
-Every query is one statement. Before connecting, the studio refuses transaction and
-session control (`BEGIN`, `COMMIT`, `ROLLBACK`, `SAVEPOINT`, `SET`, `RESET`, `DISCARD`,
+Every query is one statement, enforced by the databases themselves: Python's
+`sqlite3` refuses a second statement, and Postgres statements go through the extended
+protocol (psycopg 3), which refuses several commands. As a second layer with clearer
+messages, the studio also refuses before connecting transaction and session control (`BEGIN`, `COMMIT`, `ROLLBACK`, `SAVEPOINT`, `SET`, `RESET`, `DISCARD`,
 …), `VACUUM`, `ATTACH`, `DETACH` and `COPY`; semicolons inside strings, quoted names,
 dollar quotes and comments are ignored when counting statements.
 
 Reads run on connections that cannot write: SQLite opened with `mode=ro` and
-`PRAGMA query_only`, Postgres in a read-only transaction through a server-side cursor,
+`PRAGMA query_only`, Postgres in a read-only transaction through a server-side cursor
+(`DECLARE … CURSOR FOR`),
 so a Postgres read must be a query (`SELECT`, `WITH`, `VALUES`, `TABLE`) and its rows
 arrive as they are fetched. Each statement returns at most 1,000 rows and stops after
 10 seconds on the site and Postgres databases. SQLite reads may call schema pragmas
@@ -60,7 +63,7 @@ On a writable database, switch a query tab from **Read** to **Edit**. The studio
 shows the statement and asks before running it. Edits run in one transaction with
 foreign keys on (SQLite) and the same time limits, and the result shows the rows
 changed. The audit log table `admin_audit` cannot be changed, dropped or have its
-triggers changed from the studio. Triggers cannot be created on the site database at
+triggers or indexes changed from the studio. Triggers cannot be created on the site database at
 all, because a stored trigger would later run outside the studio's checks, and
 `PRAGMA writable_schema` and other setting changes are refused.
 
@@ -68,7 +71,10 @@ all, because a stored trigger would later run outside the studio's checks, and
 
 Every browse, query and edit is written to the staff audit log as
 `database.read` or `database.write`, with the database, the statement (first 2,000
-characters), the outcome and the row counts. Schema loads are not audited.
+characters), the outcome and the row counts. An edit is logged as `requested` before
+it runs, so if the audit log cannot be written the edit does not happen. Opening the
+list (`database.list`) and a database's tables (`database.schema`) are logged too.
+The list's query count covers reads and edits with an outcome.
 
 ## Routes
 
