@@ -122,10 +122,13 @@ frontend with `init: true`; in the backend it reaps the renderer's Chromium proc
 
 Each compose project has a `db` service (`pgvector/pgvector:pg17`) holding Precedent and patch notes, in the
 volume `provincesystem_db` (www) or `tfmc-staging_db` (Dev). It has no host port; the backend reaches it as `db`
-and waits until it is healthy. www's password is `POSTGRES_PASSWORD` in the project's `.env`
-(`/home/tfmc/ProvinceSystem/.env`, mode 600), and `backend/.env` sets
-`DATABASE_URL=postgresql://provincesystem:<password>@db:5432/provincesystem`. Dev's compose file sets both, and its
-override repeats `DATABASE_URL` because its `environment: !override` replaces the list.
+and waits until it is healthy. Each site's password is `POSTGRES_PASSWORD` in its project's `.env`
+(`/home/tfmc/ProvinceSystem/.env` or `/home/tfmc/tfmc-staging/.env`, mode 600; hex, as it goes into a URL), and www's
+`backend/.env` sets
+`DATABASE_URL=postgresql://provincesystem:<password>@db:5432/provincesystem`. Dev's compose file builds `DATABASE_URL`
+from the same password, and its override repeats it because its `environment: !override` replaces the list.
+Postgres reads `POSTGRES_PASSWORD` only when it creates the volume; to change the password later, run
+`ALTER USER provincesystem PASSWORD '…'` in `psql` and update both files.
 
 ```bash
 sudo -u tfmc ps-compose main exec db psql -U provincesystem provincesystem      # a shell
