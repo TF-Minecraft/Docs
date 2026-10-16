@@ -15,7 +15,7 @@ Each site lists the databases it can reach:
 |----|------|--------|
 | `site` | `province.db`: accounts, characters, wardrobes, chronicle and ledger indexes, the staff audit log | Read and edit |
 | `coreprotect` | The CoreProtect SQLite file named by `COREPROTECT_DB` (Main on www, Dev on the Dev site) | Read only |
-| `supabase` | The Postgres database in `SUPABASE_DB_URL` (Precedent and patch notes), `public` schema; www only | Read and edit |
+| `postgres` | The site's Postgres in `DATABASE_URL` (Precedent and patch notes), `public` schema | Read and edit |
 
 The list shows each database's tables, size and how many audited queries it has had.
 Opening one shows its tables with columns and approximate row counts (`max(rowid)` on
