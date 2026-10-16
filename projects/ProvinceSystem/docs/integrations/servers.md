@@ -270,11 +270,16 @@ SERVER_CONTROL_AMP_USERNAME=TFWeb
 SERVER_CONTROL_AMP_PASSWORD=<the password in ryan's ~/.config/amp-tfweb on the host>
 ```
 
-The site sends the login with every request except status checks; the helper keeps
-it in memory only and never writes it to its state files. A changed password takes
-effect with the next request. Without the login, console commands go through the
-sudo wrapper and no backup is taken. After the helper restarts it has no login until
-the site's next request.
+The site sends the login with every request except status checks. The helper keeps
+it in memory only, never in its state files, and per server: a request's login only
+counts for the server that request is for, which its socket already allows, so the Dev
+site's login can never be used for Main. An accepted restart keeps the login it
+started with until it finishes. A changed password takes effect with the next request.
+Without a login, console commands go through the sudo wrapper and no backup is taken.
+After the helper restarts it has no login until the site's next request.
+
+Add the two settings only after the helper running on the host understands them:
+older helpers refuse requests that carry a login.
 
 The service runs with root-owned code, private state and a filesystem
 namespace exposing the two plugin folders, read-only logs and read-only backup
