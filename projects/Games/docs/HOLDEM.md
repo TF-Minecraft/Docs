@@ -32,6 +32,10 @@ One seated: shoe still draws. Two seated, seated click: holes deal, shoe locked.
 
 Preflop chat: **check**, **call**, **fold**, **raise** and **allin** (`all in` also works), or `/games bet <word>` (same path as blackjack hit/stand). Raise is chips already on this street above the call, then the word; check or call with chips above the bet counts as a raise. At a cash table, stakes go on the felt only on the current player's turn. **All in** stakes the player's entire remaining coins (or tournament stack). No `/wager` commit for Hold'em. Last player standing wins without ranking: session ends, button moves.
 
+Cash poker uses loose coins in the player's inventory. Pouch and bank balances do not count as remaining chips. Before dealing, use `/deco toitem <amount>` to take coins from the pouch and keep enough in the inventory for bets beyond the blinds.
+
+When blinds or an action use a player's last spendable coins or tournament chips, the table announces **all in** and keeps that player's status on the hologram for the rest of betting. The player receives a one-time explanation: their cards stay in the hand, but betting skips their seat. Cash players also receive the coin withdrawal hint for the next hand. With one player still able to bet, that player can check through the remaining streets while the all-in player waits for showdown.
+
 ## Community cards
 
 When a street matches, deal the next board automatically (flop 3, then turn 1, then river 1), all face-up on `board`. New street number so only this-street chips count. Same chat betting; folded stays folded. No burns.
