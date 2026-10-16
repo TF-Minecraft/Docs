@@ -19,7 +19,7 @@ the same images without deploying them and keep a registry build cache (`:buildc
 from, so a new branch reaches its preview in about three minutes. The workflow then runs
 `up <slug> <sha>` over SSH as `psdeploy`, whose key is pinned to `ps-preview-ssh`.
 `/usr/local/sbin/ps-preview` (runs as `tfmc`) starts compose project `pv-<slug>` on the `ps-previews` network, with
-both containers running as `tfmc` under `init`;
+the backend running as `tfmc` and both containers under `init`;
 the `ps-preview-router` Caddy container (`127.0.0.1:8090`, behind the `*.tfminecraft.net` tunnel rule) routes
 `<slug>.tfminecraft.net` to it, with `/api/` going to the preview's backend.
 
@@ -116,7 +116,7 @@ services:
 override does the same because its `environment: !override` replaces the base list. `.dockerignore` keeps `.env`
 files out of images, so a local `docker-compose.staging.yml` run gets only the settings it lists. Files the plugins
 sync to the site go to `backend/src/data/plugin-assets/`, inside the data mount. Both compose files run the backend and
-frontend with `init: true`, which reaps the renderer's Chromium processes.
+frontend with `init: true`; in the backend it reaps the renderer's Chromium processes.
 
 ## Keys and secrets
 
