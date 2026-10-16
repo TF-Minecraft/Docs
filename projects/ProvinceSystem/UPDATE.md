@@ -85,7 +85,7 @@ Ensure `backend/src/data`, `input`, `output`, and `defines` exist and contain th
 
 Deploy www from GitHub: **Actions → Deploy → Run workflow** with site `www`. It backs up the database, rebuilds only
 what changed, health-checks the site and puts the previous code back if it does not come up. To deploy by hand, use
-the same script on the host (`~/bin/site-deploy deploy www <full sha>`). See [DEPLOY.md](DEPLOY.md).
+the same script on the host (`sudo -u tfmc site-deploy deploy www <full sha>`). See [DEPLOY.md](DEPLOY.md).
 
 Smoke checks on the host:
 

@@ -9,7 +9,7 @@ ProvinceSystem changes reach the website in three steps, all driven by GitHub Ac
 | Staging | `https://dev.tfminecraft.net` | Merge to `main`, once **Build** passes ([Deploy](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/.github/workflows/deploy.yml)) |
 | Live | `https://www.tfminecraft.net` | **Actions → Deploy → Run workflow**, site `www` |
 
-Paths below are on the TF server as `ryan` unless stated.
+Paths below are on the TF server.
 
 ## Branch previews
 
@@ -51,37 +51,36 @@ sudo -n -u tfmc /usr/local/sbin/ps-preview down <slug>
 ## Site deploys
 
 The **Deploy** workflow resolves the commit, checks it is on `main`, and runs `deploy <www|dev> <sha>` over SSH as
-`ryan` with `DEPLOY_SSH_KEY`. That key is pinned in `~/.ssh/authorized_keys` to
-`restrict,command="/home/ryan/bin/site-deploy"`, a copy of
-[`scripts/site-deploy.sh`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/scripts/site-deploy.sh).
-Deploys to the same site run one at a time.
+`psdeploy` with `DEPLOY_SSH_KEY`. That key is pinned in psdeploy's `authorized_keys` to
+`restrict,command="/usr/local/sbin/site-deploy-ssh"`
+([`scripts/site-deploy-ssh.sh`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/scripts/site-deploy-ssh.sh)),
+which runs `/usr/local/sbin/site-deploy`, a root-owned copy of
+[`scripts/site-deploy.sh`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/scripts/site-deploy.sh), as `tfmc`,
+the owner of both checkouts. Deploys to the same site run one at a time.
 
 | | `www` | `dev` |
 | --- | --- | --- |
-| Checkout | `~/work/provincesystem` (branch `main`) | `~/work/provincesystem-dev` (detached) |
+| Checkout | `/home/tfmc/ProvinceSystem` (branch `main`) | `/home/tfmc/tfmc-staging` (detached) |
 | Compose target | `ps-compose main` | `ps-compose dev` |
 | Health checks | `127.0.0.1:3000/` and `127.0.0.1:8000/maps/accessible` | `127.0.0.1:13001/` and `127.0.0.1:18001/maps/accessible` |
-| Backups | `~/work/provincesystem-data/deploy-backups/` | `~/work/provincesystem-dev-data/deploy-backups/` |
+| Backups | `/home/tfmc/provincesystem-data/deploy-backups/` | `/home/tfmc/provincesystem-dev-data/deploy-backups/` |
 | Older commit than deployed | deployed (this is a rollback) | skipped as `already deployed` |
 
 `site-deploy`:
 
 1. Refuses commits not on `origin/main` (exit 4) and, on www, a checkout with uncommitted changes to tracked files
    (exit 1). On dev, `git checkout --detach` keeps the expected local edits and refuses if they would be overwritten.
-2. Backs up `province.db` with SQLite's backup API inside the backend container (the `~/work` mounts do not pass
-   file locks through) as `province.db.before-deploy-<sha>-<UTC time>`, keeping the newest 10.
+2. Backs up `province.db` with SQLite's backup API inside the backend container as `province.db.before-deploy-<sha>-<UTC time>`, keeping the newest 10.
 3. Rebuilds only what changed: `frontend/`, `shared/` or `docker-compose*` rebuild the frontend; `backend/`,
    `shared/`, `frontend/lib/skins/` or `docker-compose*` rebuild the backend (`up -d --build --no-deps`).
    Other changes only move the checkout.
-4. Makes changed files and their folders world-readable (git writes new files there as 660, which the containers
-   cannot read).
-5. Waits up to 3 minutes for both health checks. If they fail, it puts the previous commit back, rebuilds and checks
+4. Waits up to 3 minutes for both health checks. If they fail, it puts the previous commit back, rebuilds and checks
    again, then exits 5. It never restores the database; restore a backup by hand if a migration needs undoing.
-6. After a healthy www deploy that changes `backend/src/patchnotes/`, runs `sudo tfmc-patchnotes-update <sha>` so the
+5. After a healthy www deploy that changes `backend/src/patchnotes/`, runs `sudo tfmc-patchnotes-update <sha>` so the
    [patch note jobs](docs/ops/patch-notes-jobs.md) use the same code. A failure there is logged and does not fail the
    deploy.
 
-Each run appends a line to `~/site-deploy.log`.
+Each run appends a line to `/home/tfmc/site-deploy.log`.
 
 ### Rolling back www
 
@@ -93,8 +92,8 @@ Run **Deploy** with site `www` and an older commit on `main`. Data written since
 Use the same script rather than `ps-compose up` directly, so backups, health checks and the log stay consistent:
 
 ```bash
-~/bin/site-deploy deploy www <full sha>
-~/bin/site-deploy deploy dev <full sha>
+sudo -u tfmc site-deploy deploy www <full sha>
+sudo -u tfmc site-deploy deploy dev <full sha>
 ```
 
 ## Keys and secrets
@@ -103,16 +102,20 @@ Use the same script rather than `ps-compose up` directly, so backups, health che
 | --- | --- | --- |
 | `PREVIEW_SSH_KEY` | repository secret | Preview (`psdeploy`, pinned to `ps-preview-ssh`) |
 | `PREVIEW_SSH_HOST`, `PREVIEW_SSH_KNOWN_HOSTS` | repository secrets | Preview and Deploy |
-| `DEPLOY_SSH_KEY` | `production` and `dev` environment secrets | Deploy (`ryan`, pinned to `site-deploy`) |
+| `DEPLOY_SSH_KEY` | `production` and `dev` environment secrets | Deploy (`psdeploy`, pinned to `site-deploy-ssh`) |
 
 The `production` and `dev` environments only accept deployments from `main`, so workflows on other branches cannot
-read `DEPLOY_SSH_KEY`. The `psdeploy` user, `ps-preview`, the router and the reap timer belong to the host
-administrator.
+read `DEPLOY_SSH_KEY`. Each psdeploy key runs only its own forced command, so the preview key cannot deploy a site.
 
-If the host administrator rotates ryan's login key (`ryan-regenerate-key`), `authorized_keys` is rewritten and the
-deploy key line is lost. Generate a new ed25519 key, add its public half as
-`restrict,command="/home/ryan/bin/site-deploy" ssh-ed25519 … github-site-deploy`, and store the private half as
-`DEPLOY_SSH_KEY` in both environments.
+To rotate the deploy key, generate an ed25519 key, replace its line in `/home/psdeploy/.ssh/authorized_keys` (root-owned)
+with `restrict,command="/usr/local/sbin/site-deploy-ssh" ssh-ed25519 … github-site-deploy`, and store the private half as
+`DEPLOY_SSH_KEY` in both the `production` and `dev` environments.
 
-After changing `scripts/site-deploy.sh`, copy it to `~/bin/site-deploy` once merged. The forced command never runs
-the copy in a checkout it updates.
+`psdeploy`, `ps-preview`, `ps-preview-ssh`, `site-deploy`, `site-deploy-ssh`, the router and the reap timer are root-owned
+on the host. sudoers lets `psdeploy` run `ps-preview` and `site-deploy` as `tfmc`, and `tfmc` run
+`tfmc-patchnotes-update` as root. After changing either deploy script, install it once merged:
+
+```bash
+sudo install -m 755 scripts/site-deploy.sh /usr/local/sbin/site-deploy
+sudo install -m 755 scripts/site-deploy-ssh.sh /usr/local/sbin/site-deploy-ssh
+```

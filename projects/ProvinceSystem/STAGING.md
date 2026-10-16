@@ -15,7 +15,7 @@ Data lives only under this clone (`backend/src/data`, etc.).
 
 The TF server's staging clone serves `dev.tfminecraft.net` and deploys automatically whenever `main` changes; see
 [DEPLOY.md](DEPLOY.md). It keeps intentional local edits, so do not `git reset --hard` it. To deploy by hand, run
-`~/bin/site-deploy deploy dev <full sha>` on the host.
+`sudo -u tfmc site-deploy deploy dev <full sha>` on the host.
 
 ## Start (SSH)
 
