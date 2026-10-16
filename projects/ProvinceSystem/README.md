@@ -17,6 +17,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 - [Rail network](docs/integrations/rail.md)
 - [Server plugin versions and restart controls](docs/integrations/servers.md)
 - [Database studio](docs/ops/database-studio.md)
+- [Patch note host jobs](docs/ops/patch-notes-jobs.md)
 - [Patreon integration](docs/integrations/patreon.md) and [backend protocol](docs/integrations/patreon-backend.md)
 - [Kit default skins](backend/assets/kit_skins/README.md)
 - [Map regeneration benchmarks](backend/benchmarks/regen/README.md)

@@ -77,6 +77,9 @@ Deploys to the same site run one at a time.
    cannot read).
 5. Waits up to 3 minutes for both health checks. If they fail, it puts the previous commit back, rebuilds and checks
    again, then exits 5. It never restores the database; restore a backup by hand if a migration needs undoing.
+6. After a healthy www deploy that changes `backend/src/patchnotes/`, runs `sudo tfmc-patchnotes-update <sha>` so the
+   [patch note jobs](docs/ops/patch-notes-jobs.md) use the same code. A failure there is logged and does not fail the
+   deploy.
 
 Each run appends a line to `~/site-deploy.log`.
 
