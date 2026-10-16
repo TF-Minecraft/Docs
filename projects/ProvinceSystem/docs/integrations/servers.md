@@ -230,7 +230,8 @@ sudo passwd -l tfmc-server-control
 The account needs traversal of the instance paths, write access to each
 `plugins` folder to replace jars with new files, read access to Maintenance's
 configuration and the logs, and the names and times, but not the contents, of
-AMP's backup archives:
+AMP's backup archives. Before granting, check that every path below exists and
+none is a symlink:
 
 ```sh
 account=tfmc-server-control
@@ -259,8 +260,7 @@ done
 The default entries give new jars, Maintenance files and logs the same
 access, and deny new backup archives. Only jars the account can't already read
 get an entry, because a new ACL changes a jar's change time, which the Dev
-verification check compares with the last startup. Check first that none of
-these paths is a symlink.
+verification check compares with the last startup.
 
 ### Installing the service
 
