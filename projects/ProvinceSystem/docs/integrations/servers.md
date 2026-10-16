@@ -262,8 +262,24 @@ cutover backup until the migrated controls have been checked.
 
 The helper uses the AMP API as the `TFWeb` service account once
 `/etc/tfmc-server-control/amp-login.json` exists. It sends console commands
-through the API and takes Main's countdown backup. Without the file, console
-commands go through the sudo wrapper and no backup is taken. The administrator
+through the API, takes Main's countdown backup and handles every server file
+through AMP's file manager:
+
+- Plugin jars, the Maintenance config and the newest logs are copied into a
+  private mirror under `/var/lib/tfmc-server-control/state/mirror/` (about
+  350 MB). A jar is downloaded again only when AMP reports a different MD5, and
+  the plan checks hash the mirror's bytes.
+- Installs upload each release as `plugins/.control-<plan>`, compare AMP's MD5
+  with the verified bytes, rename it to the release name and move the old jar
+  to the instance's `.trash`. A failed install restores the recorded old jars
+  the same way.
+- AMP reports only modified times, so Dev evidence compares a jar's modified
+  time with Dev's startup.
+
+Without the file, console commands go through the sudo wrapper, files go
+through the bind mounts and no backup is taken. Once restarts work through
+the API, the administrator can remove the wrapper, its sudoers entry, the
+instance ACLs and the unit's bind mounts. The administrator
 creates the file once from the account password in `ryan`'s
 `~/.config/amp-tfweb`:
 
