@@ -260,21 +260,21 @@ cutover backup until the migrated controls have been checked.
 
 ### AMP login
 
-The helper uses the AMP API as the `TFWeb` service account once
-`/etc/tfmc-server-control/amp-login.json` exists. It sends console commands
-through the API and takes Main's countdown backup. Without the file, console
-commands go through the sudo wrapper and no backup is taken. The administrator
-creates the file once from the account password in `ryan`'s
-`~/.config/amp-tfweb`:
+The helper uses the AMP API as the `TFWeb` service account when the website sends
+that login with its requests. It sends console commands through the API and takes
+Main's countdown backup. Set both in the website's `.env` (www; the Dev site may set
+them too) and restart its backend:
 
 ```sh
-sudo install -d -m 0750 -o root -g tfmc-server-control /etc/tfmc-server-control
-sudo python3 -c 'import json; print(json.dumps({"username": "TFWeb", "password": open("/home/ryan/.config/amp-tfweb").read().strip()}))' \
-  | sudo install -m 0640 -o root -g tfmc-server-control /dev/stdin /etc/tfmc-server-control/amp-login.json
+SERVER_CONTROL_AMP_USERNAME=TFWeb
+SERVER_CONTROL_AMP_PASSWORD=<the password in ryan's ~/.config/amp-tfweb on the host>
 ```
 
-The helper rereads the file when it changes, so it needs no restart. Replace
-the file the same way after changing the password.
+The site sends the login with every request except status checks; the helper keeps
+it in memory only and never writes it to its state files. A changed password takes
+effect with the next request. Without the login, console commands go through the
+sudo wrapper and no backup is taken. After the helper restarts it has no login until
+the site's next request.
 
 The service runs with root-owned code, private state and a filesystem
 namespace exposing the two plugin folders, read-only logs and read-only backup
