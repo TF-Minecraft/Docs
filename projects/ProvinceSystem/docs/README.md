@@ -27,6 +27,7 @@ This section is the product and technical reference for **ProvinceSystem**. Tech
 5. [ops/sheet-render.md](ops/sheet-render.md) - 3D review-sheet renderer (prod deploy + smoke)
 6. [ops/dev-config.md](ops/dev-config.md) - dev-only flags and shortcuts
 7. [ops/diagnostic.md](ops/diagnostic.md) - player diagnostic page and staff reports
+8. [ops/patch-notes-jobs.md](ops/patch-notes-jobs.md) - patch note jobs on the TF server
 
 Schema assets: [assets/map-export-schema.json](assets/map-export-schema.json) (SF map export contract).
 
