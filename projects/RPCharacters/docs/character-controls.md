@@ -78,8 +78,11 @@ duel's own health damage. Moving too far apart, logging out or starting a real
 fight ends it as a draw.
 
 Defaults in `duel.yml` are a 16-block challenge range, 30-second invitation,
-three-second countdown, 32-block separation limit, ten-minute maximum and
-24-block result announcement radius. The same file contains chat and title text;
+three-second countdown, 32-block separation limit and ten-minute maximum.
+Nearby chat announcements are disabled by default (`announce-radius: 0`); only
+the duellists receive duel messages. A positive radius opts in to nearby notices.
+Names in duel messages and titles use character display names, respecting aliases
+and masks. The same file contains chat and title text;
 existing configurations use bundled defaults for missing message keys.
 
 ## Nonlethal knockouts
