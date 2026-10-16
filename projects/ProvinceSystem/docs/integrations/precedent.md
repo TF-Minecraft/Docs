@@ -9,7 +9,7 @@ similar incidents get similar rulings. Bot never decides punishments — it's ad
 
 1. Staff run `/case-log` after handling an incident (players, rule broken, evidence
    summary, ruling, punishment) → cog POSTs to ProvinceSystem → ProvinceSystem embeds
-   the case (Voyage AI) and stores it in Supabase Postgres (`pgvector`).
+   the case (Voyage AI) and stores it in the site's Postgres (`pgvector`).
 
    **Only the summary is embedded** (`_case_text` in `precedent_routes.py`). A search
    query is always a description of what happened: staff cannot cite the rule number
@@ -117,9 +117,10 @@ Implementation: `backend/src/api/precedent_routes.py`, `backend/src/precedent/{d
 
 ## Audit trail
 
-Every write to `precedent_cases` appends a row to `precedent_audit` in the same Supabase
-database. There is **no API route to read it** — inspecting it requires direct Supabase
-access, so staff cannot review or erase their own trail from the website.
+Every write to `precedent_cases` appends a row to `precedent_audit` in the same database.
+There is **no API route to read it**: inspecting it takes database access (the root-only
+[Database studio](../ops/database-studio.md) or `psql` on the host), so staff cannot review or
+erase their own trail from the website.
 
 | Column | Meaning |
 |--------|---------|
@@ -161,8 +162,9 @@ corpus). Ids that already exist are skipped rather than overwritten, so the scri
 re-run and safe to use while the corpus is only partly damaged. Restores are themselves
 audited, as `action='restore'`, `source='script'`.
 
-**This only covers deletions made through the API.** Direct SQL against Supabase bypasses the
-audit trail entirely — Supabase's own backups are the recovery path for that.
+**This only covers deletions made through the API.** Direct SQL bypasses the audit trail; the
+`postgres.before-deploy-*.dump` files that each deploy writes ([DEPLOY.md](../../DEPLOY.md)) are
+the recovery path for that.
 
 Useful queries:
 
@@ -180,19 +182,19 @@ SELECT before FROM precedent_audit WHERE action = 'delete' AND case_id = '<uuid>
 
 ## Storage
 
-Supabase Postgres, `pgvector` extension. Two tables: `precedent_cases` (id, logged_by,
+The site's Postgres (the `db` service in each site's compose project), `pgvector`
+extension. Two tables: `precedent_cases` (id, logged_by,
 players, summary, rule, ruling, punishment, embedding `vector(1024)`, created_at) and
 `precedent_audit` (see above). Tables + extension are created lazily on first request
 (`migrate()` in `precedent/db.py`).
 
-This is separate infrastructure from the existing SQLite skins/drinks DB — ProvinceSystem
-had no Postgres/Supabase usage before this feature.
+Patch notes share the same database; the rest of the site is still in SQLite (`province.db`).
 
 ## Configuration
 
 | Env (ProvinceSystem `backend/.env`) | Purpose |
 |--------------------------------------|---------|
-| `SUPABASE_DB_URL` | Postgres connection string (Supabase project) |
+| `DATABASE_URL` | The site's Postgres, `postgresql://provincesystem:<password>@db:5432/provincesystem` |
 | `VOYAGE_API_KEY` | Voyage AI embeddings |
 | `ANTHROPIC_API_KEY` | Claude synthesis |
 

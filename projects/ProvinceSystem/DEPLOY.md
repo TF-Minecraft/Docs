@@ -71,7 +71,7 @@ the owner of both checkouts. Deploys to the same site run one at a time.
 
 1. Refuses commits not on `origin/main` (exit 4) and, on www, a checkout with uncommitted changes to tracked files
    (exit 1). On dev, `git checkout --detach` keeps the expected local edits and refuses if they would be overwritten.
-2. Backs up `province.db` with SQLite's backup API inside the backend container as `province.db.before-deploy-<sha>-<UTC time>`, keeping the newest 10.
+2. Backs up `province.db` with SQLite's backup API inside the backend container as `province.db.before-deploy-<sha>-<UTC time>`, keeping the newest 10. When the compose file has a `db` service, it starts it and writes `postgres.before-deploy-<sha>-<UTC time>.dump` (`pg_dump --format=custom`), also keeping 10.
 3. Rebuilds only what changed: `frontend/`, `shared/` or `docker-compose*` rebuild the frontend; `backend/`,
    `shared/`, `frontend/lib/skins/` or `docker-compose*` rebuild the backend (`up -d --build --no-deps`).
    Other changes only move the checkout.
@@ -117,6 +117,20 @@ override does the same because its `environment: !override` replaces the base li
 files out of images, so a local `docker-compose.staging.yml` run gets only the settings it lists. Files the plugins
 sync to the site go to `backend/src/data/plugin-assets/`, inside the data mount. Both compose files run the backend and
 frontend with `init: true`; in the backend it reaps the renderer's Chromium processes.
+
+### The site's Postgres
+
+Each compose project has a `db` service (`pgvector/pgvector:pg17`) holding Precedent and patch notes, in the
+volume `provincesystem_db` (www) or `tfmc-staging_db` (Dev). It has no host port; the backend reaches it as `db`
+and waits until it is healthy. www's password is `POSTGRES_PASSWORD` in the project's `.env`
+(`/home/tfmc/ProvinceSystem/.env`, mode 600), and `backend/.env` sets
+`DATABASE_URL=postgresql://provincesystem:<password>@db:5432/provincesystem`. Dev's compose file sets both, and its
+override repeats `DATABASE_URL` because its `environment: !override` replaces the list.
+
+```bash
+sudo -u tfmc ps-compose main exec db psql -U provincesystem provincesystem      # a shell
+sudo -u tfmc ps-compose main exec -T db pg_restore -U provincesystem -d provincesystem --clean --if-exists < backup.dump
+```
 
 ## Keys and secrets
 
