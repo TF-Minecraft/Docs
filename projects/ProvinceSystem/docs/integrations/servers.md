@@ -160,7 +160,7 @@ Related migrations must be deployed as a reviewed set with a recovery plan.
 Use the manual deployment procedure when the proposed set needs offline work.
 The bulk button does not publish releases or replace unreleased fixes.
 
-With an [AMP login](#amp-login), the helper asks AMP for a backup of Main as
+Using its [AMP login](#amp-login), the helper asks AMP for a backup of Main as
 the countdown starts and records it on the job as `backup`. When the countdown
 ends it waits up to twenty minutes for AMP to finish, broadcasting
 `Finishing a backup before the restart.` while it waits. A failed or overdue
@@ -204,82 +204,64 @@ require reasons.
 ## Host connection setup
 
 The website's read-only jar/log mounts remain separate from control. Control
-uses a system service running as the locked `tfmc-server-control` account.
-The account has `/usr/sbin/nologin`, a locked password and no supplementary
-AMP, Docker or sudo groups. The service starts at boot independently of user
-login sessions; it does not need `loginctl enable-linger ryan`.
+uses the `tfmc-server-control` system service, running as the locked
+`tfmc-server-control` account: `/usr/sbin/nologin`, a locked password, and no
+AMP, Docker or sudo groups. The unit sets `NoNewPrivileges=true`, so the helper
+cannot gain privileges through sudo or setuid programs. It reaches Minecraft
+only through the AMP API and the plugin, log and backup folders the unit
+exposes. The service starts at boot, independently of user login sessions.
 
-The administrator installs from the reviewed ProvinceSystem revision:
+The administrator installs the service from a reviewed commit on ProvinceSystem
+`main`. This needs Python 3.10+ and systemd 249 or later, the
+`tfmc-server-control` account, the `tfmc-control` group, read access for the
+account to the Main and Dev plugin jars, Maintenance configuration and logs,
+and the [AMP login](#amp-login). From a checkout of that commit:
 
 ```sh
-sudo bash scripts/install-server-control.sh
+sudo install -d -m 755 -o root -g root /usr/local/lib/tfmc-server-control/backend/src/servers
+sudo install -m 644 -o root -g root backend/src/servers/{__init__,control,host,inventory}.py \
+  /usr/local/lib/tfmc-server-control/backend/src/servers/
+sudo install -m 644 -o root -g root scripts/tfmc-server-control.service /etc/systemd/system/
+sudo install -m 755 -o root -g root scripts/server-control-update.py /usr/local/sbin/tfmc-server-control-update
+sudo systemctl daemon-reload
+sudo systemctl enable --now tfmc-server-control.service
+sudo /usr/local/sbin/tfmc-server-control-update <full commit>
 ```
 
-Python 3.10+, systemd, ACL tools (`getfacl`/`setfacl`), `visudo`, the existing
-AMP helper and the canonical Main/Dev instance directories are required. Run
-with no active restart or pending Main feature review. If either backend
-already mounts the legacy `/home/ryan/.local/share/tfmc-server-control/`
-socket directory, first remove that mount and recreate that backend. The
-installer refuses a live legacy mount or busy job.
-
-The installer performs the cutover and cleanup:
-
-1. Creates or validates the locked service account and snapshots the existing
-   service files, code, job state and affected ACLs under a private
-   `/var/backups/tfmc-server-control/cutover-*/` directory.
-2. Stops only the idle control helpers and disables the old `ryan` user unit.
-   It copies plans, job journals and jar backups into
-   `/var/lib/tfmc-server-control/state/` with checksum verification, refusing
-   symlinks or a conflicting destination rather than overwriting evidence.
-3. Installs root-owned Python modules under
-   `/usr/local/lib/tfmc-server-control/backend/src/servers/`, a root-owned
-   `/usr/local/sbin/tfmc-server-command` and a validated sudoers entry allowing
-   only that wrapper as `amp`. The wrapper accepts the fixed Main/Dev
-   console commands used by this feature; it does not accept arbitrary
-   console input or AMP instance stop/restart commands.
-4. Grants traversal of the two instance paths, access to plugin jars and
-   top-level plugin replacement, read access to Maintenance's configuration
-   and logs, and backup directory metadata. It grants no backup archive
-   contents. Already readable jars do not receive a new ACL, preserving
-   their timestamp evidence where possible.
-5. Installs `/etc/systemd/system/tfmc-server-control.service`, starts it, checks
-   both socket scopes and prepares read-only restart plans to exercise file
-   and console access. It does not start a countdown, replace a jar or
-   restart Minecraft. Original accepted job evidence is checked again before
-   cleanup; expired plans that were never accepted may be pruned normally.
-6. Removes the old helper directory and user-unit file from `ryan`, moving
-   the known old `stage-<sha>` directories and source tar files into the
-   private cutover backup. It preserves the `ryan` account and its separate
-   SSH/deployment permissions.
-
-On failure before cleanup, the installer attempts to restore saved service
-files, code and ACLs and restart the previous helper. Inspect the printed
-backup directory and journal if any rollback step needs attention. It retains
-all state copies and the locked account for inspection. Do not delete the
-cutover backup until the migrated controls have been checked.
+Skip the module copy when the helper is already installed: the updater
+replaces the modules itself and records the commit. When the modules change it
+restarts the service, which then runs under the new unit; when they don't,
+restart the service yourself. After a change to the unit or the updater,
+repeat the unit and updater copies, `daemon-reload`, and run the updater with
+the new commit. Run it with no active restart.
 
 ### AMP login
 
-The helper uses the AMP API as the `TFWeb` service account when the website sends
-that login with its requests. It sends console commands through the API and takes
-Main's countdown backup. Set both in the website's `.env` (www; the Dev site may set
-them too) and restart its backend:
+The helper sends console commands and takes Main's countdown backup through
+the AMP API as the `TFWeb` service account. Its login is a root-owned JSON file
+that systemd passes to the service as the `amp-login` credential:
 
 ```sh
-SERVER_CONTROL_AMP_USERNAME=TFWeb
-SERVER_CONTROL_AMP_PASSWORD=<the password in ryan's ~/.config/amp-tfweb on the host>
+login=$(mktemp)
+python3 -c 'import json, sys; print(json.dumps({"username": "TFWeb", "password": open(sys.argv[1]).read().strip()}))' \
+  ~/.config/amp-tfweb > "$login"
+sudo mkdir -p -m 700 /etc/tfmc
+sudo install -m 600 -o root -g root "$login" /etc/tfmc/server-control-amp-login
+rm "$login"
+sudo systemctl restart tfmc-server-control.service
 ```
 
-The site sends the login with every request except status checks. The helper keeps
-it in memory only, never in its state files, and per server: a request's login only
-counts for the server that request is for, which its socket already allows, so the Dev
-site's login can never be used for Main. An accepted restart keeps the login it
-started with until it finishes. A changed password takes effect with the next request.
-Without a login, console commands go through the sudo wrapper and no backup is taken.
-After the helper restarts it has no login until the site's next request.
+Run this as `ryan`, whose `~/.config/amp-tfweb` holds the `TFWeb` password,
+with no active restart. Rotate the password the same way. The helper reads the
+file only at start, so restart the service after every change. It never writes
+the login to its state files. The websites send no AMP login and need no
+`SERVER_CONTROL_AMP_*` settings in `backend/.env`.
 
-Add the two settings only after the helper running on the host understands them:
-older helpers refuse requests that carry a login.
+The file holds a JSON object with exactly `username` and `password`. The helper
+refuses to start if the file holds anything else. Without the file, the unit
+passes an empty credential instead: the helper starts and answers status requests, but every plan, restart, cancellation and
+reopen fails with `amp_not_configured`; the panel says the helper has no AMP
+login. It never falls back to another way of reaching the console.
 
 The service runs with root-owned code, private state and a filesystem
 namespace exposing the two plugin folders, read-only logs and read-only backup
@@ -351,10 +333,9 @@ It updates only the four modules under
 service account. The commit must be on the ProvinceSystem `main` branch with a
 successful push Build run. The updater compiles the modules as root but never
 imports or runs them as root. It refuses a commit that changes the service
-unit, the console wrapper or the updater itself, or whose installer differs
-from the installed commit's; those need the administrator installer. It also
-refuses while a restart is running; a Main feature review waiting for staff
-does not block it.
+unit or the updater itself; the administrator installs those as described in
+[Host connection setup](#host-connection-setup). It also refuses while a
+restart is running; a Main feature review waiting for staff does not block it.
 
 When deploying a website that sends the fresh-check baseline, update the
 helper to the same merged, Build-passing commit as part of the rollout. The
