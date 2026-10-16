@@ -63,7 +63,8 @@ On a writable database, switch a query tab from **Read** to **Edit**. The studio
 shows the statement and asks before running it. Edits run in one transaction with
 foreign keys on (SQLite) and the same time limits, and the result shows the rows
 changed. The audit log table `admin_audit` cannot be changed, dropped or have its
-triggers or indexes changed from the studio. Triggers cannot be created on the site database at
+triggers or indexes changed from the studio, and `sqlite_sequence` (which holds its
+ID counter) cannot be written. Triggers cannot be created on the site database at
 all, because a stored trigger would later run outside the studio's checks, and
 `PRAGMA writable_schema` and other setting changes are refused.
 
