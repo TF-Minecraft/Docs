@@ -142,4 +142,4 @@ python3 benchmarks/coreprotect_reader.py contend /tmp/main-synth.db --readers 1
 Acceptance: `hold` p99 ≤ 100 ms and max ≤ 500 ms; `contend` with no writer
 failures and writer transaction p99/max up by no more than 100/500 ms.
 
-Do not time live reads through `~/work/amp-readonly`: this FUSE mount does not pass file locks through, so SQLite can report a hot journal and fail with `attempt to write a readonly database`. Use the backend container's direct read-only bind mount. Record timings and source revisions in the deployment PR or external test lab.
+Time live reads against the real file, inside the backend container or with `sudo sqlite3 -readonly` on the host. A FUSE view such as bindfs does not pass file locks through, so SQLite can report a hot journal and fail with `attempt to write a readonly database`. Record timings and source revisions in the deployment PR or external test lab.
