@@ -107,6 +107,10 @@ sudo -u tfmc site-deploy deploy dev <full sha>
 The `production` and `dev` environments only accept deployments from `main`, so workflows on other branches cannot
 read `DEPLOY_SSH_KEY`. Each psdeploy key runs only its own forced command, so the preview key cannot deploy a site.
 
+To rotate the deploy key, generate an ed25519 key, replace its line in `/home/psdeploy/.ssh/authorized_keys` (root-owned)
+with `restrict,command="/usr/local/sbin/site-deploy-ssh" ssh-ed25519 … github-site-deploy`, and store the private half as
+`DEPLOY_SSH_KEY` in both the `production` and `dev` environments.
+
 `psdeploy`, `ps-preview`, `ps-preview-ssh`, `site-deploy`, `site-deploy-ssh`, the router and the reap timer are root-owned
 on the host. sudoers lets `psdeploy` run `ps-preview` and `site-deploy` as `tfmc`, and `tfmc` run
 `tfmc-patchnotes-update` as root. After changing either deploy script, install it once merged:
