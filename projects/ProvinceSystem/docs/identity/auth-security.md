@@ -249,7 +249,8 @@ elsewhere: the Discord session cookie, a website role with the capability, and t
 site `Origin` on writes. It returns **401** when signed out and **403** without the
 capability. Used by `POST /skins/codes/inspect` (`inspect_codes`) and the precedent
 routes when no `X-Staff-Key` is sent (`use_precedent`), and the diagnostic report
-routes (`view_diagnostics`, see [ops/diagnostic.md](../ops/diagnostic.md)).
+routes (`view_diagnostics`, see [ops/diagnostic.md](../ops/diagnostic.md)), and the
+database studio (`use_database`, root only, see [ops/database-studio.md](../ops/database-studio.md)).
 
 ### UI dev bypass (non-production only)
 
