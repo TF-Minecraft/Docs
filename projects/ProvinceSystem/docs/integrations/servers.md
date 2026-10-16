@@ -212,17 +212,66 @@ only through the AMP API and the plugin, log and backup folders the unit
 exposes. The service starts at boot, independently of user login sessions.
 
 The administrator installs the service from a reviewed commit on ProvinceSystem
-`main`. This needs Python 3.10+ and systemd 249 or later, the
-`tfmc-server-control` account, the `tfmc-control` group, read access for the
-account to the Main and Dev plugin jars, Maintenance configuration and logs,
-and the [AMP login](#amp-login). From a checkout of that commit:
+`main`. This needs Python 3.10+, systemd 249 or later and the ACL tools
+(`setfacl`), then the account and file access below, the
+[AMP login](#amp-login), and finally the unit and modules.
+
+### Account and file access
+
+Create the website backends' socket group and the locked service account:
+
+```sh
+sudo groupadd --system tfmc-control
+sudo useradd --system --user-group --home-dir /var/lib/tfmc-server-control \
+  --no-create-home --shell /usr/sbin/nologin tfmc-server-control
+sudo passwd -l tfmc-server-control
+```
+
+The account needs traversal of the instance paths, write access to each
+`plugins` folder to replace jars with new files, read access to Maintenance's
+configuration and the logs, and the names and times, but not the contents, of
+AMP's backup archives:
+
+```sh
+account=tfmc-server-control
+instances=/home/amp/.ampdata/instances
+sudo setfacl -m "u:$account:--x" /home/amp /home/amp/.ampdata "$instances"
+for instance in TFMCMain01 TFMCDev01; do
+  root=$instances/$instance
+  plugins=$root/Minecraft/plugins
+  logs=$root/Minecraft/logs
+  sudo setfacl -m "u:$account:--x" "$root" "$root/Minecraft"
+  sudo setfacl -m "u:$account:rwx,d:u:$account:r--" "$plugins"
+  sudo find "$plugins" -maxdepth 1 -type f -name '*.jar' | while read -r jar; do
+    sudo runuser -u "$account" -- test -r "$jar" || sudo setfacl -m "u:$account:r--" "$jar"
+  done
+  sudo setfacl -m "u:$account:r-x,d:u:$account:r--" "$plugins/Maintenance"
+  sudo setfacl -m "u:$account:r--" "$plugins/Maintenance/config.yml"
+  sudo setfacl -R -m "u:$account:r-X" "$logs"
+  sudo setfacl -m "d:u:$account:r-x" "$logs"
+  if sudo test -d "$root/Backups"; then
+    sudo setfacl -m "u:$account:r-x,d:u:$account:---" "$root/Backups"
+    sudo find "$root/Backups" -mindepth 1 -maxdepth 1 -exec setfacl -m "u:$account:---" {} +
+  fi
+done
+```
+
+The default entries give new jars, Maintenance files and logs the same
+access, and deny new backup archives. Only jars the account can't already read
+get an entry, because a new ACL changes a jar's change time, which the Dev
+verification check compares with the last startup. Check first that none of
+these paths is a symlink.
+
+### Installing the service
+
+From a checkout of the commit:
 
 ```sh
 sudo install -d -m 755 -o root -g root /usr/local/lib/tfmc-server-control/backend/src/servers
 sudo install -m 644 -o root -g root backend/src/servers/{__init__,control,host,inventory}.py \
   /usr/local/lib/tfmc-server-control/backend/src/servers/
-sudo install -m 644 -o root -g root scripts/tfmc-server-control.service /etc/systemd/system/
 sudo install -m 755 -o root -g root scripts/server-control-update.py /usr/local/sbin/tfmc-server-control-update
+sudo install -m 644 -o root -g root scripts/tfmc-server-control.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable --now tfmc-server-control.service
 sudo /usr/local/sbin/tfmc-server-control-update <full commit>
@@ -232,8 +281,11 @@ Skip the module copy when the helper is already installed: the updater
 replaces the modules itself and records the commit. When the modules change it
 restarts the service, which then runs under the new unit; when they don't,
 restart the service yourself. After a change to the unit or the updater,
-repeat the unit and updater copies, `daemon-reload`, and run the updater with
-the new commit. Run it with no active restart.
+install the updater, then install the unit, run `daemon-reload` and run the
+updater with the new commit back to back, with no active restart. The updater
+refuses a commit whose unit differs from the installed one, so the unit must
+go in first, and a service restart in between would run the old modules under
+the new unit.
 
 ### AMP login
 
@@ -257,11 +309,15 @@ file only at start, so restart the service after every change. It never writes
 the login to its state files. The websites send no AMP login and need no
 `SERVER_CONTROL_AMP_*` settings in `backend/.env`.
 
-The file holds a JSON object with exactly `username` and `password`. The helper
-refuses to start if the file holds anything else. Without the file, the unit
-passes an empty credential instead: the helper starts and answers status requests, but every plan, restart, cancellation and
-reopen fails with `amp_not_configured`; the panel says the helper has no AMP
-login. It never falls back to another way of reaching the console.
+The file holds a JSON object with exactly `username` and `password`. A missing
+file makes the unit pass an empty credential instead, and an empty credential
+means no login: the helper starts and answers status requests, but any step
+that sends console input or takes a backup fails with `amp_not_configured`,
+and the panel says the helper has no AMP login. That covers plans, restarts,
+and cancelling a countdown or reopening a server. Marking a failure handled, and
+repeating a cancel or reopen that already finished, still work. Any other
+content, such as invalid JSON or extra keys, stops the helper at start. It
+never falls back to another way of reaching the console.
 
 The service runs with root-owned code, private state and a filesystem
 namespace exposing the two plugin folders, read-only logs and read-only backup
@@ -299,7 +355,7 @@ Mount the directory, not the individual socket. Both sockets have mode
 `0660`, owned by `tfmc-server-control` with group `tfmc-control` (gid 996):
 the unit adds the helper to that group and sets
 `SERVER_CONTROL_SOCKET_GROUP=tfmc-control`. Create the group before installing the
-unit (`groupadd --system tfmc-control`); the helper exits at start if it is missing. The website backends run as
+unit (see [Account and file access](#account-and-file-access)); the helper exits at start if it is missing. The website backends run as
 `tfmc` and get the group through `group_add` (see
 [Host Compose overrides](../../DEPLOY.md#host-compose-overrides)). Without
 `SERVER_CONTROL_SOCKET_GROUP` the sockets are `0600`. A read-only
