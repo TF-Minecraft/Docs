@@ -24,10 +24,17 @@ the browser's local storage per database.
 
 ## Reading
 
+Every query is one statement. Before connecting, the studio refuses transaction and
+session control (`BEGIN`, `COMMIT`, `ROLLBACK`, `SAVEPOINT`, `SET`, `RESET`, `DISCARD`,
+…), `VACUUM`, `ATTACH`, `DETACH` and `COPY`; semicolons inside strings, quoted names,
+dollar quotes and comments are ignored when counting statements.
+
 Reads run on connections that cannot write: SQLite opened with `mode=ro` and
-`PRAGMA query_only`, Postgres in a read-only transaction. Each statement returns at
-most 1,000 rows and stops after 10 seconds on the site and Postgres databases.
-SQLite runs one statement per query.
+`PRAGMA query_only`, Postgres in a read-only transaction through a server-side cursor,
+so a Postgres read must be a query (`SELECT`, `WITH`, `VALUES`, `TABLE`) and its rows
+arrive as they are fetched. Each statement returns at most 1,000 rows and stops after
+10 seconds on the site and Postgres databases. SQLite reads may call schema pragmas
+such as `table_info`; pragmas that change settings are refused.
 
 CoreProtect reads go through the same guarded reader as the CoreProtect pages
 ([coreprotect.md](../integrations/coreprotect.md)): one reader at a time and a
@@ -36,6 +43,11 @@ indexed columns (`user`, `time`, `wid`, `x`/`z`) and add a `LIMIT`.
 
 A table tab pages through `SELECT * FROM <table>` with an optional `WHERE` filter
 and sorting by any column; **Open as query** copies the statement into a query tab.
+One click on a table opens it in a reused preview tab (italic title); a double click,
+or paging, sorting or filtering in it, keeps the tab open.
+
+CSV exports prefix text that starts with `=`, `+`, `-`, `@`, a tab or a carriage
+return with `'`, so player-written text cannot run as a spreadsheet formula.
 
 Text values in columns whose names look secret (`token`, `secret`, `password`,
 `nonce`, `api_key`, such as `token_hash` and `refresh_token`) show as `••••••`.
@@ -48,7 +60,9 @@ On a writable database, switch a query tab from **Read** to **Edit**. The studio
 shows the statement and asks before running it. Edits run in one transaction with
 foreign keys on (SQLite) and the same time limits, and the result shows the rows
 changed. The audit log table `admin_audit` cannot be changed, dropped or have its
-triggers changed from the studio, and SQLite `ATTACH` is refused in both modes.
+triggers changed from the studio. Triggers cannot be created on the site database at
+all, because a stored trigger would later run outside the studio's checks, and
+`PRAGMA writable_schema` and other setting changes are refused.
 
 ## Audit
 
