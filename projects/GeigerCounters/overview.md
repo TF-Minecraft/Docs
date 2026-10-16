@@ -6,7 +6,7 @@
 ![Paper](https://img.shields.io/badge/Paper-1.21.10-blue)
 ![Maven](https://img.shields.io/badge/Build-Maven-red?logo=apachemaven&logoColor=white)
 
-Built for the [TFMC](https://www.patreon.com/c/TFMCRP) roleplay server, where each character hunts their own source near them.
+Built for the [TFMC](https://www.patreon.com/c/TFMCRP) roleplay server, where each character hunts their own source near them, or everyone hunts one shared source in global mode.
 
 ---
 
@@ -17,6 +17,7 @@ Hold a **Geiger Counter** item and the world starts talking back. Each character
 | | |
 |---|---|
 | **A source per character** | Each character hunts their own cache near them; RPCharacters supplies the character, and without it each account has one |
+| **Global mode** | One cache anywhere in the area, shared by every hunter; the first to open it takes the loot |
 | **Buried caches** | The cache is sealed in natural ground and shown as a chest to its hunter alone; they dig down and open it by hand |
 | **Signal bar** | A boss bar that fills with closeness and peaks when the player faces the source, so turning on the spot shows the way; close by it shows where to dig |
 | **Signal tracking** | Particle rings guide players toward their source — more rings and brighter colors mean closer |
@@ -38,7 +39,13 @@ A repeating task checks every online player in the source world. For each player
 5. Within 32 blocks the player's client is sent a chest at the cache block.
 6. Clicking the chest opens it: a tier is rolled by weight, a random item from that tier is put in an "Arcane Cache" chest window, and the counter is swapped for its dead version. Anything still in the window when it closes, or when the server stops, goes to the player. If another plugin refuses to open the window, the reward goes straight to the player. A player who dies with the window open has its contents put in the empty slots of their inventory, so they go into their RPCharacters grave or are kept under `keepInventory`, and in the death drops when there is no grave. Whatever has no free slot falls where they died. The character has no source until they next hold a live counter.
 
-Sources are stored in `plugins/geiger_counter/sources.yml`, keyed by character ID, so a restart keeps every hunt where it was. Sources from versions before buried caches lack the `buried` flag and are dropped on load, so their hunters get a buried cache on the next hold. A player in the character selection room has no character and gets no reading.
+Sources are stored in `plugins/geiger_counter/sources.yml`, keyed by character ID (the shared source by the all-zero ID), so a restart keeps every hunt where it was. Sources from versions before buried caches lack the `buried` flag and are dropped on load, so their hunters get a buried cache on the next hold. A player in the character selection room has no character and gets no reading.
+
+### Hunt modes
+
+`source.mode` decides who hunts which source. In `player` mode, the default, each character hunts their own cache as described above. In `global` mode there is one shared cache, buried at a random spot anywhere inside `source.top-left` and `source.bottom-right` that passes the same filters, and every player holding a live counter while playing a character reads it. It is never re-rolled by distance, so it can be thousands of blocks away. Every hunter within 32 blocks sees the chest. The first to open it takes the loot, and the next live counter held anywhere buries a new shared cache. A refused dig in its column buries it again elsewhere in the area. Collection limits stay per account in both modes.
+
+`/geiger mode [player|global]` shows the mode or switches it, saving `source.mode` and reloading. Each mode keeps its own sources, so switching back to `player` resumes every character's old hunt.
 
 ### Buried caches
 
@@ -74,8 +81,10 @@ Players with `geiger.limit.bypass` are never limited.
 
 | Command | Description |
 |---|---|
-| `/geiger locate [player]` | Print the cache block of the player's current character, or your own |
+| `/geiger locate [player]` | Print the cache block of the player's current character, or your own; in global mode, the shared cache (works from the console) |
 | `/geiger move <player> [x z]` | Clear the source so a new one is buried near them on their next hold, or bury it under specific coordinates (coords tab-complete to your position and the area corners) |
+| `/geiger move [x z]` | Global mode: clear the shared cache, or bury it under specific coordinates |
+| `/geiger mode [player\|global]` | Show the hunt mode, or switch and save it |
 | `/geiger limits <player>` | Show the player's remaining drops and time until the next one |
 | `/geiger resetlimits <player>` | Clear the player's drop history |
 | `/geiger droplist [name]` | Show available lists, or switch and save the active list |
@@ -83,7 +92,8 @@ Players with `geiger.limit.bypass` are never limited.
 
 `limits`/`resetlimits` and their singular aliases complete known previously played
 offline names as well as online players. The name snapshot loads at enable and
-updates on joins. `locate` and `move` complete online players only. Suggestions
+updates on joins. `locate` and `move` complete online players only, and in global mode
+`move` completes coordinates instead. Suggestions
 match the current prefix without regard to case.
 
 | Permission | Default | Grants |
@@ -223,9 +233,9 @@ classDiagram
 | **2 rings** | Within 300 blocks — close |
 | **1 ring** | Beyond 300 blocks — far |
 | **White** | Very close (0–200 blocks) |
-| **Purple → dark purple** | Far away (200–1000 blocks) |
+| **Purple → dark purple** | Far away (200–2500 blocks) |
 | **Fuller bar** | Closer, or facing more squarely towards the source |
-| **Fast clicking** | Rate rises from 0.5/sec at the edge of range to 18/sec at the source |
+| **Fast clicking** | Rate rises from 0.5/sec at 2,500 blocks to 18/sec at the source |
 | **"Dig close by"** | Within 12 blocks of the cache; the bar and clicks restart low and peak on the cache |
 
 ## Configuration
@@ -233,6 +243,7 @@ classDiagram
 ```yaml
 # Source location settings
 source:
+  mode: player            # player = a cache per character, global = one shared cache
   world: world            # World where sources spawn; counters only read here
   top-left:               # Sources stay inside this area, corner 1
     x: -1000.0
@@ -240,9 +251,9 @@ source:
   bottom-right:           # Corner 2
     x: 1000.0
     z: 1000.0
-  min-distance: 300.0     # New caches sit this far from the character...
+  min-distance: 300.0     # Player mode: new caches sit this far from the character...
   max-distance: 600.0     # ...up to this far
-  reroll-distance: 1000.0 # Further than this, the cache is buried again near them
+  reroll-distance: 1000.0 # Player mode: further than this, the cache is buried again near them
   burial:                 # Blocks of ground over the cache
     min-depth: 3
     max-depth: 6
@@ -258,7 +269,7 @@ source:
 
 # Detection settings
 detection:
-  max-detection-distance: 1000.0      # Maximum detection range
+  max-detection-distance: 2500.0      # Maximum detection range
   pinpoint-range: 12.0                # Close reading within this many blocks (3D)
   close-range-threshold: 200.0        # Distance threshold for color shift
   ring-thresholds:
@@ -347,7 +358,7 @@ When a cache is opened, `found-source` and `dead-geiger` are sent as one line wi
 
 Console log lines stay hardcoded in English, so logs and bug reports remain readable whatever this file is translated to.
 
-Upgrading? Messages are migrated automatically — out of `config.yml` and into the `player:`/`admin:` split, customisations preserved. `config-version` in `config.yml` tracks which migrations have run. Version 6 adds the source distances and the `bar` section, and lowers `detection.max-detection-distance` to `source.reroll-distance` if it was higher. Existing messages are never overwritten, so on any upgraded server `player.found-source` (if it says the source has moved) and `admin.usage`, `source-located`, `move-usage`, `move-invalid-coords` and `move-success` need updating by hand to the new wording and the `%player%` placeholder. Version 7 adds `source.burial` and `detection.pinpoint-range`, moves `source.min-distance` and `max-distance` from 150 and 500 to 300 and 600 where they were still at those defaults, and removes `detection.collection-distance`. On an upgraded server `admin.source-located` and `admin.move-success` need `%y%` added by hand.
+Upgrading? Messages are migrated automatically — out of `config.yml` and into the `player:`/`admin:` split, customisations preserved. `config-version` in `config.yml` tracks which migrations have run. Version 6 adds the source distances and the `bar` section. Existing messages are never overwritten, so on any upgraded server `player.found-source` (if it says the source has moved) and `admin.usage`, `source-located`, `move-usage`, `move-invalid-coords` and `move-success` need updating by hand to the new wording and the `%player%` placeholder. Version 7 adds `source.burial` and `detection.pinpoint-range`, moves `source.min-distance` and `max-distance` from 150 and 500 to 300 and 600 where they were still at those defaults, and removes `detection.collection-distance`. On an upgraded server `admin.source-located` and `admin.move-success` need `%y%` added by hand. Version 8 adds `source.mode` (as `player`) and raises `detection.max-detection-distance` from 1000 to 2500 where it was still 1000; the version 6 cap at `reroll-distance` no longer runs. The new `admin.mode-*` and `admin.shared-*` messages are added automatically, but `admin.usage` needs `mode [player|global]` added by hand.
 
 **Item path formats**
 
