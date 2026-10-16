@@ -17,15 +17,16 @@ Pushing a branch builds its backend and frontend images on GitHub, in parallel, 
 `ghcr.io/tf-minecraft/provincesystem-preview-{backend,frontend}:<slug>` (public packages). Pushes to `main` build
 the same images without deploying them and keep a registry build cache (`:buildcache`) that every branch starts
 from, so a new branch reaches its preview in about three minutes. The workflow then runs
-`up <slug> <sha>` over SSH as `psdeploy`, whose key is pinned to the host administrator's `ps-preview-ssh`.
-`/usr/local/sbin/ps-preview` (runs as `tfmc`) starts compose project `pv-<slug>` on the `ps-previews` network;
+`up <slug> <sha>` over SSH as `psdeploy`, whose key is pinned to `ps-preview-ssh`.
+`/usr/local/sbin/ps-preview` (runs as `tfmc`) starts compose project `pv-<slug>` on the `ps-previews` network, with
+both containers running as `tfmc` under `init`;
 the `ps-preview-router` Caddy container (`127.0.0.1:8090`, behind the `*.tfminecraft.net` tunnel rule) routes
 `<slug>.tfminecraft.net` to it, with `/api/` going to the preview's backend.
 
 - **Name:** [`preview_slug.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/.github/scripts/preview_slug.py)
   lowercases the branch and turns anything other than letters and digits into `-` (`codex/new-map` becomes
   `codex-new-map`). Names longer than 40 characters are cut and given a 6-character hash. Hostnames already in use
-  (`www`, `dev`, `api`, `mail`, `map`, `admin`, `staff`, `play`, `mc`, `status`, `preview`, `t3`) fail the run.
+  (`www`, `dev`, `api`, `mail`, `map`, `admin`, `staff`, `play`, `mc`, `status`, `preview`, `t3`, `portainer`) fail the run.
   `dependabot/**` branches are skipped.
 - **Data:** the first `up` copies the dev backend's data, input, defines and output folders, with sign-in sessions,
   OAuth states and link codes deleted. A redeploy of the same branch keeps its data.
@@ -114,7 +115,8 @@ services:
 `backend/.env` reaches the container only through Compose: www's base file loads it with `env_file`, and Dev's
 override does the same because its `environment: !override` replaces the base list. `.dockerignore` keeps `.env`
 files out of images, so a local `docker-compose.staging.yml` run gets only the settings it lists. Files the plugins
-sync to the site go to `backend/src/data/plugin-assets/`, inside the data mount.
+sync to the site go to `backend/src/data/plugin-assets/`, inside the data mount. Both compose files run the backend and
+frontend with `init: true`, which reaps the renderer's Chromium processes.
 
 ## Keys and secrets
 
@@ -131,11 +133,23 @@ To rotate the deploy key, generate an ed25519 key, replace its line in `/home/ps
 with `restrict,command="/usr/local/sbin/site-deploy-ssh" ssh-ed25519 … github-site-deploy`, and store the private half as
 `DEPLOY_SSH_KEY` in both the `production` and `dev` environments.
 
-`psdeploy`, `ps-preview`, `ps-preview-ssh`, `site-deploy`, `site-deploy-ssh`, the router and the reap timer are root-owned
-on the host. sudoers lets `psdeploy` run `ps-preview` and `site-deploy` as `tfmc`, and `tfmc` run
-`tfmc-patchnotes-update` as root. After changing either deploy script, install it once merged:
+The host scripts are root-owned copies of files in
+[`scripts/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/scripts). sudoers lets `psdeploy` run `ps-preview`
+and `site-deploy` as `tfmc`, and `tfmc` run `tfmc-patchnotes-update` as root.
+
+| Host path | Source |
+| --- | --- |
+| `/usr/local/sbin/site-deploy`, `site-deploy-ssh` | `site-deploy.sh`, `site-deploy-ssh.sh` |
+| `/usr/local/sbin/ps-preview`, `ps-preview-ssh` | `ps-preview.sh`, `ps-preview-ssh.sh` |
+| `/usr/local/sbin/ps-compose` | `ps-compose.sh` |
+| `/usr/local/sbin/ps-image-prune` | `ps-image-prune.sh` |
+| `/etc/systemd/system/ps-preview-reap.{service,timer}`, `ps-image-prune.{service,timer}` | same names |
+| `/home/tfmc/ps-preview-router/Caddyfile` (router container `ps-preview-router`, `caddy:2`) | `ps-preview-router.Caddyfile` |
+
+After changing one, install it once merged, for example:
 
 ```bash
-sudo install -m 755 scripts/site-deploy.sh /usr/local/sbin/site-deploy
-sudo install -m 755 scripts/site-deploy-ssh.sh /usr/local/sbin/site-deploy-ssh
+sudo install -m 755 scripts/ps-preview.sh /usr/local/sbin/ps-preview
+sudo install -m 644 scripts/ps-preview-reap.timer /etc/systemd/system/ && sudo systemctl daemon-reload
+sudo install -m 640 -o tfmc -g tfmc scripts/ps-preview-router.Caddyfile /home/tfmc/ps-preview-router/Caddyfile && sudo docker restart ps-preview-router
 ```
