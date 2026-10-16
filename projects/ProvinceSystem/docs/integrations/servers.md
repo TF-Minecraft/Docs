@@ -118,9 +118,9 @@ failed restart before reopening. Each server's card holds its buttons and shows
 the restart's progress; the review opens as a dialog. Dev starts immediately
 after confirmation.
 Main's unchecked **Emergency: skip the countdown** option skips the countdown
-for emergencies, recording the flag, actor and reason. It still requires the
-backup reference, saves, release/file verification and startup checks. Instant
-restarts begin installation immediately and cannot be cancelled.
+for emergencies, recording the flag, actor and reason. It skips the fresh AMP
+backup but still saves and runs release/file verification and startup checks.
+Instant restarts begin installation immediately and cannot be cancelled.
 The www website can control Main and Dev; the Dev
 website can control Dev only. Every action requires the site's own origin,
 a current signed-in session and a reason, and is recorded in the staff audit.
@@ -160,11 +160,17 @@ Related migrations must be deployed as a reviewed set with a recovery plan.
 Use the manual deployment procedure when the proposed set needs offline work.
 The bulk button does not publish releases or replace unreleased fixes.
 
-Before a Main countdown, staff must record the name or location of the
-consistent data and migration backups they prepared. The review shows the
-latest AMP ZIP backup time when available. That timestamp and the staff's
-reference are not automatic proof that all affected data is backed up. The
-helper backs up displaced jars, not worlds or databases.
+With an [AMP login](#amp-login), the helper asks AMP for a backup of Main as
+the countdown starts and records it on the job as `backup`. When the countdown
+ends it waits up to twenty minutes for AMP to finish, broadcasting
+`Finishing a backup before the restart.` while it waits. A failed or overdue
+backup calls the restart off before maintenance; nothing is installed. Dev
+restarts and Main's emergency override take no fresh backup. The review says
+which applies and shows the latest AMP ZIP backup time. AMP backs up the
+instance folder, not external databases, so prepare those and any migration
+recovery separately. Each backup takes one of Main's nine AMP backup slots,
+so the next scheduled backup deletes the oldest. The helper also keeps the
+jars it replaces.
 
 After Main's countdown, or immediately for Dev and Main's emergency override,
 the helper enables maintenance and confirms it, sends `save-all
@@ -251,6 +257,29 @@ files, code and ACLs and restart the previous helper. Inspect the printed
 backup directory and journal if any rollback step needs attention. It retains
 all state copies and the locked account for inspection. Do not delete the
 cutover backup until the migrated controls have been checked.
+
+### AMP login
+
+The helper uses the AMP API as the `TFWeb` service account when the website sends
+that login with its requests. It sends console commands through the API and takes
+Main's countdown backup. Set both in the website's `.env` (www; the Dev site may set
+them too) and restart its backend:
+
+```sh
+SERVER_CONTROL_AMP_USERNAME=TFWeb
+SERVER_CONTROL_AMP_PASSWORD=<the password in ryan's ~/.config/amp-tfweb on the host>
+```
+
+The site sends the login with every request except status checks. The helper keeps
+it in memory only, never in its state files, and per server: a request's login only
+counts for the server that request is for, which its socket already allows, so the Dev
+site's login can never be used for Main. An accepted restart keeps the login it
+started with until it finishes. A changed password takes effect with the next request.
+Without a login, console commands go through the sudo wrapper and no backup is taken.
+After the helper restarts it has no login until the site's next request.
+
+Add the two settings only after the helper running on the host understands them:
+older helpers refuse requests that carry a login.
 
 The service runs with root-owned code, private state and a filesystem
 namespace exposing the two plugin folders, read-only logs and read-only backup
