@@ -96,6 +96,26 @@ sudo -u tfmc site-deploy deploy www <full sha>
 sudo -u tfmc site-deploy deploy dev <full sha>
 ```
 
+## Host Compose overrides
+
+Each site's `docker-compose.override.yml` (`/home/tfmc/ProvinceSystem` and `/home/tfmc/tfmc-staging`, mode 640, owned
+by `tfmc`) holds the host's ports, mounts and environment. The backend runs as `tfmc`, not root, so the files it
+writes stay `tfmc`'s:
+
+```yaml
+services:
+  backend:
+    user: "1001:1001"      # tfmc
+    group_add:
+      - "1000"             # amp: some plugin jars are amp's and mode 640
+      - "996"              # tfmc-control: the server control socket
+```
+
+`backend/.env` reaches the container only through Compose: www's base file loads it with `env_file`, and Dev's
+override does the same because its `environment: !override` replaces the base list. `.dockerignore` keeps `.env`
+files out of images, so a local `docker-compose.staging.yml` run gets only the settings it lists. Files the plugins
+sync to the site go to `backend/src/data/plugin-assets/`, inside the data mount.
+
 ## Keys and secrets
 
 | Secret | Where | Used by |

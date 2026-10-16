@@ -314,9 +314,13 @@ services:
 ```
 
 Mount the directory, not the individual socket. Both sockets have mode
-`0600`, owned by `tfmc-server-control`; the current backend runs as container
-root and can connect. If backend user mapping changes, grant that mapped user
-explicit access rather than opening the sockets to everyone. A read-only
+`0660`, owned by `tfmc-server-control` with group `tfmc-control` (gid 996):
+the unit adds the helper to that group and sets
+`SERVER_CONTROL_SOCKET_GROUP=tfmc-control`. Create the group before installing the
+unit (`groupadd --system tfmc-control`); the helper exits at start if it is missing. The website backends run as
+`tfmc` and get the group through `group_add` (see
+[Host Compose overrides](../../DEPLOY.md#host-compose-overrides)). Without
+`SERVER_CONTROL_SOCKET_GROUP` the sockets are `0600`. A read-only
 mount prevents replacing the socket; it still allows connections. Never mount
 these sockets into branch previews or expose them through a public proxy.
 
