@@ -50,6 +50,38 @@ character its own saved class level. A class capped below the saved level, such
 as a base class, shows its cap without lowering the level available to that
 character's other classes. Legacy accounts start from MMOCore's saved level.
 
+## Friendly duels
+
+Look at another player and run `/duel`, or use `/duel <player>`. They accept or
+decline from chat. `/duel cancel` withdraws a challenge and `/duel yield` gives up
+an accepted duel. Both players need an active character and must be in survival
+or adventure mode; duels follow WorldGuard's PvP flag.
+
+A blue and gold banner marks the challenge and stays through the fight. It is a
+temporary item display: players can walk and hit through it, it cannot be picked
+up, and it changes no blocks. Declining, withdrawing, replacing or expiring a
+challenge removes its banner, as does returning to character selection. Every
+duel ending removes it too, including disconnects and shutdown; it is never saved
+with the world.
+
+Both players hear the countdown and start cue. A win shows **VICTORY** to the
+winner with a fanfare and **DEFEAT** to the loser with a quieter cue. Yielding
+shows **DUEL YIELDED** to the player giving up. Draws show **DUEL ENDED** with the
+reason, and outside combat shows **DUEL INTERRUPTED**. Chat keeps the result and
+the names captured when the duel began.
+
+An opponent's lethal hit ends the duel without a death, knockout, grave or
+strike. Each player gets back the health their opponent took; hunger, mana,
+stamina and effects return to their starting state. Existing damage and debuffs
+stay. Combat with a third player or mob interrupts the duel and returns only the
+duel's own health damage. Moving too far apart, logging out or starting a real
+fight ends it as a draw.
+
+Defaults in `duel.yml` are a 16-block challenge range, 30-second invitation,
+three-second countdown, 32-block separation limit, ten-minute maximum and
+24-block result announcement radius. The same file contains chat and title text;
+existing configurations use bundled defaults for missing message keys.
+
 ## Nonlethal knockouts
 
 GSit holds downed players in a crawl pose for the knockout duration, alongside freeze and blindness. The pose uses GSit's API, bypasses command restrictions, respects other plugins' crawl vetoes, and releases only knockout-created crawls on recovery. GSit is optional for the rest of RPCharacters; without it, knockouts retain freeze and blindness only.
@@ -77,6 +109,7 @@ Putting armour on takes a while (by default 1 second for a helmet, 20 for a ches
 - [Character commands](https://github.com/TF-Minecraft/RPCharacters/blob/main/src/main/java/net/tfminecraft/rpcharacters/command/CharCommand.java)
 - [Class selection and paid changes](https://github.com/TF-Minecraft/RPCharacters/blob/main/src/main/resources/config.yml) and [creation stages](https://github.com/TF-Minecraft/RPCharacters/blob/main/src/main/resources/stages.yml)
 - [PvP and armour configuration](https://github.com/TF-Minecraft/RPCharacters/blob/main/src/main/resources/pvp.yml)
+- [Duel configuration](https://github.com/TF-Minecraft/RPCharacters/blob/main/src/main/resources/duel.yml)
 - [Focus configuration](https://github.com/TF-Minecraft/RPCharacters/blob/main/src/main/resources/focus.yml)
 - [Codex population service](https://github.com/TF-Minecraft/RPCharacters/blob/main/src/main/java/net/tfminecraft/rpcharacters/placeholder/CodexPopulationService.java)
 
