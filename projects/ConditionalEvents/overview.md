@@ -20,6 +20,24 @@ An event that keeps per-character data runs only while a character is in play, s
 
 Keep anything a character learns or earns per character, such as Codex unlocks, since [Codex](../Codex/overview.md) keeps a journal per character. Use `data_scope: account` for supporter perks and other account rewards. The supporter EXP booster is `/tfmc booster` in TFMCCore and is per account.
 
+## Shared one-time events
+
+A per-character `one_time` event with `share_one_time: true` counts as done for every character of an account once one of them has done it. About two seconds after a character's session starts, it gets each such event another of the account's characters (alive or dead) has done and runs the event's `shared` action group instead of its usual actions, for example to carry the event's Player EXP:
+
+```yaml
+  sf_title_enter_1:
+    type: custom
+    one_time: true
+    share_one_time: true
+    actions:
+      default:
+      - "console_command: mmocore admin exp give %player% main 40"
+      shared:
+      - "console_command: rpcharacter admin carryexp %player% 40"
+```
+
+The `shared` group has no event variables such as `%title_name%`. An event without a `shared` group is only marked done. If the character leaves before the group finishes, the mark is undone and shared again at its next session. The server log records `Shared <n> one-time events of account <account> with its character <character>`. Account-scoped events ignore the option; their data is the account's already.
+
 ## Stored data
 
 Each account's file, `plugins/ConditionalEvents/players/<account>.yml`, keeps account events under `events` and per-character events under `characters.<character>.events`. As a one-off, on an account's first character session after the change, its old account-level entries for events that are now per character move to its most-played living character (else its most-played character), the same character [Codex](../Codex/overview.md) copies the old journal to, pinned in `plugins/TLibs/legacy-recipients/<account>.txt`. An event done once stays done, and the later cooldown start wins. The file records `seeded-to: <character>` so this happens once; if RPCharacters cannot list the account's characters yet, it waits for a later session. Every other character starts these events fresh. Account-scoped events keep their data on the account.
@@ -30,4 +48,4 @@ Player data stays in memory from an account's first login until the server resta
 
 ## Events on Main
 
-Main has 90 events that keep data. The 87 Codex unlocks in `codex.yml` and `codex_research.yml` and the meditation cooldown in `r_lore.yml` are per character by default, so a second character can earn an achievement, duchy title or research entry its account already has. `act1_exp_catchup` and `act1_exp_catchup_retry` set `data_scope: account`, so the one-off catch-up from before characters had their own progress does not arm again for every character.
+Main has 90 events that keep data. The 87 Codex unlocks in `codex.yml` and `codex_research.yml` and the meditation cooldown in `r_lore.yml` are per character by default, so a second character can earn an achievement, duchy title or research entry its account already has. `act1_exp_catchup` and `act1_exp_catchup_retry` set `data_scope: account`, so the one-off catch-up from before characters had their own progress does not arm again for every character. On Dev the 18 duchy title events (`sf_title_enter_*`) also set `share_one_time: true` with a `shared` group that carries their EXP, so a duchy is discovered once per account; Main does not have this yet.

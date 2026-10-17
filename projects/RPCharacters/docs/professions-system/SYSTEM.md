@@ -1,19 +1,19 @@
 # Professions
 
-RPCharacters provides account-wide lifetime profession points and per-character upgrade loadouts. LuckPerms profession nodes follow the active character.
+RPCharacters provides account-wide profession levels and lifetime points with per-character upgrade loadouts. LuckPerms profession nodes follow the active character.
 
 ## Data model
 
 | Data | Owner | Storage |
 |------|-------|---------|
-| MMOCore profession XP/levels | Account (MMOCore) | MMOCore player data |
+| MMOCore profession XP/levels | Account: each character's progress file, raised on activation to the best of the account's characters | `data/progress/<account>/characters/<char-id>.yml` (`mmo.professions`) |
 | Trait profession XP % | Per character | `RPCharacter` / `AttributeData` |
-| Lifetime points earned | Account | `PlayerData.accountProfessionPoints` — `Map<String, Integer>` |
+| Lifetime points earned | Account: raised on activation to the most any character holds | `pools.profession-points` in the progress file (`PlayerData.accountProfessionPoints` while bodies are off) |
 | Owned upgrades | Per character | `RPCharacter.professionUpgrades` — ordered upgrade id list |
 | Free points | Derived | `lifetime[prof] − characterSpentOnProf` |
 | LuckPerms `professions.*` | Active character | apply on `activate()`, strip on `deactivate()` |
 
-**Example:** Account has 10 lifetime agriculturist points. Character A spent 7 on perks → 3 free. Character B (new) has 10 free and zero perks. Each character builds independently up to the account lifetime cap.
+**Example:** Character A reached Herborist 11, so the account has 10 lifetime herborist points. A spent 7 on perks → 3 free. Character B (new, or after A's death) plays Herborist 11 with 10 free points and zero perks. Each character builds its upgrades independently up to the account lifetime cap; levels gained on any character reach the others when they are next played.
 
 **Remove upgrade (no refund):** drop upgrade id from character list, strip LP nodes — lifetime unchanged, free increases.
 
