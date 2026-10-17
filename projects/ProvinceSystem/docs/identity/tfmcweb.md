@@ -75,7 +75,7 @@ flowchart LR
 
 ## Identity
 
-Link tables live under skins SQLite (`discord_links`, `discord_link_codes`) and routes under `/skins/discord/…`.
+Link tables live in the site PostgreSQL database (`discord_links`, `discord_link_codes`) and routes under `/skins/discord/…`.
 
 | Route | Auth | Role |
 |-------|------|------|

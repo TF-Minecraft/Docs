@@ -13,9 +13,8 @@ Each site lists the databases it can reach:
 
 | Id | What | Access |
 |----|------|--------|
-| `site` | `province.db`: accounts, characters, wardrobes, chronicle and ledger indexes, the staff audit log | Read and edit |
+| `site` | The site's Postgres: accounts, characters, wardrobes, skins, chronicle and ledger indexes, Precedent, patch notes and the staff audit log | Read and edit ordinary data; audit and migration history are read only |
 | `coreprotect` | The CoreProtect SQLite file named by `COREPROTECT_DB` (Main on www, Dev on the Dev site) | Read only |
-| `postgres` | The site's Postgres in `DATABASE_URL` (Precedent and patch notes), `public` schema | Read and edit |
 
 The list shows each database's tables, size and how many audited queries it has had.
 Opening one shows its tables with columns and approximate row counts (`max(rowid)` on
@@ -36,8 +35,8 @@ Reads run on connections that cannot write: SQLite opened with `mode=ro` and
 (`DECLARE … CURSOR FOR`),
 so a Postgres read must be a query (`SELECT`, `WITH`, `VALUES`, `TABLE`) and its rows
 arrive as they are fetched. Each statement returns at most 1,000 rows and stops after
-10 seconds on the site and Postgres databases. SQLite reads may call schema pragmas
-such as `table_info`; pragmas that change settings are refused.
+10 seconds on the site database. CoreProtect schema reads may call SQLite
+pragmas such as `table_info`.
 
 CoreProtect reads go through the same guarded reader as the CoreProtect pages
 ([coreprotect.md](../integrations/coreprotect.md)): one reader at a time and a
@@ -52,21 +51,65 @@ or paging, sorting or filtering in it, keeps the tab open.
 CSV exports prefix text that starts with `=`, `+`, `-`, `@`, a tab or a carriage
 return with `'`, so player-written text cannot run as a spreadsheet formula.
 
-Text values in columns whose names look secret (`token`, `secret`, `password`,
+Text and JSONB values in columns whose names look secret (`token`, `secret`, `password`,
 `nonce`, `api_key`, such as `token_hash` and `refresh_token`) show as `••••••`.
 This keeps them off the screen; it is not access control. Integers beyond 2^53 are
-sent as text, and blobs as their size and first 32 bytes in hex.
+sent as text, blobs as their size and first 32 bytes in hex, timestamps in ISO
+format and JSON/JSONB values as the database's JSON text. JSON scalars keep their
+JSON representation, JSON null stays distinct from SQL NULL, and JSON numbers
+retain their precision.
 
 ## Editing
 
 On a writable database, switch a query tab from **Read** to **Edit**. The studio
 shows the statement and asks before running it. Edits run in one transaction with
-foreign keys on (SQLite) and the same time limits, and the result shows the rows
-changed. The audit log table `admin_audit` cannot be changed, dropped or have its
-triggers or indexes changed from the studio, and `sqlite_sequence` (which holds its
-ID counter) cannot be written. Triggers cannot be created on the site database at
-all, because a stored trigger would later run outside the studio's checks, and
-`PRAGMA writable_schema` and other setting changes are refused.
+foreign keys enforced and the same time limits, and the result shows the rows
+changed. SQL runs under a separate Postgres login that owns no persistent objects
+and belongs to no other roles. It may SELECT from public tables and INSERT,
+UPDATE and DELETE ordinary data. Views, `admin_audit`, `schema_migrations`
+and their inherited or partitioned descendants are read only. It cannot reset
+sequence counters, create persistent large objects, create triggers/functions, or
+create, alter, truncate or drop tables. These restrictions are database grants;
+they apply even if a statement bypasses the studio's text checks.
+
+### Studio login
+
+`DATABASE_STUDIO_URL` supplies the restricted login. It is separate from the
+application owner's `DATABASE_URL`; missing studio configuration gives a 503,
+with no fallback to the owner connection. Both logins must address the same
+site database.
+
+After migrations, perform the initial setup from `backend/` with a non-empty
+`DATABASE_STUDIO_PASSWORD` in the environment. For this setup, `DATABASE_URL`
+must use a database administrator that can change grants on the built-in
+large-object functions:
+
+```sh
+python -m src.database.studio_role --role province_studio --restrict-large-objects
+```
+
+The explicit flag revokes PUBLIC execution of the `pg_catalog` large-object
+constructors in this database, including `lo_import` overloads. Other logins
+that rely on those PUBLIC grants also lose that access. The setup preserves
+the database owner's access and existing direct grants; it does not remove
+large-object data. Each site and preview database needs this setup.
+
+Then configure `DATABASE_STUDIO_URL` with the restricted login. Use a distinct
+role per preview database. After migrations, refresh grants on new tables with
+the owner's `DATABASE_URL` and the same password:
+
+```sh
+python -m src.database.studio_role --role province_studio
+```
+
+Ordinary refresh changes no data or other logins' grants. It refuses an existing
+owner or privileged role, role memberships, and effective grants that would
+bypass the restrictions, including large-object constructor access. Direct
+table and sequence grants are reset; unsafe inherited or PUBLIC grants need
+administrator review.
+
+The studio authenticates as this login for every request. It does not use
+`SET ROLE` on the owner's connection, which SQL calling `set_config` could undo.
 
 ## Audit
 

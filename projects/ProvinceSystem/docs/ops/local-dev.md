@@ -21,12 +21,13 @@ Most day-to-day UI work is **website only**. Paper is not required to start map 
 | `backend/src/input/{main,dev}/` | Sample worlds (nation JSON, `map.png` Xaero plain export, `provinces.png`, …) |
 | `backend/src/defines/{main,dev}/` | Compiled / static defines |
 | `backend/src/output/` | **Generated** maps/regions/banners - gitignored, often empty until regen; `fullregen` also writes `maps/parchment_base.png` from `map.png` |
-| `docker-compose.yml` | Backend + frontend prod images; volumes for input/defines/output |
+| `docker-compose.yml` | Backend + frontend + PostgreSQL; database volume and input/defines/output mounts |
 
 The live Minecraft plugins are **not** required to view maps or develop the skins web/API. SimpleFactions refreshes live faction data; TFMCWeb mints codes and ArmourShop applies packs in integration environments.
 
 ## Prerequisites
 
+- PostgreSQL 17 (the Compose stack includes it), with a separate local/test database
 - Docker + Docker Compose  
 - Or: Python 3.12+ with `backend/requirements.txt`, and Node 22+ for frontend  
 - Env: **`NEXT_PUBLIC_API_URL`** must point at the API the browser will call (e.g. `http://localhost:8000`)
@@ -35,7 +36,9 @@ Note: Next bakes `NEXT_PUBLIC_*` at **build** time for the Docker frontend image
 
 ## Path A - Docker (closest to prod)
 
-From `ProvinceSystem/`:
+From `ProvinceSystem/`, configure root `.env` with `POSTGRES_PASSWORD` and
+`backend/.env` with the matching `DATABASE_URL` (`db` is the database hostname inside Compose).
+See [PostgreSQL configuration](postgresql.md#runtime-and-configuration).
 
 ```bash
 docker compose build
@@ -48,19 +51,34 @@ Then:
 2. Open `http://localhost:3000` (hub page).
 3. API health: `http://localhost:8000/ping`
 
-Useful reset:
+Rebuild while retaining database rows:
 
 ```bash
-docker compose down --volumes --remove-orphans
-docker compose build --no-cache
+docker compose down --remove-orphans
+docker compose build
 docker compose up -d --force-recreate
 ```
 
-Volumes keep host `input` / `defines` / `output` in sync with the container.
+Bind mounts keep host `input` / `defines` / `output` in sync with the container. The separate named PostgreSQL
+volume retains site records. Removing volumes deletes the local database; ordinary rebuilds should retain it.
 
 ## Path B - Backend local + frontend local (fast UI iteration)
 
 **Backend** (from `backend/`):
+
+Set `DATABASE_URL` to a reachable local PostgreSQL 17 database before running Uvicorn. For an isolated
+workstation database, this starts PostgreSQL on loopback with a named volume:
+
+```bash
+docker run -d --name ps-local-postgres -p 127.0.0.1:55432:5432 \
+  -e POSTGRES_PASSWORD=local-postgres -v ps-local-postgres:/var/lib/postgresql/data \
+  pgvector/pgvector:pg17
+export DATABASE_URL=postgresql://postgres:local-postgres@127.0.0.1:55432/postgres
+```
+
+The example password is for this local database. Keep hosted-site credentials separate. Startup applies
+native migrations and seeds; it refuses to serve without PostgreSQL. [Database tests and API smokes](postgresql.md#tests-and-api-smokes)
+use `TEST_DATABASE_URL` and create disposable databases on a test server.
 
 ```bash
 pip install -r requirements.txt

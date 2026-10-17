@@ -4,9 +4,9 @@
 
 Bare filenames below refer to `backend/src/patreon/` in the ProvinceSystem checkout; paths beginning with `src/` are relative to `backend/`.
 
-The tier mapping is `tiers.yaml`. Tables are in `src/skins/schema.sql`,
-created by the existing `src.skins.db.migrate()` in the app lifespan. They
-share `province.db` with `discord_links`. Patron linking lives in `linking.py`:
+The tier mapping is `tiers.yaml`. Tables are in `src/database/migrations/`,
+applied by `src.database.migrate` in the app lifespan. They share the site's
+PostgreSQL database with `discord_links`. Patron linking lives in `linking.py`:
 hashed single-use OAuth state and confirmation tokens, `link/start`,
 `oauth/callback`, `link/pending`, `link/confirm`, `link/cancel`, and `webhook`.
 
@@ -95,8 +95,9 @@ Import `PatreonClient` from `src.patreon.client`:
 
 `conn=` on link and recompute functions participates in the caller's
 transaction without committing. Confirmation uses
-`with src.skins.db.connect() as conn`, `BEGIN IMMEDIATE`, create the link and,
-if successful, recompute with that connection. `Config.from_env()` supplies
+`with src.database.transaction(lock=service.PATREON_LOCK) as conn`, consumes the pending confirmation,
+creates the link and, if successful, recomputes with that same connection. It rechecks expiry after waits
+and rolls back the transaction if consent expired. `Config.from_env()` supplies
 runtime configuration. Router helpers `require_enabled`, `caller_subject`,
 `require_staff`, `require_plugin` are in `src.api.patreon_routes`. Register
 future routes on `patreon_router` or on a separate router under `/patreon`.

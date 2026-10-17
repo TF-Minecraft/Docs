@@ -188,7 +188,8 @@ players, summary, rule, ruling, punishment, embedding `vector(1024)`, created_at
 `precedent_audit` (see above). Tables + extension are created lazily on first request
 (`migrate()` in `precedent/db.py`).
 
-Patch notes share the same database; the rest of the site is still in SQLite (`province.db`).
+All site records and patch notes share this PostgreSQL database. Site migrations leave the Precedent and
+patch-note tables intact. Branch previews exclude these tables and disable their API routers.
 
 ## Configuration
 

@@ -9,9 +9,9 @@ Component journeys: [flows/journeys.md](flows/journeys.md). Dev-only flags: [ops
 | Layer | Tech |
 |-------|------|
 | Frontend | Next.js (App Router), React, Tailwind - production Docker (`npm run start`) |
-| Backend | FastAPI + Uvicorn, Pillow mapgen, SQLite (skins, drinks, characters, identity) |
+| Backend | FastAPI + Uvicorn, Pillow mapgen, PostgreSQL 17 (all site records) |
 | Deploy | `docker-compose.yml` - backend `:8000`, frontend `:3000` |
-| Data | Per-map folders under `input/`, `defines/`, generated `output/`; `backend/src/data/` for app DB + uploads |
+| Data | Per-map folders under `input/`, `defines/`, generated `output/`; PostgreSQL volume for records; `backend/src/data/` for uploads |
 
 ```text
 SimpleFactions (plugin)
@@ -50,7 +50,8 @@ flowchart LR
   Player -->|generate_code| TFMCWeb
   Player -->|redeem_and_upload| Web
   Web --> API
-  API --> SQLite
+  API --> PostgreSQL
+  API -->|read only| CoreProtect[CoreProtect SQLite]
   API --> Disk
   API -->|notify| Discord
   Discord -->|approve_or_deny| API
@@ -63,7 +64,7 @@ flowchart LR
 |-------|----------------|
 | **Web (Next)** | UX: hub, map, skins, drinks, character forms; talks to API |
 | **API (FastAPI)** | Map pipeline + cosmetics modules + contracts for bot / plugins |
-| **SQLite** | Codes, submissions, status, audit - not PNG blobs |
+| **PostgreSQL** | Accounts, codes, submissions, Characters, snapshots and audit |
 | **Disk** | Map `output/`; pending skins under `backend/src/data/skins/` |
 | **Discord bot** | Skins/drinks approve/deny; ban/warn DMs; Discord banned-role mute |
 | **TFMCWeb** | Mint UUID-bound codes; Discord link; plugin gateway to the API |
@@ -136,8 +137,11 @@ backend/
     map_*.py / file_*.py    Map surface
     skins_routes.py         Codes, upload, status, staff actions, plugin pull
     drinks_routes.py        Drink submissions and catalog
+  src/database/
+    connection.py           Native PostgreSQL pool and transactions
+    migrations/             Ordered, checksummed PostgreSQL schema
   src/skins/
-    db.py, schema.sql       Connection, schema
+    db.py                   Asset directory paths and initialization
   src/data/skins/           Runtime files (gitignored)
   src/scripts/…             Mapgen
 ```
@@ -146,16 +150,21 @@ Map and cosmetics share Docker and process space but not business logic.
 
 ## Data stores
 
-### SQLite (metadata)
+### PostgreSQL (site records)
 
-Path example: `backend/src/data/province.db` (volume-mounted in compose).
+`DATABASE_URL` points to the site's Compose `db` service and persistent volume.
+Startup applies checked, ordered migrations from `backend/src/database/migrations/`.
+Configuration, backups and rollback: [PostgreSQL storage](ops/postgresql.md).
 
 | Table family | Purpose |
 |--------------|---------|
 | `codes`, `submissions` | Skins workflow |
 | `drink_submissions`, `drink_textures`, `drink_catalog` | Drinks workflow |
 | `discord_links`, `discord_link_codes` | Identity |
-| Character sessions and catalog | Characters API |
+| Character sessions, roster, wardrobe, wills and catalog | Characters API |
+| `users`, `user_sessions`, OAuth states | Website accounts and sign-in |
+| Patreon and LuckPerms tables | Entitlement state and plugin outboxes |
+| Chronicle and Ledger index tables | Map history indexes |
 
 ### Filesystem
 
@@ -164,7 +173,8 @@ backend/src/data/skins/{submission_id}/   # pending skin blobs + meta.json
 backend/src/output/{map}/                 # generated map assets
 ```
 
-Map assets remain under `backend/src/output/{map}/…`. **Why not store PNGs in SQLite?** Backups, serving, and pack export are simpler with files.
+Map assets remain under `backend/src/output/{map}/…`. PNGs stay on disk for serving and pack export.
+CoreProtect is a separate read-only SQLite source; retained `province.db` copies are offline rollback resources.
 
 ## Auth model
 

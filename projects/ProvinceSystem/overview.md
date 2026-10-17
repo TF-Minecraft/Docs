@@ -40,7 +40,7 @@ Next.js  ◄── hub, /map, /profile, /character
 ```
 
 - Map generators write to `backend/src/output/`; the API serves assets via [`file_routes.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/api/file_routes.py) (not into `frontend/public`).
-- Cosmetics metadata in SQLite; pending uploads on disk under `backend/src/data/`.
+- Site records in PostgreSQL; pending uploads on disk under `backend/src/data/`.
 - Full detail: [docs/architecture.md](docs/architecture.md)
 
 ## Key features
@@ -64,7 +64,7 @@ Next.js  ◄── hub, /map, /profile, /character
 
 ## Technical overview
 
-- **Backend:** Python 3.x, FastAPI, Uvicorn, Pillow (mapgen), SQLite
+- **Backend:** Python 3.x, FastAPI, Uvicorn, Pillow (mapgen), PostgreSQL 17
 - **Frontend:** Next.js (App Router), React, Tailwind
 - **Deploy:** `docker-compose.yml` - backend `:8000`, frontend `:3000`; nginx terminates TLS on the live host
 - **Map code:** [loader](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/backend/src/scripts/loader), [mapgen](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/backend/src/scripts/mapgen), [MapViewer](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/frontend/app/components/MapViewer.tsx)
