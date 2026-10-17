@@ -1,6 +1,6 @@
 # Maintaining the documentation
 
-Put technical manuals in `projects/<repository>/`, using the canonical PascalCase repository name (for example, `ActivityTF`, `VehicleFramework`, or `ServerAssets`). Keep source repository READMEs short and link to the matching project index here.
+Put technical manuals in `projects/<repository>/`, using the canonical PascalCase repository name (for example, `ActivityTF`, `VehicleFramework`, or `ServerAssets`). Keep source repository READMEs short and link to the matching project index here. TFMCWeb’s technical documentation is maintained in that repository’s `docs/` folder.
 
 Source READMEs use this layout, in order:
 

@@ -14,7 +14,7 @@ retain `api-version: '1.21.4'` loader metadata. Both still compile against Paper
 | Server | Paper 1.21.10 |
 | Build JDK and server JVM | Java 21 |
 | Plugin build tool | Maven |
-| Web/backend | Follow [TFMCWeb](projects/TFMCWeb/docs/README.md) |
+| Web/backend | Follow [TFMCWeb](https://github.com/TF-Minecraft/TFMCWeb/blob/main/docs/docs/README.md) |
 
 Build from `main` using the committed POM and dependency pins. CoreProtect uses
 `master`. Tagged releases record a specific version of that source.

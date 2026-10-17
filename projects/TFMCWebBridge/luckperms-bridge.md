@@ -30,4 +30,4 @@ minutes.
 
 Set `LUCKPERMS_READ_ONLY=1` on a website that must never queue writes. The backend also refuses new changes without a recent applying bridge poll.
 
-See the [website protocol and permission policy](../TFMCWeb/docs/integrations/luckperms.md), [plugin configuration](https://github.com/TF-Minecraft/TFMCWebBridge/blob/main/src/main/resources/config.yml), and [bridge implementation](https://github.com/TF-Minecraft/TFMCWebBridge/tree/main/src/main/java/net/tfminecraft/tfmcweb/luckperms).
+See the [website protocol and permission policy](https://github.com/TF-Minecraft/TFMCWeb/blob/main/docs/docs/integrations/luckperms.md), [plugin configuration](https://github.com/TF-Minecraft/TFMCWebBridge/blob/main/src/main/resources/config.yml), and [bridge implementation](https://github.com/TF-Minecraft/TFMCWebBridge/tree/main/src/main/java/net/tfminecraft/tfmcweb/luckperms).

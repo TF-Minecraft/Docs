@@ -32,7 +32,7 @@ patreon:
     ascended: ascended
 ```
 
-LuckPerms storage is shared, so set `apply-ranks: true` on exactly one server; leave it false elsewhere. See the [Patreon integration guide](../TFMCWeb/docs/integrations/patreon.md) for the writer setup and operations.
+LuckPerms storage is shared, so set `apply-ranks: true` on exactly one server; leave it false elsewhere. See the [Patreon integration guide](https://github.com/TF-Minecraft/TFMCWeb/blob/main/docs/docs/integrations/patreon.md) for the writer setup and operations.
 
 ## Realm on gateway requests
 
@@ -59,9 +59,9 @@ Run `mvn clean verify` to build and run the available tests; use `mvn clean inst
 ## Related integration guides
 
 - [LuckPerms staff-panel bridge](luckperms-bridge.md)
-- [Identity and web transport](../TFMCWeb/docs/identity/tfmcweb.md)
-- [Patreon integration and one-writer setup](../TFMCWeb/docs/integrations/patreon.md)
-- [Authentication and security](../TFMCWeb/docs/identity/auth-security.md)
+- [Identity and web transport](https://github.com/TF-Minecraft/TFMCWeb/blob/main/docs/docs/identity/tfmcweb.md)
+- [Patreon integration and one-writer setup](https://github.com/TF-Minecraft/TFMCWeb/blob/main/docs/docs/integrations/patreon.md)
+- [Authentication and security](https://github.com/TF-Minecraft/TFMCWeb/blob/main/docs/docs/identity/auth-security.md)
 
 ## Builds and releases
 

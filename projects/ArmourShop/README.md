@@ -29,8 +29,8 @@ until refresh completes; remote changes can take one cache interval to appear.
 
 ## Guides
 
-- [Web integration and pack generation](../TFMCWeb/docs/integrations/armourshop.md)
-- [Skins workflow](../TFMCWeb/docs/cosmetics/skins.md)
+- [Web integration and pack generation](https://github.com/TF-Minecraft/TFMCWeb/blob/main/docs/docs/integrations/armourshop.md)
+- [Skins workflow](https://github.com/TF-Minecraft/TFMCWeb/blob/main/docs/docs/cosmetics/skins.md)
 
 ## Builds and releases
 
