@@ -5,8 +5,8 @@
 Explore how TF-Minecraft's projects fit together, from crafting and roleplay to
 vehicles, trade, and server administration. This repository collects the guides
 for setup, architecture, configuration, integrations, testing, and operations.
-Each source repository's README introduces what that project does; its technical
-guides live here.
+Each source repository's README introduces what that project does. Technical
+guides live here, with the website guides maintained in TFMCWeb’s own repository.
 
 TFMC runs **Minecraft 1.21.10 on Java 21**. The [shared platform and build baseline](PLATFORM.md) defines common runtime, toolchain and validation conventions, with the current build declarations for each plugin.
 
@@ -23,7 +23,7 @@ TFMC runs **Minecraft 1.21.10 on Java 21**. The [shared platform and build basel
 | Java and Minecraft targets | [Shared platform baseline](PLATFORM.md) |
 | A project's guides | [Browse the projects below](#projects) |
 | Build and release conventions | [Builds and releases](PIPELINES.md) |
-| The website and backend | [Web hub documentation](projects/TFMCWeb/docs/README.md) |
+| The website and backend | [Web hub documentation](https://github.com/TF-Minecraft/TFMCWeb/blob/main/docs/docs/README.md) |
 | Documentation contribution guidance | [Maintaining the documentation](MAINTAINING.md) |
 
 ## Projects
@@ -90,7 +90,7 @@ Choose a project to open its technical documentation and source repository link.
 | Project | What it does |
 | --- | --- |
 | [CoreProtect](projects/CoreProtect/README.md) | TFMC-maintained CoreProtect source for block logging, rollbacks, and anti-griefing on Minecraft servers. |
-| [TFMCWeb](projects/TFMCWeb/README.md) | TFMC web hub with interactive political maps, character creation, cosmetics, and identity services. |
+| [TFMCWeb](https://github.com/TF-Minecraft/TFMCWeb/blob/main/docs/README.md) | TFMC web hub with interactive political maps, character creation, cosmetics, and identity services. |
 | [ServerAssets](projects/ServerAssets/README.md) | Private plugin dependencies, configurations, models, and resource packs. |
 | [TFMCCore](projects/TFMCCore/README.md) | Shared gameplay systems, server utilities, and plugin integrations. |
 | [TFMCWebBridge](projects/TFMCWebBridge/README.md) | Website integration, Discord account linking, and player identity services. |
