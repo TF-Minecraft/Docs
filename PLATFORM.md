@@ -98,6 +98,7 @@ consumer set. Source builds must pass clean verification before publication.
 | [Research](projects/Research/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [RPCharacters](projects/RPCharacters/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [SimpleFactions](projects/SimpleFactions/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [Spiders](projects/Spiders/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Surgery](projects/Surgery/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [TFMCCore](projects/TFMCCore/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [TFMCWeb](projects/TFMCWeb/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
@@ -108,6 +109,9 @@ consumer set. Source builds must pass clean verification before publication.
 | [VFBuilders](projects/VFBuilders/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Woodworking](projects/Woodworking/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [WorldBorder](projects/WorldBorder/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+
+Spiders is written in Kotlin with `kotlin-maven-plugin` (JVM target 21) and keeps
+its sources in `src/main/kotlin/net/tfminecraft/spiders/`.
 
 ProvinceSystem is a web/backend project. ServerAssets contains configurations,
 models, resource packs, and private build inputs. Neither produces a plugin jar.
