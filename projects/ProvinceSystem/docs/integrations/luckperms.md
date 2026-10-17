@@ -55,9 +55,7 @@ All routes need the primary `X-Plugin-Key`; secondary keys are refused.
 `NODE` is `{"key": "group.staff", "value": true, "contexts": {"server": ["main"]}, "expiry": 0}`;
 `expiry` is unix seconds, 0 for permanent; `contexts` maps each key to its values (empty object for global).
 `users` holds every user with at least one stored node (`UserManager.searchAll` with an empty key prefix).
-The site replaces its whole mirror in one transaction and answers `{"ok": true}`. The node tables
-`lp_user_nodes` and `lp_group_nodes` hold one row per subject, key, context set and expiry, so a timed and a
-permanent copy of one group are two rows.
+The site replaces its whole mirror in one transaction and answers `{"ok": true}`.
 
 `revision` orders everything the bridge reports: it strictly increases across snapshots and
 results, also across restarts (the bridge uses `max(last + 1, current time in ms)`). The site
