@@ -81,6 +81,7 @@ Link tables live in the site PostgreSQL database (`discord_links`, `discord_link
 |-------|------|------|
 | `POST /skins/discord/link/start` | Plugin | Issue link code |
 | `POST /skins/discord/link/complete` | Staff (bot) | Bind Discord id; reject if Discord already on another UUID |
+| `GET /skins/discord/identity/{discord_user_id}` | Staff (bot) | Resolve selected Discord account to UUID and latest known Minecraft name for moderation |
 | `POST /skins/discord/link/unlink` | Plugin | Explicit unlink |
 | Guild leave/join | Staff (bot) | 1h grace on leave; clear on rejoin |
 
