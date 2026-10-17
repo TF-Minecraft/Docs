@@ -124,7 +124,7 @@ Rules:
 - Codes consumed on submit (skin/drink) or redeem (profile).
 - **Shared mint cooldown (`skin` + `drink`):** owned by **TFMCWeb** only. Profile is not in the shared family.
 - **Command gate:** LP `tfmcweb.token.create`; staff perm `tfmcweb.token.create.staff`.
-- Skin and drink **upload** entitlements: TFMCWeb `player-meta.*` → `PUT /characters/plugin/rpc-player-meta`.
+- Skin and drink **upload** entitlements: TFMCWeb `player-meta.*` → `PUT /characters/plugin/rpc-player-meta`, stored per realm in `web_entitlements`. That row is the website's only source for a player's character limit, name colours and wardrobe slots. A player TFMCWeb has never synced gets the creation catalogue's default character limit.
 - TFMCWeb sends player meta on join, on config reload and with `/web syncmeta [player]`. About a second after LuckPerms recalculates an online player's permissions, or a group's (which checks every online player), it sends again, so a rank granted while they play (Patreon, staff panel or `/lp`) reaches the website without a rejoin. These LuckPerms-triggered sends skip a player whose meta has not changed since the last send, because LuckPerms recalculates every online player and group on each `sync-minutes` storage sync. Sends for one player are attempted one at a time, newest meta last. A timed-out send can still be applied by the website after a newer one, so after a failed send TFMCWeb resends that player's meta at every recalculation until one succeeds at least 10 minutes after the last failure. This repair is best effort and relies on recalculations happening, which the periodic sync provides. After restoring the website database, run `/web syncmeta` on each server: TFMCWeb cannot see the restore and would otherwise skip online players whose meta has not changed until they rejoin.
 
 ## Discord gate + RPCharacters freeze
@@ -186,7 +186,7 @@ Set `apply-ranks: true` on exactly one server because LuckPerms storage is share
 
 ## Realm gateway
 
-Per-realm HTTP gateway, `rpc_player_meta` sync, realm-scoped token policy, and scoped data queues are **shipped**. Map staff permission `tfmc.map.staff` arrives via player meta for staff map and editor gates.
+Per-realm HTTP gateway, `web_entitlements` sync, realm-scoped token policy, and scoped data queues are **shipped**. Map staff permission `tfmc.map.staff` arrives via player meta for staff map and editor gates.
 
 ### Site-wide snapshots are owned by the primary server
 

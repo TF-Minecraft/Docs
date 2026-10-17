@@ -66,10 +66,9 @@ sequenceDiagram
 - `drink_submissions` - recipe JSON, status, player UUID, optional texture
 - `drink_textures` - owner UUID, CMD, IA id, refcount, png path
 - `drink_catalog` - ingredients allowlist + category labels + effects blacklist
-- `drink_player_meta` - legacy `allow_drink_texture` + `name_colour_stops` (fallback when `rpc_player_meta` has no row)
 - `drink_notifications` - staff/bot outbox
 
-**API (`/drinks`):** redeem · submit · catalog · staff pending/approve/deny · plugin catalog. Drink entitlements come from TFMCWeb via `PUT /characters/plugin/rpc-player-meta`; `PUT /drinks/plugin/player-meta` is deprecated.
+**API (`/drinks`):** redeem · submit · catalog · staff pending/approve/deny · plugin catalog. Drink entitlements (`allow_drink_texture`, `allow_drink_message`, name colours) come from TFMCWeb via `PUT /characters/plugin/rpc-player-meta` and are stored in `web_entitlements`.
 
 ## Plugin surface (DrinkBuilder)
 

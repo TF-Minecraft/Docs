@@ -100,7 +100,7 @@ App Router `loading.tsx` boundaries cover route navigation, with outlines suited
 | Map | `map_routes`, `data_routes`, `file_routes`, `regen_routes` |
 | Skins | codes, redeem, upload, staff review, plugin approved |
 | Drinks | redeem, submit, catalog, staff review |
-| Characters | session, create, roster, wardrobe, `rpc_player_meta` |
+| Characters | session, create, roster, wardrobe, web entitlements (`PUT /characters/plugin/rpc-player-meta`) |
 | Profile | dashboard, skin/drink start, code sign-in (`POST /profile/redeem`), code wardrobe (`GET /profile/wardrobe`) |
 | Identity | Discord link, guild grace |
 | Diagnostic | Server ping, resource pack copy, speed test, player reports |
@@ -154,7 +154,7 @@ Map and cosmetics share Docker and process space but not business logic.
 
 `DATABASE_URL` points to the site's Compose `db` service and persistent volume.
 Startup applies checked, ordered migrations from `backend/src/database/migrations/`.
-Configuration, backups and rollback: [PostgreSQL storage](ops/postgresql.md).
+Configuration, migrations, backups and restores: [PostgreSQL storage](ops/postgresql.md).
 
 | Table family | Purpose |
 |--------------|---------|
@@ -162,6 +162,8 @@ Configuration, backups and rollback: [PostgreSQL storage](ops/postgresql.md).
 | `drink_submissions`, `drink_textures`, `drink_catalog` | Drinks workflow |
 | `discord_links`, `discord_link_codes` | Identity |
 | Character sessions, roster, wardrobe, wills and catalog | Characters API |
+| `web_entitlements` | Per-realm rank entitlements from TFMCWeb: character limit, name colours, wardrobe slots, skin kinds, drink perks, permission flags |
+| `character_account_meta` | Per-account data from RPCharacters' roster push: 18+ answer, account creation time, kit cooldowns |
 | `users`, `user_sessions`, OAuth states | Website accounts and sign-in |
 | Patreon and LuckPerms tables | Entitlement state and plugin outboxes |
 | Chronicle and Ledger index tables | Map history indexes |
@@ -174,7 +176,7 @@ backend/src/output/{map}/                 # generated map assets
 ```
 
 Map assets remain under `backend/src/output/{map}/…`. PNGs stay on disk for serving and pack export.
-CoreProtect is a separate read-only SQLite source; retained `province.db` copies are offline rollback resources.
+CoreProtect is a separate read-only SQLite source.
 
 ## Auth model
 

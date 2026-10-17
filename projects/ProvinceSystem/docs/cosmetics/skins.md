@@ -81,7 +81,7 @@ Upload requires a prior **Discord link** for that UUID ([identity/tfmcweb.md](..
 
 ## Skin-upload entitlements (TFMCWeb)
 
-Configured in TFMCWeb `config.yml` `player-meta.skins`; pushed on join/reload via `PUT /characters/plugin/rpc-player-meta`. `PUT /skins/plugin/player-meta` is deprecated.
+Configured in TFMCWeb `config.yml` `player-meta.skins`; pushed on join/reload via `PUT /characters/plugin/rpc-player-meta` and stored in `web_entitlements`.
 
 | Rank | Cooldown | Kinds (additive inherit) | Armor 3D helmet |
 |------|----------|--------------------------|-----------------|
@@ -205,7 +205,7 @@ the `/token create` rules:
 | Check | Refusal |
 |-------|---------|
 | Discord link in good standing | `discord` |
-| Rank perks synced from TFMCWeb (`rpc_player_meta`) | `join_server` |
+| Rank perks synced from TFMCWeb (`web_entitlements`) | `join_server` |
 | `skin_token_cooldown_days` is not -1 | `rank` |
 | Last skin or drink code is older than the cooldown | `cooldown`, with `next_at` |
 
