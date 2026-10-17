@@ -60,6 +60,8 @@ arriving at a full inventory waits in saved pending mail, and BirdMessenger retr
 second. Pending letters, including unsent and estate returns, are handed over one
 at a time, checking the character and space before each; filling the available
 space or switching characters leaves the rest queued, and the file is saved once afterwards.
+While the recipient is dead, incoming letters and queued returns keep waiting;
+delivery retries after respawn so the respawn inventory cannot discard them.
 Character IDs match regardless of letter case and are kept as written. Malformed
 IDs and mail for another owner stay in the file and are not delivered to the
 current character.
@@ -155,5 +157,7 @@ Before deployment, verify on a test server with ItemsAdder:
   ground drop. Free a slot: it arrives once within a second. With several waiting
   letters and one free slot, the rest keep waiting. Repeat across a restart and
   with unsent and estate-returned letters.
+- Die while letters are waiting, staying on the death screen with an empty
+  inventory: letters and returns stay queued until respawn, then arrive once.
 - Restart with pending and in-flight mail: delivery resumes without changing
   recipient opt-out behaviour or stored character IDs.
