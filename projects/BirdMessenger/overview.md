@@ -55,8 +55,11 @@ tick between the edit and the save.
 
 In-flight mail belongs to the recipient character and survives character changes.
 Delivery needs the stored owner to be playing the stored character. Pending
-letters are handed over one at a time, checking the character before each; a
-switch part-way leaves the rest queued, and the file is saved once afterwards.
+letters also need an empty inventory slot. A letter arriving at a full inventory
+waits in saved pending mail, and BirdMessenger retries online recipients every
+second. Pending letters, including unsent and estate returns, are handed over one
+at a time, checking the character and space before each; filling the last slot or
+switching characters leaves the rest queued, and the file is saved once afterwards.
 Character IDs match regardless of letter case and are kept as written. Malformed
 IDs and mail for another owner stay in the file and are not delivered to the
 current character.
@@ -148,5 +151,9 @@ Before deployment, verify on a test server with ItemsAdder:
   the `unsent-returned` message when that character is next played.
 - Receive several pending letters, switching during delivery: remaining letters
   wait until their stored owner plays their stored character.
+- Receive a letter with a full inventory: it stays in pending mail without a
+  ground drop. Free a slot: it arrives once within a second. With several waiting
+  letters and one free slot, the rest keep waiting. Repeat across a restart and
+  with unsent and estate-returned letters.
 - Restart with pending and in-flight mail: delivery resumes without changing
   recipient opt-out behaviour or stored character IDs.
