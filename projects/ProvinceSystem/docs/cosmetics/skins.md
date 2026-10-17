@@ -10,7 +10,7 @@ End-to-end design for donator texture submissions on **ProvinceSystem** (store +
 - Players start a skin from the Profile wardrobe ([below](#profile-wardrobe)) or with a TFMCWeb code (`/token create skin` or **`/token create skin staff`**); either is bound to the player UUID.
 - **Player:** staff approve/deny in Discord; ArmourShop writes **`tfmc_submissions`** + `ps_*` + LP.
 - **Staff curated:** auto-approve (no bot); category + scroll on upload; writes **`tfmc_armorshop`** into real ArmourShop categories.
-- **Kit item customise** (character creator) also creates `submissions` rows via an internal `lore_upload` code per player — not a donator mint token. Staff review and ArmourShop apply use the same pipeline as Profile skin uploads.
+- **Kit item customise** (character creator) also creates `skin_submissions` rows via an internal `lore_upload` code per player — not a donator mint token. Staff review and ArmourShop apply use the same pipeline as Profile skin uploads.
 
 ## Upload kinds
 
@@ -109,8 +109,9 @@ Player DMs: submitted (outbox poll); approved / denied from cog after staff API 
 
 Site records share `DATABASE_URL`; see [database configuration and migrations](../ops/postgresql.md).
 
-- `codes` - hashed codes, player UUID, expiry, redeemed_at on submit
-- `submissions` - kind, display_name, status, paths, discord_user_id, tiers, base_set, grip_preset, name colours/styles
+- `login_codes` - hashed codes, player UUID, scope, expiry, redeemed_at on submit, `minted_via`
+- `code_sessions` - the sessions redeemed codes open; the hourly housekeeping sweep deletes expired ones
+- `skin_submissions` - kind, display_name, status, paths, discord_user_id, tiers, base_set, grip_preset, name colours/styles
 - `discord_links` / `discord_link_codes` - identity bind
 
 ### Disk
@@ -212,7 +213,7 @@ the `/token create` rules:
 A refusal is a 409 whose `detail` is `{ "reason", "next_at" }`. An unused,
 unexpired code of the same scope and realm is reused, whether Profile or
 `/token create` made it. Otherwise the start records a new code with no plaintext
-and `codes.minted_via = 'site'`, which starts the shared cooldown. A skin or drink
+and `login_codes.minted_via = 'site'`, which starts the shared cooldown. A skin or drink
 code that expires without a submission stops counting once no session from it can
 still upload, whether Profile or `/token create` made it, so a code that lapses
 unused costs nothing. A used code keeps counting after it expires. Source: [`codes.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/codes.py).

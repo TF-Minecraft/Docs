@@ -178,7 +178,7 @@ answers every `POST`, `PUT`, `PATCH` and `DELETE` sent with the view's session
 cookie with **403** `viewing_as_player`. Only leaving the view, signing out and
 opening or closing Profile get through, and Profile's Linked accounts card shows the
 player's accounts with its actions disabled. Profile opened during a view records its code
-with `minted_via = staff_view:<session id>`, ends with the view, and the guard
+with `minted_via = 'staff_view'` and the view's user session in `view_session_id`, ends with the view, and the guard
 refuses its Bearer writes the same way. The view has no staff rights even if
 the player's role changes, and dev will not hand it to a branch preview.
 Signing out during a view also signs the admin out, and signing in with Discord
@@ -201,10 +201,11 @@ their views and their Profile sessions; the role change or revocation is the aud
 | Profile / map staff | `profile` scope session from `/profile` redeem or a linked Discord account ([Profile without a code](#profile-without-a-code)); carries `player_uuid` and `realm_id` for permission checks |
 | No website passwords | Codes are UUID-bound and not shareable by design |
 
-Codes are **hashed at rest** (SHA-256). Plaintext shown once in-game at mint. The `codes` row keeps the
+Codes are **hashed at rest** (SHA-256). Plaintext shown once in-game at mint. The `login_codes` row keeps the
 plaintext only while the code is open, for the plugin list of active codes (`GET /skins/plugin/codes/active`).
 Redeeming a profile code, using a skin or drink code for a submission, and revoking a code clear it in the same
-update. The backend's hourly housekeeping loop clears it once a code expires unused.
+update. The backend's hourly housekeeping loop clears it once a code expires unused, and deletes expired
+`code_sessions` rows.
 
 ### Scope enforcement
 
