@@ -174,6 +174,15 @@ Changes to experience queue a guarded checkpoint; quit and permanent death save
 synchronously, with an additional periodic checkpoint. A sudden process or host
 failure can lose changes since the latest completed progression checkpoint.
 
+Professions are the exception: they belong to the account. When a character is
+activated, each MMOCore profession is raised to the best level and experience
+any of the account's characters, alive or dead, has reached, and its lifetime
+profession points to the most any of them holds. Upgrades stay with the
+character that bought them, so a character gets the points unspent. Levels only
+go up, so accounts whose characters levelled apart before this get the best of
+each. The log records `Raised the professions of character <id> of <account> to
+its account's best`; the raise is saved with the checkpoint after activation.
+
 The original account progression fields remain unchanged. On an account's first
 migration, an immutable baseline records the existing character roster and
 legacy progression. Those characters each receive one independent copy. Later
