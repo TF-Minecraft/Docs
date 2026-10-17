@@ -144,6 +144,11 @@ with `tfmc.map.staff` opens staff maps and the map editor, not the panel. See [C
 for the individual staff panels. Configuration validation is in
 [`auth/config.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/auth/config.py).
 
+The staff panel's **Accounts → Find an account** accepts part of a Discord username or
+display name, ignoring case, or a full Discord ID. A leading `@` is optional. It returns
+up to five accounts that have signed in, with exact matches first; temporary view-as placeholders
+are excluded. Use a longer name fragment to narrow the results.
+
 ## Viewing as a player
 
 Admins and the owner (`view_as_player`) can see the site as a player sees it.
