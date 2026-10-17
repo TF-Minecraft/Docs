@@ -23,7 +23,10 @@ disabled until the host scripts, database isolation and Dev migration are ready.
 deployment is held. The host also requires Dev's verified authority marker at
 `/home/tfmc/provincesystem-dev-data/data/.postgres-authority.json`, a backend image labelled
 `net.tfminecraft.storage=postgres`, and both images' `org.opencontainers.image.revision` labels matching the
-requested commit. A branch without the native backend is refused.
+requested commit. A branch without the native backend is refused. After Dev and database isolation pass,
+enable readiness for a controlled first Preview workflow run on a reviewed native branch. Verify creation,
+redeployment and teardown, including database/role cleanup. Leave readiness enabled only after that lifecycle
+passes; disable it again if validation fails.
 
 Pushing a branch builds its backend and frontend images on GitHub, in parallel, and pushes them to
 `ghcr.io/tf-minecraft/provincesystem-preview-{backend,frontend}:<slug>` (public packages). Pushes to `main` build

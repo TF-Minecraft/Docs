@@ -149,8 +149,10 @@ sudo -n -u tfmc /usr/local/sbin/ps-compose dev exec -T backend \
 
 This removes PUBLIC database CONNECT while retaining database-owner access and existing direct grants.
 Each preview owner and Studio login then receives CONNECT only to its own database. Run this on Dev's
-cluster; Main's separate cluster is unchanged. Complete a preview lifecycle check before enabling the
-repository variable `NATIVE_POSTGRES_PREVIEWS_READY=true`.
+cluster; Main's separate cluster is unchanged. After Dev and this isolation setup pass, set the repository
+variable `NATIVE_POSTGRES_PREVIEWS_READY=true` for a controlled Preview workflow run on a reviewed native
+branch. Verify creation, redeployment and teardown, including removal of its database and roles. Keep the
+variable enabled only if that lifecycle passes; disable it again on any failure.
 
 The trusted controller creates the schema under the preview owner, clones only site-table data, scrubs
 credentials and validates Studio before starting branch images. Its credentials stay inside trusted Dev
