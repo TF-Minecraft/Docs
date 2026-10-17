@@ -40,9 +40,9 @@ Usage / errors: `Usage: /rpcharacter wipe website [confirm]`. `Nothing to confir
 Delete:
 
 - `character_roster`
-- `character_creates`
+- `character_creation_requests`
 - `character_wardrobe_slots`
-- `character_create_wardrobe`
+- `character_creation_wardrobe`
 - `lore_item_customisations`
 
 Do not delete player rank/age meta.

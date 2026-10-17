@@ -86,7 +86,7 @@ Link tables live in the site PostgreSQL database (`discord_links`, `discord_link
 
 ## War declare codes
 
-One-time codes that gate an in-game war declaration. Staff mint one in Discord (`tfmc_bot` `factions` cog, `/warcode`), the attacking leader types it in SimpleFactions, and it pins the war goal. Rows live in `war_declare_codes`, realm-scoped, hashed with **no plaintext column**: staff see the code once and a lost code is revoked and reminted.
+One-time codes that gate an in-game war declaration. Staff mint one in Discord (`tfmc_bot` `factions` cog, `/warcode`), the attacking leader types it in SimpleFactions, and it pins the war goal. Rows live in `war_declaration_codes`, realm-scoped, hashed with **no plaintext column**: staff see the code once and a lost code is revoked and reminted.
 
 | Route | Auth | Role |
 |-------|------|------|

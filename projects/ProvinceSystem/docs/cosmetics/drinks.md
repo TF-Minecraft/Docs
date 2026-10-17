@@ -64,7 +64,7 @@ sequenceDiagram
 ## Data (ProvinceSystem)
 
 - `drink_submissions` - recipe JSON, status, player UUID, optional texture
-- `drink_textures` - owner UUID, CMD, IA id, refcount, png path
+- `drink_textures` - owner UUID, `custom_model_data` (DrinkBuilder's route and payload call it `cmd`), IA id, refcount, png path
 - `drink_catalog` - ingredients allowlist + category labels + effects blacklist
 - `drink_notifications` - staff/bot outbox
 

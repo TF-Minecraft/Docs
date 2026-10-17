@@ -51,7 +51,7 @@ the `ps-preview-router` Caddy container (`127.0.0.1:8090`, behind the `*.tfminec
   creation and privileged restore use trusted Dev tooling; branch code takes no part. The schema follows Dev's
   migrations, so once Dev has a new migration, a preview of a branch cut before it fails its migration check
   until the branch is rebased onto `main`.
-- **Scrub:** before startup, the helper clears sessions, user sessions, Discord OAuth/link state, preview sign-in
+- **Scrub:** before startup, the helper clears code sessions, user sessions, Discord OAuth/link state, preview sign-in
   tickets, Microsoft link state, and Patreon tokens, OAuth and pending-link state, including creator credentials.
   It revokes redemption and war declaration codes and clears redemption-code plaintext, retaining rows needed by
   foreign-key-linked content.

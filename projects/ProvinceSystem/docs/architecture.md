@@ -158,10 +158,13 @@ Configuration, migrations, backups and restores: [PostgreSQL storage](ops/postgr
 
 | Table family | Purpose |
 |--------------|---------|
-| `codes`, `submissions` | Skins workflow |
+| `login_codes`, `code_sessions` | In-game codes and the sessions they open |
+| `skin_submissions` | Skins workflow |
 | `drink_submissions`, `drink_textures`, `drink_catalog` | Drinks workflow |
 | `discord_links`, `discord_link_codes` | Identity |
-| Character sessions, roster, wardrobe, wills and catalog | Characters API |
+| `player_notifications` | Bot outbox for Discord DMs to players: staff warnings and bird mail |
+| `war_declaration_codes` | War declaration codes |
+| Character sessions, roster, creation requests (`character_creation_requests`, `character_creation_wardrobe`), wardrobe, wills and catalog | Characters API |
 | `web_entitlements` | Per-realm rank entitlements from TFMCWeb: character limit, name colours, wardrobe slots, skin kinds, drink perks, permission flags |
 | `character_account_meta` | Per-account data from RPCharacters' roster push: 18+ answer, account creation time, kit cooldowns |
 | `users`, `user_sessions`, OAuth states | Website accounts and sign-in |

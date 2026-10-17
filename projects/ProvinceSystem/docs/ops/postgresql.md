@@ -34,7 +34,7 @@ settings bound queries and locks. Domain advisory locks coordinate checks that s
 absence of a row; file guards coordinate wardrobe and map assets across workers.
 
 An hourly housekeeping loop in the backend, which also runs at startup, clears data that has outlived its use.
-It currently clears the plaintext of login codes that expired unused
+It clears the plaintext of login codes that expired unused and deletes expired code sessions
 ([opaque Bearer sessions](../identity/auth-security.md#opaque-bearer-sessions)).
 
 ## Schema migrations
@@ -46,6 +46,10 @@ applied files in the private data mount's `postgres-migrations/`. Migrations onl
 revision that lacks a migration the database already has, because its code expects the older schema
 ([deploy steps](#deploy-steps)). Add a new
 numbered migration for a schema change; do not edit an applied file. To undo a change, add another migration.
+
+CHECK constraints limit login code scopes and `minted_via`, skin and drink submission statuses, character
+creation request statuses and lore item states to the values the code writes or still reads, so an edit in
+Database Studio must use one of those values.
 
 Precedent and patch-note tables have their own migrations and keep their data.
 
