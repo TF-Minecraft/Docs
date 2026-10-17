@@ -22,27 +22,44 @@ Back/Next, draft resumption and review editing.
 
 ## Wardrobe plushies
 
-Staff use `/plushie <character name or UUID> [1|2|3]` to receive one player-head
-plushie named `<Character> Plushie`. For example, `/plushie grinkle 1` uses
+Players with `rpchar.plushie.give` use `/plushie <character name or UUID> [1|2|3]`
+to receive one miniature character plushie named `<Character> Plushie`. Its face,
+outfit, sleeves and shoes are mapped onto an ordinary player head. For example, `/plushie grinkle 1` uses
 Grinkle's Base skin; `2` uses Skin 2 and `3` uses Skin 3. Omitting the number
 selects Base. Names match exactly, ignoring case, and can contain spaces; use
 the character UUID when two living characters share a name. Name lookup includes
 offline characters. The permission is `rpchar.plushie.give`, granted to operators
 by default.
 
-The selected outfit must be unlocked, filled and signed. The command reads it
-from ProvinceSystem without equipping it, reconciling slots or changing mask
-state. It gives nothing if the lookup fails, the outfit is unavailable, the
+The selected outfit must be unlocked, filled and signed. ProvinceSystem generates
+the miniature in the background and uploads it through the existing MineSkin
+signer. The first copy of an outfit can take a moment; subsequent copies reuse
+the saved result. The command retries up to 90 times, one second apart, without
+blocking the server thread. It does not equip the outfit, reconcile slots or change mask
+state. It gives nothing if generation fails, the outfit changes or becomes unavailable, the
 inventory is full, or the sender changes characters while it loads. Issued heads
 contain the captured texture, so later skin or outfit changes do not alter them.
 Repeated copies with the same character name and texture use the same profile
 data. Placing and breaking a head can discard its item name; the saved texture
-is independent of the player's current skin.
+is independent of the player's current skin. Existing plushies retain their
+previous appearance; only newly issued items use the miniature texture.
 
-This requires ProvinceSystem's authenticated read-only
-`GET /characters/plugin/wardrobe/{player_uuid}/{character_id}/slots/{slot}` route,
-with `slot` set to `base`, `extra_1` or `extra_2`. Update the site before activating
-the RPCharacters build that provides the command.
+This requires ProvinceSystem's authenticated
+`POST /characters/plugin/wardrobe/{player_uuid}/{character_id}/slots/{slot}/plushie`
+route, with `slot` set to `base`, `extra_1` or `extra_2`. An empty JSON body starts
+or checks generation; follow-up requests pass the returned `source` hash to refuse
+an outfit that changed while generating. Responses contain `status` (`pending`
+or `ready`), `source`, `character_id`, `slot`, and the ready texture `value` and
+`signature`. The existing read-only slot and worn-skin routes remain unchanged.
+Update the site before activating the RPCharacters build that uses this route.
+
+ProvinceSystem stores signed results under `backend/src/data/plushies/`, keyed by
+the generated pixels and layout version. Atomic writes and a cross-process lock
+share one upload between concurrent requests. Signing failures are reported to
+the command and retained for 30 seconds before another attempt is allowed. No
+wardrobe rows, source PNGs or active-skin settings are changed. The converter
+adapts [MiniSkin Generator](https://github.com/nirastich/miniskin); its GPL-3.0
+license and attribution are included in ProvinceSystem's `third_party/miniskin/`.
 
 ## Mail recipient visibility
 
