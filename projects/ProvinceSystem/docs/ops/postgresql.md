@@ -81,7 +81,9 @@ retired columns/tables with their DDL. Unrelated Precedent and patch-note tables
 The private `data/.postgres-authority.json` records the verified target's name and migration history,
 source snapshot hash and table checks. Normal deployments validate that identity and migrate without
 recopying stale SQLite. If copy committed before marker publication failed, a retry adopts the target only
-after exact source verification; inconsistent nonempty targets are refused, never cleared.
+after exact source verification. The first copy attempt is recorded before import, so if legacy code resumes
+and accepts more SQLite writes, retry can restore those writes against its recorded PostgreSQL baseline.
+Inconsistent untracked nonempty targets are refused, never cleared.
 
 `/home/tfmc/.site-deployed-<site>` separately records the last healthy revision. Git HEAD can already point
 at a target whose build or cutover was interrupted; it is not sufficient evidence of deployment success.
