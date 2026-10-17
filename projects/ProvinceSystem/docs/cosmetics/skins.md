@@ -212,10 +212,10 @@ the `/token create` rules:
 A refusal is a 409 whose `detail` is `{ "reason", "next_at" }`. An unused,
 unexpired code of the same scope and realm is reused, whether Profile or
 `/token create` made it. Otherwise the start records a new code with no plaintext
-and `codes.minted_via = 'site'`, which starts the shared cooldown. A site code that
-expires without a submission stops counting once no session from it can still
-upload, so leaving the uploader costs nothing once the code lapses. Codes from `/token create` count whether used or
-not, as before. Source: [`codes.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/codes.py).
+and `codes.minted_via = 'site'`, which starts the shared cooldown. A skin or drink
+code that expires without a submission stops counting once no session from it can
+still upload, whether Profile or `/token create` made it, so a code that lapses
+unused costs nothing. A used code keeps counting after it expires. Source: [`codes.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/skins/codes.py).
 
 Sessions started here are marked `from_profile` in the browser. Signing out or
 unlinking under Linked accounts revokes them; sessions from codes stay.
