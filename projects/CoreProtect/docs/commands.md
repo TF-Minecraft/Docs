@@ -211,7 +211,7 @@ ___
 | `a:item` | items dropped, thrown, picked up, deposited, or withdrawn by players |
 | `a:+item` | items picked up or withdrawn by players |
 | `a:-item` | items dropped, thrown, or deposited by players |
-| `a:kill` | mobs/animals killed |
+| `a:kill` | mobs, animals and players killed |
 | `a:pvp` | hits, knockouts and kills between players (see `player-pvp`) |
 | `a:hit` | hits one player landed on another, with the weapon and damage |
 | `a:knockout` | nonlethal knockouts reported by RPCharacters |
