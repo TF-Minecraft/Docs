@@ -26,7 +26,7 @@ missing characters. Pouch and bank come from the character's own DenarEconomy
 ledger and the guild from SimpleFactions 4.0.0. The guild is hidden when the
 character has none or factions are unavailable.
 
-Portraits load asynchronously through ProvinceSystem's authenticated, read-only
+Portraits load asynchronously through TFMCWeb's authenticated, read-only
 `GET /characters/plugin/wardrobe/{player_uuid}/{character_id}/worn` route. It
 returns `character_id`, `value` and `signature`; the latter two are null when
 there is no signed worn skin. It checks ownership and reads the effective slot
@@ -43,7 +43,7 @@ false` in `plugins/LibsDisguises/configs/libsdisguises.yml`. Skins already in it
 stay as they are. Helmet, mask and
 wardrobe changes do not replace it there. Portraits still
 fall back to the account skin worn before it. Play puts the cached wardrobe or
-account skin back at once, then refreshes the wardrobe from ProvinceSystem. A
+account skin back at once, then refreshes the wardrobe from TFMCWeb. A
 player whose account skin cannot be read keeps it in selection. Previews never activate a character,
 apply an outfit or restore their body. Old clicks and late portrait responses
 cannot reopen a selector after playing, starting creation or reconnecting.

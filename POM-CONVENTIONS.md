@@ -63,5 +63,5 @@ Allow only reviewed configuration differences; ignore XML layout and property
 map order. Run `mvn clean verify` when changing compiler configuration or other
 build behavior, with dependencies prepared according to the repository's CI.
 
-ProvinceSystem, ServerAssets, and Docs currently have no tracked XML or Maven
+TFMCWeb, ServerAssets, and Docs currently have no tracked XML or Maven
 POMs to format. Their other build systems keep their own conventions.

@@ -14,7 +14,7 @@ retain `api-version: '1.21.4'` loader metadata. Both still compile against Paper
 | Server | Paper 1.21.10 |
 | Build JDK and server JVM | Java 21 |
 | Plugin build tool | Maven |
-| Web/backend | Follow [ProvinceSystem](projects/ProvinceSystem/docs/README.md) |
+| Web/backend | Follow [TFMCWeb](projects/TFMCWeb/docs/README.md) |
 
 Build from `main` using the committed POM and dependency pins. CoreProtect uses
 `master`. Tagged releases record a specific version of that source.
@@ -36,6 +36,9 @@ Keep package declarations, imports, reflection strings, `plugin.yml` entry point
 and shaded-library destinations aligned with the source folders. Maven artifact
 coordinates, plugin names, and data-directory names are separate identifiers
 from Java packages.
+
+TFMCWebBridge retains the `net.tfminecraft.tfmcweb` package and the `TFMCWeb`
+runtime plugin name; its repository name is separate from these API identifiers.
 
 CoreProtect integrations use this fork's `net.tfminecraft.coreprotect` API.
 
@@ -100,7 +103,7 @@ consumer set. Source builds must pass clean verification before publication.
 | [SimpleFactions](projects/SimpleFactions/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Surgery](projects/Surgery/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [TFMCCore](projects/TFMCCore/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
-| [TFMCWeb](projects/TFMCWeb/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
+| [TFMCWebBridge](projects/TFMCWebBridge/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [Thievery](projects/Thievery/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [TLibs](projects/TLibs/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [TrialRooms](projects/TrialRooms/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
@@ -109,7 +112,7 @@ consumer set. Source builds must pass clean verification before publication.
 | [Woodworking](projects/Woodworking/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 | [WorldBorder](projects/WorldBorder/README.md) | 21 | `paper-api` | `1.21.10-R0.1-SNAPSHOT` |
 
-ProvinceSystem is a web/backend project. ServerAssets contains configurations,
+TFMCWeb is a web/backend project. ServerAssets contains configurations,
 models, resource packs, and private build inputs. Neither produces a plugin jar.
 
 ## Shared API versions

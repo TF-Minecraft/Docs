@@ -2,7 +2,7 @@
 
 ## Purpose
 
-ProvinceSystem character creator catalog matches in game permanent injury and prosthetic stages.
+TFMCWeb character creator catalog matches in game permanent injury and prosthetic stages.
 
 ## `CreationCatalogSyncService`
 
@@ -26,7 +26,7 @@ Each eligible trait includes:
 - Export new creator stages with same `min-select`, `max-select`, `points` as `stages.yml`
 - Web applies: permanent injuries 0 cost multi select, prosthetic 1 point single select, both optional
 
-## ProvinceSystem frontend
+## TFMCWeb frontend
 
 - Render permanent injury multi pick
 - Render prosthetic single pick with point cost

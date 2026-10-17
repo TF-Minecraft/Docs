@@ -29,8 +29,8 @@ until refresh completes; remote changes can take one cache interval to appear.
 
 ## Guides
 
-- [Web integration and pack generation](../ProvinceSystem/docs/integrations/armourshop.md)
-- [Skins workflow](../ProvinceSystem/docs/cosmetics/skins.md)
+- [Web integration and pack generation](../TFMCWeb/docs/integrations/armourshop.md)
+- [Skins workflow](../TFMCWeb/docs/cosmetics/skins.md)
 
 ## Builds and releases
 

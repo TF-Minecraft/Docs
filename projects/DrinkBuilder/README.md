@@ -28,7 +28,7 @@ empty, and filters them against the current prefix. `pack pull` can complete
 
 - [Failure recovery and troubleshooting](troubleshooting.md)
 - [Drink texture assets](https://github.com/TF-Minecraft/DrinkBuilder/tree/main/src/main/resources/assets) (`potion_overlay.png`, `glass_bottle.png`)
-- [Drinks workflow and integration](../ProvinceSystem/docs/cosmetics/drinks.md)
+- [Drinks workflow and integration](../TFMCWeb/docs/cosmetics/drinks.md)
 
 ## Builds and releases
 
