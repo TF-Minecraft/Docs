@@ -64,8 +64,9 @@ shows the statement and asks before running it. Edits run in one transaction wit
 foreign keys enforced and the same time limits, and the result shows the rows
 changed. SQL runs under a separate Postgres login that owns no persistent objects
 and belongs to no other roles. It may SELECT from public tables and INSERT,
-UPDATE and DELETE ordinary data. It cannot change `admin_audit` or
-`schema_migrations`, reset sequence counters, create triggers/functions, or
+UPDATE and DELETE ordinary data. Views, `admin_audit`, `schema_migrations`
+and their inherited or partitioned descendants are read only. It cannot reset
+sequence counters, create persistent large objects, create triggers/functions, or
 create, alter, truncate or drop tables. These restrictions are database grants;
 they apply even if a statement bypasses the studio's text checks.
 
@@ -76,19 +77,34 @@ application owner's `DATABASE_URL`; missing studio configuration gives a 503,
 with no fallback to the owner connection. Both logins must address the same
 site database.
 
-After migrations, provision the login from `backend/` with the owner's
-`DATABASE_URL` and a non-empty `DATABASE_STUDIO_PASSWORD` in the environment:
+After migrations, perform the initial setup from `backend/` with a non-empty
+`DATABASE_STUDIO_PASSWORD` in the environment. For this setup, `DATABASE_URL`
+must use a database administrator that can change grants on the built-in
+large-object functions:
+
+```sh
+python -m src.database.studio_role --role province_studio --restrict-large-objects
+```
+
+The explicit flag revokes PUBLIC execution of the `pg_catalog` large-object
+constructors in this database, including `lo_import` overloads. Other logins
+that rely on those PUBLIC grants also lose that access. The setup preserves
+the database owner's access and existing direct grants; it does not remove
+large-object data. Each site and preview database needs this setup.
+
+Then configure `DATABASE_STUDIO_URL` with the restricted login. Use a distinct
+role per preview database. After migrations, refresh grants on new tables with
+the owner's `DATABASE_URL` and the same password:
 
 ```sh
 python -m src.database.studio_role --role province_studio
 ```
 
-Then configure `DATABASE_STUDIO_URL` with that login. Use a distinct role per
-preview database. Re-run provisioning after migrations to refresh grants on new
-tables. The command creates or refreshes the restricted role without changing
-data. It refuses an existing owner or privileged role, role memberships, and
-PUBLIC grants that would bypass the restrictions; it does not change other
-users' grants.
+Ordinary refresh changes no data or other logins' grants. It refuses an existing
+owner or privileged role, role memberships, and effective grants that would
+bypass the restrictions, including large-object constructor access. Direct
+table and sequence grants are reset; unsafe inherited or PUBLIC grants need
+administrator review.
 
 The studio authenticates as this login for every request. It does not use
 `SET ROLE` on the owner's connection, which SQL calling `set_config` could undo.
