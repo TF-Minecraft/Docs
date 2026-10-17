@@ -44,7 +44,8 @@ still executes the Minecraft ban.
 Staff and Helpers. The name comes from the latest CoreProtect `co_user` row for
 that UUID when available, otherwise the name stored with the link. A rename
 does not change which account is selected. The lookup labels the name's source.
-When no name is recorded, moderation identifies the player by UUID.
+When no name is recorded, the lookup still displays the UUID, but warn/ban
+notifications stop until a Minecraft name is recorded.
 
 `username` is an optional fallback on warn/ban for an account confirmed to be
 unlinked. Staff records label this **Unlinked (manual name)**. A supplied name
@@ -60,6 +61,9 @@ and looks up the account's current Minecraft link. The case stores its Discord
 ID and optional Minecraft UUID as structured `participants`; the ruling retains
 its full 500-character limit. Names are display labels, never account keys.
 `/case-log` without `user` keeps manual entry for older name-only workflows.
+If the identity lookup or case save fails, the bot returns the full submitted
+draft in a private text attachment. If the save connection fails, check Cases
+before retrying because the server may already have saved the case.
 
 Warn, ban-notification and staff-notice precedent records also carry structured
 participants. An anonymous staff notice keeps the recipient's Discord ID even
