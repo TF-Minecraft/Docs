@@ -3,13 +3,20 @@
 Staff-only Discord tool: log past moderation cases, then semantically search them so
 similar incidents get similar rulings. Bot never decides punishments — it's advisory.
 
-**See also:** [integrations/discord-bot.md](discord-bot.md) (bot cog pattern), `tfmc_bot/precedent/` (cog source).
+**See also:** [Discord bot](discord-bot.md) (linked account selection and deployment),
+[`ProvinceSystem/discord/precedent/`](https://github.com/TF-Minecraft/ProvinceSystem/tree/main/discord/precedent) (cog source).
 
 ## Flow
 
-1. Staff run `/case-log` after handling an incident (players, rule broken, evidence
+1. Staff run `/case-log [user]` after handling an incident (players, rule broken, evidence
    summary, ruling, punishment) → cog POSTs to ProvinceSystem → ProvinceSystem embeds
    the case (Voyage AI) and stores it in the site's Postgres (`pgvector`).
+
+   With `user`, the selected Discord member's verified link supplies the Minecraft
+   name; there is no player-name input. The ruling retains their Minecraft UUID and
+   Discord ID, so a rename does not erase the recorded identity. Without `user`,
+   staff can still enter several or unlinked players manually. See the
+   [linked account workflow](discord-bot.md#linked-accounts-in-moderation).
 
    **Only the summary is embedded** (`_case_text` in `precedent_routes.py`). A search
    query is always a description of what happened: staff cannot cite the rule number
@@ -43,9 +50,9 @@ auto-log a precedent case on every use — no separate `/case-log` needed for th
 `/minecraftnotify` is an existing anonymous-to-recipient staff DM (unrelated to
 in-game warnings); its precedent record still keeps the real issuing staff member
 as `logged_by` internally, for staff-side accountability, even though the
-recipient never sees who sent it. Neither command's own behavior (DMs, log
-channel embeds, params) was changed — the precedent log call is a pure addition
-via `_log_precedent()` in `minecraftban.py`.
+recipient never sees who sent it. `/minecraftwarn` resolves its selected user
+through the verified Minecraft link and retains the UUID and Discord ID in its
+precedent ruling. `/minecraftnotify` retains its existing anonymous message flow.
 
 ## Staff panel tab (`/admin/precedent`)
 
