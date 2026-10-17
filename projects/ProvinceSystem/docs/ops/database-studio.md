@@ -55,7 +55,9 @@ Text and JSONB values in columns whose names look secret (`token`, `secret`, `pa
 `nonce`, `api_key`, such as `token_hash` and `refresh_token`) show as `••••••`.
 This keeps them off the screen; it is not access control. Integers beyond 2^53 are
 sent as text, blobs as their size and first 32 bytes in hex, timestamps in ISO
-format and JSONB objects and arrays as JSON text.
+format and JSON/JSONB values as the database's JSON text. JSON scalars keep their
+JSON representation, JSON null stays distinct from SQL NULL, and JSON numbers
+retain their precision.
 
 ## Editing
 
