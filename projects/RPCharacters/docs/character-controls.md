@@ -109,17 +109,29 @@ Names in duel messages and titles use character display names, respecting aliase
 and masks. The same file contains chat and title text;
 existing configurations use bundled defaults for missing message keys.
 
+## PvP modes
+
+Every character is nonlethal when it becomes active: after logging in, after a server restart and after switching character. The mode is never saved. `/pvp lethal` shows a warning and turns lethal on only after `/pvp lethal confirm` (or its [Confirm] button) within 30 seconds (`lethal-confirm-seconds` in `pvp.yml`). `/pvp nonlethal` switches back at once, and `/pvp` shows the current mode. The warning and every other message are in `pvp.yml`.
+
+The attacker's mode decides what a killing blow does. A nonlethal player's killing blow knocks the victim out; a lethal player's kills. Mobs, lava and other damage with no player behind it always kill.
+
 ## Nonlethal knockouts
 
 GSit holds downed players in a crawl pose for the knockout duration, alongside freeze and blindness. The pose uses GSit's API, bypasses command restrictions, respects other plugins' crawl vetoes, and releases only knockout-created crawls on recovery. GSit is optional for the rest of RPCharacters; without it, knockouts retain freeze and blindness only.
 
-While downed, a player can only be finished by another player in lethal mode, a mob, `/kill`, the void or the world border: falls, drowning, fire and other damage with no attacker leave them at half a heart, and the fall distance built up by the freeze is cleared when they get up. Knockouts never apply to players in a started SimpleFactions battle, so the battle records the death and routes the respawn.
+A knockout outside a `/pvp start` fight lasts 30 seconds (`knockout-seconds`). In a fight the victim stays down until the winner chooses, for up to five minutes (`strikes.decision-seconds`), so the scene can be roleplayed. Blindness lasts only the first minute (`knockout-blindness-seconds`) and ends early if the winner chooses sooner.
+
+A downed player can talk, but cannot hit, shoot bows or crossbows, throw anything, cast skills or spells, eat, drink, use or drop items, or place and break blocks. GunsAndGadgets guns ignore cancelled clicks, so a downed player's gun still fires, but only its armour-piercing share of the damage lands. Nothing hurts them except `/kill`, the void and the world border, so no one can finish them off while the winner decides. The fall distance built up by the freeze is cleared when they get up. Knockouts never apply to players in a started SimpleFactions battle, so the battle records the death and routes the respawn.
 
 ## PvP strikes
 
-After `/pvp start`, the fight lasts 15 minutes unless the player who started it runs `/pvp end`. When it ends, players who have not died see a title that a new RP interaction is needed. Whoever kills or knocks someone out chooses to spare them or give a strike; the third strike kills the character, though a killer can wound or maim instead of killing.
+After `/pvp start`, the fight lasts 15 minutes unless the player who started it runs `/pvp end`. When it ends, players who have not died see a title that a new RP interaction is needed. The first strike is a healing injury, the second a permanent one, and the third kills the character.
 
-The same player must wait 24 hours by default before striking a character again (`strikes.same-target-cooldown-hours` in `pvp.yml`; 0 disables the wait), so at that default they cannot land all three strikes in a day. Lockpicking, robbing, pickpocketing and looting locked graves start a timed evil RP session, during which any strike kills and a death leaves an unlocked grave.
+- A lethal player already chose not to spare anyone, so anyone they kill in the fight gets a strike at once, with no prompt. The struck player keeps their items and respawns at their spawn point; their coin pouch still drops. A killer who can loot graves (Bandit, or the grave admin permission) instead gets a locked grave they can rob.
+- After a nonlethal knockout, the winner chooses to spare the victim or give a strike. When the strike would kill, they can also wound (healing injury) or maim (permanent injury) instead. No choice, or the winner logging out, spares the victim.
+- When a strike kills the character, its items go into a grave only the killer (or a grave admin) can open. The dead character's owner can't open or unlock it, and grave insurance can't recover it.
+
+The same player must wait 24 hours by default before striking a character again (`strikes.same-target-cooldown-hours` in `pvp.yml`; 0 disables the wait), so at that default they cannot land all three strikes in a day. A blocked strike counts as a spare. Lockpicking, robbing, pickpocketing and looting locked graves start a timed evil RP session, during which any strike kills; a death that gives no strike leaves an unlocked grave.
 
 ## Codex rarity
 
