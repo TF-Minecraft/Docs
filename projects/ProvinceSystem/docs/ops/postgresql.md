@@ -60,7 +60,7 @@ the target revision's files under `backend/src/database/migrations/`. A revision
 is refused with exit 4 and the log line `<sha> predates database migration NNNN; fix forward`. After a failed
 deploy it checks the last healthy revision the same way before rolling back; if the failed deploy applied a
 migration that revision predates, the backend stays stopped and the log records
-`failed: database is newer than the last healthy revision; backend kept stopped`. The check lives in
+`failed: last healthy revision does not fit the database (see log); backend kept stopped`. The check lives in
 `site-deploy` because revisions from before it have no such check in their own code.
 
 With the backend stopped, `site-deploy` then runs two steps from the target image:

@@ -135,7 +135,7 @@ the owner of both checkouts. Deploys to the same site run one at a time.
 5. Starts both services without rebuilding, verifies their image IDs, then waits up to 3 minutes for both health checks.
    On failure it stops the backend and checks the last healthy revision against `schema_migrations` the same
    way. If the failed deploy applied a migration that revision predates, the backend stays stopped and the log
-   records `failed: database is newer than the last healthy revision; backend kept stopped`; deploy a fix
+   records `failed: last healthy revision does not fit the database (see log); backend kept stopped`; deploy a fix
    forward. Otherwise it restores the previous code, rebuilds, runs `prepare` and `studio` again and checks
    health, then exits 5. If any of those steps fails, the backend stays stopped. No deploy restores a dump.
 6. After a healthy www deploy that changes `backend/src/patchnotes/`, runs `sudo tfmc-patchnotes-update <sha>` so the
