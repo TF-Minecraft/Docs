@@ -57,5 +57,5 @@ Schema assets: [assets/map-export-schema.json](assets/map-export-schema.json) (S
 
 - Deployment and QA checklists: [STAGING.md](../STAGING.md)
 - Preview and deployment workflow: [DEPLOY.md](../DEPLOY.md)
-- Database configuration, migrations and rollback: [PostgreSQL](ops/postgresql.md)
+- Database configuration, migrations, backups and restores: [PostgreSQL](ops/postgresql.md)
 - Update reference: [UPDATE.md](../UPDATE.md)

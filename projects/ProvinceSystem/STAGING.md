@@ -8,7 +8,7 @@ All site records live in the stack's PostgreSQL `db` service (`pgvector/pgvector
 `tfmc-staging_db` named volume. The backend waits for the database health check and uses `DATABASE_URL`.
 The clone's `backend/src/data`, `input`, `defines` and `output` directories are mounted for assets and generated
 files; copying these directories does not copy site records. CoreProtect remains an external SQLite source.
-Use [Native PostgreSQL operations](docs/ops/postgresql.md) for reviewed data copies, migrations and rollback.
+See [PostgreSQL storage](docs/ops/postgresql.md) for migrations, backups and restores.
 
 **Product docs:** [docs/README.md](docs/README.md) · **Flows:** [docs/flows/journeys.md](docs/flows/journeys.md) · **Dev flags:** [docs/ops/dev-config.md](docs/ops/dev-config.md)
 
@@ -26,8 +26,7 @@ do not run `git reset --hard` there. If a manual deployment is necessary, use
 `sudo -u tfmc site-deploy deploy dev <full sha>` on the TF server.
 
 Do not run the local staging scripts on the TF server: their Compose project name, `tfmc-staging`, is also used
-by managed Dev. Main (`www`) deploys only through an explicitly requested **Actions → Deploy → Run workflow**;
-local staging does not cut it over.
+by managed Dev. Main (`www`) deploys only through an explicitly requested **Actions → Deploy → Run workflow**.
 
 ## Start a separate local stack
 
@@ -64,8 +63,9 @@ Stop later:
 ```
 
 Stopping removes containers and the stack network, but retains the database volume and mounted assets.
-Removing the volume deletes the local site records. For a copy of another site's data, follow the
-[native copy procedure](docs/ops/postgresql.md), which handles database records separately from assets.
+Removing the volume deletes the local site records. To load another site's records, restore one of its
+PostgreSQL deploy dumps into this stack's database with `pg_restore`
+([backups and restores](docs/ops/postgresql.md#backups-and-restores)); copy asset directories separately.
 
 ## Same-host integrations
 
@@ -110,7 +110,7 @@ configuration for a shared or longer-lived stack. `POSTGRES_PASSWORD` comes from
 it when initializing the volume, so changing the variable alone does not rotate an existing database password.
 Do not copy host Dev administrator credentials into local or branch-preview containers. If testing Database
 Studio, provision a separate restricted login and set `DATABASE_STUDIO_URL` for the same local database as
-described in the [native guide](docs/ops/postgresql.md).
+described in the [PostgreSQL guide](docs/ops/postgresql.md).
 
 ## Auth hardening
 

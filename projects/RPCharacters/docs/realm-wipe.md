@@ -17,7 +17,7 @@ Each realm has its own website: Dev (realm `dev`) uses the dev site, and Main (r
 | Realm | Read from the TFMCWeb gateway (`realm.id`), same as pending ingest and catalog sync. Deletes site tables for **this** `realm_id` only. Aborts if TFMCWeb cannot supply a realm id. |
 | Confirm | `/rpcharacter wipe website` then `/rpcharacter wipe website confirm`. 30s TTL, same sender. No bare `/rpcharacter confirm`. |
 | Auth | Command: `rpcharacters.admin`, console allowed. HTTP: `X-Plugin-Key` via `ProvinceSystemClient`. |
-| Player meta | Does **not** clear `rpc_player_meta` / `character_player_meta` (ranks, 18+, slots). |
+| Player meta | Does **not** clear `web_entitlements` (rank entitlements from TFMCWeb) or `character_account_meta` (18+ answer, account age, kit cooldowns). |
 | Local data | Does **not** delete `plugins/RPCharacters/data/**`. In-game characters reappear on the site at their owner's next roster push. |
 
 Only one server should ingest a realm; two ingesting servers would race on pending ack.

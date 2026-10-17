@@ -81,7 +81,9 @@ and RPCharacters trims name colours to the rank's limit at login.
 ProvinceSystem runs the same name, race age, trait and clue checks on `POST /characters`
 ([creation_rules.py](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/characters/creation_rules.py)),
 so the wizard shows the problem instead of the create being rejected later. Pending creates count
-towards the slot limit, and the create page says so when every slot is taken. In the wizard, a trait
+towards the slot limit, and the create page says so when every slot is taken. The website takes the limit from
+the player's TFMCWeb entitlements (`web_entitlements`); a player TFMCWeb has never synced gets the catalogue's
+default limit. In the wizard, a trait
 whose requirement is missing cannot be picked, and picks are dropped when their stage closes or their
 requirement goes, for example evil archetypes once the personality that unlocks them is removed.
 

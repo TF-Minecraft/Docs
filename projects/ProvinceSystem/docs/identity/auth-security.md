@@ -201,7 +201,10 @@ their views and their Profile sessions; the role change or revocation is the aud
 | Profile / map staff | `profile` scope session from `/profile` redeem or a linked Discord account ([Profile without a code](#profile-without-a-code)); carries `player_uuid` and `realm_id` for permission checks |
 | No website passwords | Codes are UUID-bound and not shareable by design |
 
-Codes are **hashed at rest** (SHA-256). Plaintext shown once in-game at mint.
+Codes are **hashed at rest** (SHA-256). Plaintext shown once in-game at mint. The `codes` row keeps the
+plaintext only while the code is open, for the plugin list of active codes (`GET /skins/plugin/codes/active`).
+Redeeming a profile code, using a skin or drink code for a submission, and revoking a code clear it in the same
+update. The backend's hourly housekeeping loop clears it once a code expires unused.
 
 ### Scope enforcement
 
@@ -222,7 +225,7 @@ Invalid or expired tokens return **401**. Wrong scope returns **403**.
 ### Staff-only maps
 
 - Map entries in `maps.yml` declare `public: false` and optional per-map `staff_permission`.
-- `ensure_map_access()` returns **403** without a valid profile Bearer session and matching permission from `rpc_player_meta` / LuckPerms sync.
+- `ensure_map_access()` returns **403** without a valid profile Bearer session and matching permission from `web_entitlements` (TFMCWeb's LuckPerms sync).
 
 ### Map title editor write
 
