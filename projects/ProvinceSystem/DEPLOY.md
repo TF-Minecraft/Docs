@@ -117,9 +117,10 @@ the owner of both checkouts. Deploys to the same site run one at a time.
 
 1. Refuses commits not on `origin/main` (exit 4) and, on www, a checkout with uncommitted changes to tracked files
    (exit 1). On dev, `git checkout --detach` keeps the expected local edits and refuses if they would be overwritten.
-2. Builds changed services before stopping the backend for a forward deployment: `frontend/`, `shared/` or
-   `docker-compose*` rebuild the frontend; `backend/`, `shared/`, `frontend/lib/skins/` or `docker-compose*` rebuild
-   the backend. Other changes still pass through the stopped-backend database and health checks.
+2. Selects private `/home/tfmc/.site-images-<site>.json` image tags for the exact requested revision and builds
+   both services using Docker's cache before stopping the backend for a forward deployment. The overlay is
+   applied after the site's private Compose override. Both running container image IDs must match those
+   revision tags before the deployment can pass its health checks, including an already-deployed shortcut.
 3. Starts/checks the `db` service and writes a private custom-format PostgreSQL backup as
    `postgres.before-deploy-<sha>-<UTC time>.dump`, publishing it by an atomic rename after `pg_dump` succeeds.
    Only these PostgreSQL deploy dumps are pruned to the newest 10. While SQLite is still authoritative, it also
@@ -133,12 +134,15 @@ the owner of both checkouts. Deploys to the same site run one at a time.
    exactly before adoption; an existing populated target is not erased. Later deploys check the marked database
    identity and migration history and apply native migrations without recopying SQLite. Studio provisioning
    requires a separate restricted `DATABASE_STUDIO_URL` login for the same database.
-5. Starts the backend and changed services without rebuilding, then waits up to 3 minutes for both health checks.
+5. Starts both services without rebuilding, verifies their image IDs, then waits up to 3 minutes for both health checks.
    On failure it stops the backend, restores the previous code, rebuilds and checks again, then exits 5. When
    returning to legacy code after a cutover, it first reverse-exports and verifies PostgreSQL into SQLite,
    including writes accepted during the health-check window. A requested native-to-legacy downgrade likewise
    exports with the current native image before checking out and starting old code. If reverse export fails,
-   keep the backend stopped for operator inspection. Native code rollback retains PostgreSQL data;
+   keep the backend stopped for operator inspection. If a legacy target accepts SQLite writes and then fails,
+   the tracked offline transition verifies the unchanged PostgreSQL baseline before importing those accepted
+   writes back in one transaction. Independently changed PostgreSQL targets are refused. Native code rollback
+   retains PostgreSQL data and uses retained, checksum-verified definitions of already-applied migrations;
    no deploy automatically restores a dump.
 6. After a healthy www deploy that changes `backend/src/patchnotes/`, runs `sudo tfmc-patchnotes-update <sha>` so the
    [patch note jobs](docs/ops/patch-notes-jobs.md) use the same code. A failure there is logged and does not fail the
@@ -147,6 +151,8 @@ the owner of both checkouts. Deploys to the same site run one at a time.
 Each run appends a line to `/home/tfmc/site-deploy.log`. The private
 `/home/tfmc/.site-deployed-<site>` record tracks the last healthy revision separately from Git HEAD,
 so a retry resumes an interrupted build/copy instead of reporting an undeployed checkout as successful.
+Revision-tagged images carry site/revision labels. Weekly image pruning waits for both deployment locks and
+removes unused site images only after 30 days; images referenced by containers remain protected.
 
 Keep original SQLite copies, consistent cutover backups, legacy archives and the one-off import/rollback schema
 for the full rollback window of **at least 30 days**. These are outside the newest-10 PostgreSQL dump pruning;

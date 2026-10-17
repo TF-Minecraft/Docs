@@ -38,7 +38,11 @@ absence of a row; file guards coordinate wardrobe and map assets across workers.
 
 Ordered SQL files in `backend/src/database/migrations/` are recorded with checksums in `schema_migrations`.
 Startup applies pending migrations under a database advisory lock and then seeds required singleton rows.
-Edited or reordered applied migrations are refused. Add a new numbered migration for a schema change;
+Edited or reordered applied migrations are refused. Native deployment and startup retain verbatim SQL files
+in the private data mount's `postgres-migrations/`. When restoring older compatible native code, the migrator
+uses checksum-verified retained definitions only for newer versions already applied to that database; it
+never applies a newer retained file absent from the selected code. Missing or changed definitions still
+refuse startup. Add a new numbered migration for a schema change;
 do not edit an applied file or restore the removed SQLite startup upgrader. During the rollback window,
 a schema change must also preserve the reviewed import/export contract and include compatible tool updates
 and round-trip proof. The one-off copier refuses unexpected schema drift rather than exporting incomplete
@@ -81,6 +85,8 @@ after exact source verification; inconsistent nonempty targets are refused, neve
 
 `/home/tfmc/.site-deployed-<site>` separately records the last healthy revision. Git HEAD can already point
 at a target whose build or cutover was interrupted; it is not sufficient evidence of deployment success.
+A private `.site-images-<site>.json` Compose overlay selects immutable tags for both services. Cached builds
+and running-image verification bind successful deployment to that exact revision, even after interruption.
 
 ## Standalone copy and verification
 
@@ -116,8 +122,19 @@ When returning to legacy code, `site-deploy` stops the backend and uses the reta
 and verify current PostgreSQL rows before atomically replacing the serving SQLite file. This includes
 writes accepted since cutover and during a failed target's health-check window. Original snapshots and each
 reverse export remain retained. If export fails, the backend stays stopped; do not start legacy code against
-the old SQLite copy. A rollback between native revisions keeps PostgreSQL data and runs normal compatible
-migrations; it does not restore a full dump automatically.
+the old SQLite copy.
+
+The private `data/.postgres-rollback-transition.json` records SQLite authority and the immutable, verified
+export baseline before legacy code starts. If that legacy release accepts writes and then fails health,
+recovery stops it, snapshots SQLite and imports its accepted writes back only after PostgreSQL exactly
+matches a recorded baseline, including all identity counters. All 61 site tables are locked and replaced
+in one transaction; unrelated tables remain untouched and outside foreign keys refuse replacement.
+Snapshots and import attempts remain recorded so a retry after commit but before marker publication can
+verify and continue. Unexpected PostgreSQL writes are refused instead of overwritten.
+
+A rollback between native revisions keeps PostgreSQL data and uses the retained, checksum-verified SQL
+definitions described above. These must be compatible with the previous application release; retaining a
+file does not make a destructive schema change compatible. No rollback restores a full dump automatically.
 
 ## Preview provisioning
 
