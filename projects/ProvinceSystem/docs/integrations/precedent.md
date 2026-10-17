@@ -79,17 +79,28 @@ The Cases view combines, newest first:
 A warning's Discord mirror is shown once with its stored warning. Private bird
 mail is excluded. This is recorded moderation history, not a live ban-status
 check or an import of older Discord messages that were never logged.
+A manual Discord ban notification and an in-game ban event are separate records;
+without a shared event ID, the view keeps both rather than guessing they are duplicates.
 
 **Log case** binds the new case to the profile's Discord ID and/or Minecraft UUID
 without asking staff to type a name. Details show the summary, rule, ruling,
 outcome, author, date and account identifiers. Cases can be edited from the view;
 the existing audit trail records edits, deletion and restoration with their
 participant identities. History is paginated in pages of 25.
+For a case with account links, the edit form keeps its player names fixed;
+incident details, ruling and outcome remain editable. An unknown account can be
+recorded by ID with an empty display name; IDs are not saved as player names.
 
 An ID-bound case matches exact Discord IDs or UUIDs, never another account's
 reused name. Linking Minecraft later brings existing Discord cases into the
 Minecraft profile. Stored participant IDs survive unlinking; the association is
 not inferred again from display names.
+Relinking does not transfer a Minecraft account's records to another Minecraft
+account. A Minecraft profile keeps records naming its UUID and adds its current
+Discord account's records that have no Minecraft UUID. A Discord profile keeps
+records naming its Discord ID and adds Minecraft-only records from its current
+link. For example, a Discord-only case joins Minecraft history after linking,
+while a case naming both a Discord ID and an old UUID stays on those two accounts.
 
 Older cases with no structured participants match exact current or historical
 Minecraft names and show **Older name match**. These are candidates for staff to
@@ -158,7 +169,7 @@ cookie.
 | Route | Body | Returns |
 |-------|------|---------|
 | `POST /precedent/staff/log` | `{logged_by, players[], participants[]?, summary, rule, ruling, punishment}` (all fields length-capped) | `{id}` |
-| `POST /precedent/staff/search` | `{query, players[]?}` (`players` is an optional soft-boost ranking hint, not a filter) | `{matches: [{id, logged_by, players, summary, rule, ruling, punishment, created_at, distance}], synthesis, max_distance}` |
+| `POST /precedent/staff/search` | `{query, players[]?}` (`players` is an optional soft-boost ranking hint, not a filter) | `{matches: [{id, logged_by, players, participants, summary, rule, ruling, punishment, created_at, distance}], synthesis, max_distance}` |
 | `GET /precedent/staff/cases?limit=&offset=&q=` | - | `{cases: [...], total}` — plain SELECT, newest first, no Voyage/Claude cost. `limit` defaults to 500 and clamps to 1000. `q` (up to 200 characters) keeps cases containing every word, ignoring case; `total` counts those matches |
 | `GET /precedent/staff/players` | - | `{players: [...]}` — every player name in the corpus, once each ignoring case, in its newest spelling |
 | `GET /precedent/staff/case/{id}` | - | Full case (same shape as one `matches` entry) or 404 |
