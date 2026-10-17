@@ -212,6 +212,10 @@ ___
 | `a:+item` | items picked up or withdrawn by players |
 | `a:-item` | items dropped, thrown, or deposited by players |
 | `a:kill` | mobs/animals killed |
+| `a:pvp` | hits, knockouts and kills between players (see `player-pvp`) |
+| `a:hit` | hits one player landed on another, with the weapon and damage |
+| `a:knockout` | nonlethal knockouts reported by RPCharacters |
+| `a:pvp-kill` | players killed by another player, with the weapon |
 | `a:spawn` | entities placed or spawned by players |
 | `a:session` | player logins/logouts |
 | `a:+session` | player logins |
@@ -312,6 +316,10 @@ Lookup commands are generally the same as rollback commands. The primary differe
   *(lookup where Notch was each minute over the last 2 hours)*
 * `/co lookup u:Notch t:1d a:session,ping`  
   *(lookup Notch's logins, logouts and positions over the last day)*
+* `/co lookup u:Notch t:1h a:pvp`  
+  *(lookup every hit, knockout and kill Notch dealt in the last hour)*
+* `/co lookup r:30 t:30m a:hit`  
+  *(lookup who hit whom within 30 blocks in the last 30 minutes, to see who attacked first)*
 * `/co lookup u:Notch a:username`  
   *(lookup previous usernames used by Notch)*
 

@@ -63,6 +63,18 @@ Each ping is stored in the session table alongside logins and logouts, with the 
 
 Search pings with `/co lookup u:<player> a:ping`; `a:session` lists only logins and logouts. Purges remove old pings with the rest of the session history. One row per online player per minute is small: about 0.5 GB a year in SQLite for an average of 15 players online.
 
+## Player Versus Player Logging
+
+`player-pvp` logs fights between players:
+
+```yaml
+player-pvp: true
+```
+
+Every damaging hit one player lands on another is logged, including arrows, tridents, potions and other damage a player causes, with the weapon and the damage dealt. A player killed by another player gets a kill row with the killing blow's weapon, and RPCharacters reports nonlethal knockouts through the API. Cancelled hits, such as hits in a protected region, are not logged.
+
+Each row is stored at the victim's position with the attacker as the user. Search them with `/co lookup a:pvp`, or narrow to `a:hit`, `a:knockout` or `a:pvp-kill`. Rows within one second appear in the order the hits happened. Rollbacks and restores never change these rows, and block filters skip them. Set the value to `false` to stop logging, or disable it in one world with a per-world config.
+
 ## Per-World Configuration
 
 If you'd like to modify the logging settings for a specific world, simply do the following:

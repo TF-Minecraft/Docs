@@ -73,6 +73,9 @@ The following permissions can be used to restrict functionality within the plugi
 * **coreprotect.lookup.kill** *(default: op)*  
   Can be optionally used as a negative permission to prevent entity kill lookups.  
   &nbsp;
+* **coreprotect.lookup.pvp** *(default: op)*  
+  Can be optionally used as a negative permission to prevent lookups of hits, knockouts and kills between players (`a:pvp`).  
+  &nbsp;
 * **coreprotect.lookup.spawn** *(default: op)*  
   Can be optionally used as a negative permission to prevent entity spawn lookups.  
   &nbsp;
