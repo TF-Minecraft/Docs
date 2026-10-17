@@ -141,7 +141,7 @@ nothing is stored:
 | `captured_at` floor | `2020-01-01Z` | Predates SimpleFactions; a date below it is a broken clock or a hand-built payload |
 | `captured_at` ceiling | receiving server's clock + 24h | The UTC date of `captured_at` is the partition key *and* the anchor the default range clamps against, so one snapshot dated `9999-12-31` becomes `days[-1]` and pushes every real day outside every default request — with no per-day delete route to undo it. A day of slack absorbs a badly-set plugin host clock |
 | Breakdown keys | 64 per breakdown, 64 chars each | The game's component set is small and fixed. Every distinct key across a requested range becomes a full-length column in the `fields=full` response, so an unbounded dict planted once turns every later read into an unbounded allocation. Capped again on the read side so a row already in the DB cannot detonate one |
-| Integers | signed 64-bit | Past `2^63` `sqlite3` raises inside the *background* promotion, after the POST already answered 200 — the day would be permanently and silently unindexed. Out-of-range values are dropped like non-finite floats |
+| Integers | signed 64-bit | Values outside PostgreSQL bigint range would fail background indexing after the POST answered 200. Out-of-range values are dropped like non-finite floats |
 | Nesting | 32 levels | `json.loads` already refuses ~1000, but the recursive walks in `json_safe`/`json.dumps` run on top of the request's own stack; capping keeps a `[[[[…]]]]` body a 400 rather than a 500 |
 
 `ingest.index_snapshot` only calls `store.mark_deleted` when that
@@ -172,7 +172,7 @@ output/{map}/ledger/
   such early exit and promotion runs on every upload, so files already read and
   found not-complete are memoised per day and skipped on the next pass — the
   newest file (the fallback) is always re-read.
-- **SQLite** (`backend/src/skins/schema.sql`) indexes the daily canonical only —
+- **PostgreSQL** (`backend/src/database/migrations/`) indexes the daily canonical only —
   raw files are never queried, just replayed by `reindex.py` if the index needs
   rebuilding.
 
@@ -182,11 +182,11 @@ future ops decision — it is deliberately not called from anywhere, because
 promotion is derived from raw and pruning it would be irreversible loss of the
 5-minute resolution underneath the daily canonical.
 
-### SQLite tables
+### PostgreSQL tables
 
 | Table | Key | Holds |
 |-------|-----|-------|
-| `map_ledger_days` | `(map_id, day)` | One canonical row per UTC day — `captured_at`, `server_day`, `complete`, counts, and the full `globals` JSON blob verbatim |
+| `map_ledger_days` | `(map_id, day)` | One canonical row per UTC day — `captured_at`, `server_day`, `complete`, counts, and the full `globals` JSONB data |
 | `map_ledger_factions` | `(map_id, faction_key)` | The faction registry — `first_seen_*`/`last_seen_*`, latest name/rgb, `deleted_day`/`deleted_at` |
 | `map_ledger_faction_days` | `(map_id, day, faction_key)` | Per-faction, per-day columns plus `wealth_breakdown`/`prestige_breakdown`/`subjects`/`wars` as JSON |
 | `map_ledger_guild_days` | `(map_id, day, guild_id)` | Per-guild, per-day columns (guilds have no registry — see below) |
@@ -203,7 +203,7 @@ limitation, not a bug to fix here.
 
 All four routes live in `backend/src/api/ledger_routes.py`, are gated by
 `ensure_map_access`, and are plain `def` handlers (FastAPI runs them in the
-threadpool, since every body is synchronous SQLite + JSON — same reasoning as
+threadpool, since every body is synchronous PostgreSQL + JSON — same reasoning as
 `chronicle_routes.get_chronicle_index`).
 
 | Route | Returns | Caps |

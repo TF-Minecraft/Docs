@@ -37,8 +37,8 @@ queue, like web creation ([creator.md](creator.md)).
 | `character_estates` | `(realm_id, death_id)` | roster push only; never deleted by a push |
 | `will_requests` | `id` | Profile (`pending`), plugin ack (`acked`), a newer request (`replaced`) |
 
-The columns arrive through `_upgrade()` in `backend/src/skins/db.py`; the tables
-are in `backend/src/skins/schema.sql`. Code:
+The tables and columns are declared by the ordered PostgreSQL migrations in
+`backend/src/database/migrations/`. Code:
 [`characters/estates.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/characters/estates.py),
 [`characters/wills.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/characters/wills.py).
 

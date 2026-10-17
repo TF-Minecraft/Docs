@@ -50,11 +50,12 @@ Schema assets: [assets/map-export-schema.json](assets/map-export-schema.json) (S
 - **Website sign-in** - Discord OAuth powers account and staff pages. Skins, drinks, and characters also use TFMCWeb-issued UUID-bound codes; redeem → feature API session (8h).
 - **Shared cosmetic mint cooldown** - skin + drink share one clock on **TFMCWeb** (not ProvinceSystem).
 - **Discord link** - in-game `/linkdiscord` + Discord `/linkdiscord <code>`; required before upload.
-- **SQLite + disk** for skins/drinks metadata and pending files on the API.
+- **PostgreSQL + disk** for site records and pending asset files on the API.
 - **SimpleFactions = map only**; **ArmourShop = skins pack writer**; **TFMCWeb = identity + web transport**.
 
 ## Ops references
 
 - Deployment and QA checklists: [STAGING.md](../STAGING.md)
 - Preview and deployment workflow: [DEPLOY.md](../DEPLOY.md)
+- Database configuration, migrations and rollback: [PostgreSQL](ops/postgresql.md)
 - Update reference: [UPDATE.md](../UPDATE.md)

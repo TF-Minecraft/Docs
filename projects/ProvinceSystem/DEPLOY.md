@@ -5,18 +5,30 @@ ProvinceSystem changes reach the website in three steps, all driven by GitHub Ac
 
 | Step | Site | Trigger |
 | --- | --- | --- |
-| Test | `https://<branch>.tfminecraft.net` | Push to any branch except `main` ([Preview](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/.github/workflows/preview.yml)) |
+| Test | `https://<branch>.tfminecraft.net` | Push to a branch except `main`, once native preview readiness is enabled ([Preview](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/.github/workflows/preview.yml)) |
 | Staging | `https://dev.tfminecraft.net` | Merge to `main`, once **Build** passes ([Deploy](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/.github/workflows/deploy.yml)) |
 | Live | `https://www.tfminecraft.net` | **Actions → Deploy → Run workflow**, site `www` |
 
 Paths below are on the TF server.
 
+All site records use native PostgreSQL after the site's verified cutover; CoreProtect's external SQLite
+databases are unchanged. Main (`www`) remains a separate, explicitly requested manual deployment and cutover.
+See [Native PostgreSQL operations](docs/ops/postgresql.md) for the reviewed copy, verification and rollback
+procedure, including retention of the one-off SQLite import/rollback schema for at least 30 days.
+
 ## Branch previews
+
+Native preview deployment requires the repository variable `NATIVE_POSTGRES_PREVIEWS_READY=true`. Keep it
+disabled until the host scripts, database isolation and Dev migration are ready. Builds can still run while
+deployment is held. The host also requires Dev's verified authority marker at
+`/home/tfmc/provincesystem-dev-data/data/.postgres-authority.json`, a backend image labelled
+`net.tfminecraft.storage=postgres`, and both images' `org.opencontainers.image.revision` labels matching the
+requested commit. A branch without the native backend is refused.
 
 Pushing a branch builds its backend and frontend images on GitHub, in parallel, and pushes them to
 `ghcr.io/tf-minecraft/provincesystem-preview-{backend,frontend}:<slug>` (public packages). Pushes to `main` build
 the same images without deploying them and keep a registry build cache (`:buildcache`) that every branch starts
-from, so a new branch reaches its preview in about three minutes. The workflow then runs
+from. Once readiness is enabled, the workflow runs
 `up <slug> <sha>` over SSH as `psdeploy`, whose key is pinned to `ps-preview-ssh`.
 `/usr/local/sbin/ps-preview` (runs as `tfmc`) starts compose project `pv-<slug>` on the `ps-previews` network, with
 the backend running as `tfmc` and both containers under `init`;
@@ -28,10 +40,26 @@ the `ps-preview-router` Caddy container (`127.0.0.1:8090`, behind the `*.tfminec
   `codex-new-map`). Names longer than 40 characters are cut and given a 6-character hash. Hostnames already in use
   (`www`, `dev`, `api`, `mail`, `map`, `admin`, `staff`, `play`, `mc`, `status`, `preview`, `t3`, `portainer`) fail the run.
   `dependabot/**` branches are skipped.
-- **Data:** the first `up` copies the dev backend's data, input, defines and output folders, with sign-in sessions,
-  OAuth states and link codes deleted. A redeploy of the same branch keeps its data.
-- **Environment:** only `SKINS_DEV=1`, `SITE_PUBLIC_URL` and random `STAFF_KEY`/`PLUGIN_KEY`, plus
-  `SIGN_IN_SITE=https://dev.tfminecraft.net` built into the backend image. Patreon, CoreProtect and patch notes are off.
+- **Assets:** the first `up` copies Dev's data, input, defines and output mounts. It excludes SQLite databases,
+  authority markers, rollback archives, deployment and maintenance backups, and regenerable derived output.
+- **Database:** each preview gets a database, an owner login and a separate restricted Studio login on Dev's
+  PostgreSQL server. The private internal Docker network `ps-preview-database` exposes that server as
+  `ps-preview-db`; preview backends use an owner connection pool capped at three. A redeploy keeps that preview's
+  database and assets.
+- **Clone:** the trusted live Dev helper
+  ([`backend/src/database/preview.py`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/database/preview.py))
+  creates the 61-table site schema using reviewed migrations under the preview owner. A site-data-only custom
+  dump/restore copies Dev's site records and identity counters; it copies no Precedent or patch note data,
+  ownership or ACLs. Schema creation and privileged restore use trusted Dev tooling, not branch code.
+- **Scrub:** before startup, the helper clears sessions, user sessions, Discord OAuth/link state, preview sign-in
+  tickets, Microsoft link state, and Patreon tokens, OAuth and pending-link state, including creator credentials.
+  It revokes redemption and war declaration codes and clears redemption-code plaintext, retaining rows needed by
+  foreign-key-linked content.
+- **Environment:** database URLs contain only that preview's owner and Studio credentials; Dev's administrator
+  credentials never reach a preview. The host supplies random `STAFF_KEY`/`PLUGIN_KEY`, `SKINS_DEV=1`,
+  `PROFILE_REALM_ID=dev`, `SITE_PUBLIC_URL`, `SIGN_IN_SITE=https://dev.tfminecraft.net` and the pool limit.
+  Patreon, direct Discord OAuth and Microsoft linking are disabled. `SIGN_IN_SITE` disables the Precedent and
+  patch note routers, and no CoreProtect connection settings are supplied.
 - **Sign-in:** Discord sign-in goes through dev, which needs `PREVIEW_SIGN_IN_DOMAIN=tfminecraft.net`, and keeps the
   dev account's role ([Branch previews](docs/identity/auth-security.md#branch-previews)). A player signed in on dev
   usually skips Discord.
@@ -40,6 +68,24 @@ the `ps-preview-router` Caddy container (`127.0.0.1:8090`, behind the `*.tfminec
 - **Lifetime:** each `up` sets the expiry to 90 minutes later; `ps-preview-reap.timer` runs `reap` every minute.
   Push again or re-run **Preview** on the branch to restart it. Deleting the branch (merged branches are deleted
   automatically) runs `down` at once. Closing a PR without merging leaves the preview until it expires.
+- **Cleanup:** expiry, branch deletion, explicit `down` and failed creation/startup remove containers, the marked
+  database and both roles. Cleanup failures retain metadata for retry; the reaper also finds marked orphan
+  databases and roles when a preview directory is missing. Unexpected ownership or role identities require
+  operator inspection rather than broad cleanup of unrelated objects.
+- **Publication:** `up` reports success and sets the expiry only after the public UI and API pass health checks.
+  Host preview and Dev deployment locks prevent cloning while Dev is being deployed or migrated.
+
+Before enabling native previews, a Dev administrator must explicitly run the isolation setup from the trusted
+Dev backend:
+
+```bash
+sudo -n -u tfmc /usr/local/sbin/ps-compose dev exec -T backend python3 -m src.database.preview setup
+```
+
+This revokes `PUBLIC CONNECT` on connectable databases in Dev's PostgreSQL cluster, preserving database-owner
+access and existing direct grants. Provisioning grants each runtime preview login access only to its own
+database and refuses creation if either login can connect elsewhere. Review this cluster-wide change in the
+[native operations procedure](docs/ops/postgresql.md) before enabling the workflow variable.
 
 Inspect or stop previews by hand:
 
@@ -71,22 +117,48 @@ the owner of both checkouts. Deploys to the same site run one at a time.
 
 1. Refuses commits not on `origin/main` (exit 4) and, on www, a checkout with uncommitted changes to tracked files
    (exit 1). On dev, `git checkout --detach` keeps the expected local edits and refuses if they would be overwritten.
-2. Backs up `province.db` with SQLite's backup API inside the backend container as `province.db.before-deploy-<sha>-<UTC time>`, keeping the newest 10. When the compose file has a `db` service, it starts it and writes `postgres.before-deploy-<sha>-<UTC time>.dump` (`pg_dump --format=custom`), also keeping 10.
-3. Rebuilds only what changed: `frontend/`, `shared/` or `docker-compose*` rebuild the frontend; `backend/`,
-   `shared/`, `frontend/lib/skins/` or `docker-compose*` rebuild the backend (`up -d --build --no-deps`).
-   Other changes only move the checkout.
-4. Waits up to 3 minutes for both health checks. If they fail, it puts the previous commit back, rebuilds and checks
-   again, then exits 5. It never restores the database; restore a backup by hand if a migration needs undoing.
-5. After a healthy www deploy that changes `backend/src/patchnotes/`, runs `sudo tfmc-patchnotes-update <sha>` so the
+2. Builds changed services before stopping the backend for a forward deployment: `frontend/`, `shared/` or
+   `docker-compose*` rebuild the frontend; `backend/`, `shared/`, `frontend/lib/skins/` or `docker-compose*` rebuild
+   the backend. Other changes still pass through the stopped-backend database and health checks.
+3. Starts/checks the `db` service and writes a private custom-format PostgreSQL backup as
+   `postgres.before-deploy-<sha>-<UTC time>.dump`, publishing it by an atomic rename after `pg_dump` succeeds.
+   Only these PostgreSQL deploy dumps are pruned to the newest 10. While SQLite is still authoritative, it also
+   takes a final consistent `province.db.before-deploy-<sha>-<UTC time>` backup with SQLite's backup API after
+   stopping the backend.
+4. For native target code, runs
+   [`src.database.operations`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/database/operations.py)
+   from the reviewed target image while the backend is stopped. The first cutover archives the original SQLite
+   database and legacy schema/columns under the data mount's `migration-rollback/`, copies and verifies site
+   records, then atomically publishes `.postgres-authority.json`. An interrupted committed copy must verify
+   exactly before adoption; an existing populated target is not erased. Later deploys check the marked database
+   identity and migration history and apply native migrations without recopying SQLite. Studio provisioning
+   requires a separate restricted `DATABASE_STUDIO_URL` login for the same database.
+5. Starts the backend and changed services without rebuilding, then waits up to 3 minutes for both health checks.
+   On failure it stops the backend, restores the previous code, rebuilds and checks again, then exits 5. When
+   returning to legacy code after a cutover, it first reverse-exports and verifies PostgreSQL into SQLite,
+   including writes accepted during the health-check window. A requested native-to-legacy downgrade likewise
+   exports with the current native image before checking out and starting old code. If reverse export fails,
+   keep the backend stopped for operator inspection. Native code rollback retains PostgreSQL data;
+   no deploy automatically restores a dump.
+6. After a healthy www deploy that changes `backend/src/patchnotes/`, runs `sudo tfmc-patchnotes-update <sha>` so the
    [patch note jobs](docs/ops/patch-notes-jobs.md) use the same code. A failure there is logged and does not fail the
    deploy.
 
-Each run appends a line to `/home/tfmc/site-deploy.log`.
+Each run appends a line to `/home/tfmc/site-deploy.log`. The private
+`/home/tfmc/.site-deployed-<site>` record tracks the last healthy revision separately from Git HEAD,
+so a retry resumes an interrupted build/copy instead of reporting an undeployed checkout as successful.
+
+Keep original SQLite copies, consistent cutover backups, legacy archives and the one-off import/rollback schema
+for the full rollback window of **at least 30 days**. These are outside the newest-10 PostgreSQL dump pruning;
+the deployment script does not automatically delete them. Follow the
+[copy and rollback procedure](docs/ops/postgresql.md) before changing authority or removing retained material.
 
 ### Rolling back www
 
-Run **Deploy** with site `www` and an older commit on `main`. Data written since that commit stays; restore a
-`deploy-backups` copy only if the newer code changed the data.
+Run **Deploy** with site `www` and an older commit on `main` only when explicitly requested. A native code rollback
+keeps current PostgreSQL data. A downgrade to legacy code uses the stopped-backend reverse export above so
+post-cutover writes survive. A full PostgreSQL restore is a separate manual operation and also affects Precedent
+and patch notes; use the [native rollback procedure](docs/ops/postgresql.md) to choose the appropriate recovery.
 
 ### Deploying by hand
 
@@ -118,22 +190,29 @@ files out of images, so a local `docker-compose.staging.yml` run gets only the s
 sync to the site go to `backend/src/data/plugin-assets/`, inside the data mount. Both compose files run the backend and
 frontend with `init: true`; in the backend it reaps the renderer's Chromium processes.
 
-### The site's Postgres
+### The site's PostgreSQL
 
-Each compose project has a `db` service (`pgvector/pgvector:pg17`) holding Precedent and patch notes, in the
-volume `provincesystem_db` (www) or `tfmc-staging_db` (Dev). It has no host port; the backend reaches it as `db`
+Each compose project has a `db` service (`pgvector/pgvector:pg17`) holding all native site records alongside
+Precedent and patch notes, in the volume `provincesystem_db` (www) or `tfmc-staging_db` (Dev).
+It has no host port; the backend reaches it as `db`
 and waits until it is healthy. Each site's password is `POSTGRES_PASSWORD` in its project's `.env`
 (`/home/tfmc/ProvinceSystem/.env` or `/home/tfmc/tfmc-staging/.env`, mode 600; hex, as it goes into a URL), and www's
 `backend/.env` sets
 `DATABASE_URL=postgresql://provincesystem:<password>@db:5432/provincesystem`. Dev's compose file builds `DATABASE_URL`
 from the same password, and its override repeats it because its `environment: !override` replaces the list.
-Postgres reads `POSTGRES_PASSWORD` only when it creates the volume; to change the password later, run
+`DATABASE_STUDIO_URL` must address that same database using a separate restricted login; it must not reuse the
+owner credentials. Initial restriction of `PUBLIC` large-object constructor privileges is an explicit,
+reviewed administrator step in [Native PostgreSQL operations](docs/ops/postgresql.md); preserve owner access
+and review existing direct grants. Deploys refresh the Studio grants after migrations and refuse unsafe roles.
+PostgreSQL reads `POSTGRES_PASSWORD` only when it creates the volume; to change the password later, run
 `ALTER USER provincesystem PASSWORD '…'` in `psql` and update both files.
 
 ```bash
 sudo -u tfmc ps-compose main exec db psql -U provincesystem provincesystem      # a shell
-sudo -u tfmc ps-compose main exec -T db pg_restore -U provincesystem -d provincesystem --clean --if-exists < backup.dump
 ```
+
+Do not treat copying the asset mounts as a database import. Use the
+[native operations guide](docs/ops/postgresql.md) for copies, restores, validation and rollback.
 
 ## Keys and secrets
 

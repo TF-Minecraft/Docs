@@ -105,7 +105,9 @@ Player DMs: submitted (outbox poll); approved / denied from cog after staff API 
 
 ## Storage
 
-### SQLite
+### PostgreSQL
+
+Site records share `DATABASE_URL`; see [database configuration and migrations](../ops/postgresql.md).
 
 - `codes` - hashed codes, player UUID, expiry, redeemed_at on submit
 - `submissions` - kind, display_name, status, paths, discord_user_id, tiers, base_set, grip_preset, name colours/styles

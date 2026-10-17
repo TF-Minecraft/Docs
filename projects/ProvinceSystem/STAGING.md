@@ -1,8 +1,14 @@
-# Staging stack (AMP host / SSH)
+# Local staging stack
 
-Temporary ProvinceSystem next to production for Discord bot and plugin integration testing. Uses ports **18001** (API) and **13001** (UI). Production `docker-compose.yml` (8000/3000) is unchanged.
+Use a separate development machine or isolated test host for Discord bot and plugin integration testing with
+[`docker-compose.staging.yml`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/docker-compose.staging.yml).
+The local stack uses ports **18001** (API) and **13001** (UI).
 
-Data lives only under this clone (`backend/src/data`, etc.).
+All site records live in the stack's PostgreSQL `db` service (`pgvector/pgvector:pg17`), persisted in the
+`tfmc-staging_db` named volume. The backend waits for the database health check and uses `DATABASE_URL`.
+The clone's `backend/src/data`, `input`, `defines` and `output` directories are mounted for assets and generated
+files; copying these directories does not copy site records. CoreProtect remains an external SQLite source.
+Use [Native PostgreSQL operations](docs/ops/postgresql.md) for reviewed data copies, migrations and rollback.
 
 **Product docs:** [docs/README.md](docs/README.md) · **Flows:** [docs/flows/journeys.md](docs/flows/journeys.md) · **Dev flags:** [docs/ops/dev-config.md](docs/ops/dev-config.md)
 
@@ -11,13 +17,19 @@ Data lives only under this clone (`backend/src/data`, etc.).
 - Docker + Docker Compose on the host
 - Git access to this repo
 
-## Updating staging
+## Managed host Dev
 
-The TF server's staging clone serves `dev.tfminecraft.net` and deploys automatically whenever `main` changes; see
-[DEPLOY.md](DEPLOY.md). It keeps intentional local edits, so do not `git reset --hard` it. To deploy by hand, run
-`sudo -u tfmc site-deploy deploy dev <full sha>` on the host.
+The TF server's `/home/tfmc/tfmc-staging` checkout serves `dev.tfminecraft.net` and deploys automatically once
+**Build** passes on `main`; see [DEPLOY.md](DEPLOY.md). That managed Dev site is separate from the local stack
+described here. Its checkout preserves intentional local edits and refuses updates that would overwrite them;
+do not run `git reset --hard` there. If a manual deployment is necessary, use
+`sudo -u tfmc site-deploy deploy dev <full sha>` on the TF server.
 
-## Start (SSH)
+Do not run the local staging scripts on the TF server: their Compose project name, `tfmc-staging`, is also used
+by managed Dev. Main (`www`) deploys only through an explicitly requested **Actions → Deploy → Run workflow**;
+local staging does not cut it over.
+
+## Start a separate local stack
 
 First-time clone:
 
@@ -32,9 +44,12 @@ curl -s http://127.0.0.1:18001/ping
 
 `staging-down.sh` clears a failed partial up before `staging-up.sh`.
 
-On a separate test clone, update with `git fetch origin && git reset --hard origin/main`, then restart:
+For later updates to this separate test clone, preserve local changes and fast-forward `main`, then restart:
 
 ```bash
+git fetch origin
+git checkout main
+git merge --ff-only origin/main
 ./scripts/staging-down.sh
 ./scripts/staging-up.sh
 curl -s http://127.0.0.1:18001/ping
@@ -47,6 +62,10 @@ Stop later:
 ```bash
 ./scripts/staging-down.sh
 ```
+
+Stopping removes containers and the stack network, but retains the database volume and mounted assets.
+Removing the volume deletes the local site records. For a copy of another site's data, follow the
+[native copy procedure](docs/ops/postgresql.md), which handles database records separately from assets.
 
 ## Same-host integrations
 
@@ -76,15 +95,22 @@ Set the same `api_base_url` and `staff_key` on **`drinksreview`** and **`minecra
 
 Then in Discord: `-reload skinsreview` → `/skinsreview ping`. Enable slash if needed: `!slash enable skinsreview` then `!slash sync`.
 
-## Keys (compose defaults)
+## Local Compose settings
 
 | Env | Value |
 |-----|--------|
 | `SKINS_DEV` | `1` |
 | `STAFF_KEY` | `dev-staff-key` |
 | `PLUGIN_KEY` | `dev-plugin-key` |
+| `DATABASE_URL` | Owner connection to the stack's own `db:5432/provincesystem` |
 
-Override in `docker-compose.staging.yml` if you want stronger keys for a longer-lived staging box.
+The committed API-key defaults are for disposable local tests. Set private values in the local Compose
+configuration for a shared or longer-lived stack. `POSTGRES_PASSWORD` comes from the local project's `.env`
+(with a development fallback); PostgreSQL reads
+it when initializing the volume, so changing the variable alone does not rotate an existing database password.
+Do not copy host Dev administrator credentials into local or branch-preview containers. If testing Database
+Studio, provision a separate restricted login and set `DATABASE_STUDIO_URL` for the same local database as
+described in the [native guide](docs/ops/postgresql.md).
 
 ## Auth hardening
 
@@ -107,6 +133,7 @@ Tick after a staging deploy or major pull. Detail for each flow: [docs/flows/jou
 
 - [ ] `curl -s http://127.0.0.1:18001/ping` → `{"ok":true}`
 - [ ] `http://127.0.0.1:13001/` loads hub
+- [ ] Recreating containers retains PostgreSQL records and mounted assets
 
 ### Identity (TFMCWeb)
 
@@ -147,10 +174,10 @@ Tick after a staging deploy or major pull. Detail for each flow: [docs/flows/jou
 - [ ] TFMCWeb `api.base-url` is loopback (`127.0.0.1:18001`), not public hostname
 - [ ] `PS_PRODUCTION` not set on staging
 
-## SSH tunnel (test UI from your PC)
+## SSH tunnel to an isolated test host
 
 ```bash
-ssh -L 13001:127.0.0.1:13001 -L 18001:127.0.0.1:18001 user@amp-host
+ssh -L 13001:127.0.0.1:13001 -L 18001:127.0.0.1:18001 user@test-host
 ```
 
 Open `http://127.0.0.1:13001/` locally.
@@ -174,7 +201,7 @@ Display names and prose fields are validated server-side (`backend/src/text_vali
 ## Port already in use?
 
 ```bash
-sudo ss -tlnp | grep -E '18001|13001|8001'
+sudo ss -tlnp | rg '18001|13001|8001'
 ```
 
 Change the left-hand side of `ports:` in `docker-compose.staging.yml` if needed; keep container ports `8000` / `3000`.

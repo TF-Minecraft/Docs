@@ -4,9 +4,9 @@
 
 Bare filenames below refer to `backend/src/patreon/` in the ProvinceSystem checkout; paths beginning with `src/` are relative to `backend/`.
 
-The tier mapping is `tiers.yaml`. Tables are in `src/skins/schema.sql`,
-created by the existing `src.skins.db.migrate()` in the app lifespan. They
-share `province.db` with `discord_links`. Patron linking lives in `linking.py`:
+The tier mapping is `tiers.yaml`. Tables are in `src/database/migrations/`,
+applied by `src.database.migrate` in the app lifespan. They share the site's
+PostgreSQL database with `discord_links`. Patron linking lives in `linking.py`:
 hashed single-use OAuth state and confirmation tokens, `link/start`,
 `oauth/callback`, `link/pending`, `link/confirm`, `link/cancel`, and `webhook`.
 
