@@ -12,10 +12,10 @@ similar incidents get similar rulings. Bot never decides punishments — it's ad
    summary, ruling, punishment) → cog POSTs to ProvinceSystem → ProvinceSystem embeds
    the case (Voyage AI) and stores it in the site's Postgres (`pgvector`).
 
-   With `user`, the selected Discord member's verified link supplies the Minecraft
-   name; there is no player-name input. The ruling retains their Minecraft UUID and
-   Discord ID, so a rename does not erase the recorded identity. Without `user`,
-   staff can still enter several or unlinked players manually. See the
+   With `user`, the case belongs to the selected Discord account, even without a
+   Minecraft link or website login. A verified link supplies the Minecraft name
+   and UUID when present. Structured participants retain both account IDs across
+   renames and unlinking. Without `user`, staff can still enter names manually. See the
    [linked account workflow](discord-bot.md#linked-accounts-in-moderation).
 
    **Only the summary is embedded** (`_case_text` in `precedent_routes.py`). A search
@@ -51,8 +51,79 @@ auto-log a precedent case on every use — no separate `/case-log` needed for th
 in-game warnings); its precedent record still keeps the real issuing staff member
 as `logged_by` internally, for staff-side accountability, even though the
 recipient never sees who sent it. `/minecraftwarn` resolves its selected user
-through the verified Minecraft link and retains the UUID and Discord ID in its
-precedent ruling. `/minecraftnotify` retains its existing anonymous message flow.
+through the verified Minecraft link and retains the UUID and Discord ID as
+structured participants. `/minecraftban` logs its notification too.
+`/minecraftnotify` retains its existing anonymous message flow while recording
+the recipient's Discord ID and any known Minecraft UUID.
+
+## Cases on a person
+
+Every Minecraft staff profile has a **Cases** tab at
+`/admin/players/<uuid>?tab=cases`. Discord-only people have the same case view at
+`/admin/people/discord/<discord-id>`. No Minecraft account or website login is
+needed for a case against a Discord account.
+
+The Players directory's Discord view includes linked players, known website
+accounts, and Discord participants from case records. Search by handle or Discord
+ID. A numeric ID also offers **Open Discord account**, including when that person
+has no previous case. This directory is not a complete Discord guild roster.
+Discord-only directory rows have `uuid: null` and open the Discord profile.
+Participant chips in the main Precedent list link to the person's history.
+
+The Cases view combines, newest first:
+
+- Case logs from the bot and website, including staff notices and Discord ban notifications.
+- In-game warnings stored in `player_warnings`.
+- Recorded ban/unban events and standalone warning notifications in `player_notifications`.
+
+A warning's Discord mirror is shown once with its stored warning. Private bird
+mail is excluded. This is recorded moderation history, not a live ban-status
+check or an import of older Discord messages that were never logged.
+
+**Log case** binds the new case to the profile's Discord ID and/or Minecraft UUID
+without asking staff to type a name. Details show the summary, rule, ruling,
+outcome, author, date and account identifiers. Cases can be edited from the view;
+the existing audit trail records edits, deletion and restoration with their
+participant identities. History is paginated in pages of 25.
+
+An ID-bound case matches exact Discord IDs or UUIDs, never another account's
+reused name. Linking Minecraft later brings existing Discord cases into the
+Minecraft profile. Stored participant IDs survive unlinking; the association is
+not inferred again from display names.
+
+Older cases with no structured participants match exact current or historical
+Minecraft names and show **Older name match**. These are candidates for staff to
+assess, since a name alone cannot prove account ownership. A record that already
+has participant IDs does not fall back to name matching. When Minecraft name
+history cannot be read, the view warns that some name-only records may be missing.
+
+`GET /admin/players/{uuid}/cases` and `GET /admin/discord/{discord_id}/cases` require
+the signed-in website capability `use_precedent` (mod and above), return
+`Cache-Control: no-store`, and accept `limit` (1–100, default 25) and `offset`.
+The response contains `person`, `entries`, `total`, `limit` and `offset`. Each entry
+has a `kind`, an optional editable `case_id`, and `matched_by` (`account` or `name`).
+No embeddings or model calls are needed to browse history.
+
+## Case account storage and compatibility
+
+`precedent_cases.participants` is a JSONB array, separate from the legacy `players`
+display labels. Each participant has at least one of `discord_user_id` or
+`player_uuid`, plus an optional display `name` and Discord username. The API accepts
+up to 20 participants and validates snowflakes and UUIDs. Both IDs can identify the
+same participant; the case appears once in that person's view.
+
+Precedent's existing migration adds the array with an empty default and a GIN
+index. It preserves all cases, embeddings and audit rows and can be replayed.
+Old writers can still create name-only cases; an update that omits `participants`
+preserves existing account links. An explicit empty array removes the links and
+is audited. Delete/restore includes participants, and old snapshots without them
+still restore as name-only cases. The summary remains the only embedded field.
+
+Deploy the API before new cogs. For a rollback, restore the older cogs/site code
+and keep the additive column and index; do not drop participant data. An older
+backend can read cases with its existing explicit column lists. The Cases endpoints return an unavailable error rather than an empty history
+when their storage cannot be read; the Discord directory can still list website
+accounts before Precedent is initialized.
 
 ## Staff panel tab (`/admin/precedent`)
 
@@ -86,7 +157,7 @@ cookie.
 
 | Route | Body | Returns |
 |-------|------|---------|
-| `POST /precedent/staff/log` | `{logged_by, players[], summary, rule, ruling, punishment}` (all fields length-capped) | `{id}` |
+| `POST /precedent/staff/log` | `{logged_by, players[], participants[]?, summary, rule, ruling, punishment}` (all fields length-capped) | `{id}` |
 | `POST /precedent/staff/search` | `{query, players[]?}` (`players` is an optional soft-boost ranking hint, not a filter) | `{matches: [{id, logged_by, players, summary, rule, ruling, punishment, created_at, distance}], synthesis, max_distance}` |
 | `GET /precedent/staff/cases?limit=&offset=&q=` | - | `{cases: [...], total}` — plain SELECT, newest first, no Voyage/Claude cost. `limit` defaults to 500 and clamps to 1000. `q` (up to 200 characters) keeps cases containing every word, ignoring case; `total` counts those matches |
 | `GET /precedent/staff/players` | - | `{players: [...]}` — every player name in the corpus, once each ignoring case, in its newest spelling |

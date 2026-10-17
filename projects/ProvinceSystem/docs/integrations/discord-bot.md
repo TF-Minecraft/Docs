@@ -16,7 +16,7 @@ TFMCWeb is the Minecraft plugin; ProvinceSystem stores the verified account link
 | Drinks review | `drinksreview` cog - same pattern for drink submissions |
 | Link | `/linkdiscord <code>` completes MC ↔ Discord bind |
 | Moderation | `/minecraftwarn`, `/minecraftban` resolve selected Discord users to Minecraft accounts; `/minecraftwho` shows the link. Ban/warn DMs and **Banned** role add/clear |
-| Precedent | `/case-log [user]` (staff) logs a case with the selected user's Minecraft identity; `/precedent <info>` (staff+helper) searches precedent — see [precedent.md](precedent.md) |
+| Precedent | `/case-log [user]` (staff) logs a case against a Discord account, with its Minecraft identity when linked; `/precedent <info>` (staff+helper) searches precedent — see [precedent.md](precedent.md) |
 | Patreon | `patreon` cog - supporter link/status/unlink, role outbox, DMs, staff lookup and sync tools — see [patreon.md](patreon.md) |
 
 The bot does **not** execute in-game bans (Essentials owns MC bans).
@@ -53,13 +53,18 @@ command before any DM, role change or log; it does not allow a guessed name to
 override a link. Link or unlink changes are read on every command, and expired
 guild-leave graces count as unlinked.
 
-For a case, run `/case-log user` and select the Discord user. The modal asks for
-the incident, rule, ruling and punishment, without a player-name field. Submission
-checks the member's current link and staff permission. It stores the name
-in `players` and appends the Minecraft UUID and Discord ID to the ruling, leaving
-the incident summary used for embeddings unchanged. The ruling input is capped
-at 300 characters to leave room within the API's 500-character limit.
-`/case-log` without `user` keeps manual entry for multiple or unlinked players.
+For a case, run `/case-log user` and select the Discord user. Minecraft linking
+and website sign-in are optional. The modal asks for the incident, rule, ruling
+and punishment without a player-name field. Submission checks staff permission
+and looks up the account's current Minecraft link. The case stores its Discord
+ID and optional Minecraft UUID as structured `participants`; the ruling retains
+its full 500-character limit. Names are display labels, never account keys.
+`/case-log` without `user` keeps manual entry for older name-only workflows.
+
+Warn, ban-notification and staff-notice precedent records also carry structured
+participants. An anonymous staff notice keeps the recipient's Discord ID even
+when no Minecraft account is linked. These IDs remain on the case after renames
+or unlinking. See [Cases on a person](precedent.md#cases-on-a-person).
 
 Players can link through [Profile](https://tfminecraft.net/profile), or run
 `/linkdiscord` in Minecraft and redeem the code with `/linkdiscord code` in Discord.
@@ -110,17 +115,17 @@ python3.11 -m venv .venv-bot
 
 They exercise real command definitions and modals against a local HTTP server;
 delivery calls are mocked, so no Discord token or guild is needed. Backend
-lookup tests run with the normal Postgres test setup in
+lookup and account-history tests run with the normal Postgres test setup in
 [local development](../ops/local-dev.md):
 
 ```sh
 cd backend
-python -m pytest -q src/skins/test_bot_identity.py
+python -m pytest -q src/skins/test_bot_identity.py src/auth/test_cases.py
 ```
 
 ## Updating the maintained cogs
 
-Deploy the merged ProvinceSystem API before updating MinecraftBan or Precedent.
+Deploy the merged ProvinceSystem API and website before updating MinecraftBan or Precedent.
 Then copy the corresponding `discord/minecraftban/` and `discord/precedent/`
 source files into `cogs/CogManager/cogs/<cog>/` through `amp-api` on
 `TFMCDiscordBot01`. Preserve each live `config.yml`; it holds the API URL,
@@ -133,5 +138,6 @@ with `[p]slash enable <cog>` first if they were not already enabled. A website
 deployment does not update the separately running bot.
 
 The Minecraft plugin needs no update for this workflow. To roll back, restore
-the previous cog files, reload them and sync slash commands. The lookup API is
-additive and can remain deployed with the older cogs.
+the previous cog files, reload them and sync slash commands. The identity lookup
+and participants field are additive and can remain deployed with older cogs. Old case updates that omit `participants` preserve their stored
+account links; old creates remain name-only cases. No existing case data is rewritten.
