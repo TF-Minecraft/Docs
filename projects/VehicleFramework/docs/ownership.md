@@ -1,6 +1,6 @@
 # Vehicle ownership
 
-A vehicle has one owner value, a whitelist, a whitelist switch and ticket settings. VehicleFramework stores them in the vehicle's SQLite row (the `owner` column and the `payload_json` keys `owner`, `whitelist`, `whitelisted`, `ticketsEnabled` and `ticketId`). The [player guide](playing.md) covers the menus; this page covers identity, migration and the API other plugins use.
+A vehicle has one owner value, a whitelist, a whitelist switch, group switches and ticket settings. VehicleFramework stores them in the vehicle's SQLite row (the `owner` column and the `payload_json` keys `owner`, `whitelist`, `whitelisted`, `accessGroups`, `ticketsEnabled` and `ticketId`). `accessGroups` lists the group switches that are on (`FACTION`, `GUILD`, `ALLY`, `VASSAL`) and is left out when none are. The [player guide](playing.md) covers the menus; this page covers identity, migration and the API other plugins use.
 
 ## Identity mode
 
@@ -34,9 +34,24 @@ VehicleFramework never migrates owners itself. SimpleFactions converts legacy va
 
 "Type a Name" takes a character's real name in chat. Exactly one living character must have that name; no match and several matches give the same refusal. It needs TLibs 2.5.0 (`Characters.findByName`), which VehicleFramework checks once at startup; with an older TLibs the button is hidden and the picker still works.
 
+## Group access
+
+Next to the whitelist, the owner can let whole groups board. Each group switch admits the members of one group, counted from the owner's current groups each time someone boards:
+
+| Switch | Admits |
+| --- | --- |
+| Faction | Members of the owner's faction |
+| Guild | Members of the owner's player guild (a faction's main guild does not count) |
+| Allies | Members of factions the owner's faction is allied with |
+| Vassals | Members of the direct vassals of the owner's faction |
+
+A rider is admitted when they own the vehicle, are on its whitelist, or are in a group whose switch is on. The switches add to the whitelist and never change it, and like whitelist entries they only matter while the whitelist switch is on. If the owner leaves a faction or guild, that group stops counting at once.
+
+Group access needs `characters` mode and a ready `VehicleAccessGroups` service, which SimpleFactions provides. Without one the switches are hidden and admit nobody. The service can also open a group on a vehicle whatever its switch says: SimpleFactions does this for a pool or installation vehicle's own faction.
+
 ## Claims, changes and takeovers
 
-Characters mode clears the whitelist and turns it off when a vehicle is claimed, cleared or taken over, so a new owner never inherits the previous crew. `names` mode keeps the whitelist on claim and takeover and only turns it off when ownership is dropped.
+Characters mode clears the whitelist, turns it off and turns every group switch off when a vehicle is claimed, cleared or taken over, so a new owner never inherits the previous crew. `names` mode keeps the whitelist on claim and takeover and only turns it off when ownership is dropped.
 
 Every change saves the vehicle at once. If the save fails, the vehicle keeps its previous values and the player is told nothing changed.
 
@@ -64,15 +79,15 @@ The API is in `net.tfminecraft.vehicleframework.api` and the events in `net.tfmi
 | `readOwnershipMeta(UUID)` | The same for one vehicle. |
 | `setOwnership(UUID, OwnerChange, SystemReason)` | `OK`, `NOT_FOUND`, `SAVE_FAILED` or `REFUSED_MODE` (not in characters mode). |
 
-`setOwnership` writes a loaded vehicle and saves it, putting the old values back if the save fails; it never falls back to the stored row. An unloaded vehicle has its owner column and payload rewritten in one SQLite transaction. Tickets never change. `OwnerChange` accepts `none`, `char_none` and `char_<characterId>`; only `MIGRATE` may carry whitelist entries (`OwnerChange.seeded`). The reason decides the whitelist:
+`setOwnership` writes a loaded vehicle and saves it, putting the old values back if the save fails; it never falls back to the stored row. An unloaded vehicle has its owner column and payload rewritten in one SQLite transaction. Tickets never change. `OwnerChange` accepts `none`, `char_none` and `char_<characterId>`; only `MIGRATE` may carry whitelist entries (`OwnerChange.seeded`). The reason decides the whitelist and the group switches:
 
-| Reason | Entries | Switch |
-| --- | --- | --- |
-| `RESTAMP` | kept | kept |
-| `MIGRATE` | the seeded entries, or kept when none are given | kept |
-| `CONSTRUCT` | emptied | on if `allow-whitelist` and `whitelisted-by-default` |
-| `RELEASE`, `HANDOVER` | emptied | off |
-| `TRANSFER` | emptied | kept |
+| Reason | Entries | Switch | Group switches |
+| --- | --- | --- | --- |
+| `RESTAMP` | kept | kept | kept |
+| `MIGRATE` | the seeded entries, or kept when none are given | kept | kept |
+| `CONSTRUCT` | emptied | on if `allow-whitelist` and `whitelisted-by-default` | off |
+| `RELEASE`, `HANDOVER` | emptied | off | off |
+| `TRANSFER` | emptied | kept | off |
 
 `VehicleOwners` builds and parses owner values and whitelist entries.
 
@@ -81,7 +96,7 @@ Events:
 | Event | When |
 | --- | --- |
 | `VehicleOwnershipEditCheckEvent` | Before an ownership-menu button is shown and again on every click. A pure check: `deny()` hides or refuses the control. An empty reason means opening the menu. |
-| `VehicleOwnershipChangeEvent` | Before a player's change is written. Cancellable. Carries the vehicle actually changed (the locomotive for tickets), the reason (`CLAIM`, `CLEAR`, `TAKEOVER`, `WHITELIST_ADD`, `WHITELIST_REMOVE`, `WHITELIST_TOGGLE`, `TICKETS_TOGGLE`), an operation ID, the acting character, a staff flag, and the target character or raw whitelist entry. |
+| `VehicleOwnershipChangeEvent` | Before a player's change is written. Cancellable. Carries the vehicle actually changed (the locomotive for tickets), the reason (`CLAIM`, `CLEAR`, `TAKEOVER`, `WHITELIST_ADD`, `WHITELIST_REMOVE`, `WHITELIST_TOGGLE`, `TICKETS_TOGGLE`, `FACTION_ACCESS_TOGGLE`, `GUILD_ACCESS_TOGGLE`, `ALLY_ACCESS_TOGGLE`, `VASSAL_ACCESS_TOGGLE`), an operation ID, the acting character, a staff flag, and the target character or raw whitelist entry. |
 | `VehicleOwnershipChangedEvent` | After the write, with the same operation ID, the outcome and the values before and after. For a player change it always fires once the change event has fired, including when the change was cancelled or the save failed. For `setOwnership` it fires only on `OK`. |
 
 `VehicleOwnerClaimedEvent` is removed. A listener that vetoes a claim must handle
@@ -99,3 +114,4 @@ Services, looked up on every call:
 
 - `VehicleOwnershipAuthority`: SimpleFactions registers it once it handles the change events. `ready()` returning false counts as missing.
 - `VehicleQuarantineSource`: lists `QuarantinedVehicle` rows for `/vf admin quarantine`. Every registration is listed.
+- `VehicleAccessGroups` (2.15.0): answers the group switches. `admits(group, vehicleId, owner, rider)` says whether the rider's character is in that group of the vehicle, `alwaysOpen` names groups the vehicle admits without its switch, and `describe` names the faction or guild for the menu. `ready()` returning false, a missing service or an exception admits nobody through groups.

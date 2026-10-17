@@ -90,8 +90,9 @@ VehicleFramework asks SimpleFactions about every player change through
 - Staff (`vf.admin`) are not refused, and their takeovers pay nothing; each
   staff claim, takeover and clear is logged as `[vehicle audit]`.
 - Any other change to a pool or installation vehicle is refused, including the
-  whitelist and ticket switches. The leader stamp only opens the ownership menu
-  and the seats.
+  whitelist, ticket, faction and guild switches. The leader stamp opens the
+  ownership menu and the seats, and lets the leader turn the allies and vassals
+  switches on or off.
 - A claim needs the claimer's current character, ready vehicle payments and a
   free personal slot, then pays the transfer fee when someone else owned the
   vehicle last. The first click shows the fee and the second pays it under the
@@ -100,6 +101,19 @@ VehicleFramework asks SimpleFactions about every player change through
   and caches its account. A failed claim refunds its fee. Clearing ownership
   drops the payer row but keeps the last owner, so a friend who claims the
   released vehicle still pays the transfer fee.
+
+SimpleFactions also registers VehicleFramework's `VehicleAccessGroups` service
+(VehicleFramework 2.15.0 or newer; with an older one it logs a warning and
+vehicles keep their whitelists only). Group switches count from current
+membership each time someone boards:
+
+- A pool or installation vehicle counts from its paying faction and always
+  admits that faction's members, whatever its leader stamp.
+- Any other vehicle counts from its owner character's faction and guild.
+- Guild means a player guild, as member or leader. A faction's main guild never
+  counts, and faction vehicles have no guild.
+- Allies are the factions the vehicle's faction is allied with; vassals are its
+  direct vassals only.
 
 SimpleFactions' own writes (construction, berthing, the pool, releases,
 handovers, installation transfers and leader stamps) go through VehicleFramework's

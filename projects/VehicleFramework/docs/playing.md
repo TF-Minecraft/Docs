@@ -73,12 +73,13 @@ From the seat menu, the owner can open ownership settings:
 - Remove someone from the whitelist.
 - Drop ownership.
 - Turn tickets on or off for this vehicle. On a train, tickets follow the locomotive, and only the locomotive's owner can change them.
+- With characters and SimpleFactions, let whole groups board: the owner's faction, the owner's guild, factions allied with the owner's faction, and its direct vassals. Each group has its own switch in the second row, and the button names the faction or guild it counts from. A faction vehicle always admits its own faction; its leader can still open it to allies and vassals. See [Group access](ownership.md#group-access).
 
 Controls the player may not use are hidden, and every click is checked again. A chat prompt (whitelist name, vehicle name or takeover) ends after 60 seconds, and with characters also when the player stops playing the character that started it.
 
-`allow-whitelist` and `whitelisted-by-default` in `config.yml` control whether new vehicles start with a whitelist. When the whitelist is on, other players need to be listed before the seat menu opens.
+`allow-whitelist` and `whitelisted-by-default` in `config.yml` control whether new vehicles start with a whitelist. When the whitelist is on, other players need to be listed, or be in a group whose switch is on, before the seat menu opens. With `allow-whitelist: false` the group switches are hidden too.
 
-Tickets use `ticket-item` (paper in the shipped config). The owner, or someone with `vf.admin`, right-clicks the vehicle with a blank ticket item while tickets are enabled. That writes a ticket for this vehicle. While tickets are on, a passenger seat requires that ticket unless the player is the owner or on the whitelist. A matching ticket also opens the seat menu when the whitelist would refuse the player. Captain, gunner, and mechanic seats do not ask for a ticket once the menu is open.
+Tickets use `ticket-item` (paper in the shipped config). The owner, or someone with `vf.admin`, right-clicks the vehicle with a blank ticket item while tickets are enabled. That writes a ticket for this vehicle. While tickets are on, a passenger seat requires that ticket unless the player is the owner, on the whitelist or in an admitted group. A matching ticket also opens the seat menu when the whitelist would refuse the player, but then only passenger seats: captain, gunner and mechanic seats stay closed to them. When the whitelist is off, captain, gunner and mechanic seats do not ask for a ticket.
 
 ## Items in the main hand
 
