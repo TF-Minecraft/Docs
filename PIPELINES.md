@@ -147,7 +147,7 @@ ServerAssets verifies every entry in its file manifest. Plugin build dependencie
 
 Both repositories run these checks for pull requests and pushes to `main`. They do not package archives, upload build artifacts, or publish GitHub releases. Use `main` for current content and commit SHAs when an exact revision is needed.
 
-## ProvinceSystem
+## TFMCWeb
 
 PRs run frontend Vitest and backend pytest suites, upload JUnit reports, and build the Next.js frontend. CI uses Node 22 and Python 3.12; the backend tests use SQLite's connection-limit testing API. A failed suite prevents application artifact publication.
 

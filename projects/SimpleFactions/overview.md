@@ -6,8 +6,8 @@ This plugin adds factions (nations) to the game that can interact with each othe
 You will not be able to run this as a standalone program, as it depends on other plugins and the TFMC Minecraft 1.21.10 server environment.
 
 ## Why This Project Is Interesting
-This plugin implements strategy-game-style diplomacy between nations and a fully original map/border system using a REST connection to a Python program I wrote myself:  
-[ProvinceSystem](https://github.com/TF-Minecraft/ProvinceSystem)
+This plugin implements strategy-game-style diplomacy between nations and a fully original map/border system using a REST connection to a Python program I wrote myself:
+[TFMCWeb](https://github.com/TF-Minecraft/TFMCWeb)
 
 Highlights include:
 
@@ -16,15 +16,15 @@ Highlights include:
 
 I drew heavy inspiration from strategy games by Paradox Interactive and leveraged my experience with object-oriented programming to implement parts of their systems. The project contains many interconnected classes that must remain consistent to avoid desynchronization.
 
-This project also demonstrates cross-language integration through **ProvinceSystem**, requiring careful planning to keep server state synchronized between the Java plugin and the Python backend.
+This project also demonstrates cross-language integration through **TFMCWeb**, requiring careful planning to keep server state synchronized between the Java plugin and the Python backend.
 
 ## Features
-- Faction objects that function as nations in-game  
+- Faction objects that function as nations in-game
   ([Faction.java](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/objects/Faction.java))
-- Faction relationships  
+- Faction relationships
   ([RelationManager.java](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/managers/RelationManager.java))
-- Titles (Kingdom, Duchy, etc.) connected with the REST server and the TitleManager  
-  ([ProvinceSystem](https://github.com/TF-Minecraft/ProvinceSystem),
+- Titles (Kingdom, Duchy, etc.) connected with the REST server and the TitleManager
+  ([TFMCWeb](https://github.com/TF-Minecraft/TFMCWeb),
   [TitleManager.java](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/managers/TitleManager.java))
 
 ## Technical Overview
@@ -84,15 +84,15 @@ Their fallback and foreign-view privacy rules are described in the
   as described under [character death](docs/espionage.md#character-death).
 
 ### Architecture
-- The main class initializes managers and overall plugin setup  
+- The main class initializes managers and overall plugin setup
   ([SimpleFactions.java](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/SimpleFactions.java))
-- Configuration files (and titles from JSON) are loaded and stored via the Loader classes  
+- Configuration files (and titles from JSON) are loaded and stored via the Loader classes
   ([Loaders](https://github.com/TF-Minecraft/SimpleFactions/tree/main/src/main/java/net/tfminecraft/simplefactions/loaders))
-- `FactionManager` handles faction creation, lookups, member/leader queries, and database calls  
+- `FactionManager` handles faction creation, lookups, member/leader queries, and database calls
   ([FactionManager.java](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/managers/FactionManager.java))
-- The `inventory` package contains the extensive GUI classes players interact with  
+- The `inventory` package contains the extensive GUI classes players interact with
   ([Inventory](https://github.com/TF-Minecraft/SimpleFactions/tree/main/src/main/java/net/tfminecraft/simplefactions/managers/inventory))
-- `MapSystem` is the primary interface for REST communication, while `RestServer` manages the actual requests and responses  
+- `MapSystem` is the primary interface for REST communication, while `RestServer` manages the actual requests and responses
   ([MapSystem.java](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/map/MapSystem.java),\
   [RestServer.java](https://github.com/TF-Minecraft/SimpleFactions/blob/main/src/main/java/net/tfminecraft/simplefactions/rest/RestServer.java))
 
@@ -105,7 +105,7 @@ By drawing irregular “blobs” of unique RGB colors on this image, I created n
 
 > **province = the color of the pixel at your current coordinate**
 
-The Minecraft plugin handles the coordinate and faction logic, while the external Python service (**ProvinceSystem**) processes the image and exposes province/border data on our website:  
+The Minecraft plugin handles the coordinate and faction logic, while the external Python service (**TFMCWeb**) processes the image and exposes province/border data on our website:
 https://www.tfminecraft.net/
 
 A major challenge was keeping both systems synchronized efficiently. The Python service can take several minutes to redraw the full map, so regenerating unchanged regions was wasteful. To solve this, I implemented a queued update system that tracks exactly which provinces or borders changed in the Minecraft server state, and sends only incremental updates to the Python service. This dramatically reduced processing time and ensured consistent, near-real-time synchronization between the two systems.

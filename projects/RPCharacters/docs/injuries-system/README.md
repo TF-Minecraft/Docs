@@ -18,7 +18,7 @@ The maintained references describe the current source on `main`:
 | [Prosthetic installation](prosthetics-install.md) | Install, swap and confirmation |
 | [Prosthetic fuel](prosthetic-fuel.md) | Burn, refuel and effects |
 | [Character creation](creator-stages.md) | Injury/prosthetic selection |
-| [Web catalog](web-catalog-sync.md) | ProvinceSystem contract |
+| [Web catalog](web-catalog-sync.md) | TFMCWeb contract |
 | [Content and saved data](content-and-migration.md) | Trait definitions and compatibility |
 | [Verification](verify-and-deploy.md) | Test matrix and rollback |
 

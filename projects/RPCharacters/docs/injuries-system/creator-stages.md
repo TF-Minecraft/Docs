@@ -57,7 +57,7 @@ If a character owns a prosthetic and the matching backstory permanent injury (se
 - On injury or prosthetic selection confirm (`SelectionStage`)
 - On edit save / return to summary (`CharacterCreation.persistEdits`)
 - On creation finish (`CharacterCreation.finish`)
-- On web create submit and wizard trait changes (ProvinceSystem)
+- On web create submit and wizard trait changes (TFMCWeb)
 
 Prosthetic always wins; players cannot keep both via re-editing the injury stage within the lock window.
 
@@ -74,7 +74,7 @@ Stages run in `stages.yml` order. The injury and prosthetic stages follow the ev
 
 ## Web messages
 
-Both info stages use `web-messages` for the ProvinceSystem creator.
+Both info stages use `web-messages` for the TFMCWeb creator.
 
 ## Acceptance
 

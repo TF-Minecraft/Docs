@@ -17,7 +17,7 @@ TFMC runs Minecraft **1.21.10**. See the [shared platform and build baseline](..
 
 ## Related integration guides
 
-- [Website map integration](../ProvinceSystem/docs/integrations/simplefactions.md)
+- [Website map integration](../TFMCWeb/docs/integrations/simplefactions.md)
 
 ## Builds and releases
 

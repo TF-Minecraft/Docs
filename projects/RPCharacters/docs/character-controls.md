@@ -31,7 +31,7 @@ the character UUID when two living characters share a name. Name lookup includes
 offline characters. The permission is `rpchar.plushie.give`, granted to operators
 by default.
 
-The selected outfit must be unlocked, filled and signed. ProvinceSystem generates
+The selected outfit must be unlocked, filled and signed. TFMCWeb generates
 the miniature in the background and uploads it through the existing MineSkin
 signer. The first copy of an outfit can take a moment; subsequent copies reuse
 the saved result. The command retries up to 90 times, one second apart, without
@@ -44,7 +44,7 @@ data. Placing and breaking a head can discard its item name; the saved texture
 is independent of the player's current skin. Existing plushies retain their
 previous appearance; only newly issued items use the miniature texture.
 
-This requires ProvinceSystem's authenticated
+This requires TFMCWeb's authenticated
 `POST /characters/plugin/wardrobe/{player_uuid}/{character_id}/slots/{slot}/plushie`
 route, with `slot` set to `base`, `extra_1` or `extra_2`. An empty JSON body starts
 or checks generation; follow-up requests pass the returned `source` hash to refuse
@@ -53,13 +53,13 @@ or `ready`), `source`, `character_id`, `slot`, and the ready texture `value` and
 `signature`. The existing read-only slot and worn-skin routes remain unchanged.
 Update the site before activating the RPCharacters build that uses this route.
 
-ProvinceSystem stores signed results under `backend/src/data/plushies/`, keyed by
+TFMCWeb stores signed results under `backend/src/data/plushies/`, keyed by
 the generated pixels and layout version. Atomic writes and a cross-process lock
 share one upload between concurrent requests. Signing failures are reported to
 the command and retained for 30 seconds before another attempt is allowed. No
 wardrobe rows, source PNGs or active-skin settings are changed. The converter
 adapts [MiniSkin Generator](https://github.com/nirastich/miniskin); its GPL-3.0
-license and attribution are included in ProvinceSystem's `third_party/miniskin/`.
+license and attribution are included in TFMCWeb's `third_party/miniskin/`.
 
 ## Mail recipient visibility
 
