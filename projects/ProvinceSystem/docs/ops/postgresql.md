@@ -43,7 +43,8 @@ Ordered SQL files in `backend/src/database/migrations/` are recorded with checks
 Startup applies pending migrations under a database advisory lock and then seeds required singleton rows.
 Edited or reordered applied migrations are refused, and deployment and startup keep verbatim copies of the
 applied files in the private data mount's `postgres-migrations/`. Migrations only go forward: a deploy refuses a
-revision that lacks a migration the database already has, because its code expects the older schema. Add a new
+revision that lacks a migration the database already has, because its code expects the older schema
+([deploy steps](#deploy-steps)). Add a new
 numbered migration for a schema change; do not edit an applied file. To undo a change, add another migration.
 
 Precedent and patch-note tables have their own migrations and keep their data.
@@ -52,8 +53,17 @@ Precedent and patch-note tables have their own migrations and keep their data.
 
 Deploys run through **Actions → Deploy** and the host's `site-deploy`
 ([site deploys](../../DEPLOY.md#site-deploys)). A merge to `main` deploys Dev after Build passes; www changes
-only through an explicit manual `www` deployment. With the backend stopped, `site-deploy` runs two steps from
-the target image:
+only through an explicit manual `www` deployment.
+
+Before changing anything, `site-deploy` reads `schema_migrations` from the site's `db` and compares it with
+the target revision's files under `backend/src/database/migrations/`. A revision missing an applied migration
+is refused with exit 4 and the log line `<sha> predates database migration NNNN; fix forward`. After a failed
+deploy it checks the last healthy revision the same way before rolling back; if the failed deploy applied a
+migration that revision predates, the backend stays stopped and the log records
+`failed: database is newer than the last healthy revision; backend kept stopped`. The check lives in
+`site-deploy` because revisions from before it have no such check in their own code.
+
+With the backend stopped, `site-deploy` then runs two steps from the target image:
 
 ```bash
 python3 -m src.database.operations prepare
@@ -62,9 +72,8 @@ python3 -m src.database.operations studio
 
 `prepare` reads the private `data/.postgres-authority.json` marker, written when the site moved to PostgreSQL.
 It refuses a site without the marker, and a database whose name differs from the marker's or that no longer
-holds every migration the marker records with the same checksum and time. It also refuses a revision that lacks
-a migration the database already has; the deploy log names the version and says to deploy a fix forward. It then
-applies pending migrations without seeding.
+holds every migration the marker records with the same checksum and time. It also repeats the migration check
+above, naming the version in the deploy log. It then applies pending migrations without seeding.
 
 `studio` provisions the restricted Studio login using the administrator connection. It restricts `PUBLIC`
 large-object constructor access while keeping owner and direct grants, then creates or refreshes the login.

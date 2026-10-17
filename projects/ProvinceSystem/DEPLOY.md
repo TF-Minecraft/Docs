@@ -116,7 +116,10 @@ the owner of both checkouts. Deploys to the same site run one at a time.
 
 1. Refuses commits not on `origin/main` or from before the move to PostgreSQL (no
    `backend/src/database/operations.py`), both with exit 4, and, on www, a checkout with uncommitted changes to
-   tracked files (exit 1). On dev, `git checkout --detach` keeps the expected local edits and refuses if they would be overwritten.
+   tracked files (exit 1). On dev, `git checkout --detach` keeps the expected local edits and refuses if they would
+   be overwritten. It then reads `schema_migrations` from the site's `db` and compares it with the target
+   revision's files under `backend/src/database/migrations/`. A revision missing an applied migration is refused
+   before anything changes (exit 4, log `<sha> predates database migration NNNN; fix forward`).
 2. Selects private `/home/tfmc/.site-images-<site>.json` image tags for the exact requested revision and builds
    both services using Docker's cache before stopping the backend for a forward deployment. The overlay is
    applied after the site's private Compose override. Both running container image IDs must match those
@@ -126,14 +129,15 @@ the owner of both checkouts. Deploys to the same site run one at a time.
    and keeps the newest 10.
 4. Runs [`src.database.operations`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/database/operations.py)
    `prepare` and then `studio` from the target image while the backend is stopped. `prepare` checks that the
-   configured database is the one named by the data mount's `.postgres-authority.json` marker and refuses a
-   revision that lacks a migration the database already has, then applies pending migrations. `studio` provisions the Database Studio login, which must be a separate restricted
-   `DATABASE_STUDIO_URL` login for the same database ([deploy steps](docs/ops/postgresql.md#deploy-steps)).
+   configured database is the one named by the data mount's `.postgres-authority.json` marker, repeats the
+   migration check, then applies pending migrations. `studio` provisions the Database Studio login, which must be
+   a separate restricted `DATABASE_STUDIO_URL` login for the same database ([deploy steps](docs/ops/postgresql.md#deploy-steps)).
 5. Starts both services without rebuilding, verifies their image IDs, then waits up to 3 minutes for both health checks.
-   On failure it stops the backend, restores the previous code, rebuilds, runs `prepare` and `studio` again and
-   checks health, then exits 5. If any of those steps fails, the backend stays stopped. When the failed revision
-   had already applied a new migration, `prepare` refuses the previous revision and the log records
-   `failed: rollback database; backend kept stopped`; deploy a fix forward. No deploy restores a dump.
+   On failure it stops the backend and checks the last healthy revision against `schema_migrations` the same
+   way. If the failed deploy applied a migration that revision predates, the backend stays stopped and the log
+   records `failed: database is newer than the last healthy revision; backend kept stopped`; deploy a fix
+   forward. Otherwise it restores the previous code, rebuilds, runs `prepare` and `studio` again and checks
+   health, then exits 5. If any of those steps fails, the backend stays stopped. No deploy restores a dump.
 6. After a healthy www deploy that changes `backend/src/patchnotes/`, runs `sudo tfmc-patchnotes-update <sha>` so the
    [patch note jobs](docs/ops/patch-notes-jobs.md) use the same code. A failure there is logged and does not fail the
    deploy.
@@ -150,9 +154,9 @@ host as plain backups. No deploy or tool reads them.
 ### Rolling back www
 
 Run **Deploy** with site `www` and an older commit on `main` only when explicitly requested. Migrations only go
-forward: `prepare` refuses a commit that lacks a migration the database already has, and the deploy log names the
-version. Once www has a newer migration, fix forward with a new commit on `main` instead. A full PostgreSQL restore is a separate manual operation that
-also affects Precedent and patch notes; see [backups and restores](docs/ops/postgresql.md#backups-and-restores).
+forward: `site-deploy` refuses a commit that lacks a migration the database already has (exit 4), and the log
+names the version. Once www has a newer migration, fix forward with a new commit on `main`. A full PostgreSQL
+restore is a separate manual operation that also affects Precedent and patch notes; see [backups and restores](docs/ops/postgresql.md#backups-and-restores).
 
 ### Deploying by hand
 
