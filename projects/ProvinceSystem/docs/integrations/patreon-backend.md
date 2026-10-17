@@ -95,8 +95,9 @@ Import `PatreonClient` from `src.patreon.client`:
 
 `conn=` on link and recompute functions participates in the caller's
 transaction without committing. Confirmation uses
-`with src.skins.db.connect() as conn`, `BEGIN IMMEDIATE`, create the link and,
-if successful, recompute with that connection. `Config.from_env()` supplies
+`with src.database.transaction(lock=service.PATREON_LOCK) as conn`, consumes the pending confirmation,
+creates the link and, if successful, recomputes with that same connection. It rechecks expiry after waits
+and rolls back the transaction if consent expired. `Config.from_env()` supplies
 runtime configuration. Router helpers `require_enabled`, `caller_subject`,
 `require_staff`, `require_plugin` are in `src.api.patreon_routes`. Register
 future routes on `patreon_router` or on a separate router under `/patreon`.

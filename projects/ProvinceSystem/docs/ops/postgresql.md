@@ -39,7 +39,10 @@ absence of a row; file guards coordinate wardrobe and map assets across workers.
 Ordered SQL files in `backend/src/database/migrations/` are recorded with checksums in `schema_migrations`.
 Startup applies pending migrations under a database advisory lock and then seeds required singleton rows.
 Edited or reordered applied migrations are refused. Add a new numbered migration for a schema change;
-do not edit an applied file or restore the removed SQLite startup upgrader.
+do not edit an applied file or restore the removed SQLite startup upgrader. During the rollback window,
+a schema change must also preserve the reviewed import/export contract and include compatible tool updates
+and round-trip proof. The one-off copier refuses unexpected schema drift rather than exporting incomplete
+rows; defer a schema change if its rollback representation has not been verified.
 
 The one-off copier migrates **without seeds**, because its target site tables must be empty. Precedent and
 patch-note migrations remain separate and retain their existing data. Their active PostgreSQL driver
@@ -141,9 +144,10 @@ is in [DEPLOY.md](../../DEPLOY.md#branch-previews).
 Install `backend/requirements.txt` and `backend/requirements-dev.txt`. Use an isolated PostgreSQL 17 test
 server with a superuser/CREATEDB login. Pytest creates its own database, applies migrations and resets touched
 tables between tests; it drops the database on completion. PostgreSQL tests skip locally without
-`TEST_DATABASE_URL` and fail in CI if it is absent.
+`TEST_DATABASE_URL` and fail in CI if it is absent. From the source checkout root:
 
 ```bash
+cd backend
 python -m pytest -q
 python scripts/character_session_smoke.py
 python scripts/character_ingest_smoke.py

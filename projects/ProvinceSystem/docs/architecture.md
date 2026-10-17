@@ -137,8 +137,11 @@ backend/
     map_*.py / file_*.py    Map surface
     skins_routes.py         Codes, upload, status, staff actions, plugin pull
     drinks_routes.py        Drink submissions and catalog
+  src/database/
+    connection.py           Native PostgreSQL pool and transactions
+    migrations/             Ordered, checksummed PostgreSQL schema
   src/skins/
-    db.py, schema.sql       Connection, schema
+    db.py                   Asset directory paths and initialization
   src/data/skins/           Runtime files (gitignored)
   src/scripts/…             Mapgen
 ```
