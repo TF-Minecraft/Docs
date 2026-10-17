@@ -41,11 +41,10 @@ It currently clears the plaintext of login codes that expired unused
 
 Ordered SQL files in `backend/src/database/migrations/` are recorded with checksums in `schema_migrations`.
 Startup applies pending migrations under a database advisory lock and then seeds required singleton rows.
-Edited or reordered applied migrations are refused. Deployment and startup retain verbatim SQL files
-in the private data mount's `postgres-migrations/`. When restoring older code, the migrator uses
-checksum-verified retained definitions only for newer versions already applied to that database; it
-never applies a newer retained file absent from the selected code. Missing or changed definitions still
-refuse startup. Add a new numbered migration for a schema change; do not edit an applied file.
+Edited or reordered applied migrations are refused, and deployment and startup keep verbatim copies of the
+applied files in the private data mount's `postgres-migrations/`. Migrations only go forward: a deploy refuses a
+revision that lacks a migration the database already has, because its code expects the older schema. Add a new
+numbered migration for a schema change; do not edit an applied file. To undo a change, add another migration.
 
 Precedent and patch-note tables have their own migrations and keep their data.
 
@@ -63,14 +62,15 @@ python3 -m src.database.operations studio
 
 `prepare` reads the private `data/.postgres-authority.json` marker, written when the site moved to PostgreSQL.
 It refuses a site without the marker, and a database whose name differs from the marker's or that no longer
-holds every migration the marker records with the same checksum and time. It then applies pending migrations
-without seeding.
+holds every migration the marker records with the same checksum and time. It also refuses a revision that lacks
+a migration the database already has; the deploy log names the version and says to deploy a fix forward. It then
+applies pending migrations without seeding.
 
 `studio` provisions the restricted Studio login using the administrator connection. It restricts `PUBLIC`
 large-object constructor access while keeping owner and direct grants, then creates or refreshes the login.
-It refuses a `DATABASE_STUDIO_URL` that points at another database or reuses the owner login. Either step
-prints only its name and the exception type on failure, so URLs and row values stay out of logs, and the
-backend stays stopped.
+It refuses a `DATABASE_STUDIO_URL` that points at another database or reuses the owner login. On failure,
+either step prints its name and, for a refusal, the reason; other errors print only the exception type, so URLs
+and row values stay out of logs. The backend stays stopped.
 
 `/home/tfmc/.site-deployed-<site>` separately records the last healthy revision. Git HEAD can already point
 at a target whose build or migration was interrupted; it is not sufficient evidence of deployment success.
@@ -88,9 +88,8 @@ automatically. After a restore, run `/web syncmeta` on each server so TFMCWeb re
 `province.db` files and the `data/migration-rollback/` folder left from before the move to PostgreSQL can stay
 on the host as plain backups. No deploy or tool reads them.
 
-Deploying an older revision keeps PostgreSQL data and uses the retained, checksum-verified SQL
-definitions described above. The older code must work with the current schema; retaining a file does not
-make a destructive schema change compatible.
+Deploying an older revision keeps PostgreSQL data, and works only while that revision has every migration
+the database has. After a newer migration, fix forward or restore a dump taken before it.
 
 ## Preview provisioning
 

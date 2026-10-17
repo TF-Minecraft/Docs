@@ -48,7 +48,9 @@ the `ps-preview-router` Caddy container (`127.0.0.1:8090`, behind the `*.tfminec
   creates the site schema using reviewed migrations under the preview owner. It lists Dev's public tables,
   leaving out Precedent (`precedent_*`), patch notes (`patchnote_*`) and `schema_migrations`, and a data-only
   custom dump/restore copies those tables' rows and identity counters. No ownership or ACLs are copied. Schema
-  creation and privileged restore use trusted Dev tooling; branch code takes no part.
+  creation and privileged restore use trusted Dev tooling; branch code takes no part. The schema follows Dev's
+  migrations, so once Dev has a new migration, a preview of a branch cut before it fails its migration check
+  until the branch is rebased onto `main`.
 - **Scrub:** before startup, the helper clears sessions, user sessions, Discord OAuth/link state, preview sign-in
   tickets, Microsoft link state, and Patreon tokens, OAuth and pending-link state, including creator credentials.
   It revokes redemption and war declaration codes and clears redemption-code plaintext, retaining rows needed by
@@ -108,7 +110,7 @@ the owner of both checkouts. Deploys to the same site run one at a time.
 | Compose target | `ps-compose main` | `ps-compose dev` |
 | Health checks | `127.0.0.1:3000/` and `127.0.0.1:8000/maps/accessible` | `127.0.0.1:13001/` and `127.0.0.1:18001/maps/accessible` |
 | Backups | `/home/tfmc/provincesystem-data/deploy-backups/` | `/home/tfmc/provincesystem-dev-data/deploy-backups/` |
-| Older commit than deployed | deployed (this is a rollback) | skipped as `already deployed` |
+| Older commit than deployed | deployed if it has every migration the database has ([Rolling back www](#rolling-back-www)) | skipped as `already deployed` |
 
 `site-deploy`:
 
@@ -124,14 +126,14 @@ the owner of both checkouts. Deploys to the same site run one at a time.
    and keeps the newest 10.
 4. Runs [`src.database.operations`](https://github.com/TF-Minecraft/ProvinceSystem/blob/main/backend/src/database/operations.py)
    `prepare` and then `studio` from the target image while the backend is stopped. `prepare` checks that the
-   configured database is the one named by the data mount's `.postgres-authority.json` marker, then applies
-   pending migrations. `studio` provisions the Database Studio login, which must be a separate restricted
+   configured database is the one named by the data mount's `.postgres-authority.json` marker and refuses a
+   revision that lacks a migration the database already has, then applies pending migrations. `studio` provisions the Database Studio login, which must be a separate restricted
    `DATABASE_STUDIO_URL` login for the same database ([deploy steps](docs/ops/postgresql.md#deploy-steps)).
 5. Starts both services without rebuilding, verifies their image IDs, then waits up to 3 minutes for both health checks.
    On failure it stops the backend, restores the previous code, rebuilds, runs `prepare` and `studio` again and
-   checks health, then exits 5. If any of those steps fails, the backend stays stopped. Returning to an older
-   revision keeps PostgreSQL data and uses retained, checksum-verified definitions of migrations already applied;
-   no deploy restores a dump.
+   checks health, then exits 5. If any of those steps fails, the backend stays stopped. When the failed revision
+   had already applied a new migration, `prepare` refuses the previous revision and the log records
+   `failed: rollback database; backend kept stopped`; deploy a fix forward. No deploy restores a dump.
 6. After a healthy www deploy that changes `backend/src/patchnotes/`, runs `sudo tfmc-patchnotes-update <sha>` so the
    [patch note jobs](docs/ops/patch-notes-jobs.md) use the same code. A failure there is logged and does not fail the
    deploy.
@@ -147,9 +149,9 @@ host as plain backups. No deploy or tool reads them.
 
 ### Rolling back www
 
-Run **Deploy** with site `www` and an older commit on `main` only when explicitly requested. The commit must be from
-after the move to PostgreSQL. The older code runs against the current data and schema, so check that the migrations
-added since that commit leave a schema it can use. A full PostgreSQL restore is a separate manual operation that
+Run **Deploy** with site `www` and an older commit on `main` only when explicitly requested. Migrations only go
+forward: `prepare` refuses a commit that lacks a migration the database already has, and the deploy log names the
+version. Once www has a newer migration, fix forward with a new commit on `main` instead. A full PostgreSQL restore is a separate manual operation that
 also affects Precedent and patch notes; see [backups and restores](docs/ops/postgresql.md#backups-and-restores).
 
 ### Deploying by hand
