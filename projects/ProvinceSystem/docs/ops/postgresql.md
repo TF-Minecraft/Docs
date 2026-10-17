@@ -12,7 +12,7 @@ See [previews and deploys](../../DEPLOY.md) for host paths and Actions, and
 ## Runtime and configuration
 
 Each site's `pgvector/pgvector:pg17` Compose `db` service stores site records alongside Precedent and
-patch notes. The named PostgreSQL volume and asset mounts are separate persistence boundaries; copying
+patch notes, which borrow from the same connection pool. The named PostgreSQL volume and asset mounts are separate persistence boundaries; copying
 `backend/src/data/` does not copy site records. Main and Dev use separate databases and volumes.
 
 | Setting | Purpose |
