@@ -85,6 +85,8 @@ Paid picks, and paid changes to a locked creation stage, are charged to the char
 
 Staff with `class-selection.reset-permission` (`rpchar.class.reset`) can run `/rpcharacter admin resetclasses confirm` to give every character a fresh class window: class and subclass changes are free for the lock-time again, paid prices start over and the first subclass is free again. Online characters start now, offline ones when they next join. The reset count is kept in `data/class-resets.yml`.
 
+`/rpcharacter admin carryexp <player> <amount>` gives class EXP carried over from the account's other characters; Codex and ConditionalEvents run it for shared discoveries and duchy titles. MMOCore throws away EXP at a class's level cap, so the class takes what it can hold and the rest waits on the character (`pools.carried-experience` in its progress file). It is added level by level once the character can level further: after a class or subclass pick, or at its next activation after a cap rise. Each level-up still claims its exp-table rewards, such as skill points and skill slots. The player is told once per batch how much is waiting, and how much was added when it is. Amounts are raw EXP, before MMOCore's EXP stat and boosters, like a discovery's own reward. While bodies are off it is plain MMOCore EXP.
+
 With separate bodies disabled, the class level is shared by every character and
 kept in the player file (`account-class-level`). Enabling bodies gives each
 character its own saved class level. A class capped below the saved level, such
