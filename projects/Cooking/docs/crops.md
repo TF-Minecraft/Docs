@@ -57,7 +57,7 @@ The check runs only when a crop is planted (`CropPlantingRule`):
 - **CustomCrops:** `CropCustomCropsListener` cancels `CropPlantEvent` for every crop id not in `exempt-custom` (case-insensitive).
 - **Hoe replant:** `FarmHarvestService` fires a `BlockPlaceEvent` for the delayed replant. When the rule cancels it, the block is restored and the reserved seed drops instead.
 
-A column is open when every block from the one above the crop to the world's maximum height is air, a glass block or pane (clear, stained or tinted, while `allow-glass-roofs` is true) or a material in `allowed-cover`. Players see "Crops must be planted outdoors with open sky above them." Adding a roof after planting does not remove existing crops or change their growth rules.
+A column is open when every block from the one above the crop to the world's maximum height is air, a glass block or pane (clear, stained or tinted, while `allow-glass-roofs` is true) or a material in `allowed-cover`. Within `low-cover.max-height` blocks of the crop, `low-cover.materials` count as open too, so slabs, stairs and signs can form a pergola or hold lanterns over a field while the sky above them stays clear. A double slab is a full block and still counts as a roof. Players see "Crops must be planted outdoors with open sky above them." Adding a roof after planting does not remove existing crops or change their growth rules.
 
 The `planting` section of [`crops.yml`](https://github.com/TF-Minecraft/Cooking/blob/main/src/main/resources/crops.yml):
 
@@ -66,10 +66,12 @@ The `planting` section of [`crops.yml`](https://github.com/TF-Minecraft/Cooking/
 | `require-open-sky` | `true` | `false` turns the rule off for every crop. |
 | `allow-glass-roofs` | `true` | Treat materials whose names end in `GLASS` or `GLASS_PANE` as open sky. |
 | `allowed-cover` | `[]` | Extra Bukkit block materials allowed anywhere above the crop. |
+| `low-cover.max-height` | `5` | How many blocks above the crop `low-cover.materials` count as open. Negative values act as `0`. |
+| `low-cover.materials` | `["#slabs", "#stairs", "#all_signs"]` | Block materials allowed only within `max-height` of the crop. Without a `low-cover` section, nothing is low cover. |
 | `exempt-vanilla` | `[NETHER_WART, BROWN_MUSHROOM, RED_MUSHROOM]` | Vanilla crop blocks that may be planted under cover. Only the types listed above are checked, so this list can exempt them but cannot add new ones. |
 | `exempt-custom` | `[yeast]` | CustomCrops crop ids that may be planted under cover. |
 
-Lists replace their defaults, so an empty exemption list requires open sky for those crops too. Invalid or non-block material names are skipped with a console warning. A config without a `planting` section, or a `crops.yml` that fails to load, uses the defaults. `/cooking reload` applies changes.
+Lists replace their defaults, so an empty exemption list requires open sky for those crops too. Material lists also take vanilla block tags written `#slabs` or `#minecraft:slabs`. Invalid or non-block material names and unknown tags are skipped with a console warning. A config without a `planting` section, or a `crops.yml` that fails to load, uses the defaults. `/cooking reload` applies changes.
 
 ## Roller (`CropHarvestQuality`)
 
