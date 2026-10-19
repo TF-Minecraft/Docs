@@ -9,9 +9,9 @@ resonance requirements, Rift and revision refresh. The implementation is in
 | File | Purpose |
 | --- | --- |
 | `charges.yml` | Charge item paths and aura caps by item tier |
-| `gear/archetypes.yml` | Weapon templates, melee behavior and socket groups |
+| `gear/archetypes.yml` | Weapon templates, item names, melee behavior and socket groups |
 | `gear/part-types.yml` | Part categories |
-| `gear/parts.yml` | Part compatibility, costs and socket contributions |
+| `gear/parts.yml` | Part compatibility, costs, socket contributions and core materials |
 | `gear/socket-colours.yml` | Socket colour prefixes by resonance band |
 | `gear/orbs.yml` | Hitscan, orbit, capture, Rift and difficulty settings |
 | `skills.yml` | Skill-to-element bindings used for cast checks |
@@ -20,6 +20,33 @@ resonance requirements, Rift and revision refresh. The implementation is in
 Archetypes include staff, wand and sword. Selected parts determine socket count,
 clamped to four. MMOItems supplies templates, gemstones and skill combinations;
 TLibs supplies socket groups.
+
+### Weapon names
+
+The core names the weapon, as it picks the model. Its `material:` fills
+`%material%` in the archetype's `item-name:`, and the whole name takes the
+material's colour, as AdvancedCrafting names equipment after its majority
+material:
+
+```yaml
+# gear/archetypes.yml
+staff:
+  name: Staff
+  item-name: "%material% Mage Staff"
+
+# gear/parts.yml
+iron_staff_core:
+  name: "#d8d8d8Iron Magical Core"
+  material: "#d8d8d8Iron"
+```
+
+This core gives "Iron Mage Staff" in `#d8d8d8`. A core without `material:`
+uses its name minus "Magical Core" or "Core". An archetype without
+`item-name:` uses `%material% <name>`. When the core gives no material, the
+weapon keeps its template name. Magic writes the name to the MMOItems data and
+its original, so MMOItems updates keep it, and records it in `magic:gear_name`.
+Neither key changes part or archetype revisions. Plugin updates do not add
+these keys to existing configuration files.
 
 ## Charges and station use
 
@@ -262,7 +289,9 @@ behavior. Refusal and alignment derive from live session and weapon state.
 ## Refresh and recycling
 
 Provenance records parts and revisions. Refresh reconciles socket layouts while
-preserving applied runes. A rune that no longer fits marks the weapon broken;
+preserving applied runes. It also renames a weapon whose recorded name no longer
+matches its core and archetype, including weapons crafted before names were
+written. A rune that no longer fits marks the weapon broken;
 its data is retained for reclamation. Disable configured IDs instead of deleting
 them from persisted item definitions. Refresh and socket rewrites keep an
 ArmourShop skin the weapon is wearing; the part model scheme only applies to
