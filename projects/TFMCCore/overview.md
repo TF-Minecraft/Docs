@@ -43,12 +43,17 @@ servers every Book and Quill is the MMOItems `BOOKS.WRITABLE_BOOK`, which has
 `disable-crafting`, and books signed from it keep that tag. MMOItems therefore
 cancels the craft: the copy shows in the result slot but cannot be taken.
 
-TFMCCore notes whether a book copy craft is cancelled at `LOW` priority. At
-`HIGH` it undoes the cancel only if the craft was cancelled in between (MMOItems
-runs at `NORMAL`) and an ingredient has MMOItems' disable-crafting tag. Cancels
-from earlier handlers, and from `HIGHEST` handlers such as character freezes,
-still apply. Vanilla rules are unchanged: copies are Copy of Original or Copy of
-a Copy, and Copy of a Copy and Tattered books cannot be copied. A copy keeps
-every component of the original, including book skins.
+One tick after startup, TFMCCore wraps MMOItems' `DisableInteractions`
+registrations in the `InventoryClickEvent` handler list (which `CraftItemEvent`
+shares). For a book copy craft, the wrapper undoes a cancel only when that
+MMOItems handler call made it. Cancels from every other plugin, at any priority,
+still apply, such as character freezes. The wrapped handler keeps its plugin
+and `NORMAL` priority, but now runs last among `NORMAL` handlers. The console
+logs `Book copies: wrapped <n> MMOItems click handlers`, or a warning when
+MMOItems is enabled and no handler is found.
+
+Vanilla rules are unchanged: copies are Copy of Original or Copy of a Copy, and
+Copy of a Copy and Tattered books cannot be copied. A copy keeps every component
+of the original, including book skins.
 
 Change the setting and run `/tcore reload config` to apply it.
