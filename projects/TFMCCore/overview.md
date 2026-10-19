@@ -43,9 +43,11 @@ servers every Book and Quill is the MMOItems `BOOKS.WRITABLE_BOOK`, which has
 `disable-crafting`, and books signed from it keep that tag. MMOItems therefore
 cancels the craft: the copy shows in the result slot but cannot be taken.
 
-One tick after startup, TFMCCore wraps MMOItems' `DisableInteractions`
-registrations in the `InventoryClickEvent` handler list (which `CraftItemEvent`
-shares). For a book copy craft, the wrapper undoes a cancel only when that
+TFMCCore wraps MMOItems' `DisableInteractions` registrations in the
+`InventoryClickEvent` handler list (which `CraftItemEvent` shares). It does this
+when TFMCCore enables if MMOItems is already enabled, and otherwise when MMOItems
+enables. Wrappers are never wrapped again, and disabling TFMCCore puts MMOItems'
+own registrations back. For a book copy craft, the wrapper undoes a cancel only when that
 MMOItems handler call made it. Cancels from every other plugin, at any priority,
 still apply, such as character freezes. The wrapped handler keeps its plugin
 and `NORMAL` priority, but now runs last among `NORMAL` handlers. The console
