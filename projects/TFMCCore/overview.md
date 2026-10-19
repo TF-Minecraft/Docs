@@ -49,8 +49,8 @@ when TFMCCore enables if MMOItems is already enabled, and otherwise when MMOItem
 enables. Wrappers are never wrapped again, and disabling TFMCCore puts MMOItems'
 own registrations back. For a book copy craft, the wrapper undoes a cancel only when that
 MMOItems handler call made it. Cancels from every other plugin, at any priority,
-still apply, such as character freezes. The wrapped handler keeps its plugin
-and `NORMAL` priority, but now runs last among `NORMAL` handlers. The console
+still apply, such as character freezes. The wrapped handler keeps its plugin,
+`NORMAL` priority and place among the `NORMAL` handlers. The console
 logs `Book copies: wrapped <n> MMOItems click handlers`, or a warning when
 MMOItems is enabled and no handler is found.
 
