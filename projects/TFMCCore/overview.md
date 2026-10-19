@@ -34,3 +34,28 @@ ProtocolLib, this feature logs a warning and leaves the appearance unchanged.
 
 Change the setting and run `/tcore reload config` to apply it. Validate books in
 inventories, hands, item frames and dropped items with the intended resource pack.
+
+## Book copies
+
+`allow-book-copies` in `config.yml` defaults to `true`. Players copy a written
+book by crafting it with a Book and Quill (the vanilla recipe). On the TFMC
+servers every Book and Quill is the MMOItems `BOOKS.WRITABLE_BOOK`, which has
+`disable-crafting`, and books signed from it keep that tag. MMOItems therefore
+cancels the craft: the copy shows in the result slot but cannot be taken.
+
+TFMCCore wraps MMOItems' `DisableInteractions` registrations in the
+`InventoryClickEvent` handler list (which `CraftItemEvent` shares). It does this
+when TFMCCore enables if MMOItems is already enabled, and otherwise when MMOItems
+enables. Wrappers are never wrapped again, and disabling TFMCCore puts MMOItems'
+own registrations back. For a book copy craft, the wrapper undoes a cancel only when that
+MMOItems handler call made it. Cancels from every other plugin, at any priority,
+still apply, such as character freezes. The wrapped handler keeps its plugin,
+`NORMAL` priority and place among the `NORMAL` handlers. The console
+logs `Book copies: wrapped <n> MMOItems click handlers`, or a warning when
+MMOItems is enabled and no handler is found.
+
+Vanilla rules are unchanged: copies are Copy of Original or Copy of a Copy, and
+Copy of a Copy and Tattered books cannot be copied. A copy keeps every component
+of the original, including book skins.
+
+Change the setting and run `/tcore reload config` to apply it.
