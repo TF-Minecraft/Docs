@@ -97,6 +97,37 @@ Artifacts are shared. Each artifact records the characters that meditated with i
 - The share is taken when the sit starts. Standing up and sitting again gains nothing past it, and a sit at or above the share shows `meditation.nothing`.
 - Nobody loses resonance when someone joins. A character already above their share keeps it until decay brings it down, but cannot gain more there.
 
+## Artifact wear
+
+Every point of resonance an artifact grants in meditation wears it, whoever
+receives it. An artifact can grant `artifacts.wear.budget_multiplier` (default
+`2.0`) times its highest aura cap in total. With `2.0` a 20-cap common can raise
+one character from 0 to 20 twice, or two sharers to 10 each twice. `0` turns
+wear off. Wear is stored on the item (`magic:artifact_wear`); its lore shows
+`Integrity: N%` once it has been worn.
+
+At the budget the artifact crumbles in place into a spent husk:
+
+- Aura, care state, users, wear and the artifact id are removed. Rarity, primary
+  element and sacrifice history stay. `magic:artifact_spent` holds the old id.
+- The name becomes `Spent <name>`, the glint goes and the aura block is replaced
+  by the husk line (`artifact.husk.*` in `messages.yml`).
+- No Magic system treats it as an artifact again. The Recycler takes it for a
+  share of its rarity's dust (`artifact_returns.husk_fraction`).
+- The meditator sees `meditation.crumbled`, the pedestal is saved at once and
+  that artifact gives nothing more this sit. Resonance already gained stays.
+
+Worn pedestals are saved when the sit ends. Shrines, sacrifice, care and
+charges do not wear an artifact; only resonance it grants does.
+
+## Artifact rarities
+
+Common, Uncommon, Rare and Legendary. Magic 0.9.0 removed Epic: Rare covers the
+low part of Epic's old cap range and Legendary the high part (planar schools
+46-75 and 76-150), Epic's random-roll weight went 2/2 to them, its adjectives
+moved to Legendary and its models became Legendary-only. Existing Epic
+artifacts keep working; their lore shows the raw id `epic`.
+
 ## Persistence (MagicProfile)
 
 Profiles are keyed by the character UUID from the

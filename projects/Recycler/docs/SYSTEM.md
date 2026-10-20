@@ -114,6 +114,7 @@ record. Stored aura is lost.
 ```yaml
 artifact_returns:
   min_muffle: 0.0
+  husk_fraction: 0.5
   item: m.currency.enchanted_dust
   rarities:
     common: 4
@@ -129,6 +130,14 @@ muffled. Missing or unrecognised stored rarities use `default`. Omitted standard
 rarity keys retain their shipped defaults; set a rarity to `0` to refuse it.
 Artifacts below the muffle requirement or with no configured output are refused
 before recipe fallback, so a matching config recipe cannot bypass these rules.
+
+Magic 0.9.0 no longer rolls Epic artifacts. The `epic` row stays so older Epic
+artifacts still recycle at their value.
+
+Spent husks (artifacts that crumbled from meditation wear, Magic 0.9.0+) hold no
+aura, so `min_muffle` does not apply to them. They return `husk_fraction`
+(0.0-1.0, default 0.5) of their rarity's amount, rounded down: a Legendary husk
+returns 14. A husk worth 0 is refused before recipe fallback, like an artifact.
 
 `return_rates.artifacts` multiplies these amounts using the normal return math.
 The shipped rarity table is tuned so recycling the artifacts from a Dowsing
