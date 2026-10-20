@@ -26,14 +26,23 @@ The separate release workflow delegates to the shared Maven release workflow. Ke
 
 ## Signed-book appearance
 
-`hide-book-glint` in `config.yml` defaults to `true`. With ProtocolLib enabled,
-TFMCCore hides the default enchantment glint on signed books, including letters
-and book skins. It changes the item copies sent to clients; stored books retain
-their data. Books with an explicit glint override are left unchanged. Without
-ProtocolLib, this feature logs a warning and leaves the appearance unchanged.
+`hide-book-glint` in `config.yml` defaults to `true`. TFMCCore hides the default
+enchantment glint on signed books, including letters and book skins, by storing a
+glint override on the books themselves. Books in player inventories are updated
+within a second; books in containers (blocks, entities, ender chests) when the
+container is opened. Lecterns and plugin menus are left alone, as are books with
+their own glint override. Updated books carry the `tfmccore:hidden_glint` tag, so
+setting the option to `false` brings the glint back on exactly those books, in the
+same way.
+
+Inventory packets are never rewritten: clients hash every stack they
+click, and in 3.8.1 and earlier a book that looked different to the client than
+on the server could leave a ghost copy on the cursor. With ProtocolLib enabled, books on
+entities (dropped items, item frames, displays, held books) that have not been
+updated yet are still shown without glint through entity packets only.
 
 Change the setting and run `/tcore reload config` to apply it. Validate books in
-inventories, hands, item frames and dropped items with the intended resource pack.
+inventories, containers, item frames and dropped items with the intended resource pack.
 
 ## Book copies
 
