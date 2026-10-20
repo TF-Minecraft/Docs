@@ -101,9 +101,8 @@ Artifacts are shared. Each artifact records the characters that meditated with i
 
 Every point of resonance an artifact grants in meditation wears it, whoever
 receives it. An artifact can grant `artifacts.wear.budget_multiplier` (default
-`2.0`) times its highest aura cap in total. With `2.0` a 20-cap common can raise
-one character from 0 to 20 twice, or two sharers to 10 each twice. `0` turns
-wear off. Wear is stored on the item (`magic:artifact_wear`); its lore shows
+`1.0`) times its highest aura cap in total. With `1.0` a 20-cap common can raise
+one character from 0 to 20 once, or two sharers to 10 each. `0` turns wear off. Wear is stored on the item (`magic:artifact_wear`); its lore shows
 `Integrity: N%` once it has been worn.
 
 At the budget the artifact crumbles in place into a spent husk:
@@ -116,8 +115,11 @@ At the budget the artifact crumbles in place into a spent husk:
   share of its rarity's dust (`artifact_returns.husk_fraction`).
 - The meditator sees `meditation.crumbled`, the pedestal is saved at once and
   that artifact gives nothing more this sit. Resonance already gained stays.
+  Anyone else sitting at the ring treats it as spent, so their sit can still
+  complete.
 
-Worn pedestals are saved when the sit ends. Shrines, sacrifice, care and
+Worn pedestals are saved at most every 5 seconds during a sit and again when it
+ends. Shrines, sacrifice, care and
 charges do not wear an artifact; only resonance it grants does.
 
 ## Artifact rarities
