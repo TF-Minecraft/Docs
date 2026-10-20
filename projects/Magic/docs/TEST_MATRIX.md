@@ -175,7 +175,7 @@ Empty generated items have cap PDC but `hasStoredAura` is false until shrine cha
 - [ ] Hit starter: pedestals flash, orbs orbit
 - [ ] White hits raise Equilibrium; red lower it and lock; another red refreshes lock
 - [ ] Corrupted Equilibrium: mostly red orbs
-- [ ] Charged generated artifact on a pedestal: that element's resonance rises toward `fill / 8`
+- [ ] Charged generated artifact on a pedestal: that element's resonance rises toward the artifact's usable fill (one user)
 - [ ] Each hit spends 1 Focus; 0 Focus does nothing
 - [ ] Research experiment spends the same Focus bar (character-keyed)
 
@@ -233,8 +233,11 @@ Empty generated items have cap PDC but `hasStoredAura` is false until shrine cha
 - [ ] Hold in hotbar: no hand jitter; no `Users` line; lore `%` / aura amount only when the formatted number changes
 - [ ] Click or shift-click into a chest: last_tick stamps; chest time does not include pocket time; no chat
 - [ ] Two characters sit the same artifact within 7 days: second sit is `1/n` yield; first character's resonance is unchanged
+- [ ] With two users on one 60-fill artifact, the second character stops at 30; at 35 the sit shows `meditation.nothing`
+- [ ] Standing up and sitting again gains nothing past the share; the first character (above 30) keeps its resonance
 - [ ] After user TTL: one user again, full yield
 - [ ] Character resonance only moves from meditation, `/magic resonance`, and element `decay_per_hour`
+- [ ] Real clock (`seconds_per_hour: 3600`): -0.02/h lowers resonance by 0.01 after 30 online minutes; tranquility 0.03/h falls 0.01 every 20 minutes; nothing changes while offline
 - [ ] `aura_decay_per_hour` (`-0.05`/h on every element): fill drops; recovering muffle does not restore it
 
 
