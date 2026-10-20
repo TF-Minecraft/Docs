@@ -67,13 +67,13 @@ Single axis from **-100** (corruption) to **+100** (tranquility). Stored as `dou
 | `0` | Stable (no passive drift) |
 | `> 0` | Linear decay toward `0` (`tranquility_decay_per_hour`); stops at `0` |
 
-Config rates are **per hour**; `MagicTickService` applies `rate / 3600` each second.
+Config rates are **per hour**; `MagicTickService` applies `rate / 3600` each second. Values keep two decimals, so each character's session carries the per-second remainder and applies it in whole hundredths (0.03/h moves 0.01 every 20 minutes). Drift only runs while the character is online; offline time does not count.
 
 The character head shows **Corruption** or **Tranquility** (colored label) plus bar and absolute magnitude, live drift spell percents when not zero, and previews at 60 corruption and 100 tranquility.
 
 Element resonance values are also `double` (default `0.0`, max `100.0` per element).
 
-Each element has a passive drift rate in **per hour** (`resonance.decay_per_hour` in `config.yml`, optional `decay_per_hour` override per element). Negative declines resonance; positive gains it. The element icon lore shows the bar plus a drift line (`-0.02/h`, same style as equilibrium), live combined mana/damage/cooldown percents, and an At 100 resonance preview.
+Each element has a passive drift rate in **per hour** (`resonance.decay_per_hour` in `config.yml`, optional `decay_per_hour` override per element). Negative declines resonance; positive gains it. Like equilibrium, it is applied in whole hundredths while the character is online (-0.02/h is 0.01 every 30 minutes), and the profile is saved when the value moves. The element icon lore shows the bar plus a drift line (`-0.02/h`, same style as equilibrium), live combined mana/damage/cooldown percents, and an At 100 resonance preview.
 
 Bound skills in `skills.yml` get MythicLib RELATIVE skill modifiers (`mana`, `cooldown`, `damage`) synced from the Resonance session so mana and cooldown checks match GUI Now.
 
@@ -88,7 +88,14 @@ Sit with GSit on the circle center (must be in a vehicle). Eight InteractibleFur
 
 No chat or action bar. A white starter orb appears in front of you; left-click hitscan (VehicleFramework-style) begins the orbit field. White orbs are Flow, red are Surge. Mix follows Equilibrium (`whiteChance = 0.5 * (1 + eq/max)`). Hitting red starts a 10s all-Surge lock; another red hit refreshes it.
 
-Each hit costs 1 Focus (RPCharacters, character-keyed). Flow nudges Equilibrium up; Surge nudges it down. Resonance toward cap `sum(element power on sockets) / 8`. Charged artifacts supply usable aura, adjusted by their care state. Empty artifacts do not start a session; missing furniture means no session.
+Each hit costs 1 Focus (RPCharacters, character-keyed). Flow nudges Equilibrium up; Surge nudges it down. Charged artifacts supply usable aura, adjusted by their care state. Empty artifacts do not start a session; missing furniture means no session.
+
+Artifacts are shared. Each artifact records the characters that meditated with it in the last `attunement.users.ttl_days` (7). With `n` such users:
+
+- A hit gives `resonance_per_hit / n`, and one sit draws at most `usable aura / n` from each artifact.
+- Meditation cannot raise an element above the sitter's **share**: every artifact on the ring adds its usable aura in that element divided by its own `n`. Two characters sharing a 100-aura artifact top out at 50 each; adding a second 100-aura artifact of that element raises both to 100.
+- The share is taken when the sit starts. Standing up and sitting again gains nothing past it, and a sit at or above the share shows `meditation.nothing`.
+- Nobody loses resonance when someone joins. A character already above their share keeps it until decay brings it down, but cannot gain more there.
 
 ## Persistence (MagicProfile)
 
