@@ -68,6 +68,31 @@ To recharge an existing mage weapon, right-click an empty station while holding
 it without sneaking. One weapon moves from the hand onto the station and retains
 its state. Apply a charge as above, or take it back with an empty-hand click.
 
+### Re-attuning from scratch
+
+A recharge only raises a weapon's requirements. To clear them instead, sneak and
+right-click an empty station while holding an attuned weapon the station can
+create. Chat lists the fee: `gear.reattune.cost_fraction` in `config.yml`
+(default `0.5`) of the weapon's current part costs in `gear/parts.yml`, rounded
+up per material. Sneak-right-click again within `confirm_seconds` to pay it. The
+weapon then rests on the station as a pending reset. `0` makes the reset free,
+and `magic.bypass_crafting_cost` skips the fee.
+
+The next run that catches something replaces every element requirement with
+what it caught. Its Rift becomes that run's bad hits; earlier Rift is dropped.
+Sockets and runes stay as they are. A run that catches nothing leaves the old
+attunement untouched, and the reset stays paid and pending for another charge.
+
+While a reset is pending, only its owning character or `magic.admin` can apply a
+charge, and an empty-hand click cannot take the weapon. Between runs, the
+owner's shift-left-click calls the reset off and returns the unchanged weapon
+and the whole fee. A running charge cannot be called off, so the fee is never
+refunded after seeing how a run goes. A station that loses its furniture drops
+the fee with the weapon. If the fee record is missing or malformed, or one of its
+materials can no longer be built, calling the reset off fails and logs a
+warning for staff review. On furniture loss, the weapon still drops and the fee
+that cannot be built is logged instead.
+
 The station does not need to be at a shrine. Difficulty uses the charge item's
 tier, not its displayed aura band. A character switch, permanent death, disconnect
 or shutdown finishes the outgoing character's runs with their captured result. The
@@ -136,7 +161,8 @@ their existing behavior.
 Deposits, charges and releases persist intent before changing inventory or
 spawning world output. Abort refunds are queued under
 `data/gear-returns/<character UUID>/<operation UUID>.json`. Rested weapons return
-as the original item; fresh crafts refund their recorded materials. Delivery
+as the original item, with the recorded fee if a reset is pending; fresh crafts
+refund their recorded materials. Delivery
 always targets the station's owning character, even after a staff abort. Immediate
 delivery uses only that recipient's captured session; staff aborts for another
 character queue the property for its owner. Delivery uses empty storage slots,
@@ -266,7 +292,8 @@ minus missed-good-orb penalties. Bad hits add Rift up to its configured cap.
 A later recharge can reduce existing Rift once per completed run.
 
 Weapon requirements are stored per element. Applying captured aura uses the
-higher of the existing and incoming requirement; values do not add. A new element
+higher of the existing and incoming requirement; values do not add. A pending
+reset is the exception: see [Re-attuning from scratch](#re-attuning-from-scratch). A new element
 adds its own requirement. The first charge selects socket colours from the
 captured band. Requirements display as tier bands.
 
@@ -306,4 +333,5 @@ Use the exact source and dependency set intended for release. Check station
 persistence, material consumption, blank/over-tier charge handling, ejection
 locks, perfect and missed orb runs, multi-element highest-only merging, Rift
 at 0 and 100, refusal without cost, alignment resync, rune preservation and
-recycling. Record results with the run or PR.
+recycling. For re-attuning, check the fee, the refund on abort, the pickup lock,
+and both a missed and a caught run. Record results with the run or PR.
