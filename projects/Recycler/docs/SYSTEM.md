@@ -108,8 +108,11 @@ Magic 0.4.7+ stamps the materials a craft actually charged on the weapon (`magic
 ### Magic (artifacts)
 
 `ArtifactProvider` returns the configured item by the artifact's recorded
-rarity. Artifacts are found rather than crafted, so they do not need a crafting
-record. Stored aura is lost.
+rarity. Node artifacts and artifacts opened from
+[crafted sealed items](../../Magic/docs/SYSTEM.md#sealed-artifact-crafting) use
+the same rarity table rather than a crafting record. Recycling does not refund
+the seal's crafting cost. Stored aura is lost. Unopened seals are not artifacts,
+and the shipped recycling recipes do not accept them.
 
 ```yaml
 artifact_returns:
@@ -140,8 +143,9 @@ aura, so `min_muffle` does not apply to them. They return `husk_fraction`
 returns 14. A husk worth 0 is refused before recipe fallback, like an artifact.
 
 `return_rates.artifacts` multiplies these amounts using the normal return math.
-The shipped rarity table is tuned so recycling the artifacts from a Dowsing
-Artifact Mine node yields roughly half the enchanted dust of a Dust Mine node.
+Average returns depend on the source's rarity weights and the configured return
+rates; node production also depends on its level, efficiency and production
+methods. A fixed Artifact Mine-to-Dust Mine yield ratio is not guaranteed.
 
 ### GunsAndGadgets (guns)
 

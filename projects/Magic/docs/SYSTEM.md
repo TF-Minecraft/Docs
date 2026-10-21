@@ -11,6 +11,7 @@ All paths under `plugins/Magic/` on the server.
 | `config.yml` | `debug`, `default_cast_mode`, equilibrium rates, tick interval |
 | `gui.yml` | Title, slot map, filler icons, cast mode definitions, bar templates, hex color tokens |
 | `messages.yml` | Player-facing chat strings |
+| `artifacts/sealed.yml` | Sealed-item paths, school selection, rarity weights and opening sound |
 | `elements/*.yml` | Element catalog (name, icon, color, skills) |
 | `data/characters/<characterId>.json` | Per-character MagicProfile (cast mode, equilibrium, resonance) |
 
@@ -129,6 +130,45 @@ low part of Epic's old cap range and Legendary the high part (planar schools
 46-75 and 76-150), Epic's random-roll weight went 2/2 to them, its adjectives
 moved to Legendary and its models became Legendary-only. Existing Epic
 artifacts keep working; their lore shows the raw id `epic`.
+
+## Sealed artifact crafting
+
+Magic 0.11.0 supports sealed artifacts crafted at the MMOItems Rune Crafting
+Station. The station recipes and sealed LOOT items are supplied by ServerAssets;
+Magic handles opening them.
+
+| Recipe | Enchanted Dust | Result when opened |
+| --- | --- | --- |
+| Sealed Artifact | 18 | A random planar-school artifact |
+| Sealed Oseni Artifact | 28 | An Oseni artifact |
+| Sealed Seithr Artifact | 28 | A Seithr artifact |
+| Sealed Cerrith Artifact | 28 | A Cerrith artifact |
+| Sealed Mitlan Artifact | 28 | A Mitlan artifact |
+
+Hold the sealed item in the main hand and right-click to open it. A normal
+right-click on an interactive block, such as a chest, uses that block instead;
+sneak-right-click opens the seal. The server's off-hand equipment rules can
+prevent holding a seal in that hand.
+
+Each successful opening consumes one sealed item and gives one empty artifact.
+If the inventory cannot hold the result, it drops at the player's feet. A failed
+roll leaves the seal intact. School-specific crafts retain the normal chance of
+secondary schools; choosing a school fixes the primary school only. Opened
+artifacts use the same aura, care, meditation wear, husks and
+[rarity-based recycling](../../Recycler/docs/SYSTEM.md#magic-artifacts) as node
+artifacts. They still need charging before meditation.
+
+`artifacts/sealed.yml` is created from the jar when missing and is loaded again
+by `/magic reload`. The `sealed` entries map TLibs `item` paths to an `element`
+selection. `random` selects from the generator's configured random pool; an
+entry may override the shared rarity weights. Invalid entries are skipped with
+warnings, and an unreadable file disables seal opening. Existing files are not
+overwritten. The supplied item paths are `m.loot.sealed_artifact` and
+`m.loot.sealed_<school>_artifact` for the four named recipes above.
+
+Successful openings are recorded in the server log as `Sealed artifact opened`,
+including player, seal, school, rarity and artifact ID. They are not recorded in
+`aura.log`.
 
 ## Persistence (MagicProfile)
 
