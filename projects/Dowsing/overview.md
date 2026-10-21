@@ -17,7 +17,8 @@ upkeep calculations.
 
 ## Configuration files
 
-The plugin copies its defaults into `plugins/Dowsing/` on first start.
+The plugin copies each missing configuration file into `plugins/Dowsing/` from
+the jar. Updating the jar does not overwrite existing files.
 
 | File | Purpose |
 | --- | --- |
@@ -30,6 +31,11 @@ The plugin copies its defaults into `plugins/Dowsing/` on first start.
 Cross-file identifiers must resolve in this order: block definitions reference
 types, types reference slots, and slots reference production methods. Item paths
 use the prefixes understood by TLibs and the installed item providers.
+
+The magical mine's `artifact_focus` is displayed as Artifact Mine. It requires
+diamond tools and uses Magic artifact paths for its drops. The focus ID remains
+`artifact_focus` for existing node selections. Compare existing configuration
+files explicitly when adopting updated defaults.
 
 Run `/dowsing reload` after editing these files. Reloading temporarily caches
 the live nodes, reloads all definitions, restores the cached state, and

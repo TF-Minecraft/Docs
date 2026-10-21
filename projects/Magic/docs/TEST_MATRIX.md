@@ -105,6 +105,25 @@ Run these checks on Minecraft **1.21.10** with the intended plugin dependencies 
 - [ ] Bump a part revision and `/magic reload`: a skinned weapon refreshes and keeps its skin; an unskinned one takes the part model
 - [ ] A weapon whose skin was lost before this fix keeps the part model after a refresh
 
+## Sealed artifacts
+
+Use the [sealed artifact setup](SYSTEM.md#sealed-artifact-crafting) with MMOItems
+and the matching ServerAssets items and station recipes.
+
+- [ ] Startup loads all five sealed definitions; a missing `artifacts/sealed.yml` is created without overwriting an existing copy
+- [ ] Rune Crafting Station offers the random recipe at 18 dust and each named-school recipe at 28; crafting consumes the listed dust and claiming gives the matching sealed LOOT item
+- [ ] Main-hand right-click opens one seal into one empty artifact; repeated events for the same click do not open another seal
+- [ ] Two players opening seals in the same tick each consume only their own single seal
+- [ ] Each named-school seal fixes its primary school and still permits normal secondary schools
+- [ ] Random seals use the configured random pool and rarity weights
+- [ ] An ordinary right-click on a chest opens it without consuming the seal; sneak-right-click opens the seal
+- [ ] If the result cannot fit after consuming the seal, it drops at the player's feet
+- [ ] A failed artifact roll consumes nothing; ordinary items do not trigger seal opening
+- [ ] `/magic reload` picks up sealed-definition edits and warns about invalid entries without breaking other artifact configs
+- [ ] Successful openings write `Sealed artifact opened` to the server log
+- [ ] Opened artifacts charge, meditate, wear into husks and recycle through the usual artifact rules; shipped Recycler recipes refuse unopened seals
+- [ ] Check the server's off-hand equipment restrictions separately; they may return a seal to inventory before Magic can open it
+
 ## Artifact generator
 
 ### Server setup
