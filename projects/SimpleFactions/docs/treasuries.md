@@ -19,6 +19,18 @@ Citizen tax is withheld inside the earning transaction and credited to
 startup recovery completes. Consumers must defer taxable transactions while
 that policy is unavailable.
 
+## Bankruptcy and exported trade
+
+A negative realm treasury makes its stability and realm trade/production output
+zero. Returning to a nonnegative balance restores the normal stability rules.
+The guarded province recalculation checks this bankruptcy boundary as well as
+map changes; ordinary balance changes within the same state keep the cache.
+
+Live map publications, including quiet five-minute cycles, refresh dirty province
+economics before exporting provinces, guilds and Chronicle. Chronicle then
+refreshes prestige from that trade. These refreshes do not settle income or
+change bank balances.
+
 ## Daily settlement
 
 The day counter tracks server uptime, rather than calendar dates. One balanced
