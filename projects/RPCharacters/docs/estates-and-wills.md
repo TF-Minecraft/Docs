@@ -193,8 +193,8 @@ character without a guild leaves them to the heir too. A named heir whose accoun
 shows the estate waiting, as the estate itself postpones.
 
 A character who is the only member of its realm sees **Your realm** instead: the realm goes to the
-heir after SimpleFactions' `held-realm-heir-wait-hours` (24), only if the heir is in no faction then,
-and it closes if nobody takes it on within 7 days. Guild and faction locks are then listed with the
+heir after SimpleFactions' `held-realm-heir-wait-hours` (24), only if the heir is in no faction then;
+if nobody takes it on, it closes after 7 days, once at peace. Guild and faction locks are then listed with the
 heir's share, as the heir leads the guild once they take the realm. Without a living heir, such a
 realm closes before its estate is decided, so the dialog promises nothing to its guild and says staff
 would hold the estate. The wait is read from SimpleFactions 4.15.0 or later; an older one shows the
@@ -212,7 +212,8 @@ reads the guild recorded at the death.
 within 16 blocks as clickable names with faces, and takes a typed name for anyone else. One match asks
 for confirmation with name, race, short ID and "on your account" where it applies; several matches give
 a list to choose from. **How wills work** shows the rules in six lines; the last is "Leading never
-passes by will, except a realm you're the only member of: an heir in no faction takes it on." Every click checks that the same
+passes by will, except a realm you're the only member of: an heir in no faction takes it on." (With a
+SimpleFactions older than 4.15.0 it keeps "Leading a guild or realm never passes by will.") Every click checks that the same
 character is still being played; buttons and links work once and expire after ten minutes. The heir's
 bust is fetched when a character starts playing and when an heir is named, and cached; a screen that
 opens before it arrives shows a placeholder, and the arrival only fills the cache, so it never opens
