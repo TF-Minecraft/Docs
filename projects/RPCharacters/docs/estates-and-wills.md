@@ -138,6 +138,12 @@ slot. The rest of the collection is saved before any item is given and the playe
 so a crash can lose at most the batch just handed over and can never duplicate it. Each batch is
 logged with stack hashes in `collections.log`, which is how staff restore a lost batch by hand.
 
+With nothing to collect yet, `/estate collect` says why. An heir on the testator's own account is told
+when an open estate falls due ("in about 17 hours"), that it is due and waits to be decided, or that
+staff hold it. A will stays secret from every other account, so an heir there hears "You have no
+inheritance to collect" until the decision. A character a decided estate gives property to is told
+the body is still being handed over, or that it needs staff when the body participant is blocked.
+
 If the recipient dies before collecting, the collection follows the recipient's own estate: it is
 re-addressed to that estate's property recipient when it is decided. While that estate's property is
 waiting or frozen, the collection is parked for staff, who take it with `/estate collect <deathId>`.
@@ -186,6 +192,14 @@ leader, else the realm's; for the guild's own leader, "the next leader, else" th
 character without a guild leaves them to the heir too. A named heir whose account cannot be read
 shows the estate waiting, as the estate itself postpones.
 
+A character who is the only member of its realm sees **Your realm** instead: the realm goes to the
+heir after SimpleFactions' `held-realm-heir-wait-hours` (24), only if the heir is in no faction then;
+if nobody takes it on, it closes after 7 days, once at peace. Guild and faction locks are then listed with the
+heir's share, as the heir leads the guild once they take the realm. Without a living heir, such a
+realm closes before its estate is decided, so the dialog promises nothing to its guild and says staff
+would hold the estate. The wait is read from SimpleFactions 4.15.0 or later; an older one shows the
+old rules.
+
 Without a living heir (none named, or the heir has died) the dialog says what would happen if the
 character died for good today, reading SimpleFactions as it is now: money to the guild's treasury,
 property to the guild's living leader with their face where it can be drawn (waiting for a leader
@@ -197,7 +211,9 @@ reads the guild recorded at the death.
 **Change heir** or **Name an heir** lists the player's other living characters and characters played
 within 16 blocks as clickable names with faces, and takes a typed name for anyone else. One match asks
 for confirmation with name, race, short ID and "on your account" where it applies; several matches give
-a list to choose from. **How wills work** shows the rules in six lines. Every click checks that the same
+a list to choose from. **How wills work** shows the rules in six lines; the last is "Leading never
+passes by will, except a realm you're the only member of: an heir in no faction takes it on." (With a
+SimpleFactions older than 4.15.0 it keeps "Leading a guild or realm never passes by will.") Every click checks that the same
 character is still being played; buttons and links work once and expire after ten minutes. The heir's
 bust is fetched when a character starts playing and when an heir is named, and cached; a screen that
 opens before it arrives shows a placeholder, and the arrival only fills the cache, so it never opens

@@ -71,6 +71,13 @@ purchased upgrades. Active nodes publish their configured prestige and wealth
 modifiers to SimpleFactions, and the ledger queries Dowsing for each guild's
 total node upkeep.
 
+A node is released when its guild falls below `min-members-for-node` members,
+except while SimpleFactions holds the realm after its last member died (3.2.6,
+SimpleFactions 4.7.0 or later). A held realm's own guild keeps its nodes for the
+revived leader or the will heir; they pause meanwhile, with no production, no
+upkeep and no change in efficiency. A closed realm's guild is gone, which frees
+its nodes. Other guilds of the realm empty out and lose theirs as before.
+
 The node menus expose type, production-method, upgrade, transfer, activation,
 and deletion actions when the node definition and player permissions allow
 them. Inputs are read from the barrel below the node and outputs are delivered
