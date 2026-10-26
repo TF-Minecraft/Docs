@@ -212,7 +212,7 @@ reads the guild recorded at the death.
 within 16 blocks as clickable names with faces, and takes a typed name for anyone else. One match asks
 for confirmation with name, race, short ID and "on your account" where it applies; several matches give
 a list to choose from. **How wills work** shows the rules in six lines; the last is "Leading never
-passes by will, except a realm you're the only member of: your heir takes it on." Every click checks that the same
+passes by will, except a realm you're the only member of: an heir in no faction takes it on." Every click checks that the same
 character is still being played; buttons and links work once and expire after ten minutes. The heir's
 bust is fetched when a character starts playing and when an heir is named, and cached; a screen that
 opens before it arrives shows a placeholder, and the arrival only fills the cache, so it never opens
