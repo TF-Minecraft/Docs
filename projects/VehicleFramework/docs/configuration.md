@@ -43,6 +43,14 @@ gunboat:
 
 `name` is the sidebar name. `model` is the default skin id, and that skin's `model` is the ModelEngine model id. `fixed: true` keeps a vehicle in place. `towable: true` lets another vehicle hitch it.
 
+`icon` (2.17.0+) is optional: `material` plus an optional `model_data` (custom model data). The vehicle then shows that item in its skin menu (the current skin has a glint), at slot 24 of its seat menu, on the Hull in its repair menu and at slot 18 of its ownership menu, and tickets for it render as the icon. Without it, the menus use concrete and the default component items. TFMC's icons are COAL 7400-7421 (ServerAssets `configs/VEHICLE-ICONS.md`).
+
+```yaml
+  icon:
+    material: coal
+    model_data: 7418
+```
+
 Bones are described in [Models](models.md). Weapons are in [Weapons and ammunition](weapons.md). Shared death, armor, and weapon blocks are in [Templates](templates.md).
 
 ## States
