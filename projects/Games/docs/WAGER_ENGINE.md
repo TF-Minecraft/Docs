@@ -85,7 +85,7 @@ Staff recovery is manual because Minecraft inventory delivery and the money ledg
 
 1. Preserve the table JSON, `Data/wager-intents/<table-id>.json` and any guild migration backup before investigating.
 2. Inspect the operation ID, ledger legs, encoded items, captured character/tax destination, float before/after and `unpaidOutcomes`. The latter are observations of failed or partial settlement attempts; repeated observations must not be summed as independent debts.
-3. Check Denars status for the recorded operation and compare the saved table, inventories and casino-profit bookkeeping. `prepared` does not prove no posting occurred; `applying` does not prove delivery finished.
+3. Check Denars status for the recorded operation and compare the saved table, inventories and casino-profit bookkeeping. `prepared` does not prove no posting occurred: once Denars applies the posting, the engine tracks that step in memory and leaves the file at `prepared`, so only Denars status shows whether money moved. A file written as `applying` by an older version does not prove delivery finished.
 4. Reconcile the verified remaining obligation once through a reviewed ledger operation and item correction. Never recalculate the original tax against today's character or guild, replay gross winnings, or remove the journal merely to unfreeze a table. Keep the evidence with the correction.
 
 Physical item escrow and automatic recovery of ambiguous item delivery are outside this system. There is no automatic journal replay on startup.
