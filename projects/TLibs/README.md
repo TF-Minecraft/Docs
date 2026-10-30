@@ -17,7 +17,7 @@ look up the active character, follow character sessions and keep per-session sta
 The [estate API](estates.md) lets plugins move a dead character's property to its
 heirs.
 
-Startup loads `config.yml`, initializes APIs, registers armour and furniture listeners, and attempts to register the MMOItems rebuild bridge. `/tlibs` is restricted by `tlibs.admin` (operator by default). The plugin descriptor declares optional integrations for MMOItems, MythicLib, ItemsAdder, MythicMobs and MMOCore, and requests loading before RPCharacters. Optional runtime hooks still have compile-time dependency requirements in the POM.
+Startup loads `config.yml`, initializes APIs, registers armour and furniture listeners, and attempts to register the MMOItems rebuild bridge. A listener removes MythicLib indicator holograms (TextDisplays tagged `mythiclib:hologram`, such as EXP and damage pop-ups) that were saved with their chunk: when the chunk's entities load, and once at startup. It logs each chunk it cleaned. `/tlibs` is restricted by `tlibs.admin` (operator by default). The plugin descriptor declares optional integrations for MMOItems, MythicLib, ItemsAdder, MythicMobs and MMOCore, and requests loading before RPCharacters. Optional runtime hooks still have compile-time dependency requirements in the POM.
 
 ## Build and validation
 
