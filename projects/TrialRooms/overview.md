@@ -11,7 +11,10 @@ with its own MythicMobs mob, amount, level, radii, cooldown, loot tables, and
 **door blocks** that are present only while its encounter runs. **Loot chests**
 open with keys and are either bound to a spawner or independent. Spawners cycle
 through Idle, Active, Unlocking, and Cooldown. Text-display holograms label
-spawners, chests, entrances, and exits while a player is within 96 blocks.
+spawners, chests, entrances, and exits while a player is within 96 blocks. The
+labels are not saved with their chunk and carry a `trialrooms:label` tag. Copies
+left saved by versions before 0.3.2 are removed when their chunk's entities load:
+only displays at a live label's exact position with the old label setup and text.
 
 ## Configuration files
 

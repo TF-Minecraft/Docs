@@ -147,8 +147,19 @@ chunk reads `Container` or `Door`, and the two halves of a double chest may be
 listed separately until one is seen. The file only names blocks: deleting it
 costs nothing but re-learning, and it never changes ownership or estates. Halves
 that go to different estate parts (one guild, one private) are always listed and
-counted apart. Every save and delete re-reads the file into the index, so a write
-whose directory sync failed after the file changed is still reflected.
+counted apart.
+
+Lock files (containers, doors and displays) are written by one background
+writer, in order and with the same temp-file, fsync, rename and directory-sync
+steps. A newer save of a file still waiting replaces the waiting one; past 1,024
+waiting files a save is written on the calling thread instead. Every read,
+including the owner cache, the owner index and the next save's comparison, sees a
+queued write, so a lock change applies at once. If a write fails, Thievery logs the
+usual `Failed to save/delete … data` line and, on the next tick, drops the cache
+entry and re-reads that file into the index, unless a newer write of the file was
+queued meanwhile. Shutdown waits for every queued write. A hard crash (process or
+host) can lose a lock change made in the last moments, which then reverts to its
+previous state.
 
 Estates need TLibs 2.6.0. On an older TLibs Thievery logs a warning, takes no part in
 estates and a dead owner keeps their locks.
