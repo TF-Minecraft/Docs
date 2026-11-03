@@ -8,7 +8,7 @@ The store is [Ledger](https://github.com/TF-Minecraft/DenarEconomy/blob/main/src
 
 ## Storage
 
-The database runs in WAL mode with `synchronous=FULL`, so a committed posting survives a crash or power loss. DenarEconomy holds one connection, opened on enable and closed on disable, and every read and write happens on the main thread; a call from another thread throws `IllegalStateException`. TLibs' `SqliteDatabase` opens the file with the SQLite driver that Paper ships.
+The database runs in WAL mode with `synchronous=FULL`, so a posting that answers `APPLIED` survives a crash or power loss. Plugins that keep their own money journals (SimpleFactions, Games, BarterShops, Dowsing, Thievery) rely on that. The one exception is DenarEconomy's own coin pickups (`Denars.earnPickedUpCoin`, most postings by count): they commit without a sync of their own. A committed coin pickup survives any crash of the server process, since the commit already reached the operating system; it is on disk after the next synced posting or the write-ahead-log checkpoint the plugin runs every 200 ticks (about ten seconds) and once more on disable. So an operating-system crash or power loss can only roll back coin pickups from the last few seconds, and the coin is usually back on the ground because the world rolls back too. The database never corrupts and an operation ID never applies twice. A checkpoint the database is too busy for is logged once and retried; any other checkpoint error closes the ledger like every other SQLite error. DenarEconomy holds one connection, opened on enable and closed on disable, and every read and write happens on the main thread; a call from another thread throws `IllegalStateException`. TLibs' `SqliteDatabase` opens the file with the SQLite driver that Paper ships.
 
 | Table | Contents |
 |---|---|
@@ -88,7 +88,7 @@ Depend on DenarEconomy with `provided` scope and call [Denars](https://github.co
 | `trade(opId, reason, buyerAccount, seller, sellerAccount, cents, taxable)` | A sale: the buyer pays the seller. |
 | `taxFor(character, cents)` | The tax the registered policy would take. |
 
-Every posting returns a `Result`: `APPLIED`, `REFUSED`, `CONFLICT` or `UNAVAILABLE`. Act on a payment only after `APPLIED`. `post`, `transfer`, `earn` and `trade` answer `UNAVAILABLE` for an operation ID or reason starting `estate:`, before any tax policy runs.
+Every posting returns a `Result`: `APPLIED`, `REFUSED`, `CONFLICT` or `UNAVAILABLE`. Act on a payment only after `APPLIED`. `post`, `transfer`, `earn`, `earnPickedUpCoin` and `trade` answer `UNAVAILABLE` for an operation ID or reason starting `estate:`, before any tax policy runs.
 
 Choose operation IDs so that a retry reuses the same ID. Derive the ID from the event when the event can repeat, for example `coin:<item entity UUID>` or `shop:<shop>:<transaction nonce>`, and store a generated ID before any side effect that depends on the payment. A fresh random ID suits a one-off player command. DenarEconomy's own commands use `<kind>:<random UUID>`.
 
