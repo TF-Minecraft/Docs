@@ -8,7 +8,7 @@ The store is [Ledger](https://github.com/TF-Minecraft/DenarEconomy/blob/main/src
 
 ## Storage
 
-The database runs in WAL mode with `synchronous=FULL`, so a committed posting survives a crash or power loss. DenarEconomy holds one connection, opened on enable and closed on disable, and every read and write happens on the main thread; a call from another thread throws `IllegalStateException`. TLibs' `SqliteDatabase` opens the file with the SQLite driver that Paper ships.
+The database runs in WAL mode with `synchronous=NORMAL`, and the plugin checkpoints the write-ahead log every 200 ticks (about ten seconds) and once more on disable. SQLite syncs the log before each checkpoint, so a committed posting survives any crash of the server process. An operating-system crash or power loss can roll back only the postings committed since the last checkpoint; the database never corrupts and an operation ID never applies twice. A failed checkpoint is logged once and retried, and does not close the ledger. DenarEconomy holds one connection, opened on enable and closed on disable, and every read and write happens on the main thread; a call from another thread throws `IllegalStateException`. TLibs' `SqliteDatabase` opens the file with the SQLite driver that Paper ships.
 
 | Table | Contents |
 |---|---|
