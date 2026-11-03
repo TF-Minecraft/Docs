@@ -88,7 +88,7 @@ Depend on DenarEconomy with `provided` scope and call [Denars](https://github.co
 | `trade(opId, reason, buyerAccount, seller, sellerAccount, cents, taxable)` | A sale: the buyer pays the seller. |
 | `taxFor(character, cents)` | The tax the registered policy would take. |
 
-Every posting returns a `Result`: `APPLIED`, `REFUSED`, `CONFLICT` or `UNAVAILABLE`. Act on a payment only after `APPLIED`. `post`, `transfer`, `earn` and `trade` answer `UNAVAILABLE` for an operation ID or reason starting `estate:`, before any tax policy runs.
+Every posting returns a `Result`: `APPLIED`, `REFUSED`, `CONFLICT` or `UNAVAILABLE`. Act on a payment only after `APPLIED`. `post`, `transfer`, `earn`, `earnPickedUpCoin` and `trade` answer `UNAVAILABLE` for an operation ID or reason starting `estate:`, before any tax policy runs.
 
 Choose operation IDs so that a retry reuses the same ID. Derive the ID from the event when the event can repeat, for example `coin:<item entity UUID>` or `shop:<shop>:<transaction nonce>`, and store a generated ID before any side effect that depends on the payment. A fresh random ID suits a one-off player command. DenarEconomy's own commands use `<kind>:<random UUID>`.
 
