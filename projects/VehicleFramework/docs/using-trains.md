@@ -169,7 +169,7 @@ Settings are under `collision-warning` in `trains.yml`:
 
 A route is a recorded drive that a locomotive repeats on its own: a lap of a circuit, or a run out along a line and back. The recorder item (`item-recorder`) records it onto a throttle tape.
 
-1. Bind the locomotive to the track and stop where the route should start.
+1. Bind the locomotive to the track and stop where the route should start. To use a cargo dock at the starting station, wait there 2 seconds after starting the recording before you set off.
 2. Right-click the locomotive with the recorder. The owner, or an admin, can record.
 3. Drive the route. Stop wherever the train should stop, for at least 2 seconds; the wait is recorded too. At the end of a line, stop, wait, and reverse.
 4. Recording ends by itself when the locomotive gets back to where it started, heading the way it first set off, within `routes.finish-distance` blocks (default 2) and after at least `routes.min-distance` blocks (default 32). On a circuit it also ends after one lap. It stops early if the tape is full (2,000 samples) or the locomotive leaves the route (the track it started on and the branches off it).
@@ -177,7 +177,7 @@ A route is a recorded drive that a locomotive repeats on its own: a lap of a cir
 
 Right-click the locomotive with the recorder again while recording to cancel. A tape only fits the track it was recorded on. If the track is dug and rebuilt, record the route again.
 
-A locomotive with a loaded tape and fuel drives itself while nobody is in the captain's seat. It follows the tape in the order it was recorded, so a train on a line out and back knows which way it is going even where it passes the same rails both ways. It stops where the driver stopped, for as long, and reverses where the driver reversed. The tape sets the switches ahead of the train the way the recorded drive went; if another train is on a switch it needs, it waits short of the switch until it is free. A train that was driven by hand off its route waits until it is back on it.
+A locomotive with a loaded tape and fuel drives itself while nobody is in the captain's seat. It follows the tape in the order it was recorded, so a train on a line out and back knows which way it is going even where it passes the same rails both ways. It stops where the driver stopped, for as long, and reverses where the driver reversed. At the end of each run it brakes into the starting stop, even though the recording ended while still moving. The tape sets the switches ahead of the train the way the recorded drive went; if another train is on a switch it needs, it waits short of the switch until it is free. A train that was driven by hand off its route waits until it is back on it.
 
 A train only sets off when all its cars have loaded, and waits 5 seconds after it appears.
 
