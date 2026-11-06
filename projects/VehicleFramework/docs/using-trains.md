@@ -183,9 +183,9 @@ A train only sets off when all its cars have loaded, and waits 5 seconds after i
 
 ### Running unloaded
 
-A train on its route keeps running when no player is near it. When its chunks unload, or it reaches a chunk that is not loaded, it runs "on paper": its cars are saved and it moves along its recorded timetable once a second, using fuel as it would when loaded, and taking fuel from its fuel car. It ignores blocks and other trains while on paper. When a player comes near, the whole train appears where it has got to and carries on. If something is in the way where it would appear (blocks or another train), it waits there until the way is clear.
+A train on its route keeps running when no player is near it. When its chunks unload, or it reaches a chunk that is not loaded, it runs "on paper": its cars are saved and it moves along its recorded timetable once a second, using `routes.paper-fuel` (default half) of the fuel it would use loaded, and taking fuel from its fuel car. It ignores blocks while on paper, but keeps its distance from other trains: it stops `routes.paper-gap` blocks (default 4) behind another train running on paper, and just short of a loaded or parked train, and waits there without using fuel until the way is clear. Distance counts along the rails, through a switch too. Two trains meeting head-on on a line, or more trains than a short circuit has room for, wait for each other until someone moves one. When a player comes near, the whole train appears where it has got to and carries on. If something is in the way where it would appear (blocks or another train), it waits there until the way is clear.
 
-A train on paper keeps its place over a restart, where it was saved (every `routes.save-seconds`, and on shutdown; trains still loaded at shutdown go on paper then). Time the server was down does not move it on. When it runs out of fuel with its fuel car empty, or a track on its route is dug or rebuilt, it stops running on paper and stays where it was last saved, like any parked train. Only a train with a tape loaded, fuel, nobody aboard and no storage window open runs on paper; other trains wait at the edge of the loaded area until it loads.
+A train on paper keeps its place over a restart, where it was saved (every `routes.save-seconds`, and on shutdown; trains still loaded at shutdown go on paper then). Time the server was down does not move it on. When it runs out of fuel with its fuel car empty, or a track on its route is dug or rebuilt, it stops running on paper and stays where it was last saved, like any parked train. Only a train with a tape loaded, fuel, nobody aboard and no storage window open on a seat runs on paper (a Flat Car hold left open is closed when the train goes on paper); other trains wait at the edge of the loaded area until it loads.
 
 `routes.run-unloaded: false` turns this off: unmanned trains then wait at the edge of the loaded area.
 
@@ -200,7 +200,11 @@ A dock keeps working for its marker until it is removed, even if they later lose
 - A **load** dock fills the car from the dock.
 - An **unload** dock empties the car into the dock.
 
-Items move as far as there is room, up to `docks.items-per-stop` items (default 576) per train per stop. A car only trades with docks marked by its own owner (the same character), so docks cannot take from, or fill, someone else's train. A car's `allow-items` still applies. The fuel car behind the locomotive is left alone unless `docks.fuel-cars` is `true`. A train running unloaded trades at its stops too: the dock's chunk is loaded for the moment it takes.
+Items move as far as there is room, up to `docks.items-per-stop` items (default 576) per train per stop. A car only trades with docks marked by its own owner (the same character), so docks cannot take from, or fill, someone else's train. A car's `allow-items` still applies. The fuel car behind the locomotive is left alone unless `docks.fuel-cars` is `true`. A train running unloaded trades at its stops too: the dock's chunk is loaded for the moment it takes. A car that is being destroyed no longer trades.
+
+### Flat Car hold
+
+The Flat Car has a 54-slot hold that takes any item, so docks have a car to load. Right-click the car and click the chest in its menu. Its owner can open it, and so can the faction of a faction-owned car. Players and groups on the car's whitelist can open it too, but only while the owner has the whitelist switched on; a ticket does not open it. Staff open it by taking the car over. The hold needs `containers.hold` (`seat: outside`) in `vehicles/flat_car.yml`; the plugin does not add it to an existing file.
 
 ## Route and dock settings
 
@@ -212,6 +216,8 @@ Under `routes` and `docks` in `trains.yml`:
 | `routes.min-distance` | `32` | Blocks driven before such a recording can end |
 | `routes.run-unloaded` | `true` | Trains on a route keep running when no player is near |
 | `routes.save-seconds` | `30` | How often a train running unloaded saves where it is |
+| `routes.paper-fuel` | `0.5` | Fuel a train running unloaded uses, as a share of what it uses loaded |
+| `routes.paper-gap` | `4` | Blocks a train running unloaded keeps from another train running unloaded ahead of it |
 | `docks.enabled` | `true` | Turns cargo docks on |
 | `docks.reach` | `4` | Blocks from a car's centre to a dock block |
 | `docks.items-per-stop` | `576` | Items a train moves at most per stop |
@@ -269,6 +275,6 @@ Plugin updates never overwrite vehicle YAML or an existing `trains.yml`. Missing
 | Skins without the bogie bones placed as rigid cars | 2.4.4 |
 | `curve-radius` | 2.5.0 |
 | Saved train facing and per-junction routes | 2.9.0 |
-| Routes out and back, tapes setting switches, running unloaded, `item-dock`, `routes.*`, `docks.*` | 2.18.0 |
+| Routes out and back, tapes setting switches, running unloaded, `item-dock`, `routes.*`, `docks.*`, Flat Car hold (`seat: outside`) | 2.18.0 |
 
 Saves and throttle tapes from earlier releases remain readable. Before downgrading below 2.9.0, restore the matching vehicle-data backup: older releases cannot represent a train facing the opposite way along a track.

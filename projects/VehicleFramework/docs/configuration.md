@@ -207,7 +207,7 @@ towing:
   reversed: false
 ```
 
-A container opens when a player who is already in `seat` right-clicks the vehicle. `allow-items` limits what it accepts. `size` is the inventory size. Light `power` is a block light level from 1 to 15 (default 8). `vector` is a `bone.bone` pair aimed the way the light points.
+A container opens when a player who is already in `seat` right-clicks the vehicle. With `seat: outside` (2.18.0+) it is opened from a chest button at slot 23 of the vehicle's seat menu instead, by the owner, by groups the vehicle always admits (its faction), and by the whitelist and its groups while the whitelist is switched on; the Flat Car's hold uses this. Any window open on a vehicle's storage is closed before the vehicle is saved, destroyed or removed. `allow-items` limits what it accepts. `size` is the inventory size. Light `power` is a block light level from 1 to 15 (default 8). `vector` is a `bone.bone` pair aimed the way the light points.
 
 `custom-effects` plays a short script on engine start, engine stop, fire, and death. The keys are `engine_start`, `engine_start_fail`, `engine_stop`, `fire_start`, `crash`, `explode`, `sink`, and `die`. Each entry is a list of steps such as `sound(bone;namespace:sound;volume;pitch)` and `delay(20)`. The small car in the repository is a full example.
 
