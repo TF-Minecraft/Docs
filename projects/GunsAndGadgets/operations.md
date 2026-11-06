@@ -38,6 +38,36 @@ The action bar confirms the selection and carried amount, or reports that no
 compatible ammunition is available. Selection is blocked while the gun is
 reloading.
 
+## Shot handling
+
+The `handling` section of `config.yml` (GunsAndGadgets 2.2.0) tunes spread,
+damage over distance and the headshot bonus. Leaving a key out keeps the
+behaviour from before the section existed: headshot 1.5, every spread
+multiplier 1, no falloff.
+
+| Key | Effect |
+| --- | --- |
+| `headshot-multiplier` | Damage multiplier for hits in the top quarter of a player's hitbox. |
+| `spread-multipliers.sneaking` | Multiplies the ground value (still or moving) while crouched. |
+| `spread-multipliers.moving` | Any movement key held (`Player#getCurrentInput`). |
+| `spread-multipliers.sprinting` | `isSprinting()`; beats `moving`. |
+| `spread-multipliers.airborne` | Not on the ground; water, climbing and creative flight don't count. Beats sprinting. |
+| `spread-multipliers.mounted` | Riding an animal, or a seat whose vehicle is moving. |
+| `max-spread-degrees` | Upper limit for the final spread (default 45, above the 40° accuracy cap). |
+| `falloff.start-distance` | Bullets do full damage up to this many blocks from the muzzle. |
+| `falloff.min-multiplier` | Damage multiplier at the shot's maximum range, reached linearly. `1` turns falloff off. |
+
+The stance is read once, when the shot fires, and applies to every pellet of
+that shot. Seats count as mounted only while moving:
+- Boats and minecarts count by their own horizontal velocity.
+- VehicleFramework vehicles count by the access panel speed of the vehicle at
+  the front of the coupling, so train carriages move with their locomotive and
+  harnessed carts count too.
+- GSit chairs and parked vehicles count as standing still.
+
+Falloff applies to bullet hits on living entities. Rocket explosions and
+vehicle hits are unchanged.
+
 ## Character sessions and reload cleanup
 
 The build pins TLibs 2.3.0. With an older TLibs that lacks the character API,
