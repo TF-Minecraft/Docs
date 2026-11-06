@@ -78,7 +78,8 @@ Players are carried up to `walkable.carry-max-speed` in `trains.yml`, 1.0 blocks
 | `item-switch` | The lever model placed at a frog |
 | `item-small`, `item-medium`, `item-large` | Rail models. Straights merge into the longer pieces |
 | `item-track` | Item consumed from the inventory while laying in survival |
-| `item-recorder` | Record a throttle tape |
+| `item-recorder` | Record a throttle tape. See [Routes](#routes) |
+| `item-dock` | Mark a storage block as a cargo dock. See [Cargo docks](#cargo-docks) |
 
 `/vf reload` reloads `trains.yml` and respawns switch levers in loaded chunks. Rail models already placed keep their old style until `/vf track resync`. That command copies the current rail items onto loaded track. Unloaded chunks pick up the new style the next time they load. Console may run `resync`.
 
@@ -164,6 +165,65 @@ Settings are under `collision-warning` in `trains.yml`:
 | `sound`, `sound-volume`, `sound-pitch` | `minecraft:block.bell.use`, `1.0`, `1.5` | The alarm |
 | `sound-interval-ticks` | `40` | Ticks between alarms, halved in the last 10 seconds |
 
+## Routes
+
+A route is a recorded drive that a locomotive repeats on its own: a lap of a circuit, or a run out along a line and back. The recorder item (`item-recorder`) records it onto a throttle tape.
+
+1. Bind the locomotive to the track and stop where the route should start. To use a cargo dock at the starting station, wait there 2 seconds after starting the recording before you set off.
+2. Right-click the locomotive with the recorder. The owner, or an admin, can record.
+3. Drive the route. Stop wherever the train should stop, for at least 2 seconds; the wait is recorded too. At the end of a line, stop, wait, and reverse.
+4. Recording ends by itself when the locomotive gets back to where it started, heading the way it first set off, within `routes.finish-distance` blocks (default 2) and after at least `routes.min-distance` blocks (default 32). On a circuit it also ends after one lap. It stops early if the tape is full (2,000 samples) or the locomotive leaves the route (the track it started on and the branches off it).
+5. The tape is written to the recorder in the driver's hand. Sneak and right-click the locomotive with it to load it; sneak and right-click with an empty hand to take it out.
+
+Right-click the locomotive with the recorder again while recording to cancel. A tape only fits the track it was recorded on. If the track is dug and rebuilt, record the route again.
+
+A locomotive with a loaded tape and fuel drives itself while nobody is in the captain's seat. It follows the tape in the order it was recorded, so a train on a line out and back knows which way it is going even where it passes the same rails both ways. It stops where the driver stopped, for as long, and reverses where the driver reversed. At the end of each run it brakes into the starting stop, even though the recording ended while still moving. The tape sets the switches ahead of the train the way the recorded drive went; if another train is on a switch it needs, it waits short of the switch until it is free. A train that was driven by hand off its route waits until it is back on it.
+
+A train only sets off when all its cars have loaded, and waits 5 seconds after it appears.
+
+### Running unloaded
+
+A train on its route keeps running when no player is near it. When its chunks unload, or it reaches a chunk that is not loaded, it runs "on paper": its cars are saved and it moves along its recorded timetable once a second, using `routes.paper-fuel` (default half) of the fuel it would use loaded, and taking fuel from its fuel car. It ignores blocks while on paper, but keeps its distance from other trains: it stops `routes.paper-gap` blocks (default 4) behind another train running on paper, and just short of a loaded or parked train, and waits there without using fuel until the way is clear. Distance counts along the rails, through a switch too. Two trains meeting head-on on a line, or more trains than a short circuit has room for, wait for each other until someone moves one. When a player comes near, the whole train appears where it has got to and carries on. If something is in the way where it would appear (blocks or another train), it waits there until the way is clear.
+
+A train on paper keeps its place over a restart, where it was saved (every `routes.save-seconds`, and on shutdown; trains still loaded at shutdown go on paper then). Time the server was down does not move it on. When it runs out of fuel with its fuel car empty, or a track on its route is dug or rebuilt, it stops running on paper and stays where it was last saved, like any parked train. Only a train with a tape loaded, fuel, nobody aboard and no storage window open on a seat runs on paper (a Flat Car hold left open is closed when the train goes on paper); other trains wait at the edge of the loaded area until it loads.
+
+`routes.run-unloaded: false` turns this off: unmanned trains then wait at the edge of the loaded area.
+
+## Cargo docks
+
+A cargo dock is a chest, barrel, shulker box, hopper, dispenser or dropper that trains on a route load from or unload into.
+
+Right-click the block with the dock tool (`item-dock`). The block must open for you: claims and locks that stop you opening it stop you marking it. Each click moves it on: **load**, **unload**, then off. Breaking the block removes the dock. Only the player who marked a dock, or an admin, can change it.
+
+A dock keeps working for its marker until it is removed, even if they later lose access to the block (for example a claim trust is removed); remove such docks by breaking the block. When a train on its route stops at one of its recorded stops (2 seconds or longer while recording), every car with storage within `docks.reach` blocks (default 4) of a dock moves items:
+
+- A **load** dock fills the car from the dock.
+- An **unload** dock empties the car into the dock.
+
+Items move as far as there is room, up to `docks.items-per-stop` items (default 576) per train per stop. A car only trades with docks marked by its own owner (the same character), so docks cannot take from, or fill, someone else's train. A car's `allow-items` still applies. The fuel car behind the locomotive is left alone unless `docks.fuel-cars` is `true`. A train running unloaded trades at its stops too: the dock's chunk is loaded for the moment it takes. A car that is being destroyed no longer trades.
+
+### Flat Car hold
+
+The Flat Car has a 54-slot hold that takes any item, so docks have a car to load. Right-click the car and click the chest in its menu. Its owner can open it, and so can the faction of a faction-owned car. Players and groups on the car's whitelist can open it too, but only while the owner has the whitelist switched on; a ticket does not open it. Staff open it by taking the car over. The hold needs `containers.hold` (`seat: outside`) in `vehicles/flat_car.yml`; the plugin does not add it to an existing file.
+
+## Route and dock settings
+
+Under `routes` and `docks` in `trains.yml`:
+
+| Key | Default | Meaning |
+| --- | --- | --- |
+| `routes.finish-distance` | `2` | How close to the start, in blocks, ends a recording on a line with ends |
+| `routes.min-distance` | `32` | Blocks driven before such a recording can end |
+| `routes.run-unloaded` | `true` | Trains on a route keep running when no player is near |
+| `routes.save-seconds` | `30` | How often a train running unloaded saves where it is |
+| `routes.paper-fuel` | `0.5` | Fuel a train running unloaded uses, as a share of what it uses loaded |
+| `routes.paper-gap` | `4` | Blocks a train running unloaded keeps from another train running unloaded ahead of it |
+| `docks.enabled` | `true` | Turns cargo docks on |
+| `docks.reach` | `4` | Blocks from a car's centre to a dock block |
+| `docks.items-per-stop` | `576` | Items a train moves at most per stop |
+| `docks.min-stop-seconds` | `2` | How long a recorded stop must be for docks to serve it |
+| `docks.fuel-cars` | `false` | Whether the fuel car trades with docks |
+
 ## Locomotive overdrive
 
 A vehicle with `locomotive: true` leads its train as a locomotive:
@@ -215,5 +275,6 @@ Plugin updates never overwrite vehicle YAML or an existing `trains.yml`. Missing
 | Skins without the bogie bones placed as rigid cars | 2.4.4 |
 | `curve-radius` | 2.5.0 |
 | Saved train facing and per-junction routes | 2.9.0 |
+| Routes out and back, tapes setting switches, running unloaded, `item-dock`, `routes.*`, `docks.*`, Flat Car hold (`seat: outside`) | 2.18.0 |
 
 Saves and throttle tapes from earlier releases remain readable. Before downgrading below 2.9.0, restore the matching vehicle-data backup: older releases cannot represent a train facing the opposite way along a track.

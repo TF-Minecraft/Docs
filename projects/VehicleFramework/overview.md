@@ -353,6 +353,7 @@ Spline tracks persist samples and segment health separately from displays. Consi
 - `weapon-aim-debug` (default `false`) - When true, shows an `END_ROD` particle at the resolved cursor aim target for the gunner and logs aim angles/target to console every 0.5s.
 - `terrain-follow-debug` (default `false`) - When true, shows `END_ROD` particles at terrain-follow probe (or body) starts and down-ray hits for nearby players.
 - `ground-engine-logging` (default `true`) - When true, appends each terrain-follow step (`state=` plus dest/vel, `lookaheadY`, `effSnap`, `air`, airborne `vx`, and geared-engine `gear`/`thr` when present) and each state swap (`state=A->B reason=... isDefault=...`) to `plugins/VehicleFramework/logs/ground_engine.log`.
+- `storage-logging` (default `true`, 2.18.0+) - Logs every item a player puts into or takes out of vehicle storage to `plugins/VehicleFramework/logs/storage.log` (`OPEN`, `PUT`, `TOOK` lines with player, amount, item, storage, vehicle and place, written off the server thread). With CoreProtect it also adds a chat line under the player's name, `[VF storage] took 12 iron_ingot from ...`, found with `/co lookup u:<player> a:chat`. Dock trades and fuel drawn by a locomotive are not blamed on anyone.
 - `wipe-log` (default `true`) - When true, deletes `ground_engine.log` and `track.log` on plugin start and `/vf reload`.
 
 ### Weapon aim mode (optional)
