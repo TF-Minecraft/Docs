@@ -56,6 +56,8 @@ multiplier 1, no falloff.
 | `max-spread-degrees` | Upper limit for the final launch spread. No limit when left out. |
 | `falloff.start-distance` | Bullets do full damage up to this many blocks from the muzzle. |
 | `falloff.min-multiplier` | Damage multiplier at the shot's maximum range, reached linearly. `1` turns falloff off. |
+| `rockets.safe-distance`, `rockets.min-multiplier` | A rocket blast hurts others by `min-multiplier` (0.1) until the rocket has flown `safe-distance` (4) blocks, so firing at the ground at your feet barely hurts anyone else. The shooter always takes their own blast in full. |
+| `rockets.full-damage-distance` | The blast reaches full damage at this many blocks flown (40), rising linearly from the safe distance. Left out or `0`: the old arming time (full after one second of flight), which made slower rockets hit harder. |
 
 Non-finite values (`.nan`, `.inf`) fall back to each key's default.
 
@@ -237,6 +239,21 @@ the `sneaking` multiplier.
 
 The swap-hands key with a gun in hand picks the next shot; crouch + right-click
 no longer does. Messages name the player's own key binding.
+
+### Balance (2026-11-07 pass)
+
+Checked with a calculator over every legal build (about 1.7 million) and bot shots on Dev
+against crafted mythril armour (within 3% for bullets):
+- Smoothbore barrels hit harder and pierce less; rifled barrels pierce more and hit softer.
+  At mythril the smoothbore does about 19% more to light armour and the rifled barrel about
+  26% more to heavy armour.
+- The proof chamber has no damage cut but reloads slower, so it adds pierce to any barrel.
+- The double chamber fires its second shot after at least about 0.9 s and does 10% less per
+  shot; the single shot keeps the best sustained damage.
+- The single-shot launcher does 15% more; the multi-tube is less accurate and 25% weaker per
+  rocket.
+- The best mythril builds do about 8 damage a second to a Warlord in mythril medium armour at
+  25 blocks (melee classes do 6 to 10 in contact); a median build about half that.
 
 ### Names and lore
 
