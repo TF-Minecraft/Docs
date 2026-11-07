@@ -139,6 +139,27 @@ disabled part refuses to fire or reload. Nothing is written to the gun, so
 setting it back to `false` restores the gun. Its holder sees one warning per gun
 per restart.
 
+### Refunds
+
+`refunds` in `config.yml` takes old guns apart: a gun stamped with a retired
+(disabled) or removed part is removed, and its materials go to the player. A
+full inventory drops the rest at their feet.
+
+- The materials are what the crafting took, recorded on guns crafted since
+  2.0.6. Older guns give their parts' `cost` from `retired-parts.yml`; one with a
+  removed part can't be priced and is kept.
+- `free-guns`: guns crafted for free (staff bypass, `/gg give`) are kept with
+  `keep`, or give their parts' costs with `part-costs`.
+- Right-clicking the gun station with an old gun takes it apart. A gun that
+  can't be priced is refused with "Ask staff about it".
+- `automatic: true` also does it wherever guns are refreshed: on join
+  (inventory and ender chest), selecting it in the hotbar, clicking it in an
+  inventory, and opening storage that holds it (the opener gets the materials).
+  It adds no work beyond the refresh checks already there.
+- Each refund is logged: `[Refund] <player> gun_id=<id> returned {...}`.
+
+Both are off by default. Turn them on with the switch to forged parts.
+
 ### Forged gun looks
 
 A gun built only from forged parts is drawn from the parts it is made of. It
