@@ -68,9 +68,13 @@ gun's own spread. Seats count as mounted only while moving:
   therefore move with their locomotive, and harnessed carts count too.
 - Minecarts count by their own horizontal velocity.
 - A player-driven boat moves on its driver's client and shows no velocity on the
-  server. It counts as moving while its driver holds forward or back.
+  server. It counts as moving while its driver holds forward or back. Other seats
+  don't read their rider's keys.
 - Animals always count as mounted.
 - GSit chairs and parked vehicles count as standing still.
+
+A shooter's own VehicleFramework vehicle never stops their bullets: the muzzle
+starts inside the vehicle, next to its base. Other vehicles and people still do.
 
 Players standing on a vehicle's deck count as on foot. Swimming fast counts as
 sprinting. Falloff applies to bullet hits on living entities; rocket explosions
