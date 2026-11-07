@@ -141,21 +141,24 @@ per restart.
 
 ### Refunds
 
-`refunds` in `config.yml` takes old guns apart: a gun stamped with a retired
-(disabled) or removed part is removed, and its materials go to the player. A
-full inventory drops the rest at their feet.
+`refunds` in `config.yml` removes old guns so none stay on the server. A gun is
+old when it carries a retired (disabled) or removed part, or when it is from
+before guns recorded their parts (GunsAndGadgets 2.0.0; on Main, guns crafted
+15–23 September 2026).
 
-- The materials are what the crafting took, recorded on guns crafted since
-  2.0.6. Older guns give their parts' `cost` from `retired-parts.yml`; one with a
-  removed part can't be priced and is kept.
-- `free-guns`: guns crafted for free (staff bypass, `/gg give`) are kept with
-  `keep`, or give their parts' costs with `part-costs`.
-- Right-clicking the gun station with an old gun takes it apart. A gun that
-  can't be priced is refused with "Ask staff about it".
+What the player gets back:
+- what the crafting took, recorded on guns crafted since 2.0.6;
+- older stamped guns: their parts' `cost` from `retired-parts.yml`;
+- nothing for guns crafted for free (staff bypass, `/gg give`), unstamped guns,
+  and guns with a removed part and nothing recorded. They are just removed.
+
+A full inventory drops the rest at the player's feet.
+
+- Right-clicking the gun station with an old gun takes it apart.
 - `automatic: true` also does it wherever guns are refreshed: on join
   (inventory and ender chest), selecting it in the hotbar, clicking it in an
   inventory, and opening storage that holds it (the opener gets the materials).
-  It adds no work beyond the refresh checks already there.
+  These checks read each item's data in place and copy only guns.
 - Each refund is logged: `[Refund] <player> gun_id=<id> returned {...}`.
 
 Both are off by default. Turn them on with the switch to forged parts.
