@@ -80,6 +80,65 @@ Players standing on a vehicle's deck count as on foot. Swimming fast counts as
 sprinting. Falloff applies to bullet hits on living entities; rocket explosions
 and vehicle hits are unchanged.
 
+Two more `handling` keys:
+
+| Key | Effect |
+| --- | --- |
+| `smooth-accuracy` | `true`: above accuracy 5, each point tightens spread by 5%. Off or left out: the old line, which reaches 1.2° at 20 and 0.07° at 30. |
+| `pellet-cone.tighten-per-accuracy` / `pellet-cone.min-factor` | A shotgun barrel's pellet cone (its `spread` stat) shrinks by this share per point of accuracy, down to `min-factor` of its size. Defaults 0.03 and 0.4. |
+
+## Forged parts
+
+A part in `parts.yml` with `tendencies` is forged. It becomes one part per
+material in `metals.yml`, with the id `<part>@<material>` (for example
+`heavy_barrel@steel`), which is what `/gg give` and crafted guns use. In the
+gunsmith, players pick the part, then the material.
+
+`metals.yml` lists the materials. Each one has:
+- `kind`: `metal` or `wood`. A part forges from one kind: `material: wood` for
+  stocks; metal by default.
+- `tier`: sets the part tier, and the shot tier a barrel loads.
+- `cost` and `permission`: the ingot or wood paid per part, and who may forge it.
+- `better` and `worse`: multiply a part's upsides and downsides. A number sets
+  every stat; a section sets `default` plus per-stat factors.
+- `description`: lore shown when picking the material.
+
+A new material (an alloy) only needs a new entry. Every forged part of its kind
+gains it.
+
+Part keys:
+
+| Key | Effect |
+| --- | --- |
+| `tendencies` | `stat value` lines written for the reference material (steel; maplewood for stocks). The material scales them. Lore shows them as one to three arrows, not numbers. |
+| `fixed` | Stats no material changes: shots held, a shotgun's pellet cone (`spread`), a revolver's damage percentage. |
+| `by-metal` | Extra stats per material, e.g. the multi-tube chamber's rockets. |
+| `metals` | Limits the part to these materials. |
+| `cost-amount`, `cost` | Ingots of the material (default 2), plus any other cost entries. |
+| `ammo-family` | `shot`, `spreadshot` or `rocket`: the barrel loads that family up to its material's tier. Ammunition entries carry `family`, `tier` and `powered`. |
+| `ammo-filter` | `powered` or `plain`: the gun loads only that shot. |
+| `skin-base` | Matches gun designs as if the action were this part, e.g. `flintlock`. |
+
+New stats: `damage_percent` (scales gun and shot damage), `falloff` (blocks
+added to `falloff.start-distance`), `pierce` (added to the shot's pierce), and
+`moving`, `mounted` and `sneaking`. The last three are percentages: positive
+means steadier. `moving 40` lets 60% of the walking, sprinting and jumping
+penalty through, and `sneaking 50` deepens the crouch bonus by half. The
+combined factor stays between 0.5 and 2. Editing `metals.yml` or a part changes
+its revision, so existing guns refresh to the new numbers.
+
+### Retiring old parts
+
+Forged parts reuse old part ids (`matchlock`, `single_shot`, …), so move the old
+`parts.yml` entries to `retired-parts.yml` when switching. Those parts load
+disabled: guns built from them still resolve, but nobody can craft them. An id
+that `parts.yml` also defines is skipped.
+
+With `retire-disabled-part-guns: true` in `config.yml`, a gun stamped with a
+disabled part refuses to fire or reload. Nothing is written to the gun, so
+setting it back to `false` restores the gun. Its holder sees one warning per gun
+per restart.
+
 ## Character sessions and reload cleanup
 
 The build pins TLibs 2.3.0. With an older TLibs that lacks the character API,
