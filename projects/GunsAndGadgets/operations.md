@@ -38,6 +38,48 @@ The action bar confirms the selection and carried amount, or reports that no
 compatible ammunition is available. Selection is blocked while the gun is
 reloading.
 
+## Shot handling
+
+The `handling` section of `config.yml` (GunsAndGadgets 2.2.0) tunes spread,
+damage over distance and the headshot bonus. Leaving a key out keeps the
+behaviour from before the section existed: headshot 1.5, every spread
+multiplier 1, no falloff.
+
+| Key | Effect |
+| --- | --- |
+| `headshot-multiplier` | Damage multiplier for hits in the top quarter of a player's hitbox. |
+| `spread-multipliers.sneaking` | Multiplies the ground value (still or moving) while crouched. |
+| `spread-multipliers.moving` | Any movement key held (`Player#getCurrentInput`). |
+| `spread-multipliers.sprinting` | `isSprinting()`; beats `moving`. |
+| `spread-multipliers.airborne` | Not on the ground; water, climbing and creative flight don't count. Beats sprinting. |
+| `spread-multipliers.mounted` | Riding an animal, or a seat whose vehicle is moving. |
+| `max-spread-degrees` | Upper limit for the final launch spread. No limit when left out. |
+| `falloff.start-distance` | Bullets do full damage up to this many blocks from the muzzle. |
+| `falloff.min-multiplier` | Damage multiplier at the shot's maximum range, reached linearly. `1` turns falloff off. |
+
+Non-finite values (`.nan`, `.inf`) fall back to each key's default.
+
+The stance is read once, when the shot fires, and applies to every pellet of
+that shot. It widens only the launch cone; a rocket's wobble in flight keeps the
+gun's own spread. Seats count as mounted only while moving:
+- VehicleFramework seats riders through ModelEngine, so they have no Bukkit
+  vehicle. GunsAndGadgets finds them with `getByPassenger` and checks the access
+  panel speed of the vehicle at the front of the coupling. Train carriages
+  therefore move with their locomotive, and harnessed carts count too.
+- Minecarts count by their own horizontal velocity.
+- A player-driven boat moves on its driver's client and shows no velocity on the
+  server. It counts as moving while its driver holds forward or back. Other seats
+  don't read their rider's keys.
+- Animals always count as mounted.
+- GSit chairs and parked vehicles count as standing still.
+
+A shooter's own VehicleFramework vehicle never stops their bullets: the muzzle
+starts inside the vehicle, next to its base. Other vehicles and people still do.
+
+Players standing on a vehicle's deck count as on foot. Swimming fast counts as
+sprinting. Falloff applies to bullet hits on living entities; rocket explosions
+and vehicle hits are unchanged.
+
 ## Character sessions and reload cleanup
 
 The build pins TLibs 2.3.0. With an older TLibs that lacks the character API,
