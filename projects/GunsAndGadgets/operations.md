@@ -101,7 +101,8 @@ gunsmith, players pick the part, then the material.
 - `cost` and `permission`: the ingot or wood paid per part, and who may forge it.
 - `better` and `worse`: multiply a part's upsides and downsides. A number sets
   every stat; a section sets `default` plus per-stat factors.
-- `description`: lore shown when picking the material.
+- `description`: notes on the material for config readers; players see the
+  part lore instead.
 
 A new material (an alloy) only needs a new entry. Every forged part of its kind
 gains it.
@@ -118,6 +119,7 @@ Part keys:
 | `ammo-family` | `shot`, `spreadshot` or `rocket`: the barrel loads that family up to its material's tier. Ammunition entries carry `family`, `tier` and `powered`. |
 | `ammo-filter` | `powered` or `plain`: the gun loads only that shot. |
 | `skin-base` | Matches gun designs as if the action were this part, e.g. `flintlock`. |
+| `metal-lore` | One lore line per material (`iron: "..."`), shown on that variant. The part list, before a material is picked, shows `lore`. |
 
 New stats: `damage_percent` (scales gun and shot damage), `falloff` (blocks
 added to `falloff.start-distance`), `pierce` (added to the shot's pierce), and
@@ -244,10 +246,12 @@ no longer does. Messages name the player's own key binding.
   tier. Bundled `name-impact` entries build [chamber] [action] [barrel], e.g.
   "Double Flintlock Rifle", "Revolving Wheellock Pistol", "Salvo Rocket
   Launcher".
-- Part arrows show the tendencies in the part's own material. One line says
-  what that material does to the part: stronger or weaker upsides, milder or
-  harsher downsides.
+- Each part and material has its own line of lore (`metal-lore`). Its arrows
+  show the tendencies in that material, so the lore adds no line on what the
+  material does.
 - Every stat on an assembled gun has a short note on what it measures.
+- Parts whose shot rules leave the gun nothing to load show a barrier: "These
+  parts don't make a gun".
 - `type-icons` in `config.yml` (default `tfmc_guns:`) draws the gun type buttons
   as a steel gun of that type (`<prefix><type>_carry`). Blank shows paper.
 
