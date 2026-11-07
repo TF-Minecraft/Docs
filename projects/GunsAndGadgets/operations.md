@@ -171,6 +171,36 @@ Sound and effect keys:
 Steamlocks keep `smokeless` and `no_light`, so they show only their steam.
 Sound changes count as part changes, so existing guns refresh to them.
 
+### Draw time and aiming
+
+`handling.draw` in `config.yml` gives guns a draw time. A gun taken into the
+hand can't fire or start a reload until it is drawn. It counts as taken into
+the hand after:
+- a hotbar change;
+- a swap into the main hand;
+- moving it into the hand slot;
+- a respawn or join.
+
+The hotbar shows the vanilla cooldown sweep for the time left.
+
+| Key | Effect |
+| --- | --- |
+| `draw.base-seconds.<type>` | Seconds for `pistol`, `shotgun`, `rifle`, `launcher`. Leave the section out for no draw time. |
+| `draw.stance.<stance>` | How much longer drawing takes each tick spent `moving`, `sprinting`, `airborne` (jumping or falling) or `mounted` (a moving seat). `sneaking` multiplies the on-foot value, so below 1 is quicker. |
+
+The parts' `draw` stat (Draw Speed) scales the base time: `+25` is 25% quicker
+and `-30` is 30% slower, held between half and double.
+
+`aiming` turns on crouch to aim. Crouching with a loaded, drawn gun raises it:
+- the model becomes `<forged-model>_ads`;
+- walking slows by `slow` (0 to 0.9), which also narrows the field of view.
+  Players with FOV effects off get only the slowdown.
+
+A gun with a `scoped` part (the arclock) becomes a spyglass while aimed: hold
+right-click to look through it, release to fire. Releasing the crouch, changing
+item or running empty lowers the gun. The swap-hands key (F) with a gun in hand
+picks the next shot; crouch + right-click no longer does.
+
 ## Character sessions and reload cleanup
 
 The build pins TLibs 2.3.0. With an older TLibs that lacks the character API,
