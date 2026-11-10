@@ -162,9 +162,11 @@ new `parts.yml`. Those parts load disabled: guns built from them still resolve,
 but nobody can craft them. An id that `parts.yml` also defines is skipped.
 
 When `retired-parts.yml` is missing, the plugin writes its bundled copy: the
-pre-forging default parts (the 21 ids Main used). A server with parts of its own
-should replace it with its own old `parts.yml`, or guns with those parts count as
-having a removed part.
+plugin's old default parts. It has the same 21 ids Main used, but the repo's
+default values, not Main's tuned ones (Main's rifled barrel, revolver and shot
+lists differ). It is only a safety net: a server that tuned its parts, Main
+included, should still move its own old `parts.yml` there, or old guns refresh to
+the default values; parts the bundle lacks count as removed.
 
 With `retire-disabled-part-guns: true` in `config.yml`, a gun stamped with a
 disabled part refuses to fire or reload. Nothing is written to the gun, so
