@@ -29,9 +29,10 @@ triggers and the data preserved when stats change.
 
 ## Ammunition selection
 
-Crouch and right-click with a gun to cycle through compatible ammunition carried
-in the inventory. The next reload uses the selected calibre, and the choice is
-saved on that gun. Already loaded ammunition stays loaded. Without a selection,
+Press the swap-hands key with a gun in hand to cycle through compatible
+ammunition carried in the inventory (crouching aims instead, see "Draw time and
+aiming"). Messages name the player's own key binding. The next reload uses the
+selected calibre, and the choice is saved on that gun. Already loaded ammunition stays loaded. Without a selection,
 reloads use the first compatible ammunition carried.
 
 The action bar confirms the selection and carried amount, or reports that no
@@ -100,6 +101,8 @@ gunsmith, players pick the part, then the material.
 - `kind`: `metal` or `wood`. A part forges from one kind: `material: wood` for
   stocks; metal by default.
 - `tier`: sets the part tier, and the shot tier a barrel loads.
+- `name` and `color`: the material's name as shown, and its hex colour (see
+  "Names and lore").
 - `cost` and `permission`: the ingot or wood paid per part, and who may forge it.
 - `better` and `worse`: multiply a part's upsides and downsides. A number sets
   every stat; a section sets `default` plus per-stat factors.
@@ -118,10 +121,11 @@ Part keys:
 | `by-metal` | Extra stats per material, e.g. the multi-tube chamber's rockets. |
 | `metals` | Limits the part to these materials. |
 | `cost-amount`, `cost` | Ingots of the material (default 2), plus any other cost entries. |
-| `ammo-family` | `shot`, `spreadshot` or `rocket`: the barrel loads that family up to its material's tier. Ammunition entries carry `family`, `tier` and `powered`. |
+| `ammo-family` | `shot`, `spreadshot` or `rocket`: the barrel loads that family up to its material's tier. Ammunition entries carry `family`, `tier` and `powered` (default: true when the id ends in `_powered`). |
 | `ammo-filter` | `powered` or `plain`: the gun loads only that shot. |
 | `skin-base` | Matches gun designs as if the action were this part, e.g. `flintlock`. |
 | `metal-lore` | One lore line per material (`iron: "..."`), shown on that variant. The part list, before a material is picked, shows `lore`. |
+| `sound-overrides` | Sounds that replace every other sound of that group on the gun (all parts and the material's layers), e.g. the steamlock's quiet report. |
 
 New stats: `damage_percent` (scales gun and shot damage), `falloff` (blocks
 added to `falloff.start-distance`), `pierce` (added to the shot's pierce), and
@@ -130,6 +134,21 @@ means steadier. `moving 40` lets 60% of the walking, sprinting and jumping
 penalty through, and `sneaking 50` deepens the crouch bonus by half. The
 combined factor stays between 0.5 and 2. Editing `metals.yml` or a part changes
 its revision, so existing guns refresh to the new numbers.
+
+### Existing servers
+
+GunsAndGadgets writes a bundled file only when it is missing, so a server that
+already runs the plugin keeps its old `config.yml`, `skins.yml`,
+`ammunition.yml` and `parts.yml`. Switching to forged parts means, by hand:
+- `parts.yml` and `metals.yml` replaced with the bundled ones, and the old
+  `parts.yml` entries moved to `retired-parts.yml` (below);
+- `ammunition.yml` entries given `family`, `tier` and `powered`;
+- `skins.yml` given the four `forged_*` entries, or forged guns keep the old
+  designs;
+- `config.yml` given `stock` in `required-parts.pistol` (the grip; without it
+  pistols are drawn with none), and the new keys: `handling` `hip`, `rockets`,
+  `smooth-accuracy`, `pellet-cone` and `draw`; `aiming`; `part-icons`;
+  `type-icons`; `refunds`.
 
 ### Retiring old parts
 
@@ -146,26 +165,40 @@ per restart.
 ### Refunds
 
 `refunds` in `config.yml` removes old guns so none stay on the server. A gun is
-old when it carries a retired (disabled) or removed part, or when it is from
-before guns recorded their parts (GunsAndGadgets 2.0.0; on Main, guns crafted
-15–23 September 2026).
+old when:
+- it carries a part loaded from `retired-parts.yml`;
+- it carries a part that no longer exists. This only counts while `parts.yml`
+  and `retired-parts.yml` both loaded cleanly, and never for forged ids
+  (`<part>@<material>`): those go missing only by a config mistake, such as a
+  material removed from `metals.yml`, so their guns stay broken until it is
+  fixed;
+- it is from before guns recorded their parts (GunsAndGadgets 2.0.0; on Main,
+  guns crafted 15–23 September 2026).
+
+A part that is only `disabled: true` in `parts.yml` stops new crafts and leaves
+its guns alone. A `parts.yml` or `retired-parts.yml` that fails to read keeps
+the parts already loaded and logs an error.
 
 What the player gets back:
 - what the crafting took, recorded on guns crafted since 2.0.6;
-- older stamped guns: their parts' `cost` from `retired-parts.yml`;
+- older stamped guns: the `cost` of each stamped part, from `parts.yml` or
+  `retired-parts.yml`;
 - nothing for guns crafted for free (staff bypass, `/gg give`), unstamped guns,
   and guns with a removed part and nothing recorded. They are just removed.
+- any shots still loaded in the gun.
 
 A full inventory drops the rest at the player's feet.
 
 - Right-clicking the gun station with an old gun takes it apart.
-- `automatic: true` also does it wherever guns are refreshed: on join
-  (inventory and ender chest), selecting it in the hotbar, clicking it in an
-  inventory, and opening storage that holds it (the opener gets the materials).
-  These checks read each item's data in place and copy only guns.
+- `automatic: true` also does it on join (inventory and ender chest), on
+  selecting it in the hotbar, and on clicking it in the player's own inventory.
+  Guns in chests and other storage are only refreshed when opened; they are
+  taken apart once someone takes them into their own inventory. These checks
+  read each item's data in place and copy only guns.
 - Each refund is logged: `[Refund] <player> gun_id=<id> returned {...}`.
 
-Both are off by default. Turn them on with the switch to forged parts.
+`enabled` turns refunds on; `automatic` does nothing without it. Both are off by
+default. Turn them on with the switch to forged parts.
 
 ### Forged gun looks
 
@@ -184,9 +217,11 @@ needs ServerAssets' `tfmc_guns` ItemsAdder pack folder, generated by
 - Pistols take a grip in the stock slot (`standard_grip`, `birdshead_grip`,
   `pommel_grip`, `wrapped_grip`), so `required-parts.pistol` includes `stock`.
   Launchers never have one.
-- `part-icons` in `config.yml` (default `tfmc_guns:part/`) shows each forged
-  part's pack icon in the gunsmithing menus, plus `_<material>` once the
-  material is chosen. Blank shows each part's own `item`.
+- `part-icons` in `config.yml` (`tfmc_guns:part/` in the bundled config; blank
+  when left out) shows each forged part's pack icon in the gunsmithing menus,
+  plus `_<material>` once the material is chosen. Blank shows each part's own
+  `item`.
+- A skin's `ads` material is used for the aiming pose (default: its `aim`).
 
 Sound and effect keys:
 
@@ -222,23 +257,26 @@ The hotbar shows the vanilla cooldown sweep for the time left.
 The parts' `draw` stat (Draw Speed) scales the base time: `+25` is 25% quicker
 and `-30` is 30% slower, held between half and double.
 
-`aiming` turns on crouch to aim. Crouching with a loaded, drawn gun raises it:
+`aiming.enabled: true` turns on crouch to aim (off when left out). Crouching with
+a loaded, drawn gun raises it:
 - the model becomes `<forged-model>_ads`;
 - walking slows by `slow` (0 to 0.9), which also narrows the field of view.
   Players with FOV effects off get only the slowdown.
 
 A gun with a `scoped` part (the arclock) becomes a spyglass while aimed: hold
 right-click to look through it, then release to fire. The release fires only
-after `aiming.scope-settle-seconds` (default 0.6); an earlier release lowers the
+after `aiming.scope-settle-seconds` (0.6 in the bundled config; 0, at once, when
+left out); an earlier release lowers the
 scope without a shot. A click sound and "Steady" on the action bar mark the
-moment. Releasing the crouch, changing item or running empty lowers the gun.
+moment. Releasing the crouch, changing item or running empty lowers the gun. A
+gun moved, dropped or lost on death while aimed goes back to its normal look.
 
 `handling.spread-multipliers.hip` (1.75 in the bundled config) widens the spread
 of shots fired without aiming, only while `aiming` is on. Aimed shots still take
 the `sneaking` multiplier.
 
-The swap-hands key with a gun in hand picks the next shot; crouch + right-click
-no longer does. Messages name the player's own key binding.
+The swap-hands key with a gun in hand picks the next shot (see "Ammunition
+selection").
 
 ### Balance (2026-11-07 pass)
 
@@ -269,8 +307,9 @@ against crafted mythril armour (within 3% for bullets):
 - Every stat on an assembled gun has a short note on what it measures.
 - Parts whose shot rules leave the gun nothing to load show a barrier: "These
   parts don't make a gun".
-- `type-icons` in `config.yml` (default `tfmc_guns:`) draws the gun type buttons
-  as a steel gun of that type (`<prefix><type>_carry`). Blank shows paper.
+- `type-icons` in `config.yml` (`tfmc_guns:` in the bundled config; blank when
+  left out) draws the gun type buttons as a steel gun of that type
+  (`<prefix><type>_carry`). Blank shows paper.
 
 ## Character sessions and reload cleanup
 
