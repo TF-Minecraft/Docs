@@ -157,9 +157,14 @@ already runs the plugin keeps its old `config.yml`, `skins.yml`,
 ### Retiring old parts
 
 Forged parts reuse old part ids (`matchlock`, `single_shot`, …), so move the old
-`parts.yml` entries to `retired-parts.yml` when switching. Those parts load
-disabled: guns built from them still resolve, but nobody can craft them. An id
-that `parts.yml` also defines is skipped.
+`parts.yml` entries to `retired-parts.yml` when switching, before installing the
+new `parts.yml`. Those parts load disabled: guns built from them still resolve,
+but nobody can craft them. An id that `parts.yml` also defines is skipped.
+
+When `retired-parts.yml` is missing, the plugin writes its bundled copy: the
+pre-forging default parts (the 21 ids Main used). A server with parts of its own
+should replace it with its own old `parts.yml`, or guns with those parts count as
+having a removed part.
 
 With `retire-disabled-part-guns: true` in `config.yml`, a gun stamped with a
 disabled part refuses to fire or reload. Nothing is written to the gun, so
