@@ -184,9 +184,12 @@ its guns alone. A `parts.yml` that fails to read keeps the parts already loaded
 and logs an error. A `retired-parts.yml` that fails to read logs an error and
 its parts stay unloaded until it is fixed: their guns refuse to fire, but are
 neither refunded nor marked broken.
+A `parts.yml` that fails to read at startup, or has a line that is not a part,
+also skips `retired-parts.yml` until it is fixed, so guns built from retired
+parts say they are broken (missing parts) meanwhile.
 A gun with a missing part is marked broken for good only while both files
-loaded cleanly and the part is not forged; otherwise it only refuses to fire,
-and works again once the config is fixed.
+loaded cleanly and none of its missing parts is forged; otherwise it only
+refuses to fire, and works again once the config is fixed.
 
 What the player gets back:
 - what the crafting took, recorded on guns crafted since 2.0.6;
