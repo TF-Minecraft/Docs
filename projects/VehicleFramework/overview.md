@@ -355,6 +355,11 @@ Spline tracks persist samples and segment health separately from displays. Consi
 - `ground-engine-logging` (default `true`) - When true, appends each terrain-follow step (`state=` plus dest/vel, `lookaheadY`, `effSnap`, `air`, airborne `vx`, and geared-engine `gear`/`thr` when present) and each state swap (`state=A->B reason=... isDefault=...`) to `plugins/VehicleFramework/logs/ground_engine.log`.
 - `storage-logging` (default `true`, 2.18.0+) - Logs every item a player puts into or takes out of vehicle storage to `plugins/VehicleFramework/logs/storage.log` (`OPEN`, `PUT`, `TOOK` lines with player, amount, item, storage, vehicle and place, written off the server thread). With CoreProtect it also adds a chat line under the player's name, `[VF storage] took 12 iron_ingot from ...`, found with `/co lookup u:<player> a:chat`. Dock trades and fuel drawn by a locomotive are not blamed on anyone.
 - `wipe-log` (default `true`) - When true, deletes `ground_engine.log` and `track.log` on plugin start and `/vf reload`.
+- `cleanup` (2.19.0+, off by default) - Idle vehicle cleanup for a world where vehicles are only for trying out (TFMC sets it on the Tutorial server only).
+  - Keys: `worlds` (world names; empty means off), `keep-owners` (stored owner values such as `char_<uuid>` that are never removed) and `idle-minutes` (default `30`, at least 1).
+  - Every minute, a loaded vehicle on a cleanup world that has had no passenger and has not moved more than a block for `idle-minutes` is removed like `/vf kill`: removed and tombstoned, with a `Cleanup removed ...` info line.
+  - The clock starts when the cleanup first sees the vehicle loaded. Mounting, dismounting and seat changes restart it at once; moving between checks also counts as use, so pulled train cars, horse carts and towed vehicles stay.
+  - A vehicle that unloads and loads again starts a fresh clock, so vehicles left in chunks nobody visits stay stored.
 
 ### Weapon aim mode (optional)
 

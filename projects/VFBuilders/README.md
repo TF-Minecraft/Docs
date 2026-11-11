@@ -85,6 +85,15 @@ does not reconstruct jobs that were never saved. Inventory, registration fees
 and the station file are separate stores, so a process failure during their
 handoff can still require staff reconciliation.
 
+Since 2.2.4, a saved station whose world is not loaded on this server (or whose
+building site's world is not) is kept as the JSON object read from the file:
+written back unchanged with every save (fields this version does not know are
+kept), turned back into a station when a `WorldLoadEvent` makes its worlds
+available, and its block cannot become a new empty station meanwhile. Loading
+logs one warning naming the worlds. Before 2.2.4 such a station (for example
+from a stations file copied from another server) made every save fail, which
+cancelled every construction start.
+
 ### API for other plugins
 
 [`BeginVehicleConstructionEvent`](https://github.com/TF-Minecraft/VFBuilders/blob/main/src/main/java/net/tfminecraft/vfbuilders/events/BeginVehicleConstructionEvent.java),
