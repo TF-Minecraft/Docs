@@ -98,8 +98,9 @@ material in `metals.yml`, with the id `<part>@<material>` (for example
 gunsmith, players pick the part, then the material.
 
 `metals.yml` lists the materials. Each one has:
-- `kind`: `metal` or `wood`. A part forges from one kind: `material: wood` for
-  stocks; metal by default.
+- `kind`: `metal`, `wood` or `animal`. A part forges from one kind: `material:
+  wood` for stocks; metal by default. `animal` materials (leather, wool and
+  feather in four qualities) are fittings, see `fitting` below.
 - `tier`: sets the part tier, and the shot tier a barrel loads.
 - `name` and `color`: the material's name as shown, and its hex colour (see
   "Names and lore").
@@ -125,6 +126,7 @@ Part keys:
 | `ammo-filter` | `powered` or `plain`: the gun loads only that shot. |
 | `skin-base` | Matches gun designs as if the action were this part, e.g. `flintlock`. |
 | `metal-lore` | One lore line per material (`iron: "..."`), shown on that variant. The part list, before a material is picked, shows `lore`. |
+| `fitting` | A second material from the `animal` kind, picked after the wood: ids `<part>@<material>+<fitting>` (for example `saddle_stock@maplewood+rare_leather`). `amount` (default 2) is how many of the fitting item it costs; `stats` lists the stats the fitting's `better` factor scales, after the material. `materials` limits it to some fittings. The plain `<part>@<material>` still loads for guns made before the part took a fitting, but can't be crafted. |
 | `sound-overrides` | Sounds that replace every other sound of that group on the gun (all parts and the material's layers), e.g. the steamlock's quiet report. |
 
 New stats: `damage_percent` (scales gun and shot damage), `falloff` (blocks
@@ -134,6 +136,15 @@ means steadier. `moving 40` lets 60% of the walking, sprinting and jumping
 penalty through, and `sneaking 50` deepens the crouch bonus by half. The
 combined factor stays between 0.5 and 2. Editing `metals.yml` or a part changes
 its revision, so existing guns refresh to the new numbers.
+
+The bundled fittings (2.4.0): the Saddle stock and Wrapped grip scale `moving`
+and `mounted`, the Cheek-rest stock `sneaking` and the Padded stock
+`fire_rate`. Each takes 2 leather (`m.materials.leather`), wool
+(`v.white_wool`) or feather (`v.feather`), or their rare, epic and legendary
+items. Quality factors are 0.75 / 1 / 1.25 / 1.5, so a rare fitting keeps the
+written values. These stocks used to cost `v.leather`, which players never hold
+(MIReplacer turns vanilla leather into `MATERIALS.LEATHER`), and the grip cost
+`v.string`.
 
 ### Existing servers
 
