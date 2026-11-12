@@ -324,8 +324,8 @@ lowers the scope back to the aimed gun without a shot. A click sound and
 "Steady" on the action bar mark the moment. A gun in the off hand never raises
 the scope. Releasing the crouch, changing item or running empty lowers the gun.
 After the crouch is released while looking through, the still-held key's clicks
-with that gun are ignored instead of firing from the hip, until the key has been
-let go for 10 ticks (2 s after the aim at the latest). A gun moved, dropped or
+with that gun are ignored instead of firing from the hip: for at least 1 s, then
+until the key has been let go for 10 ticks, and 2 s after the aim at the latest. A gun moved, dropped or
 lost on death while aimed goes back to its normal look.
 
 `handling.spread-multipliers.hip` (1.75 in the bundled config) widens the spread
