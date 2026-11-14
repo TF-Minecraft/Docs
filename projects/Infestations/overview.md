@@ -127,6 +127,33 @@ Players cannot break the lure, and explosions and pistons cannot move it. Lure
 furniture that does not match saved lure state is removed on enable, reload,
 chunk load, or when a player touches it.
 
+**Rewards.** `rewards.yml` adds loot on top of each mob's own MythicMobs drop
+table, for the groups in its `groups` list (by default `swamp_mobs` and
+`swamp_mobs_hill`; an empty list means every group). Item entries are TLibs
+item paths. `denars` pays an amount as physical coins from the `coins` list,
+largest first, and `gem` drops one gem pouch whose tier is rolled from the
+table's `gems` weights. Each entry has a `percent` chance (default 100) and an
+`amount` that is a number or a range such as `4-6`. Permadeath zones come from
+RPCharacters; without it, every location counts as outside a zone.
+
+- **Ambient kills:** each ambient mob killed by a player rolls the `ambient`
+  table once and drops the result into the world at the mob's death location.
+  Mobs summoned by a dying infestation mob, such as parasitic worms, roll
+  nothing. Kills inside a permadeath zone use the row for the infestation's
+  severity; kills outside one use the `outside` row whatever the severity.
+  Unknown Keys (`key-item`) are the main ambient reward. Each player gets at
+  most `key-cap-per-hour` of them from ambient kills per rolling hour (default
+  40); `0` turns the cap off.
+- **Lure victory:** each committed player who is alive, online, on the
+  character they joined with, and has at least `min-kills` lure kills (default
+  3) gets their own roll of the `lure` row for the severity. The items burst
+  out of the lure over about one and a half seconds, and only that player can
+  pick them up. Inside a permadeath zone the whole roll pays out. Outside one,
+  each rolled item survives with `outside-zone.keep-percent` (default 10), and
+  `keep-items` overrides it per item: by default Unknown Keys, tin, abyssalite,
+  mythril and mythrilite keep 5%, and radiant and mythical gem pouches 0%.
+  Lure rewards ignore the key cap.
+
 **Spread.** When `spread` is `true`, every `spread-interval-seconds` each idle
 infestation rolls `worsen-chance` to rise one severity (up to `extreme`). It
 then considers uninfested land neighbours its group may occupy, plus such land
@@ -145,6 +172,7 @@ The plugin copies its defaults into `plugins/Infestations/` on first start.
 | --- | --- |
 | `config.yml` | Debug and spawn-log switches, spread switch, interval and chances, lure item, join window, lure spawn radius, minimum spawn distance from players, logout grace, deserter damage, hologram range, and `skip-terrains`. |
 | `groups.yml` | Mob groups: `display` name, `night-only`, optional `min-y`, optional SimpleFactions `terrains`, weighted MythicMobs `mobs`, and per-severity `ambient-cap`, `ambient-interval-ticks`, `ambient-ring-min`, `ambient-ring-max`, `lure-count`, and `lure-duration-seconds`. |
+| `rewards.yml` | Reward switch and groups, coin values, ambient drop tables by severity and for kills outside permadeath zones, the ambient key cap, and lure tables by severity with the outside-zone keep chances. |
 | `messages.yml` | Chat, action-bar, and hologram text. `{prefix}` inserts the `prefix` entry; hex colours are formatted through TLibs. |
 
 Chances are values from 0 to 1. Groups without `mobs` are skipped with a
@@ -163,7 +191,7 @@ take a numeric SimpleFactions province ID or `here` for the player's province.
 | `/infestation set <province\|here> <group> <severity>` | `infestations.admin` | Infest an uninfested land province that the group's terrain rules allow. |
 | `/infestation clear <province\|here>` | `infestations.admin` | Remove an infestation and any lure it has. |
 | `/infestation list` | `infestations.admin` | List infestations by province, group, and severity, marking those with a lure. |
-| `/infestation reload` | `infestations.admin.reload` | Reload all three files, then reload saved state from disk. |
+| `/infestation reload` | `infestations.admin.reload` | Reload all four files, then reload saved state from disk. |
 | `/lure leave` | none | Drop the player out of every lure they have joined. |
 
 Both permissions default to operators, and `infestations.admin` grants
@@ -198,7 +226,8 @@ map data.
 ## Persistence and shutdown
 
 - Infestations and lure state, including committed players, logout grace, the
-  character each committed player logged out as, and lure counters, are stored
+  character each committed player joined with and logged out as, lure kills,
+  and lure counters, are stored
   in `plugins/Infestations/Data/infestations.json`.
 - The latest map export is `plugins/Infestations/MapAPI/infestation_data.json`.
 - When `logging` is true, spawn decisions are appended to
@@ -241,6 +270,12 @@ dependency set:
    callback cannot follow a reconnect or character switch.
 6. On a test server, enable `spread` with a short interval and confirm
    worsening, land spread, single water and sea hops, and group terrain limits.
-7. Confirm `MapAPI/infestation_data.json` is written and uploaded.
-8. Reload and restart cleanly during a lure, and confirm infestations, the lure,
+7. Kill ambient mobs of a rewarded group inside and outside a permadeath zone,
+   and confirm the drops land in the world from the matching table, summoned
+   worms drop nothing, and the hourly key cap holds. Win a lure inside and
+   outside a zone and confirm only players with enough kills get an
+   owner-locked burst, and a different character on the same account gets
+   nothing.
+8. Confirm `MapAPI/infestation_data.json` is written and uploaded.
+9. Reload and restart cleanly during a lure, and confirm infestations, the lure,
    its text display, and its counters are restored without duplicates.

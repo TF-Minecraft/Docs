@@ -17,8 +17,9 @@ installer. The build also prepares a checksum-verified MythicMobs
 
 At runtime, `plugin.yml` requires TLibs **2.3.0 or newer**, SimpleFactions,
 MythicMobs, ItemsAdder, and InteractibleFurniture. RPCharacters **2.16.0 or
-newer** optionally supplies character identity through TLibs; Infestations has
-no direct RPCharacters dependency. An older TLibs installation disables
+newer** optionally supplies character identity through TLibs, and its
+permadeath zones set reward rates; Infestations looks zones up by reflection
+and declares no RPCharacters dependency. An older TLibs installation disables
 Infestations at startup with an upgrade message. The plugin
 code does not call ItemsAdder directly; the default lure is an ItemsAdder item
 (`ia.tfmc:lure`) placed as InteractibleFurniture.
