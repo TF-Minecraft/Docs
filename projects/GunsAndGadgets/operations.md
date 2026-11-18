@@ -89,6 +89,8 @@ Two more `handling` keys:
 | --- | --- |
 | `smooth-accuracy` | `true`: above accuracy 5, each point tightens spread by 5%. Off or left out: the old line, which reaches 1.2° at 20 and 0.07° at 30. |
 | `pellet-cone.tighten-per-accuracy` / `pellet-cone.min-factor` | A shotgun barrel's pellet cone (its `spread` stat) shrinks by this share per point of accuracy, down to `min-factor` of its size. Defaults 0.03 and 0.4. |
+| `single-shot-fire-rate.per-reload` / `.max` | 2.6.0. On a single-shot gun the time between shots is the reload, so its fire rate counts there: one reload point per `per-reload` fire rate, at most `max` either way (bundled 4 and 1). Left out or `per-reload: 0`: fire rate does nothing on single-shot guns. |
+| `pierce-overflow.full-at` | 2.6.0. Pierce stops adding armour piercing at 20 (all of the shot ignores armour). Each point past 20 then ignores a share of the target's MythicLib `DAMAGE_REDUCTION`, all of it at `full-at` points over (bundled 20). MythicLib takes the reduction off the piercing hit afterwards, so the hit grows by what the ignored share would have taken; the reduction is read as at most 95%. Left out or `0`: pierce past 20 does nothing. |
 
 ## Forged parts
 
@@ -118,7 +120,7 @@ Part keys:
 
 | Key | Effect |
 | --- | --- |
-| `tendencies` | `stat value` lines written for the reference material (steel; maplewood for stocks). The material scales them. Lore shows them as one to three arrows, not numbers. |
+| `tendencies` | `stat value` lines written for the reference material (steel; maplewood for stocks). The material scales them, to one decimal (2.6.0; before, whole numbers made small stats read the same in several materials). At load, a warning names any two materials of a part with the same fitting and the same stats. |
 | `fixed` | Stats no material changes: shots held, a shotgun's pellet cone (`spread`), a revolver's damage percentage. |
 | `by-metal` | Extra stats per material, e.g. the multi-tube chamber's rockets. |
 | `metals` | Limits the part to these materials. |
@@ -130,7 +132,7 @@ Part keys:
 | `fitting` | A second material from the `animal` kind, picked after the wood: ids `<part>@<material>+<fitting>` (for example `saddle_stock@maplewood+rare_leather`). `types` lists the fitting types it takes (any when left out), `amount` (default 2) is how many of the fitting item it costs, and `stats` lists the stats the fitting's `better` factor scales, after the material. `materials` limits it further to listed fittings. The plain `<part>@<material>` still loads for guns made before the part took a fitting, but can't be crafted. |
 | `sound-overrides` | Sounds that replace every other sound of that group on the gun (all parts and the material's layers), e.g. the steamlock's quiet report. |
 
-New stats: `damage_percent` (scales gun and shot damage), `falloff` (blocks
+New stats: `damage_percent` (scales gun and shot damage; since 2.6.0 the parts' percents multiply, so -50% and -18% leave 41%), `falloff` (blocks
 added to `falloff.start-distance`), `pierce` (added to the shot's pierce), and
 `moving`, `mounted` and `sneaking`. The last three are percentages: positive
 means steadier. `moving 40` lets 60% of the walking, sprinting and jumping
@@ -174,7 +176,8 @@ already runs the plugin keeps its old `config.yml`, `skins.yml`,
 - `config.yml` given `stock` in `required-parts.pistol` (the grip; without it
   pistols are drawn with none), and the new keys: `handling` `hip`, `rockets`,
   `smooth-accuracy`, `pellet-cone` and `draw`; `aiming`; `part-icons`;
-  `type-icons`; `refunds`.
+  `type-icons`; `refunds`; since 2.6.0 `single-shot-fire-rate` and
+  `pierce-overflow`.
 
 ### Retiring old parts
 
@@ -358,10 +361,37 @@ against crafted mythril armour (within 3% for bullets):
   tier. Bundled `name-impact` entries build [chamber] [action] [barrel], e.g.
   "Double Flintlock Rifle", "Revolving Wheellock Pistol", "Salvo Rocket
   Launcher".
-- Each part and material has its own line of lore (`metal-lore`). Its arrows
-  show the tendencies in that material, so the lore adds no line on what the
-  material does.
-- Every stat on an assembled gun has a short note on what it measures.
+- Each part and material has its own line of lore (`metal-lore`). Part lore
+  also lists what the part always is: shots held, pellet cone, which shot it
+  loads, silent.
+
+### Gun sheet (2.6.0)
+
+An assembled gun lists what it does in real units, from the same formulas the
+shot uses, before the shooter's Charisma and stance: damage per hit with its
+strongest shot (per pellet for shotguns, at the centre for rockets), armour
+pierce %, spread in degrees (aimed), pellet cone, reload seconds, shots held and
+time between shots (magazines only), full-damage distance, range, bullet speed,
+draw seconds and steadiness (only when not 0).
+
+In the gunsmith, every part, material and fitting button shows "On your gun:"
+and only the sheet lines it would change (for example "Reload: 3 s → 2.4 s",
+green when better, red when worse), or "On your gun now", "No change to this
+gun" or "No shot fits it with your other parts". The part list shows a forged
+part in the material of the part now in that slot, else steel or maplewood; a
+fitted part's material button shows good quality (the written values).
+
+Guns stamp each stat twice: `stat_exact_<stat>` (double) and the whole number in
+`stat_value_<stat>`. Readers take the exact value when there is one, so a gun
+stamped before 2.6.0 plays as it did until it refreshes. Every part's revision
+content gained a `sheet` marker, so each crafted gun is rebuilt once on its next
+refresh.
+
+The sheet is written when a gun is built or refreshed. After changing
+`handling` keys, draw times or `ammunition.yml`, existing guns keep their old
+sheet text until a part changes (or a player holding one runs `/gg refresh`); the shots
+themselves use the new values at once. Add the 2.6.0 `handling` keys before the
+first start on the 2.6.0 jar.
 - Parts whose shot rules leave the gun nothing to load show a barrier: "These
   parts don't make a gun".
 - `type-icons` in `config.yml` (`tfmc_guns:` in the bundled config; blank when
